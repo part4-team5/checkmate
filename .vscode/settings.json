@@ -1,0 +1,13 @@
+{
+	"files.exclude": {
+		"**/.next": true,
+		"**/.vscode": true,
+		"**/node_modules": true,
+		"**/next-env.d.ts": true,
+		"**/package-lock.json": true
+	},
+	"editor.formatOnSave": true,
+	"editor.formatOnPaste": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"typescript.preferences.importModuleSpecifier": "non-relative"
+}
