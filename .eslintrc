@@ -1,0 +1,25 @@
+{
+	"extends": [
+		"airbnb",
+		"airbnb-typescript",
+		"airbnb/hooks",
+		"next/core-web-vitals",
+		"prettier"
+	],
+	"rules": {
+		"indent": [
+			"error",
+			"tab"
+		],
+		"quotes": [
+			"error",
+			"double"
+		],
+		"no-tabs": "off",
+		"react/jsx-indent": "off"
+	},
+	"parserOptions": {
+		"project": "./tsconfig.json",
+		"warnOnUnsupportedTypeScriptVersion": false
+	}
+}

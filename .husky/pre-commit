@@ -1,0 +1,24 @@
+if ! git diff-index --quiet HEAD --; then
+	echo "There are staged changes. Running ESLint and Prettier..."
+
+	npx prettier --write .
+	PRETTIER_RESULT=$?
+
+	if [ $PRETTIER_RESULT -ne 0 ]; then
+		echo "Prettier found issues. Please fix them before committing."
+		exit 1
+	fi
+
+	npx eslint --fix .
+	ESLINT_RESULT=$?
+
+	if [ $ESLINT_RESULT -ne 0 ]; then
+		echo "ESLint found issues. Please fix them before committing."
+		exit 1
+	fi
+
+	git add .
+fi
+
+echo "ESLint and Prettier passed. Proceeding with commit."
+exit 0
