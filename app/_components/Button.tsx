@@ -56,26 +56,18 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 			break;
 	}
 
-	const btnStyle = `${btnVariant} ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "text-lg" : "text-md"}`;
+	const btnStyle = `${btnVariant} ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "text-lg" : "text-md"} size-full py-[6px] `;
 
 	if (href) {
 		return (
-			<Link
-				className={`${btnStyle} size-full ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "text-lg" : "text-md"} py-[6px]`}
-				href={href}
-			>
+			<Link className={`${btnStyle}`} href={href}>
 				{children}
 			</Link>
 		);
 	}
 
 	return (
-		<button
-			type="button"
-			className={`${btnStyle} size-full ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "text-lg" : "text-md"} py-[6px]`}
-			onClick={onClick}
-			disabled={disabled}
-		>
+		<button type="button" className={`${btnStyle}`} onClick={onClick} disabled={disabled}>
 			{children}
 		</button>
 	);
