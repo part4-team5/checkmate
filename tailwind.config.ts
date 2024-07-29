@@ -29,7 +29,7 @@ export default {
 			},
 			interaction: {
 				inactive: "#94A3B8",
-				pressed: "#059669",
+				pressed: "#047857",
 				hover: "#059669",
 				focus: "#10B981",
 			},
