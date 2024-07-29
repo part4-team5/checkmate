@@ -1,6 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 /** @type {import("tailwindcss").Config} */
 export default {
+	content: ["./pages/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}"],
 	theme: {
 		screens: {
 			tablet: "744px",
@@ -29,7 +30,7 @@ export default {
 			},
 			interaction: {
 				inactive: "#94A3B8",
-				pressed: "#059669",
+				pressed: "#047857",
 				hover: "#059669",
 				focus: "#10B981",
 			},
@@ -67,5 +68,4 @@ export default {
 			xs: ["12px", "14px"],
 		},
 	},
-	content: ["./pages/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}"],
 };

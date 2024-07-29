@@ -7,3 +7,23 @@
 :root {
 	font-family: Pretendard;
 }
+
+.btn-primary {
+	@apply flex items-center justify-center bg-brand-primary font-semibold text-text-inverse hover:bg-interaction-hover active:bg-interaction-pressed disabled:bg-interaction-inactive;
+}
+
+.btn-secondary {
+	@apply flex items-center justify-center border border-brand-primary bg-background-inverse font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive;
+}
+
+.btn-white {
+	@apply flex items-center justify-center border border-text-secondary bg-background-inverse font-semibold text-text-default;
+}
+
+.btn-outline {
+	@apply flex items-center justify-center border border-brand-primary bg-transparent font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive;
+}
+
+.btn-danger {
+	@apply flex items-center justify-center bg-status-danger font-semibold text-text-inverse;
+}
