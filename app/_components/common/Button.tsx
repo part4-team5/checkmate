@@ -61,7 +61,7 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 	if (href) {
 		return (
 			<Link
-				className={`${btnStyle} size-full ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "py-3 text-lg" : "py-[6px] text-md"} `}
+				className={`${btnStyle} size-full ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "text-lg" : "text-md"} py-[6px]`}
 				href={href}
 			>
 				{children}
@@ -72,7 +72,7 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 	return (
 		<button
 			type="button"
-			className={`${btnStyle} size-full ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "py-3 text-lg" : "py-[6px] text-md"} `}
+			className={`${btnStyle} size-full ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "text-lg" : "text-md"} py-[6px]`}
 			onClick={onClick}
 			disabled={disabled}
 		>
