@@ -66,6 +66,14 @@ export default {
 			sm: ["13px", "16px"],
 			xs: ["12px", "14px"],
 		},
+		extend: {
+			backgroundImage: {
+				"conic-gradient": "conic-gradient(from 0deg, #10b981, #cef57e, #10b981)",
+			},
+			boxShadow: {
+				linear: "0 0 12px 2px rgba(0, 0, 0, 0.05)",
+			},
+		},
 	},
 	content: ["./pages/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}"],
 };
