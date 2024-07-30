@@ -44,9 +44,9 @@ export default function Page() {
 				</div>
 			</section>
 
-			<section className="flex flex-col items-center gap-20 px-6">
+			<section className="flex flex-col items-center gap-20 px-4 tablet:px-6">
 				{/* 할 일 추가 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] rounded-[40px] bg-conic-gradient p-[3px] shadow-linear shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
+				<div className="bg-conic-gradient shadow-linear flex h-screen max-h-[467px] w-full min-w-[330px] rounded-[40px] p-[3px] shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
 					<div className="flex h-full w-full flex-col-reverse items-center gap-11 rounded-[38px] bg-background-primary tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:gap-48">
 						<div className="flex tablet:items-end">
 							<div className="relative h-[268px] w-[231px] desktop:h-[329px] desktop:w-[284px]">
@@ -64,7 +64,7 @@ export default function Page() {
 				</div>
 
 				{/* 멤버 초대 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] flex-col items-center justify-start gap-10 rounded-[40px] border border-border-primary/10 bg-background-secondary tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row-reverse tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
+				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] flex-col items-center justify-start gap-10 rounded-[40px] border border-border-primary/10 bg-background-secondary tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
 					<div className="relative flex h-[268px] w-[231px] items-start desktop:h-[329px] desktop:w-[284px]">
 						<Image src="/images/landing_2.webp" alt="Landing 2" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
 					</div>
@@ -99,8 +99,8 @@ export default function Page() {
 				</div>
 
 				<div className="z-10 flex flex-col items-center justify-center gap-6 pt-32 text-center tablet:pt-44 desktop:pt-56">
-					<p className="text-[40px] font-semibold text-text-primary">지금 바로 시작해보세요</p>
-					<p className="text-2xl font-medium text-text-primary">
+					<p className="text-2xl font-semibold text-text-primary tablet:text-[40px]">지금 바로 시작해보세요</p>
+					<p className="text-lg font-medium text-text-primary tablet:text-2xl">
 						팀원 모두와 같은 방향, <br className="block tablet:hidden" /> 같은 속도로 나아가는 가장 쉬운 방법
 					</p>
 				</div>
