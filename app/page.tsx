@@ -21,14 +21,15 @@ export default function Page() {
 					<Image src="/images/landing_main.webp" alt="Landing main" fill priority className="object-cover object-top" />
 				</div>
 
-				<div className="z-10 pt-[85px] text-center">
+				<div className="z-10 flex flex-col gap-5 pt-[85px] text-center">
 					<div className="flex items-center justify-center gap-1 tablet:gap-4 desktop:gap-6">
 						<p className="text-2xl font-semibold text-text-primary tablet:text-[40px] desktop:text-[48px]">함께 만들어가는 투두 리스트</p>
 						<div className="relative h-7 w-7 tablet:h-12 tablet:w-12 desktop:h-14 desktop:w-14">
 							<Image src="/icons/Repair.svg" alt="Repair" fill />
 						</div>
 					</div>
-					<p className="bg-gradient-to-r from-brand-primary to-[#CEF57E] bg-clip-text text-3xl font-semibold text-transparent tablet:text-[48px] desktop:text-[64px]">
+
+					<p className="bg-gradient-to-r from-brand-primary to-[#CEF57E] bg-clip-text text-3xl font-semibold text-transparent tablet:text-[48px] tablet:leading-[57px] desktop:text-[64px] desktop:leading-[76px]">
 						Coworkers
 					</p>
 				</div>
