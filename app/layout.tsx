@@ -1,9 +1,12 @@
 import "./globals.css";
 
-export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
+export default function RootLayout({ children }: Readonly<React.PropsWithChildren>) {
 	return (
 		<html lang="ko">
-			<body>{children}</body>
+			<body>
+				{children}
+				<div id="portal" />
+			</body>
 		</html>
 	);
 }
