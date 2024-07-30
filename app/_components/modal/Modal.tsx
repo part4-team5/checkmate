@@ -3,7 +3,7 @@
 import useModalStore from "@/app/_store/modal";
 import CloseIcon from "@/public/icons/ic_close";
 import WarningIcon from "@/public/icons/ic_warning";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactDom from "react-dom";
 
 type ModalProps = {
@@ -44,17 +44,35 @@ export default function Modal({ disPlayWarningIcon, displayCloseButton, modalLab
 	const [mounted, setMounted] = useState(false);
 	const { isModalOpen, closeModal } = useModalStore();
 	const isOpen = isModalOpen(modalLabel);
+	const modalRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		setMounted(true);
 		return () => setMounted(false);
 	}, []);
 
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+				closeModal(modalLabel);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [isOpen, closeModal, modalLabel]);
+
 	if (!mounted || !isOpen) return null;
 
 	return ReactDom.createPortal(
 		<div className="fixed inset-0 bottom-0 left-0 right-0 top-0 z-50 bg-black bg-opacity-70">
-			<div className="fixed bottom-0 w-full rounded-t-xl bg-background-secondary px-4 pb-8 pt-4 text-text-primary tablet:bottom-auto tablet:left-1/2 tablet:top-1/2 tablet:w-auto tablet:-translate-x-1/2 tablet:-translate-y-1/2 tablet:rounded-xl">
+			<div
+				ref={modalRef}
+				className="fixed bottom-0 w-full rounded-t-xl bg-background-secondary px-4 pb-8 pt-4 text-text-primary tablet:bottom-auto tablet:left-1/2 tablet:top-1/2 tablet:w-auto tablet:-translate-x-1/2 tablet:-translate-y-1/2 tablet:rounded-xl"
+			>
 				{disPlayWarningIcon && (
 					<div className="mb-4 mt-6 flex justify-center">
 						<WarningIcon width={24} height={24} />
