@@ -1,18 +1,17 @@
-import Checked from "@/public/icons/Checked";
-import Folder from "@/public/icons/Folder";
-import Mail from "@/public/icons/Mail";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Page() {
-	// 로그인 상태 체크
-	// 팀이 없는 경우 팀 생성 페이지로 이동
-	// 팀이 있는 경우 팀 페이지로 이동
-	// 로그인 상태가 아닌 경우 로그인 페이지로 이동
-	// const isLogin = useStore((state) => state.increasePopulation);
-	// const hasTeam = false;
-	// const [href, setHref] = useState<string>("/login");
-	// if(isLogin) { if(!hasTeam) { setHref("/team/create") } else { setHref("/team") } } else { setHref("/login") }
+	/* 
+	TODO: 로그인 상태 체크
+	팀이 없는 경우 팀 생성 페이지로 이동
+	팀이 있는 경우 팀 페이지로 이동
+	로그인 상태가 아닌 경우 로그인 페이지로 이동
+	const isLogin = useStore((state) => state.increasePopulation);
+	const hasTeam = false;
+	const [href, setHref] = useState<string>("/login");
+	if(isLogin) { if(!hasTeam) { setHref("/team/create") } else { setHref("/team") } } else { setHref("/login") }
+	*/
 
 	return (
 		<main className="h-full min-w-[330px] bg-background-primary">
@@ -46,7 +45,7 @@ export default function Page() {
 
 			<section className="flex flex-col items-center gap-6 px-4 tablet:px-6 desktop:gap-20">
 				{/* 할 일 추가 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] rounded-[40px] bg-conic-gradient p-[3px] shadow-linear shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
+				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] rounded-[40px] bg-conic-gradient p-[3px] shadow-[0_0_12px_2px_rgba(0,0,0,0.25)] shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
 					<div className="flex h-full w-full flex-col-reverse items-center gap-11 rounded-[38px] bg-background-primary tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:gap-48">
 						<div className="flex tablet:items-end">
 							<div className="relative h-[268px] w-[231px] desktop:h-[329px] desktop:w-[284px]">
@@ -55,7 +54,9 @@ export default function Page() {
 						</div>
 
 						<div className="flex w-[251px] flex-col tablet:w-fit tablet:justify-center">
-							<Folder width={72} height={72} />
+							<div className="relative size-[72px]">
+								<Image src="/icons/FolderIcon.svg" alt="Folder Icon" fill />
+							</div>
 							<p className="pl-[12px] pt-1 text-2lg font-medium text-text-primary desktop:text-2xl">
 								그룹으로 <br />할 일을 관리해요
 							</p>
@@ -69,8 +70,10 @@ export default function Page() {
 						<Image src="/images/landing_2.webp" alt="Landing 2" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
 					</div>
 
-					<div className="flex w-[251px] flex-col tablet:w-fit tablet:justify-center">
-						<Mail width={72} height={72} />
+					<div className="flex w-[251px] flex-col tablet:w-fit tablet:items-end tablet:justify-center">
+						<div className="relative flex size-[72px]">
+							<Image src="/icons/MailIcon.svg" alt="Mail Icon" fill />
+						</div>
 						<p className="pl-[12px] pt-1 font-medium text-text-primary tablet:pl-0 tablet:pr-[12px] tablet:text-right tablet:text-2lg desktop:text-2xl">
 							간단하게 멤버들을 <br />
 							초대해요
@@ -85,7 +88,9 @@ export default function Page() {
 					</div>
 
 					<div className="flex w-[251px] flex-col tablet:w-fit tablet:justify-center">
-						<Checked width={72} height={72} />
+						<div className="relative size-[72px]">
+							<Image src="/icons/CheckedIcon.svg" alt="Checked Icon" fill />
+						</div>
 						<p className="pl-[12px] pt-1 text-2lg font-medium text-text-primary desktop:text-2xl">
 							할 일도 간편하게 <br /> 체크해요
 						</p>
