@@ -16,7 +16,8 @@
 			"double"
 		],
 		"no-tabs": "off",
-		"react/jsx-indent": "off"
+		"react/jsx-indent": "off",
+		"react/require-default-props": "off"
 	},
 	"parserOptions": {
 		"project": "./tsconfig.json",
