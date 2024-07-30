@@ -17,9 +17,9 @@ export default function Page() {
 
 	return (
 		<main className="h-full bg-background-primary">
-			<section className="flex h-dvh max-h-[980px] flex-col justify-between">
-				<div className="absolute h-screen max-h-[980px] w-screen">
-					<Image src="/images/landing_1.webp" alt="Landing 1" fill priority style={{ objectFit: "cover" }} />
+			<section className="flex h-dvh max-h-[1080px] flex-col justify-between">
+				<div className="absolute h-dvh max-h-[1080px] w-dvw">
+					<Image src="/images/landing_main.webp" alt="Landing main" fill priority className="object-cover object-top" />
 				</div>
 
 				<div className="z-10 pt-[85px]">
@@ -48,10 +48,11 @@ export default function Page() {
 				{/* 할 일 추가 */}
 				<div className="flex h-[419px] w-[996px] rounded-[40px] bg-conic-gradient p-[3px] shadow-linear shadow-background-inverse/25">
 					<div className="flex h-full w-full justify-center gap-48 rounded-[38px] bg-background-primary">
-						<div className="relative flex items-end">
-							<Image src="/images/landing_2.webp" alt="Landing 2" width={284} height={329} />
+						<div className="flex items-end">
+							<div className="relative h-[329px] w-[284px]">
+								<Image src="/images/landing_1.webp" alt="Landing 1" fill className="object-contain" />
+							</div>
 						</div>
-
 						<div className="flex flex-col justify-center">
 							<Folder width={72} height={72} />
 							<p className="pl-[12px] pt-1 text-2xl font-medium text-text-primary">
@@ -63,8 +64,8 @@ export default function Page() {
 
 				{/* 멤버 초대 */}
 				<div className="flex h-[419px] w-[996px] flex-row-reverse justify-center gap-48 rounded-[40px] border border-border-primary/10 bg-background-secondary">
-					<div className="relative flex items-start">
-						<Image src="/images/landing_3.webp" alt="Landing 3" width={284} height={329} />
+					<div className="relative flex h-[329px] w-[284px] items-start">
+						<Image src="/images/landing_2.webp" alt="Landing 2" fill className="object-contain" />
 					</div>
 
 					<div className="flex flex-col items-end justify-center">
@@ -77,8 +78,8 @@ export default function Page() {
 				</div>
 
 				<div className="flex h-[419px] w-[996px] justify-center gap-48 rounded-[40px] border border-border-primary/10 bg-[#020617]">
-					<div className="relative flex items-start">
-						<Image src="/images/landing_4.webp" alt="Landing 4" width={284} height={329} />
+					<div className="relative flex h-[329px] w-[284px] items-start">
+						<Image src="/images/landing_3.webp" alt="Landing 3" fill className="object-contain" />
 					</div>
 
 					<div className="flex flex-col justify-center">
@@ -92,7 +93,7 @@ export default function Page() {
 
 			<section className="flex h-dvh max-h-[850px] flex-col justify-between">
 				<div className="absolute h-dvh max-h-[850px] w-dvw">
-					<Image src="/images/landing_5.webp" alt="Landing 5" className="object-cover object-bottom" fill priority />
+					<Image src="/images/landing_footer.webp" alt="Landing footer" className="object-cover object-bottom" fill priority />
 				</div>
 
 				<div className="z-10 flex flex-col items-center justify-center gap-6">
