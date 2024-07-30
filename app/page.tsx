@@ -46,7 +46,7 @@ export default function Page() {
 
 			<section className="flex flex-col items-center gap-20 px-4 tablet:px-6">
 				{/* 할 일 추가 */}
-				<div className="bg-conic-gradient shadow-linear flex h-screen max-h-[467px] w-full min-w-[330px] rounded-[40px] p-[3px] shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
+				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] rounded-[40px] bg-conic-gradient p-[3px] shadow-linear shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
 					<div className="flex h-full w-full flex-col-reverse items-center gap-11 rounded-[38px] bg-background-primary tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:gap-48">
 						<div className="flex tablet:items-end">
 							<div className="relative h-[268px] w-[231px] desktop:h-[329px] desktop:w-[284px]">
@@ -64,7 +64,7 @@ export default function Page() {
 				</div>
 
 				{/* 멤버 초대 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] flex-col items-center justify-start gap-10 rounded-[40px] border border-border-primary/10 bg-background-secondary tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
+				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] flex-col items-center justify-start gap-10 rounded-[40px] border border-border-primary/10 bg-background-secondary tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row-reverse tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
 					<div className="relative flex h-[268px] w-[231px] items-start desktop:h-[329px] desktop:w-[284px]">
 						<Image src="/images/landing_2.webp" alt="Landing 2" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
 					</div>
@@ -79,7 +79,7 @@ export default function Page() {
 				</div>
 
 				{/* 할 일 체크 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] flex-col items-center justify-start gap-10 rounded-[40px] bg-[#020617] tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row-reverse tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
+				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] flex-col items-center justify-start gap-10 rounded-[40px] bg-[#020617] tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
 					<div className="relative flex h-[268px] w-[231px] items-start desktop:h-[329px] desktop:w-[284px]">
 						<Image src="/images/landing_3.webp" alt="Landing 3" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
 					</div>
