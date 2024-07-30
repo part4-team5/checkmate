@@ -44,7 +44,7 @@ export default function Page() {
 				</div>
 			</section>
 
-			<section className="flex flex-col items-center gap-20 px-4 tablet:px-6">
+			<section className="flex flex-col items-center gap-6 px-4 tablet:px-6 desktop:gap-20">
 				{/* 할 일 추가 */}
 				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] rounded-[40px] bg-conic-gradient p-[3px] shadow-linear shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
 					<div className="flex h-full w-full flex-col-reverse items-center gap-11 rounded-[38px] bg-background-primary tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:gap-48">
