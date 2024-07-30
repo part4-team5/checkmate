@@ -19,7 +19,7 @@ const useModalStore = create<ModalState>((set, get) => ({
 	modals: {},
 	openModal: (id: string) => set((state) => ({ modals: { ...state.modals, [id]: true } })),
 	closeModal: (id: string) => set((state) => ({ modals: { ...state.modals, [id]: false } })),
-	isModalOpen: (id: string) => get().modals[id] || false,
+	isModalOpen: (id: string) => get().modals[id],
 }));
 
 export default useModalStore;

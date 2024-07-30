@@ -55,7 +55,11 @@ export default function Modal({ disPlayWarningIcon, displayCloseButton, modalLab
 	return ReactDom.createPortal(
 		<div className="fixed inset-0 bottom-0 left-0 right-0 top-0 z-50 bg-black bg-opacity-70">
 			<div className="fixed bottom-0 w-full rounded-t-xl bg-background-secondary px-4 pb-8 pt-4 text-text-primary tablet:bottom-auto tablet:left-1/2 tablet:top-1/2 tablet:w-auto tablet:-translate-x-1/2 tablet:-translate-y-1/2 tablet:rounded-xl">
-				{disPlayWarningIcon && <WarningIcon className="mb-4 mt-6 flex justify-center" width={24} height={24} />}
+				{disPlayWarningIcon && (
+					<div className="mb-4 mt-6 flex justify-center">
+						<WarningIcon width={24} height={24} />
+					</div>
+				)}
 				{displayCloseButton && (
 					<button aria-label="close" className="absolute right-[31px] top-[22px]" onClick={() => closeModal(modalLabel)} type="button">
 						<CloseIcon width={12} height={12} />
