@@ -24,7 +24,7 @@ export default function Page() {
 					<div className="flex items-center justify-center gap-1 tablet:gap-4 desktop:gap-6">
 						<p className="text-2xl font-semibold text-text-primary tablet:text-[40px] desktop:text-[48px]">함께 만들어가는 투두 리스트</p>
 						<div className="relative h-7 w-7 tablet:h-12 tablet:w-12 desktop:h-14 desktop:w-14">
-							<Image src="/icons/Repair.svg" alt="Repair" fill />
+							<Image src="/icons/RepairIcon.svg" alt="Repair" fill />
 						</div>
 					</div>
 
