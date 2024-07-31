@@ -14,13 +14,13 @@ export default function Page() {
 	*/
 
 	return (
-		<main className="h-full min-w-[330px] bg-background-primary">
-			<section className="flex h-screen flex-col items-center justify-between">
-				<div className="absolute h-screen w-full min-w-[330px]">
+		<main className="h-full min-w-[320px] bg-background-primary">
+			<section className="flex h-[640px] flex-col items-center justify-between tablet:h-[940px] desktop:h-[1080px]">
+				<div className="absolute h-[640px] w-full min-w-[320px] tablet:h-[940px] desktop:h-[1080px] desktop:max-w-[1920px]">
 					<Image src="/images/landing_main.webp" alt="Landing main" fill priority className="object-cover object-top" />
 				</div>
 
-				<div className="z-10 flex flex-col gap-5 pt-[85px] text-center">
+				<div className="z-10 flex flex-col gap-5 pb-[320px] pt-[85px] text-center">
 					<div className="flex items-center justify-center gap-1 tablet:gap-4 desktop:gap-6">
 						<p className="text-2xl font-semibold text-text-primary tablet:text-[40px] desktop:text-[48px]">함께 만들어가는 투두 리스트</p>
 						<div className="relative h-7 w-7 tablet:h-12 tablet:w-12 desktop:h-14 desktop:w-14">
@@ -36,7 +36,7 @@ export default function Page() {
 				<div className="z-10 flex items-center justify-center pb-[180px]">
 					<Link
 						href="/login"
-						className="flex w-screen max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
+						className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
 					>
 						지금 시작하기
 					</Link>
@@ -45,7 +45,7 @@ export default function Page() {
 
 			<section className="flex flex-col items-center gap-6 px-4 tablet:px-6 desktop:gap-20">
 				{/* 할 일 추가 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] rounded-[40px] bg-conic-gradient p-[3px] shadow-[0_0_12px_2px_rgba(0,0,0,0.25)] shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
+				<div className="flex h-screen max-h-[467px] w-full min-w-[320px] rounded-[40px] bg-conic-gradient p-[2px] shadow-[0_0_12px_2px_rgba(0,0,0,0.25)] shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
 					<div className="flex h-full w-full flex-col-reverse items-center gap-11 rounded-[38px] bg-background-primary tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:gap-48">
 						<div className="flex tablet:items-end">
 							<div className="relative h-[268px] w-[231px] desktop:h-[329px] desktop:w-[284px]">
@@ -65,7 +65,7 @@ export default function Page() {
 				</div>
 
 				{/* 멤버 초대 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] flex-col items-center justify-start gap-10 rounded-[40px] border border-border-primary/10 bg-background-secondary tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row-reverse tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
+				<div className="flex h-screen max-h-[467px] w-full min-w-[320px] flex-col items-center justify-start gap-10 rounded-[40px] border border-border-primary/10 bg-background-secondary tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row-reverse tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
 					<div className="relative flex h-[268px] w-[231px] items-start desktop:h-[329px] desktop:w-[284px]">
 						<Image src="/images/landing_2.webp" alt="Landing 2" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
 					</div>
@@ -82,7 +82,7 @@ export default function Page() {
 				</div>
 
 				{/* 할 일 체크 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[330px] flex-col items-center justify-start gap-10 rounded-[40px] bg-[#020617] tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
+				<div className="flex h-screen max-h-[467px] w-full min-w-[320px] flex-col items-center justify-start gap-10 rounded-[40px] bg-[#020617] tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
 					<div className="relative flex h-[268px] w-[231px] items-start desktop:h-[329px] desktop:w-[284px]">
 						<Image src="/images/landing_3.webp" alt="Landing 3" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
 					</div>
@@ -98,8 +98,8 @@ export default function Page() {
 				</div>
 			</section>
 
-			<section className="flex h-screen flex-col justify-between">
-				<div className="absolute h-screen w-full">
+			<section className="flex h-[640px] flex-col items-center justify-between tablet:h-[940px] desktop:h-[1080px]">
+				<div className="absolute h-[640px] w-full min-w-[320px] tablet:h-[940px] desktop:h-[1080px] desktop:max-w-[1920px]">
 					<Image src="/images/landing_footer.webp" alt="Landing footer" fill className="object-cover object-bottom" />
 				</div>
 
