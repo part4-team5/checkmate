@@ -3,8 +3,7 @@ name: "✨ Feat 이슈 템플릿"
 about: 기능 개발 관련 이슈를 생성할 때에는 이 템플릿을 이용해주세요.
 title: "✨ Feat: "
 labels: "✨feat"
-assignees: ''
-
+assignees: ""
 ---
 
 ## 작업 설명
