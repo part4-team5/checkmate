@@ -150,6 +150,8 @@ export default abstract class API {
 		throw new Error("Unimplemented");
 	}
 
+	// * [ User API ]
+	// 내 정보 확인, 수정, 삭제 API
 	public static readonly ["{teamId}/user"] = new (class extends API {
 		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
 			return API.GET<{
@@ -180,6 +182,7 @@ export default abstract class API {
 		}
 	})();
 
+	// 내가 속한 그룹 확인 API
 	public static readonly ["{teamId}/user/groups"] = new (class extends API {
 		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
 			return API.GET<{
@@ -193,6 +196,7 @@ export default abstract class API {
 		}
 	})();
 
+	// 내 투두 히스토리 확인 API
 	public static readonly ["{teamId}/user/history"] = new (class extends API {
 		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
 			return API.GET<{
@@ -200,7 +204,7 @@ export default abstract class API {
 					deletedAt: string;
 					userId: number;
 					recurringId: number;
-					frequncy: Frequency;
+					frequency: Frequency;
 					date: string;
 					doneAt: string;
 					description: string;
@@ -212,24 +216,29 @@ export default abstract class API {
 		}
 	})();
 
+	// 비밀번호 찾기 이메일 전송 API
 	public static readonly ["{teamId}/user/send-reset-password-email"] = new (class extends API {
 		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: SendResetPasswordEmailRequest) {
 			return API.POST<{ message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/user/send-reset-password-email`, query, body);
 		}
 	})();
 
+	// 이메일 인증 후 비밀번호 재설정 API
 	public static readonly ["{teamId}/user/reset-password"] = new (class extends API {
 		public override PATCH({ teamId = "6-5", ...query }: { teamId?: string }, body: ResetPasswordBody) {
 			return API.PATCH<{ message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/user/send-reset-password-email`, query, body);
 		}
 	})();
 
+	// 로그인 상태에서 비밀번호 변경 API
 	public static readonly ["{teamId}/user/password"] = new (class extends API {
 		public override PATCH({ teamId = "6-5", ...query }: { teamId?: string }, body: UpdatePasswordBody) {
 			return API.PATCH<{ message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/user/password`, query, body);
 		}
 	})();
 
+	// * [ Task List API ]
+	// Task 목록을 확인, 수정, 삭제 API
 	public static readonly ["{teamId}/groups/{groupId}/task-lists/{id}"] = new (class extends API {
 		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: string; date?: string }) {
 			return API.GET<{
@@ -259,6 +268,7 @@ export default abstract class API {
 		}
 	})();
 
+	// Task 목록을 추가 API
 	public static readonly ["{teamId}/groups/{groupId}/task-lists"] = new (class extends API {
 		public override POST({ teamId = "6-5", groupId, ...query }: { teamId?: string; groupId: number }, body: { name: string }) {
 			return API.POST<{
@@ -272,24 +282,294 @@ export default abstract class API {
 		}
 	})();
 
+	// Task 목록의 순서를 변경하는 API (Drag & Drop)
 	public static readonly ["{teamId}/groups/{groupId}/task-lists/{id}/order"] = new (class extends API {
 		public override POST({ teamId = "6-5", groupId, id, ...query }: { teamId?: string; groupId: number; id: number }, body: { displayIndex: string }) {
 			return API.POST<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${id}/order`, query, body);
 		}
 	})();
 
+	// * [ Task API ]
+	// Task 추가 및 Task 목록에 속한 Task들 확인 API
 	public static readonly ["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"] = new (class extends API {
+		// Task 추가
 		public override POST(
 			{ teamId = "6-5", groupId, taskListId, ...query }: { teamId?: string; groupId: number; taskListId: number },
 			body: TaskRecurringCreateDto,
 		) {
 			return API.POST<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks`, query, body);
 		}
+
+		// Task 목록에 속한 Task들을 확인
+		public override GET({ teamId = "6-5", groupId, taskListId, ...query }: { teamId?: string; groupId: number; taskListId: number }) {
+			return API.GET<Task[]>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks`, query);
+		}
 	})();
 
+	// Task 상세 정보 확인, 수정, 삭제 API
+	public static readonly ["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"] = new (class extends API {
+		public override GET({ teamId = "6-5", groupId, taskListId, taskId, ...query }: { teamId?: string; groupId: number; taskListId: number; taskId: number }) {
+			return API.GET<Todo>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query);
+		}
+
+		public override PATCH(
+			{ teamId = "6-5", groupId, taskListId, taskId, ...query }: { teamId?: string; groupId?: number; taskListId?: number; taskId: number },
+			body: { name: string; description: string; displayIndex: number; done: boolean },
+		) {
+			return API.PATCH<TodoBase>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query, body);
+		}
+
+		public override DELETE({
+			teamId = "6-5",
+			groupId,
+			taskListId,
+			taskId,
+			...query
+		}: {
+			teamId?: string;
+			groupId?: number;
+			taskListId: number;
+			taskId: number;
+		}) {
+			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query);
+		}
+	})();
+
+	// 반복 할 일 삭제 API (task 객체의 recurringId 필드, 반복설정으로 생성된 할일이 아닌, 반복설정 자체를 삭제)
+	public static readonly ["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}/recurring/{recurringId}"] = new (class extends API {
+		public override DELETE({
+			teamId = "6-5",
+			groupId,
+			taskListId,
+			taskId,
+			recurringId,
+			...query
+		}: {
+			teamId?: string;
+			groupId?: number;
+			taskListId?: number;
+			taskId: number;
+			recurringId: number;
+		}) {
+			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/recurring/${recurringId}`, query);
+		}
+	})();
+
+	// * [ Oauth API ]
+	// 간편 로그인 App 등록/수정 API
+	public static readonly ["{teamId}/oauthApps"] = new (class extends API {
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { appSecret: string; appKey: string; provider: Provider }) {
+			return API.POST<{ updatedAt: string; createdAt: string; image?: string; name: string; teamId: string; id: number }>(
+				MIME.JSON,
+				`${BASE_URL}/${teamId}/oauthApps`,
+				query,
+				body,
+			);
+		}
+	})();
+
+	// * [ Image API ]
+	// 이미지 업로드 API (이미지 파일, 최대 용량 10MB)
+	public static readonly ["{teamId}/images/upload"] = new (class extends API {
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: File) {
+			const data = new FormData();
+
+			data.append("image", body);
+			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images`, query, data);
+		}
+	})();
+
+	// * [ Group API ]
+	// 그룹 정보 확인, 수정, 삭제 API
+	public static readonly ["{teamId}/groups/{id}"] = new (class extends API {
+		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }) {
+			return API.GET<Team>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}`, query);
+		}
+
+		public override PATCH({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }, body: { image?: string; name: string }) {
+			return API.PATCH<{ updatedAt: string; createdAt: string; image?: string; name: string; teamId: string; id: number }>(
+				MIME.JSON,
+				`${BASE_URL}/${teamId}/groups/${id}`,
+				query,
+				body,
+			);
+		}
+
+		public override DELETE({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }) {
+			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}`, query);
+		}
+	})();
+
+	// 그룹 생성 API
+	public static readonly ["{teamId}/groups"] = new (class extends API {
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { image?: string; name: string }) {
+			return API.POST<{ updatedAt: string; createdAt: string; image?: string; name: string; teamId: string; id: number }>(
+				MIME.JSON,
+				`${BASE_URL}/${teamId}/groups`,
+				query,
+				body,
+			);
+		}
+	})();
+
+	// 그룹의 멤버 확인, 삭제 API
+	public static readonly ["{teamId}/groups/{id}/member/{memberUserId}"] = new (class extends API {
+		public override GET({ teamId = "6-5", id, memberUserId, ...query }: { teamId?: string; id: number; memberUserId: number }) {
+			return API.GET<Member>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}/member/${memberUserId}`, query);
+		}
+
+		public override DELETE({ teamId = "6-5", id, memberUserId, ...query }: { teamId?: string; id: number; memberUserId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}/member/${memberUserId}`, query);
+		}
+	})();
+
+	// 그룹 초대 링크용 토큰 생성 API
+	public static readonly ["{teamId}/groups/{id}/invitation"] = new (class extends API {
+		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
+			return API.GET<string>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}/invitation`, query);
+		}
+	})();
+
+	// 그룹 초대 수락 API
+	public static readonly ["{teamId}/groups/accept-invitation"] = new (class extends API {
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { userEmail: string; token: string }) {
+			return API.POST<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/accept-invitation`, query, body);
+		}
+	})();
+
+	// 그룹 초대 없이 유저 추가 API
+	public static readonly ["{teamId}/groups/{id}/member"] = new (class extends API {
+		public override POST({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }, body: { userEmail: string }) {
+			return API.POST<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}/member`, query, body);
+		}
+	})();
+
+	// 특정 일자, 특정 할일 리스트의 할일 리스트 확인 API
+	public static readonly ["{teamId}/groups/{id}/tasks"] = new (class extends API {
+		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
+			return API.GET<{ tasks: Task[] }>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}/tasks`, query);
+		}
+	})();
+
+	// * [ Comment API ]
+	// 댓글 확인, 추가 API
+	public static readonly ["{teamId}/tasks/{taskId}/comments"] = new (class extends API {
+		public override GET({ teamId = "6-5", taskId, ...query }: { teamId?: string; taskId: number }) {
+			return API.GET<Comment[]>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/${taskId}/comments`, query);
+		}
+
+		public override POST({ teamId = "6-5", taskId, ...query }: { teamId?: string; taskId: number }, body: { content: string }) {
+			return API.POST<Comment>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/${taskId}/comments`, query, body);
+		}
+	})();
+
+	// 댓글 수정, 삭제 API
+	public static readonly ["{teamId}/tasks/{taskId}/comments/{commentId}"] = new (class extends API {
+		public override PATCH({ teamId = "6-5", taskId, commentId, ...query }: { teamId?: string; taskId: number; commentId: number }, body: { content: string }) {
+			return API.PATCH<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/${taskId}/comments/${commentId}`, query, body);
+		}
+
+		public override DELETE({ teamId = "6-5", taskId, commentId, ...query }: { teamId?: string; taskId: number; commentId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/${taskId}/comments/${commentId}`, query);
+		}
+	})();
+
+	// * [ Auth API ]
+	// 회원가입 API
+	public static readonly ["{teamId}/auth/signUp"] = new (class extends API {
+		public override POST(
+			{ teamId = "6-5", ...query }: { teamId?: string },
+			body: { email: string; nickname: string; password: string; passwordConfirmation: string },
+		) {
+			return API.POST<Auth>(MIME.JSON, `${BASE_URL}/${teamId}/auth/signUp`, query, body);
+		}
+	})();
+
+	// 로그인 API
+	public static readonly ["{teamId}/auth/signIn"] = new (class extends API {
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { email: string; password: string }) {
+			return API.POST<Auth>(MIME.JSON, `${BASE_URL}/${teamId}/auth/signIn`, query, body);
+		}
+	})();
+
+	// 액세스 토큰 재발급 API
 	public static readonly ["{teamId}/auth/refresh-token"] = new (class extends API {
 		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { refreshToken: string }) {
 			return API.POST<{ accessToken: string }>(MIME.JSON, `${BASE_URL}/${teamId}/auth/refresh-token`, query, body);
+		}
+	})();
+
+	// 간편 로그인 API
+	public static readonly ["/{teamId}/auth/signIn/{provider}"] = new (class extends API {
+		public override POST(
+			{ teamId = "6-5", provider, ...query }: { teamId?: string; provider: Provider },
+			body: { state: string; redirectUri: string; token: string },
+		) {
+			return API.POST<Auth>(MIME.JSON, `${BASE_URL}/${teamId}/auth/signIn/${provider}`, query, body);
+		}
+	})();
+
+	// * [ Article Comment ]
+	// 게시글 댓글 확인, 추가 API
+	public static readonly ["{teamId}/articles/{articleId}/comments"] = new (class extends API {
+		public override GET({ teamId = "6-5", articleId, ...query }: { teamId?: string; articleId: number }) {
+			return API.GET<ArticleComments | { message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}/comments`, query);
+		}
+
+		public override POST({ teamId = "6-5", articleId, ...query }: { teamId?: string; articleId: number }, body: { content: string }) {
+			return API.POST<ArticleListItem | { message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}/comments`, query, body);
+		}
+	})();
+
+	// 게시글 댓글 수정, 삭제 API
+	public static readonly ["/{teamId}/comments/{commentId}"] = new (class extends API {
+		public override PATCH({ teamId = "6-5", commentId, ...query }: { teamId?: string; commentId: number }, body: { content: string }) {
+			return API.PATCH<ArticleListItem | { message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/comments/${commentId}`, query, body);
+		}
+
+		public override DELETE({ teamId = "6-5", commentId, ...query }: { teamId?: string; commentId: number }) {
+			return API.DELETE<{ id?: number; message?: string }>(MIME.JSON, `${BASE_URL}/${teamId}/comments/${commentId}`, query);
+		}
+	})();
+
+	// * [ Article API ]
+	// 게시글 생성, 목록 확인
+	public static readonly ["{teamId}/articles"] = new (class extends API {
+		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
+			return API.GET<Articles>(MIME.JSON, `${BASE_URL}/${teamId}/articles`, query);
+		}
+
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { image?: string; content: string; title: string }) {
+			return API.POST<Article>(MIME.JSON, `${BASE_URL}/${teamId}/articles`, query, body);
+		}
+	})();
+
+	// 게시글 상세 정보 확인, 수정, 삭제 API
+	public static readonly ["{teamId}/articles/{articleId}"] = new (class extends API {
+		public override GET({ teamId = "6-5", articleId, ...query }: { teamId?: string; articleId: number }) {
+			return API.GET<Article | { message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}`, query);
+		}
+
+		public override PATCH(
+			{ teamId = "6-5", articleId, ...query }: { teamId?: string; articleId: number },
+			body: { image?: string; content: string; title: string },
+		) {
+			return API.PATCH<Article | { message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}`, query, body);
+		}
+
+		public override DELETE({ teamId = "6-5", articleId, ...query }: { teamId?: string; articleId: number }) {
+			return API.DELETE<{ message?: string }>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}`, query);
+		}
+	})();
+
+	// 게시글 좋아요 API
+	public static readonly ["{teamId}/articles/{articleId}/like"] = new (class extends API {
+		public override POST({ teamId = "6-5", articleId, ...query }: { teamId?: string; articleId: number }) {
+			return API.POST<Article | { message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}/like`, query, {});
+		}
+
+		public override DELETE({ teamId = "6-5", articleId, ...query }: { teamId?: string; articleId: number }) {
+			return API.DELETE<Article | { message: string }>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}/like`, query);
 		}
 	})();
 }
@@ -304,6 +584,11 @@ const enum Frequency {
 	DAILY = "DAILY",
 	WEEKLY = "WEEKLY",
 	MONTHLY = "MONTHLY",
+}
+
+const enum Provider {
+	GOOGLE = "GOOGLE",
+	KAKAO = "KAKAO",
 }
 
 interface UpdateUserBody {
@@ -330,7 +615,7 @@ interface UpdatePasswordBody {
 interface Task {
 	deletedAt: string;
 	recurringId: number;
-	frequency: number;
+	frequency: string;
 	userId: number;
 	date: string;
 	doneAt: string;
@@ -369,4 +654,131 @@ interface OnceRecurringCreateBody {
 	description?: string;
 	displayIndex?: number;
 	frequencyType: Frequency.ONCE;
+}
+
+interface Comment {
+	id: number;
+	content: string;
+	createdAt: string;
+	updatedAt: string;
+	taskId: number;
+	userId: number;
+	user?: User;
+}
+
+interface Recurring {
+	id: number;
+	name: string;
+	description: string;
+	createdAt: string;
+	updatedAt: string;
+	displayIndex: number;
+	frequencyType: string;
+	weekDays: number[];
+	monthDay: number | null;
+	taskListId: number;
+	groupId: number;
+}
+
+interface Auth {
+	accessToken: string;
+	refreshToken: string;
+	user: User;
+}
+
+interface User {
+	image?: string;
+	nickname: string;
+	id: number;
+	teamId?: string;
+	updatedAt?: string;
+	createdAt?: string;
+	encryptedPassword?: string;
+	email?: string;
+}
+
+interface Todo extends TodoBase {
+	comments: Comment[];
+	user: User | null;
+	recurring: Recurring;
+}
+
+interface TodoBase {
+	deletedAt: string;
+	userId: number;
+	recurringId: number;
+	frequency: string;
+	date: string;
+	doneAt: string;
+	description: string;
+	name: string;
+	updatedAt: string;
+	id: number;
+}
+
+interface Member {
+	role: string;
+	userImage?: string;
+	userEmail: string;
+	userName: string;
+	groupId: number;
+	userId: number;
+}
+
+interface TaskList {
+	groupId: number;
+	displayIndex: number;
+	updatedAt: string;
+	createdAt: string;
+	name: string;
+	id: number;
+	tasks: string[];
+}
+
+interface Team {
+	updatedAt: string;
+	createdAt: string;
+	image?: string;
+	name: string;
+	teamId: string;
+	id: number;
+	members: Member[];
+	taskLists: TaskList[];
+}
+
+interface ArticleWriter {
+	image?: string;
+	nickname: string;
+	id: number;
+}
+
+interface ArticleListItem {
+	writer: ArticleWriter;
+	updatedAt: string;
+	createdAt: string;
+	content: string;
+	id: number;
+}
+
+interface ArticleComments {
+	nextCursor: number;
+	list: ArticleListItem[];
+}
+
+interface Article {
+	updatedAt: string;
+	createdAt: string;
+	likeCount: number;
+	writer: ArticleWriter;
+	image?: string;
+	title: string;
+	id: number;
+
+	isLiked?: boolean;
+	content?: string;
+}
+
+interface Articles {
+	list: Article[];
+	totalCount: number;
 }
