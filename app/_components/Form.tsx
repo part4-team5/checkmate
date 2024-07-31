@@ -1,6 +1,9 @@
 "use client";
 
+import Icon from "@/app/_icons";
 import { createContext, useContext, useEffect, useCallback, useMemo, useState, useRef } from "react";
+
+const [OK, NO] = [Symbol("magic"), Symbol("magic")];
 
 interface FormProps extends React.PropsWithChildren {
 	onSubmit: (data: FormData) => void;
@@ -9,8 +12,8 @@ interface FormProps extends React.PropsWithChildren {
 interface FormContext {
 	values: Record<string, string>;
 	setValue: (id: string, value: string) => void;
-	errors: Record<string, string>;
-	setError: (id: string, value: string) => void;
+	errors: Record<string, string | typeof OK | typeof NO>;
+	setError: (id: string, value: string | typeof OK | typeof NO) => void;
 	disabled: boolean;
 }
 
@@ -23,27 +26,20 @@ const CTX = createContext<FormContext>({
 });
 
 export default function Form({ onSubmit, children }: Readonly<FormProps>) {
-	const timeout = useRef<NodeJS.Timeout>();
-
 	const [values, setValues] = useState<FormContext["values"]>({});
 	const [errors, setErrors] = useState<FormContext["errors"]>({});
 	const [disabled, setDisabled] = useState<FormContext["disabled"]>(true);
 
 	useEffect(() => {
-		if (timeout.current) {
-			// bye bye
-			clearTimeout(timeout.current);
-		}
-		// 1 frame later
-		timeout.current = setTimeout(() => {
+		requestAnimationFrame(() => {
 			// eslint-disable-next-line no-restricted-syntax
 			for (const error of Object.values(errors)) {
-				if (error !== "null") {
+				if (error !== OK) {
 					return setDisabled(true);
 				}
 			}
 			return setDisabled(false);
-		}, 16);
+		});
 	}, [errors]);
 
 	const ctx = useMemo<FormContext>(
@@ -51,18 +47,12 @@ export default function Form({ onSubmit, children }: Readonly<FormProps>) {
 			values,
 			setValue(id, value) {
 				if (values[id] === value) return;
-				// immediate update
-				values[id] = value;
-				// react lifecycle
-				setValues({ ...values });
+				setValues({ ...values, [id]: value });
 			},
 			errors,
 			setError(id, value) {
 				if (errors[id] === value) return;
-				// immediate update
-				errors[id] = value;
-				// react lifecycle
-				setErrors({ ...errors });
+				setErrors({ ...errors, [id]: value });
 			},
 			disabled,
 		}),
@@ -73,15 +63,17 @@ export default function Form({ onSubmit, children }: Readonly<FormProps>) {
 		(event: React.FormEvent) => {
 			// :skull:
 			event.preventDefault();
-
-			const data = new FormData();
-
-			// eslint-disable-next-line no-restricted-syntax
-			for (const [key, value] of Object.values(values)) {
-				data.set(key, value);
-			}
 			// bye bye
-			onSubmit(data);
+			onSubmit(
+				(() => {
+					const impl = new FormData();
+					// eslint-disable-next-line no-restricted-syntax
+					for (const [key, value] of Object.entries(values)) {
+						impl.set(key, value);
+					}
+					return impl;
+				})(),
+			);
 		},
 		[onSubmit, values],
 	);
@@ -104,7 +96,7 @@ function useCTX() {
 Form.Error = function Error({ htmlFor }: Readonly<{ htmlFor: string }>) {
 	const ctx = useCTX();
 
-	if (["init", "null", null].includes(ctx.errors[htmlFor] ?? null)) {
+	if (typeof ctx.errors[htmlFor] !== "string") {
 		return null;
 	}
 	return <div className="text-md font-medium text-status-danger">{ctx.errors[htmlFor]}</div>;
@@ -126,9 +118,19 @@ Form.Input = function Input({ id, type, tests = [], placeholder }: Readonly<{ id
 	const [focus, setFocus] = useState(false);
 
 	useEffect(() => {
+		if (id in ctx.values) {
+			throw new Error();
+		}
+		if (id in ctx.errors) {
+			throw new Error();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
 		ctx.setValue(id, value);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id, value]);
+	}, [value]);
 
 	useEffect(() => {
 		// eslint-disable-next-line no-restricted-syntax
@@ -136,35 +138,35 @@ Form.Input = function Input({ id, type, tests = [], placeholder }: Readonly<{ id
 			switch (test.type) {
 				case "sync": {
 					if (ctx.values[test.data] !== value) {
-						ctx.setError(id, focus ? test.error : "init");
+						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
 					break;
 				}
 				case "pattern": {
 					if (!test.data.test(value)) {
-						ctx.setError(id, focus ? test.error : "init");
+						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
 					break;
 				}
 				case "require": {
 					if (test.data && !value.length) {
-						ctx.setError(id, focus ? test.error : "init");
+						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
 					break;
 				}
 				case "minlength": {
 					if (value.length < test.data) {
-						ctx.setError(id, focus ? test.error : "init");
+						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
 					break;
 				}
 				case "maxlength": {
 					if (test.data < value.length) {
-						ctx.setError(id, focus ? test.error : "init");
+						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
 					break;
@@ -175,29 +177,31 @@ Form.Input = function Input({ id, type, tests = [], placeholder }: Readonly<{ id
 			}
 		}
 		// you've made all the way through here..! congrats
-		ctx.setError(id, "null");
+		ctx.setError(id, OK);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id, value, focus, tests, ctx.values]);
+	}, [value, focus, tests, ctx.values]);
 
 	const self = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
-		switch (ctx.errors[id]) {
-			case null:
-			case "init": {
-				self.current?.style.setProperty("border-color", "#F8FAFC1A");
-				break;
-			}
-			case "null": {
-				self.current?.style.setProperty("border-color", "#10B981FF");
-				break;
-			}
-			default: {
-				self.current?.style.setProperty("border-color", "#EF4444FF");
-				break;
+		if (focus) {
+			switch (ctx.errors[id]) {
+				case NO: {
+					self.current?.style.setProperty("border-color", null);
+					break;
+				}
+				case OK: {
+					self.current?.style.setProperty("border-color", "#10B981FF");
+					break;
+				}
+				default: {
+					self.current?.style.setProperty("border-color", "#EF4444FF");
+					break;
+				}
 			}
 		}
-	}, [id, ctx.errors]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [focus, ctx.errors]);
 
 	const onFocus = useCallback(() => {
 		setFocus(true);
@@ -209,18 +213,25 @@ Form.Input = function Input({ id, type, tests = [], placeholder }: Readonly<{ id
 		setValue((event.target as HTMLInputElement).value);
 	}, []);
 
+	const [display, setDisplay] = useState(false);
+
 	return (
-		<div className="flex w-full">
+		<div ref={self} className="flex w-full gap-[16px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px]">
 			<input
 				id={id}
-				ref={self}
-				type={type}
+				// eslint-disable-next-line no-nested-ternary
+				type={type === "password" ? (display ? "text" : "password") : type}
 				onFocus={onFocus}
 				onPaste={onPaste}
 				onChange={onChange}
 				placeholder={placeholder}
-				className="h-[48px] grow rounded-[12px] border bg-background-secondary px-[16px] text-lg font-normal placeholder:text-text-default focus:outline-none"
+				className="h-[48px] grow bg-transparent text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
 			/>
+			{type === "password" && (
+				<button type="button" onClick={() => setDisplay(!display)}>
+					{display ? <Icon.Show width={24} height={24} /> : <Icon.Hide width={24} height={24} />}
+				</button>
+			)}
 		</div>
 	);
 };
