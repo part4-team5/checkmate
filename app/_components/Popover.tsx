@@ -1,10 +1,9 @@
-"use client";
-
-import { useLayoutEffect, useEffect, useState, useRef } from "react";
+import { useLayoutEffect, useEffect, useState, useRef, cloneElement } from "react";
 
 interface PopoverProps extends React.PropsWithChildren {
-	gap?: number;
-	overlay: JSX.Element;
+	gapX?: number;
+	gapY?: number;
+	overlay: (close: () => void) => JSX.Element;
 	onOpen?: () => void;
 	onClose?: () => void;
 	anchorOrigin: Origin;
@@ -16,7 +15,7 @@ interface Origin {
 	horizontal: "left" | "center" | "right";
 }
 
-export default function Popover({ gap = 0, overlay, onOpen, onClose, anchorOrigin, overlayOrigin, children }: Readonly<PopoverProps>) {
+export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, anchorOrigin, overlayOrigin, children }: Readonly<PopoverProps>) {
 	const pop = useRef<HTMLDivElement>(null);
 	const over = useRef<HTMLDivElement>(null);
 
@@ -91,7 +90,7 @@ export default function Popover({ gap = 0, overlay, onOpen, onClose, anchorOrigi
 	// eslint-disable-next-line default-case
 	switch (overlayOrigin.vertical) {
 		case "top": {
-			style.top += gap;
+			style.top += gapX;
 			break;
 		}
 		case "center": {
@@ -99,14 +98,15 @@ export default function Popover({ gap = 0, overlay, onOpen, onClose, anchorOrigi
 			break;
 		}
 		case "bottom": {
-			style.top -= overRect.height * 1.0 + gap;
+			style.top -= overRect.height * 1.0 + gapX;
 			break;
 		}
 	}
 	// eslint-disable-next-line default-case
 	switch (overlayOrigin.horizontal) {
 		case "left": {
-			style.left += gap;
+			style.left += gapY;
+
 			break;
 		}
 		case "center": {
@@ -114,16 +114,20 @@ export default function Popover({ gap = 0, overlay, onOpen, onClose, anchorOrigi
 			break;
 		}
 		case "right": {
-			style.left -= overRect.width * 1.0 + gap;
+			style.left -= overRect.width * 1.0 + gapY;
 			break;
 		}
 	}
 
 	return (
-		<div ref={pop} aria-hidden="true" onClick={() => setToggle(!toggle)} style={{ position: "relative" }}>
-			{children}
-			{/* eslint-disable-next-line react/jsx-props-no-spreading */}
-			<overlay.type ref={over} {...overlay.props} style={style} />
+		<div ref={pop} style={{ position: "relative" }}>
+			<div aria-hidden="true" onClick={() => setToggle(!toggle)}>
+				{children}
+			</div>
+			{cloneElement(
+				overlay(() => setToggle(false)),
+				{ ref: over, style },
+			)}
 		</div>
 	);
 }

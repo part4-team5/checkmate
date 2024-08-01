@@ -1,138 +1,165 @@
-"use client";
-
-import React, { ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import TeamItem from "@/app/_components/TeamItem";
-import PlusIcon from "@/public/icons/PlusIcon";
-import Link from "next/link";
+import React from "react";
+import Image from "next/image";
 import Popover from "./Popover";
-import { useDropdownStore, DropdownItem, DropdownType } from "../_store/Dropdown";
 
-interface DropdownProps {
-	type: DropdownType;
-	icon?: ReactNode;
-	gap?: number;
-	anchorOrigin: { vertical: "top" | "center" | "bottom"; horizontal: "left" | "center" | "right" };
-	overlayOrigin: { vertical: "top" | "center" | "bottom"; horizontal: "left" | "center" | "right" };
+/**
+ * 메뉴 위치를 정의하는 타입
+ */
+type Origin = {
+	vertical: "top" | "center" | "bottom";
+	horizontal: "left" | "center" | "right";
+};
+
+/**
+ * 드롭다운 옵션을 정의하는 타입
+ */
+type Option = {
+	text?: string;
+	onClick?: () => void;
+	image?: string;
+	icon?: React.ReactNode;
+	content?: React.ReactNode;
+	styles?: string;
+	options?: Option[];
+	anchorOrigin?: Origin;
+	overlayOrigin?: Origin;
+	gapX?: number;
+	gapY?: number;
+};
+
+interface DropDownProps {
+	options: Option[];
+	children: React.ReactNode;
+	anchorOrigin?: Origin;
+	overlayOrigin?: Origin;
+	gapX?: number;
+	gapY?: number;
 }
 
-function Dropdown({ type, icon, gap = 8, anchorOrigin, overlayOrigin }: DropdownProps) {
-	const [items, setItems] = useState<DropdownItem[]>([]);
-	const getItems = useDropdownStore((state) => state.getItems);
-	const router = useRouter();
-
-	useEffect(() => {
-		const dropdownItems = getItems(type);
-		setItems(dropdownItems);
-	}, [type, getItems]);
-
-	const handleItemClick = (item: DropdownItem) => {
-		switch (item.actionType) {
-			case "modal":
-				break;
-			case "logout":
-				localStorage.removeItem("accessToken");
-				localStorage.removeItem("refreshToken");
-				router.push("/");
-				break;
-			default:
-				break;
+export default function DropDown({ options, children, anchorOrigin, overlayOrigin, gapX, gapY }: DropDownProps) {
+	function handleOptionClick(e: React.MouseEvent | React.KeyboardEvent, onClick?: () => void) {
+		if (onClick) {
+			onClick();
+		} else {
+			console.log("로직 추가하시면 됩니다"); // eslint-disable-line no-console
 		}
-	};
+	}
 
-	const overlayClassNames = {
-		user: "w-[120px] text-[14px] flex flex-col items-center",
-		team: "p-[16px]",
-		edit: "w-[120px]",
-	};
+	/**
+	 * @param items - 드롭다운 옵션 목록
+	 */
+	function recursive(items: Option[], close: () => void, parentAnchorOrigin?: Origin, parentOverlayOrigin?: Origin, parentGapX?: number, parentGapY?: number) {
+		const [styleOptions, ...restOptions] = items;
 
-	const getOverlayClassNames = () => overlayClassNames[type] || "";
-
-	const getTriggerElement = () => {
-		if (icon) return icon;
-
-		if (type === "team" && items.length > 0) {
-			return <TeamItem name={items[0].name!} image={items[0].image!} iconType="header" navigatePath={items[0].path!} />;
+		/** containerStyles 설정 */
+		let containerStyles = "";
+		if (restOptions.some((option) => option.image)) {
+			containerStyles = `p-[16px] space-y-2 ${styleOptions?.styles || ""}`;
+		} else {
+			containerStyles = `${styleOptions?.styles || ""}`;
 		}
 
-		if (items.length > 0) {
-			return <span>{items[0].label}</span>;
+		/** anchorOrigin 설정 */
+		const recursiveAnchorOrigin = styleOptions.anchorOrigin || parentAnchorOrigin || anchorOrigin || { vertical: "bottom", horizontal: "left" };
+
+		/** overlayOrigin 설정 */
+		const recursiveOverlayOrigin = styleOptions.overlayOrigin || parentOverlayOrigin || overlayOrigin || { vertical: "top", horizontal: "left" };
+
+		/** gapX 설정 */
+		let recursiveGapX = 0;
+		if (styleOptions.gapX !== undefined) {
+			recursiveGapX = styleOptions.gapX;
+		} else if (parentGapX !== undefined) {
+			recursiveGapX = parentGapX;
+		} else if (gapX !== undefined) {
+			recursiveGapX = gapX;
 		}
 
-		return null;
-	};
-
-	const triggerElement = getTriggerElement();
-
-	const renderItemContent = (item: DropdownItem) => {
-		const isTeamItem = item.name && item.image;
-		const isNavigate = item.actionType === "navigate";
-		const linkHref = item.path as string;
-
-		if (isTeamItem) {
-			return <TeamItem name={item.name!} image={item.image!} iconType="menu" navigatePath={linkHref} />;
+		/** gapY 설정 */
+		let recursiveGapY = 0;
+		if (styleOptions.gapY !== undefined) {
+			recursiveGapY = styleOptions.gapY;
+		} else if (parentGapY !== undefined) {
+			recursiveGapY = parentGapY;
+		} else if (gapY !== undefined) {
+			recursiveGapY = gapY;
 		}
 
-		if (isNavigate) {
-			return (
-				<Link href={linkHref} className="flex h-full w-full items-center justify-center">
-					{item.label}
-				</Link>
-			);
-		}
+		return (
+			<div className={`rounded-[12px] border border-white border-opacity-5 bg-background-secondary text-[#F8FAFC] ${containerStyles}`}>
+				{restOptions.map((option, index) => {
+					let justifyClass = "justify-center";
 
-		return <p>{item.label}</p>;
-	};
+					if (option.image && option.icon) {
+						justifyClass = "justify-between";
+					} else if (option.image) {
+						justifyClass = "justify-start";
+					}
 
-	const renderItem = (item: DropdownItem, index: number) => (
-		<div
-			key={index}
-			className={`${
-				item.name && item.image ? "mb-[8px]" : "flex h-[40px] cursor-pointer items-center justify-center rounded-[12px] text-white hover:bg-[#404C5E]"
-			} text-white`}
-			onClick={item.actionType === "navigate" ? undefined : () => handleItemClick(item)}
-			onKeyDown={(e) => {
-				if (e.key === "Enter" || e.key === " ") {
-					handleItemClick(item);
-				}
-			}}
-			role="button"
-			tabIndex={0}
-		>
-			{renderItemContent(item)}
-		</div>
-	);
+					return (
+						<div
+							key={option.text || index}
+							className={`flex items-center ${justifyClass} rounded-[8px] p-[8px] ${option.content ? "" : "hover:bg-[#63748D]"} ${option.styles || ""}`}
+						>
+							<div className="flex items-center justify-center gap-[12px]">
+								{option.image && <Image src={option.image} alt={option.text || ""} />}
+								<button
+									type="button"
+									className="cursor-pointer"
+									onClick={(e) => {
+										handleOptionClick(e, option.onClick);
+										close();
+									}}
+									tabIndex={0}
+									onKeyPress={(e) => {
+										if (e.key === "Enter") {
+											handleOptionClick(e, option.onClick);
+											close();
+										}
+									}}
+								>
+									{option.text}
+								</button>
+							</div>
+							{option.icon && option.options && (
+								<Popover
+									overlay={() => recursive(option.options!, close, recursiveAnchorOrigin, recursiveOverlayOrigin, recursiveGapX, recursiveGapY)}
+									onOpen={() => console.log("짜잔")} // eslint-disable-line no-console
+									anchorOrigin={recursiveAnchorOrigin}
+									overlayOrigin={recursiveOverlayOrigin}
+									gapX={recursiveGapX}
+									gapY={recursiveGapY}
+								>
+									<div className="ml-auto cursor-pointer">{option.icon}</div>
+								</Popover>
+							)}
+							{option.content && <div>{option.content}</div>}
+						</div>
+					);
+				})}
+			</div>
+		);
+	}
 
 	return (
-		<div className="inline-block">
+		<div>
 			<Popover
-				gap={gap}
-				overlay={
-					<div className={`rounded-[12px] border border-white border-opacity-5 bg-background-secondary text-white ${getOverlayClassNames()}`}>
-						{items.map(renderItem)}
-						{type === "team" && (
-							<button
-								type="button"
-								className="mt-[16px] flex h-[48px] w-[186px] cursor-pointer items-center justify-center gap-[4px] rounded-[12px] border border-[#F8FAFC] text-center text-white hover:bg-[#404C5E]"
-								onClick={() => {}}
-							>
-								<PlusIcon />팀 추가하기
-							</button>
-						)}
-					</div>
-				}
-				anchorOrigin={anchorOrigin}
-				overlayOrigin={overlayOrigin}
+				overlay={(close) => recursive(options, close, anchorOrigin, overlayOrigin, gapX, gapY)}
+				anchorOrigin={anchorOrigin || { vertical: "bottom", horizontal: "left" }}
+				overlayOrigin={overlayOrigin || { vertical: "top", horizontal: "left" }}
+				gapX={gapX || 0}
+				gapY={gapY || 0}
 			>
-				{triggerElement}
+				<div className="cursor-pointer">{children}</div>
 			</Popover>
 		</div>
 	);
 }
 
-Dropdown.defaultProps = {
-	icon: null,
-	gap: 8,
+/** 기본 props 설정 */
+DropDown.defaultProps = {
+	anchorOrigin: { vertical: "bottom", horizontal: "left" },
+	overlayOrigin: { vertical: "top", horizontal: "left" },
+	gapX: 0,
+	gapY: 0,
 };
-
-export default Dropdown;
