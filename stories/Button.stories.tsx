@@ -81,9 +81,3 @@ Disabled.args = {
 	variant: "primary",
 	disabled: true,
 };
-
-export const WithClickHandler = Template.bind({});
-WithClickHandler.args = {
-	variant: "primary",
-	onClick: () => console.log("Button clicked!"),
-};
