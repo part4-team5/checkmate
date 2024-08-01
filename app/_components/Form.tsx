@@ -1,7 +1,8 @@
 "use client";
 
-import Icon from "@/app/_icons";
 import Button from "@/app/_components/Button";
+import HideIcon from "@/public/icons/HideIcon";
+import ShowIcon from "@/public/icons/ShowIcon";
 
 import { createContext, useContext, useEffect, useCallback, useMemo, useState, useRef, useLayoutEffect } from "react";
 
@@ -226,7 +227,7 @@ Form.Input = function Input({ id, type, tests, placeholder }: Readonly<{ id: str
 			/>
 			{type === "password" && (
 				<button type="button" onClick={() => setDisplay(!display)}>
-					{display ? <Icon.Show width={24} height={24} /> : <Icon.Hide width={24} height={24} />}
+					{display ? <ShowIcon width={24} height={24} /> : <HideIcon width={24} height={24} />}
 				</button>
 			)}
 		</div>
