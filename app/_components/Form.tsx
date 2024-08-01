@@ -1,17 +1,19 @@
 "use client";
 
 import Icon from "@/app/_icons";
-import { createContext, useContext, useEffect, useCallback, useMemo, useState, useRef } from "react";
+import Button from "@/app/_components/Button";
 
-const [OK, NO] = [Symbol("magic"), Symbol("magic")];
+import { createContext, useContext, useEffect, useCallback, useMemo, useState, useRef, useLayoutEffect } from "react";
+
+const [OK, NO] = [Symbol("ok"), Symbol("no")];
 
 interface FormProps extends React.PropsWithChildren {
 	onSubmit: (data: FormData) => void;
 }
 
 interface FormContext {
-	values: Record<string, string>;
-	setValue: (id: string, value: string) => void;
+	values: Record<string, FormDataEntryValue>;
+	setValue: (id: string, value: FormDataEntryValue) => void;
 	errors: Record<string, string | typeof OK | typeof NO>;
 	setError: (id: string, value: string | typeof OK | typeof NO) => void;
 	disabled: boolean;
@@ -47,12 +49,14 @@ export default function Form({ onSubmit, children }: Readonly<FormProps>) {
 			values,
 			setValue(id, value) {
 				if (values[id] === value) return;
-				setValues({ ...values, [id]: value });
+				values[id] = value;
+				setValues({ ...values });
 			},
 			errors,
 			setError(id, value) {
 				if (errors[id] === value) return;
-				setErrors({ ...errors, [id]: value });
+				errors[id] = value;
+				setErrors({ ...errors });
 			},
 			disabled,
 		}),
@@ -109,23 +113,15 @@ type Validator =
 	| ({ type: "pattern" } & Verify<RegExp>)
 	| ({ type: "require" } & Verify<boolean>)
 	| ({ type: "minlength" } & Verify<number>)
-	| ({ type: "maxlength" } & Verify<number>);
+	| ({ type: "maxlength" } & Verify<number>)
+	| ({ type: "file_name" } & Verify<RegExp>)
+	| ({ type: "file_size" } & Verify<number>);
 
-Form.Input = function Input({ id, type, tests = [], placeholder }: Readonly<{ id: string; type: string; tests?: Validator[]; placeholder?: string }>) {
+Form.Input = function Input({ id, type, tests, placeholder }: Readonly<{ id: string; type: string; tests?: Validator[]; placeholder?: string }>) {
 	const ctx = useCTX();
 
 	const [value, setValue] = useState("");
 	const [focus, setFocus] = useState(false);
-
-	useEffect(() => {
-		if (id in ctx.values) {
-			throw new Error();
-		}
-		if (id in ctx.errors) {
-			throw new Error();
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	useEffect(() => {
 		ctx.setValue(id, value);
@@ -134,7 +130,7 @@ Form.Input = function Input({ id, type, tests = [], placeholder }: Readonly<{ id
 
 	useEffect(() => {
 		// eslint-disable-next-line no-restricted-syntax
-		for (const test of tests) {
+		for (const test of tests ?? []) {
 			switch (test.type) {
 				case "sync": {
 					if (ctx.values[test.data] !== value) {
@@ -181,9 +177,9 @@ Form.Input = function Input({ id, type, tests = [], placeholder }: Readonly<{ id
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [value, focus, tests, ctx.values]);
 
-	const self = useRef<HTMLInputElement>(null);
+	const self = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (focus) {
 			switch (ctx.errors[id]) {
 				case NO: {
@@ -203,7 +199,8 @@ Form.Input = function Input({ id, type, tests = [], placeholder }: Readonly<{ id
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [focus, ctx.errors]);
 
-	const onFocus = useCallback(() => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const onFocus = useCallback((event: React.FocusEvent) => {
 		setFocus(true);
 	}, []);
 	const onPaste = useCallback((event: React.ClipboardEvent) => {
@@ -236,12 +233,195 @@ Form.Input = function Input({ id, type, tests = [], placeholder }: Readonly<{ id
 	);
 };
 
-Form.Button = function Button({ children }: Readonly<React.PropsWithChildren>) {
+Form.TextArea = function TextArea({ id, tests, placeholder }: Readonly<{ id: string; tests?: Validator[]; placeholder?: string }>) {
 	const ctx = useCTX();
 
+	const [value, setValue] = useState("");
+	const [focus, setFocus] = useState(false);
+
+	useEffect(() => {
+		ctx.setValue(id, value);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [value]);
+
+	useEffect(() => {
+		// eslint-disable-next-line no-restricted-syntax
+		for (const test of tests ?? []) {
+			switch (test.type) {
+				case "sync": {
+					if (ctx.values[test.data] !== value) {
+						ctx.setError(id, focus ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "pattern": {
+					if (!test.data.test(value)) {
+						ctx.setError(id, focus ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "require": {
+					if (test.data && !value.length) {
+						ctx.setError(id, focus ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "minlength": {
+					if (value.length < test.data) {
+						ctx.setError(id, focus ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "maxlength": {
+					if (test.data < value.length) {
+						ctx.setError(id, focus ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				default: {
+					throw new Error();
+				}
+			}
+		}
+		// you've made all the way through here..! congrats
+		ctx.setError(id, OK);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [value, focus, tests, ctx.values]);
+
+	const self = useRef<HTMLTextAreaElement>(null);
+
+	useLayoutEffect(() => {
+		if (focus) {
+			switch (ctx.errors[id]) {
+				case NO: {
+					self.current?.style.setProperty("border-color", null);
+					break;
+				}
+				case OK: {
+					self.current?.style.setProperty("border-color", "#10B981FF");
+					break;
+				}
+				default: {
+					self.current?.style.setProperty("border-color", "#EF4444FF");
+					break;
+				}
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [focus, ctx.errors]);
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const onFocus = useCallback((event: React.FocusEvent) => {
+		setFocus(true);
+	}, []);
+	const onPaste = useCallback((event: React.ClipboardEvent) => {
+		setValue((event.target as HTMLTextAreaElement).value);
+	}, []);
+	const onChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+		setValue(event.target.value);
+		// reset height
+		self.current?.style.setProperty("height", "auto");
+		// update height
+		self.current?.style.setProperty("height", `${self.current.scrollHeight}px`);
+	}, []);
+
 	return (
-		<button type="submit" disabled={ctx.disabled} className="h-[48px] rounded-[12px] bg-brand-primary text-white disabled:bg-interaction-inactive">
-			{children}
-		</button>
+		<textarea
+			id={id}
+			ref={self}
+			cols={1}
+			onFocus={onFocus}
+			onPaste={onPaste}
+			onChange={onChange}
+			placeholder={placeholder}
+			className="h-auto grow resize-none overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
+		/>
 	);
+};
+
+Form.ImageInput = function ImageInput({
+	id,
+	tests,
+	preview,
+	children,
+}: Readonly<React.PropsWithChildren & { id: string; tests?: Validator[]; preview: (file: FileReader["result"]) => React.ReactNode }>) {
+	const ctx = useCTX();
+
+	const [init, setInit] = useState(false);
+	const [file, setFile] = useState<File>();
+	const [image, setImage] = useState<FileReader["result"]>();
+
+	useEffect(() => {
+		ctx.setValue(id, file ?? "init");
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [file]);
+
+	useEffect(() => {
+		// eslint-disable-next-line no-restricted-syntax
+		for (const test of tests ?? []) {
+			switch (test.type) {
+				case "require": {
+					if (!file) {
+						ctx.setError(id, init ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "file_name": {
+					if (file && !test.data.test(file.name)) {
+						ctx.setError(id, init ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "file_size": {
+					if (file && test.data < file.size) {
+						ctx.setError(id, init ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				default: {
+					throw new Error();
+				}
+			}
+		}
+		if (file) {
+			const reader = new FileReader();
+			// :3
+			reader.onload = () => {
+				setImage(reader.result);
+			};
+			reader.readAsDataURL(file);
+		}
+		// you've made all the way through here..! congrats
+		ctx.setError(id, OK);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [file, init, tests]);
+
+	const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+		// :<
+		setInit(true);
+		// :3
+		setFile(event.target.files![0]!);
+	}, []);
+
+	return (
+		// eslint-disable-next-line jsx-a11y/label-has-associated-control
+		<label htmlFor={id}>
+			{!image ? children : preview(image)}
+			<input id={id} type="file" accept=".png,.jpg,.jpeg,.webp" multiple={false} style={{ display: "none" }} onChange={onChange} />
+		</label>
+	);
+};
+
+Form.Submit = function Submit({ children }: Readonly<React.PropsWithChildren>) {
+	const ctx = useCTX();
+
+	return <Button disabled={ctx.disabled}>{children}</Button>;
 };
