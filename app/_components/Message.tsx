@@ -1,100 +1,76 @@
 "use client";
 
-import Author from "@/app/_components/Author";
 import Image from "next/image";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, ReactNode, useMemo } from "react";
+import Author from "@/app/_components/Author";
+import HeartIcon from "@/public/icons/ic_heart";
+import CommentIcon from "@/public/icons/ic_comment";
 
-interface MessageProps {
-	content: string;
-	date: string;
+interface MessageData {
+	content?: string;
+	date?: string;
 	userProfile?: string;
-	userName: string;
+	userName?: string;
 	commentCount?: number;
 	likeCount?: number;
 	boardImage?: string;
-	variant?: "taskDetail" | "taskComment" | "bestBoard" | "boardList" | "boardDetail" | "boardComment";
 }
 
 interface MessageContextProps {
-	content: string;
-	date: string;
-	commentCount?: number;
-	likeCount?: number;
+	data: MessageData;
 }
 
 const MessageContext = createContext<MessageContextProps | undefined>(undefined);
 
-function Content() {
-	const context = useContext(MessageContext);
-	if (!context) throw new Error("Message Content error");
+export default function Message({ data, children }: { data: MessageData; children: ReactNode }) {
+	const contextValue = useMemo(() => ({ data }), [data]);
 
-	return <div className="text-primary text-md">{context.content}</div>;
+	return <MessageContext.Provider value={contextValue}>{children}</MessageContext.Provider>;
 }
 
-function Date() {
+function useMessageContext() {
 	const context = useContext(MessageContext);
-	if (!context) throw new Error("Message Date error");
-
-	return <div className="text-secondary text-md">{context.date}</div>;
+	if (!context) {
+		throw new Error("MessageContext is missing.");
+	}
+	return context.data;
 }
 
-function Reaction() {
-	const context = useContext(MessageContext);
-	if (!context) throw new Error("Message Reaction error");
+Message.Content = function Content() {
+	const data = useMessageContext();
+	return <div className="text-primary text-md">{data.content}</div>;
+};
 
+Message.Date = function Date() {
+	const data = useMessageContext();
+	return <div className="text-secondary text-md">{data.date}</div>;
+};
+
+Message.Author = function MessageAuthor() {
+	const data = useMessageContext();
+	return <Author userName={data.userName || ""} userProfile={data.userProfile} />;
+};
+
+Message.Reaction = function Reaction() {
+	const data = useMessageContext();
 	return (
 		<div className="flex items-center gap-[8px] text-md">
-			<div>{context.commentCount ?? 0}</div>
-			<div>{context.likeCount ?? 0}</div>
+			<div className="flex gap-[4px]">
+				<HeartIcon width={16} height={16} />
+				{data.commentCount ?? 0}
+			</div>
+			<div className="flex gap-[4px]">
+				<CommentIcon width={16} height={16} />
+				{data.likeCount ?? 0}
+			</div>
 		</div>
 	);
-}
+};
 
-function BoardImage({ src }: { src: string }) {
-	return <Image src={src} alt="Board" className="h-auto w-full" />;
-}
-
-export default function Message({ content, date, userProfile, userName, commentCount, likeCount, boardImage, variant = "taskDetail" }: MessageProps) {
-	const contextValue = useMemo(() => ({ content, date, commentCount, likeCount }), [content, date, commentCount, likeCount]);
-
-	const showReaction = ["bestBoard", "boardList", "boardDetail"].includes(variant);
-	const showBoardImage = ["bestBoard", "boardList"].includes(variant);
-
-	const variantClass = {
-		taskDetail: {
-			container: "bg-blue-100",
-			content: "order-2",
-		},
-		taskComment: {
-			container: "bg-green-100",
-		},
-		bestBoard: {
-			container: "bg-yellow-100",
-		},
-		boardList: {
-			container: "bg-red-100",
-		},
-		boardDetail: {
-			container: "bg-purple-100",
-		},
-		boardComment: {
-			container: "bg-pink-100",
-		},
-	}[variant];
-
+Message.BoardImage = function BoardImage({ src }: { src: string }) {
 	return (
-		<MessageContext.Provider value={contextValue}>
-			<div className={`flex flex-col gap-[16px] ${variantClass.container}`}>
-				<div className={`${variantClass.content}`}>
-					<Content />
-				</div>
-				<div className="flex items-center justify-between">
-					<Author userName={userName} userProfile={userProfile} />
-					<Date />
-				</div>
-				{showReaction && <Reaction />}
-				{showBoardImage && boardImage && <BoardImage src={boardImage} />}
-			</div>
-		</MessageContext.Provider>
+		<div className="md:w-[72px] md:h-[72px] border-[1px_solid_rgb(248 250 252 / 10%)] relative h-[64px] w-[64px] overflow-hidden rounded-lg">
+			<Image src={src} alt="board" fill />
+		</div>
 	);
-}
+};
