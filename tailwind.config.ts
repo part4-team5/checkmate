@@ -45,7 +45,7 @@ export default {
 				disabled: "#94A3B8",
 			},
 			status: {
-				danger: "#DC2626",
+				danger: "#EF4444",
 			},
 			icon: {
 				primary: "#64748B",
