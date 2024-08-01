@@ -1,3 +1,4 @@
+import GlobalModals from "@/app/_components/GlobalModals";
 import "./globals.css";
 
 export default function RootLayout({ children }: Readonly<React.PropsWithChildren>) {
@@ -5,7 +6,7 @@ export default function RootLayout({ children }: Readonly<React.PropsWithChildre
 		<html lang="ko">
 			<body>
 				{children}
-				<div id="portal" />
+				<GlobalModals />
 			</body>
 		</html>
 	);
