@@ -28,15 +28,15 @@ function Dropdown({ type, icon, gap = 8, anchorOrigin, overlayOrigin }: Dropdown
 
 	const handleItemClick = (item: DropdownItem) => {
 		switch (item.actionType) {
-		case "modal":
-			break;
-		case "logout":
-			localStorage.removeItem("accessToken");
-			localStorage.removeItem("refreshToken");
-			router.push("/");
-			break;
-		default:
-			break;
+			case "modal":
+				break;
+			case "logout":
+				localStorage.removeItem("accessToken");
+				localStorage.removeItem("refreshToken");
+				router.push("/");
+				break;
+			default:
+				break;
 		}
 	};
 
