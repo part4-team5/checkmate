@@ -6,7 +6,7 @@ import { Meta, StoryFn } from "@storybook/react";
 import Popover from "../app/_components/Popover";
 
 export default {
-	title: "Example/Popover",
+	title: "Popover",
 	component: Popover,
 } as Meta;
 
@@ -39,29 +39,5 @@ Default.args = {
 	overlay: <div className="flex w-[200px] items-center justify-center border border-black bg-brand-primary">Over</div>,
 	anchorOrigin: { vertical: "bottom", horizontal: "center" },
 	overlayOrigin: { vertical: "top", horizontal: "center" },
-	gap: 10,
-};
-
-export const CustomGap = Template.bind({});
-CustomGap.args = {
-	overlay: <div className="flex w-[200px] items-center justify-center border border-black bg-brand-primary">Over</div>,
-	anchorOrigin: { vertical: "bottom", horizontal: "center" },
-	overlayOrigin: { vertical: "top", horizontal: "center" },
-	gap: 20,
-};
-
-export const DifferentOrigins = Template.bind({});
-DifferentOrigins.args = {
-	overlay: <div className="flex w-[200px] items-center justify-center border border-black bg-brand-primary">Over</div>,
-	anchorOrigin: { vertical: "top", horizontal: "left" },
-	overlayOrigin: { vertical: "bottom", horizontal: "right" },
-	gap: 10,
-};
-
-export const WithCallbacks = Template.bind({});
-WithCallbacks.args = {
-	overlay: <div className="flex w-[200px] items-center justify-center border border-black bg-brand-primary">Over</div>,
-	anchorOrigin: { vertical: "bottom", horizontal: "center" },
-	overlayOrigin: { vertical: "top", horizontal: "center" },
-	gap: 20,
+	gap: 0,
 };
