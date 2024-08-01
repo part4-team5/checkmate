@@ -347,9 +347,8 @@ Form.TextArea = function TextArea({ id, tests, placeholder }: Readonly<{ id: str
 Form.ImageInput = function ImageInput({
 	id,
 	tests,
-	preview,
 	children,
-}: Readonly<React.PropsWithChildren & { id: string; tests?: Validator[]; preview: (file: FileReader["result"]) => React.ReactNode }>) {
+}: Readonly<{ id: string; tests?: Validator[]; children: (file?: FileReader["result"]) => React.ReactNode }>) {
 	const ctx = useCTX();
 
 	const [init, setInit] = useState(false);
@@ -414,14 +413,18 @@ Form.ImageInput = function ImageInput({
 	return (
 		// eslint-disable-next-line jsx-a11y/label-has-associated-control
 		<label htmlFor={id}>
-			{!image ? children : preview(image)}
+			{children(image)}
 			<input id={id} type="file" accept=".png,.jpg,.jpeg,.webp" multiple={false} style={{ display: "none" }} onChange={onChange} />
 		</label>
 	);
 };
 
-Form.Submit = function Submit({ children }: Readonly<React.PropsWithChildren>) {
+Form.Submit = function Submit({ children }: Readonly<React.PropsWithChildren & Omit<Parameters<typeof Button>[0], "type">>) {
 	const ctx = useCTX();
 
-	return <Button disabled={ctx.disabled}>{children}</Button>;
+	return (
+		<Button type="submit" disabled={ctx.disabled}>
+			{children}
+		</Button>
+	);
 };
