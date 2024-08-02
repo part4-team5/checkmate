@@ -7,7 +7,7 @@
 import Link from "next/link";
 import { MouseEvent, PropsWithChildren } from "react";
 
-interface ButtonProps extends PropsWithChildren {
+export interface ButtonProps extends PropsWithChildren {
 	variant?: "primary" | "secondary" | "white" | "outline" | "danger";
 	fontSize?: "lg" | "md";
 	rounded?: "full" | "xl";
