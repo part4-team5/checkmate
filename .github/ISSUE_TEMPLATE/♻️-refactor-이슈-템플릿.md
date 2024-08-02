@@ -3,8 +3,7 @@ name: "♻️ Refactor 이슈 템플릿"
 about: 리팩토링 관련 이슈를 생성할 때에는 이 템플릿을 이용해주세요.
 title: "♻️ Refactor: "
 labels: "♻️refactor"
-assignees: ''
-
+assignees: ""
 ---
 
 # 작업 설명
