@@ -28,7 +28,7 @@ export default function Header() {
 								{/* TODO: 드롭다운 추가 */}
 								<li>
 									<button type="button" className="text-lg font-medium">
-										팀 이름
+										{/* 팀 이름 받아오기 */}팀 이름
 									</button>
 								</li>
 								<li>
