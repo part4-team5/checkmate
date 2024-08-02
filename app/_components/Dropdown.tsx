@@ -1,5 +1,10 @@
+/* eslint-disable react/require-default-props */
+
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import KebabIcon from "@/public/icons/KebabIcon";
 import Popover from "./Popover";
 
 /**
@@ -17,14 +22,8 @@ type Option = {
 	text?: string;
 	onClick?: () => void;
 	image?: string;
-	icon?: React.ReactNode;
 	content?: React.ReactNode;
-	styles?: string;
 	options?: Option[];
-	anchorOrigin?: Origin;
-	overlayOrigin?: Origin;
-	gapX?: number;
-	gapY?: number;
 };
 
 interface DropDownProps {
@@ -36,130 +35,75 @@ interface DropDownProps {
 	gapY?: number;
 }
 
-export default function DropDown({ options, children, anchorOrigin, overlayOrigin, gapX, gapY }: DropDownProps) {
-	function handleOptionClick(e: React.MouseEvent | React.KeyboardEvent, onClick?: () => void) {
+export default function DropDown({
+	options,
+	children,
+	anchorOrigin = { vertical: "bottom", horizontal: "left" },
+	overlayOrigin = { vertical: "top", horizontal: "left" },
+	gapX = 0,
+	gapY = 0,
+}: DropDownProps) {
+	function handleOptionClick(e: React.MouseEvent, onClick?: () => void, close?: () => void) {
 		if (onClick) {
 			onClick();
-		} else {
-			console.log("로직 추가하시면 됩니다"); // eslint-disable-line no-console
+		}
+		if (close) {
+			close();
 		}
 	}
 
-	/**
-	 * @param items - 드롭다운 옵션 목록
-	 */
-	function recursive(items: Option[], close: () => void, parentAnchorOrigin?: Origin, parentOverlayOrigin?: Origin, parentGapX?: number, parentGapY?: number) {
-		const [styleOptions, ...restOptions] = items;
-
-		/** containerStyles 설정 */
-		let containerStyles = "";
-		if (restOptions.some((option) => option.image)) {
-			containerStyles = `p-[16px] space-y-2 ${styleOptions?.styles || ""}`;
-		} else {
-			containerStyles = `${styleOptions?.styles || ""}`;
-		}
-
-		/** anchorOrigin 설정 */
-		const recursiveAnchorOrigin = styleOptions.anchorOrigin || parentAnchorOrigin || anchorOrigin || { vertical: "bottom", horizontal: "left" };
-
-		/** overlayOrigin 설정 */
-		const recursiveOverlayOrigin = styleOptions.overlayOrigin || parentOverlayOrigin || overlayOrigin || { vertical: "top", horizontal: "left" };
-
-		/** gapX 설정 */
-		let recursiveGapX = 0;
-		if (styleOptions.gapX !== undefined) {
-			recursiveGapX = styleOptions.gapX;
-		} else if (parentGapX !== undefined) {
-			recursiveGapX = parentGapX;
-		} else if (gapX !== undefined) {
-			recursiveGapX = gapX;
-		}
-
-		/** gapY 설정 */
-		let recursiveGapY = 0;
-		if (styleOptions.gapY !== undefined) {
-			recursiveGapY = styleOptions.gapY;
-		} else if (parentGapY !== undefined) {
-			recursiveGapY = parentGapY;
-		} else if (gapY !== undefined) {
-			recursiveGapY = gapY;
-		}
-
+	function recursive(items: Option[], close: () => void) {
 		return (
-			<div className={`rounded-[12px] border border-white border-opacity-5 bg-background-secondary text-[#F8FAFC] ${containerStyles}`}>
-				{restOptions.map((option, index) => {
-					let justifyClass = "justify-center";
-
-					if (option.image && option.icon) {
-						justifyClass = "justify-between";
-					} else if (option.image) {
-						justifyClass = "justify-start";
-					}
-
-					return (
-						<div
-							key={option.text || index}
-							className={`flex items-center ${justifyClass} rounded-[8px] p-[8px] ${option.content ? "" : "hover:bg-[#63748D]"} ${option.styles || ""}`}
-						>
-							<div className="flex items-center justify-center gap-[12px]">
-								{option.image && <Image src={option.image} alt={option.text || ""} />}
-								<button
-									type="button"
-									className="cursor-pointer"
-									onClick={(e) => {
-										handleOptionClick(e, option.onClick);
-										close();
-									}}
-									tabIndex={0}
-									onKeyPress={(e) => {
-										if (e.key === "Enter") {
-											handleOptionClick(e, option.onClick);
-											close();
-										}
-									}}
-								>
-									{option.text}
-								</button>
-							</div>
-							{option.icon && option.options && (
-								<Popover
-									overlay={() => recursive(option.options!, close, recursiveAnchorOrigin, recursiveOverlayOrigin, recursiveGapX, recursiveGapY)}
-									onOpen={() => console.log("짜잔")} // eslint-disable-line no-console
-									anchorOrigin={recursiveAnchorOrigin}
-									overlayOrigin={recursiveOverlayOrigin}
-									gapX={recursiveGapX}
-									gapY={recursiveGapY}
-								>
-									<div className="ml-auto cursor-pointer">{option.icon}</div>
-								</Popover>
+			<div
+				className={`flex min-w-[120px] rounded-[12px] border border-white border-opacity-5 bg-background-secondary text-[#F8FAFC] ${
+					items.some((option) => option.image) ? "space-y-2" : ""
+				}`}
+			>
+				{items.map((option, index) => (
+					<div
+						key={option.text || index}
+						className={`flex items-center rounded-[8px] p-[8px] ${option.content ? "" : "hover:bg-[#63748D]"} ${
+							option.image ? "mx-[16px] mt-[16px] w-[186px] justify-between" : "justify-center"
+						}`}
+					>
+						<div className="flex items-center justify-center gap-[12px]">
+							{option.image && (
+								<div>
+									<Image src={option.image} alt={option.text || ""} width={32} height={32} />
+								</div>
 							)}
-							{option.content && <div>{option.content}</div>}
+							<button type="button" className="cursor-pointer" onClick={(e) => handleOptionClick(e, option.onClick, close)}>
+								<p>{option.text}</p>
+							</button>
 						</div>
-					);
-				})}
+						{option.content && <div className="mb-[16px]">{option.content}</div>}
+						{option.options && option.options.length > 0 && (
+							<Popover
+								overlay={(subClose) =>
+									recursive(option.options || [], () => {
+										subClose();
+										close();
+									})
+								}
+								anchorOrigin={anchorOrigin}
+								overlayOrigin={overlayOrigin}
+							>
+								<div className={`cursor-pointer ${option.options && option.options.length > 0 ? "block" : "hidden"}`}>
+									<KebabIcon />
+								</div>
+							</Popover>
+						)}
+					</div>
+				))}
 			</div>
 		);
 	}
 
 	return (
-		<div>
-			<Popover
-				overlay={(close) => recursive(options, close, anchorOrigin, overlayOrigin, gapX, gapY)}
-				anchorOrigin={anchorOrigin || { vertical: "bottom", horizontal: "left" }}
-				overlayOrigin={overlayOrigin || { vertical: "top", horizontal: "left" }}
-				gapX={gapX || 0}
-				gapY={gapY || 0}
-			>
+		<div className="flex">
+			<Popover overlay={(close) => recursive(options, close)} anchorOrigin={anchorOrigin} overlayOrigin={overlayOrigin} gapX={gapX} gapY={gapY}>
 				<div className="cursor-pointer">{children}</div>
 			</Popover>
 		</div>
 	);
 }
-
-/** 기본 props 설정 */
-DropDown.defaultProps = {
-	anchorOrigin: { vertical: "bottom", horizontal: "left" },
-	overlayOrigin: { vertical: "top", horizontal: "left" },
-	gapX: 0,
-	gapY: 0,
-};
