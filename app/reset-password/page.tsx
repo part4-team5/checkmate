@@ -167,7 +167,10 @@ export default function ResetPasswordPage() {
 							/>
 							<Form.Error htmlFor="email" />
 							<div className="pt-6" />
-							<Form.Button>메일 전송</Form.Button>
+
+							<div className="h-12">
+								<Form.Submit>메일 전송</Form.Submit>
+							</div>
 						</div>
 					</Form>
 				</section>
@@ -245,7 +248,9 @@ export default function ResetPasswordPage() {
 
 						<div className="pt-6" />
 
-						<Form.Button>재설정</Form.Button>
+						<div className="h-12">
+							<Form.Submit>재설정</Form.Submit>
+						</div>
 					</div>
 				</Form>
 			</section>
