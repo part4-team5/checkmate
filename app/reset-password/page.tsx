@@ -5,13 +5,11 @@
 
 import API from "@/app/_api";
 import Form from "@/app/_components/Form";
+import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 export default function ResetPasswordPage() {
-	// API 호출 중인지 확인
-	const [isLoading, setIsLoading] = useState(false);
-
 	// TODO: 로그인 상태 확인 (테스트 용으로 false로 설정 추후에 User 정보를 받아와서 확인)
 	const isUser = false;
 
@@ -24,114 +22,121 @@ export default function ResetPasswordPage() {
 		}
 	}, [passwordToken]);
 
-	// 비밀번호 재설정 이메일 전송
-	const handleSendEmail = useCallback(
-		async (data: FormData) => {
-			if (isLoading) return;
+	// 비밀번호 재설정 링크 이메일 전송 Mutation (tanstack/react-query)
+	const sendEmailMutation = useMutation<{ message: string }, Error, FormData>({
+		mutationFn: async (data: FormData): Promise<{ message: string }> => {
+			const email = data.get("email") as string;
 
-			setIsLoading(true);
+			const payload: Parameters<(typeof API)["{teamId}/user/send-reset-password-email"]["POST"]>[1] = {
+				email,
+				// TODO: 추후에 redirectUrl을 변경해야 합니다. env 파일에서 dev, prod를 구분하여 설정해두겠습니다.
+				redirectUrl: "http://localhost:3000",
+			};
 
-			try {
-				const email = data.get("email") as string;
+			for (const [key, value] of data.entries()) {
+				payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
+			}
 
-				const payload: Parameters<(typeof API)["{teamId}/user/send-reset-password-email"]["POST"]>[1] = {
-					email,
-					// TODO: 추후에 redirectUrl을 변경해야 합니다. env 파일에서 dev, prod를 구분하여 설정해두겠습니다.
-					redirectUrl: "http://localhost:3000",
+			const response = await API["{teamId}/user/send-reset-password-email"].POST({}, payload);
+
+			return response;
+		},
+		onSuccess: (data) => {
+			// TODO: 전송 성공 시 모달 혹은 토스트 메시지로 알림
+			console.log("이메일 전송 성공");
+			console.log(data.message);
+		},
+		onError: (error) => {
+			// TODO: 전송 실패 시 모달 혹은 토스트 메시지로 알림
+			console.log("이메일 전송 실패");
+			console.log(error.message);
+		},
+	});
+
+	// 비밀번호 재설정 Mutation (tanstack/react-query)
+	const passwordResetMutation = useMutation<{ message: string }, Error, FormData>({
+		mutationFn: async (data: FormData): Promise<{ message: string }> => {
+			const password = data.get("password") as string;
+			const passwordConfirmation = data.get("passwordConfirmation") as string;
+
+			// TODO: 유저가 로그인 상태인지 확인
+			if (!isUser) {
+				if (!password || !passwordConfirmation || !passwordToken) {
+					console.log(
+						"비밀번호 변경 오류. ",
+						"\n비밀번호: ",
+						password,
+						"\n비밀번호 확인: ",
+						passwordConfirmation,
+						"\n유저: ",
+						isUser,
+						"\n비밀번호 토큰: ",
+						passwordToken,
+					);
+					return { message: "비밀번호 변경 오류" };
+				}
+
+				console.log("비로그인 상태에서 비밀번호 변경");
+
+				// 비로그인 상태에서 비밀번호 재설정 API 호출
+				const payload: Parameters<(typeof API)["{teamId}/user/reset-password"]["PATCH"]>[1] = {
+					passwordConfirmation,
+					password,
+					token: passwordToken,
 				};
 
 				for (const [key, value] of data.entries()) {
 					payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
 				}
 
-				const response = await API["{teamId}/user/send-reset-password-email"].POST({}, payload);
-				// TODO: 전송 성공 시 모달 혹은 토스트 메시지로 알림
-				console.log("이메일 전송 성공");
-				console.log(response.message);
-			} catch (error) {
-				// TODO: 전송 실패 시 모달 혹은 토스트 메시지로 알림
-				console.log("이메일 전송 실패");
-				console.log((error as Error).message);
-			} finally {
-				setIsLoading(false);
+				const response = await API["{teamId}/user/reset-password"].PATCH({}, payload);
+
+				return response;
 			}
+
+			console.log("로그인 상태에서 비밀번호 변경");
+
+			// 로그인 상태에서 비밀번호 재설정 API 호출
+			const payload: Parameters<(typeof API)["{teamId}/user/password"]["PATCH"]>[1] = {
+				passwordConfirmation,
+				password,
+			};
+
+			for (const [key, value] of data.entries()) {
+				payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
+			}
+
+			const response = await API["{teamId}/user/password"].PATCH({}, payload);
+			return response;
 		},
-		[isLoading],
+		onSuccess: (data) => {
+			// TODO: 비밀번호 재설정 성공 시 모달 혹은 토스트 메시지로 알림
+			console.log("비밀번호 재설정 성공");
+			console.log(data.message);
+		},
+		onError: (error) => {
+			// TODO: 비밀번호 재설정 실패 시 모달 혹은 토스트 메시지로 알림
+			console.log("비밀번호 재설정 실패");
+			console.log(error.message);
+		},
+	});
+
+	const handleSendEmail = useCallback(
+		(data: FormData) => {
+			if (sendEmailMutation.status === "pending") return;
+
+			sendEmailMutation.mutate(data);
+		},
+		[sendEmailMutation],
 	);
 
-	// 비밀번호 재설정
 	const handleSubmit = useCallback(
-		async (data: FormData) => {
-			if (isLoading) return;
+		(data: FormData) => {
+			if (passwordResetMutation.status === "pending") return;
 
-			setIsLoading(true);
-
-			try {
-				const password = data.get("password") as string;
-				const passwordConfirmation = data.get("passwordConfirmation") as string;
-
-				if (!isUser) {
-					if (!password || !passwordConfirmation || !passwordToken) {
-						console.log(
-							"비밀번호 변경 오류. ",
-							"\n비밀번호: ",
-							password,
-							"\n비밀번호 확인: ",
-							passwordConfirmation,
-							"\n유저: ",
-							isUser,
-							"\n비밀번호 토큰: ",
-							passwordToken,
-						);
-						setIsLoading(false);
-						return;
-					}
-				}
-
-				// TODO: 유저가 로그인 상태인지 확인
-				if (isUser) {
-					// 로그인 상태에서 비밀번호 재설정 API 호출
-					const payload: Parameters<(typeof API)["{teamId}/user/password"]["PATCH"]>[1] = {
-						passwordConfirmation,
-						password,
-					};
-
-					for (const [key, value] of data.entries()) {
-						payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
-					}
-
-					const response = await API["{teamId}/user/password"].PATCH({}, payload);
-					// TODO: 비밀번호 재설정 성공 시 모달 혹은 토스트 메시지로 알림
-					console.log("비밀번호 재설정 성공");
-					console.log(response.message);
-					// router.push("/team-page");
-				} else {
-					// 비로그인 상태에서 비밀번호 재설정 API 호출
-					const payload: Parameters<(typeof API)["{teamId}/user/reset-password"]["PATCH"]>[1] = {
-						passwordConfirmation,
-						password,
-						token: passwordToken,
-					};
-
-					for (const [key, value] of data.entries()) {
-						payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
-					}
-
-					const response = await API["{teamId}/user/reset-password"].PATCH({}, payload);
-					// TODO: 비밀번호 재설정 성공 시 모달 혹은 토스트 메시지로 알림
-					console.log("비밀번호 재설정 성공");
-					console.log(response.message);
-					// router.push("/login");
-				}
-			} catch (error) {
-				// TODO: 비밀번호 재설정 실패 시 모달 혹은 토스트 메시지로 알림
-				console.log("비밀번호 재설정 실패");
-				console.log((error as Error).message);
-			} finally {
-				setIsLoading(false);
-			}
+			passwordResetMutation.mutate(data);
 		},
-		[passwordToken, isLoading, isUser],
+		[passwordResetMutation],
 	);
 
 	// 비 로그인 상태에서 비밀번호 재설정 링크 전송 페이지
