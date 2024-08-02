@@ -17,9 +17,9 @@ export default function RootLayout({ children }: Readonly<React.PropsWithChildre
 		<html lang="ko">
 			<body>
 				<QueryProvider>
-				  {children}
-				  <GlobalModals />
-        </QueryProvider>
+					{children}
+					<GlobalModals />
+				</QueryProvider>
 			</body>
 		</html>
 	);
