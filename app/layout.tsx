@@ -1,9 +1,13 @@
+import Header from "@/app/_components/header";
 import "./globals.css";
 
 export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
 	return (
 		<html lang="ko">
-			<body>{children}</body>
+			<body>
+				<Header />
+				{children}
+			</body>
 		</html>
 	);
 }
