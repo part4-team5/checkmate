@@ -11,6 +11,7 @@ interface ButtonProps extends PropsWithChildren {
 	fontSize?: "lg" | "md";
 	rounded?: "full" | "xl";
 	href?: string;
+	// eslint-disable-next-line no-unused-vars
 	onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 	disabled?: boolean;
 }

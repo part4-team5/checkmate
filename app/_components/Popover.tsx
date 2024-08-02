@@ -60,63 +60,63 @@ export default function Popover({ gap = 0, overlay, onOpen, onClose, anchorOrigi
 
 	// eslint-disable-next-line default-case
 	switch (anchorOrigin.vertical) {
-	case "top": {
-		style.top = 0;
-		break;
-	}
-	case "center": {
-		style.top = popRect.height * 0.5;
-		break;
-	}
-	case "bottom": {
-		style.top = popRect.height * 1.0;
-		break;
-	}
+		case "top": {
+			style.top = 0;
+			break;
+		}
+		case "center": {
+			style.top = popRect.height * 0.5;
+			break;
+		}
+		case "bottom": {
+			style.top = popRect.height * 1.0;
+			break;
+		}
 	}
 	// eslint-disable-next-line default-case
 	switch (anchorOrigin.horizontal) {
-	case "left": {
-		style.left = 0;
-		break;
-	}
-	case "center": {
-		style.left = popRect.width * 0.5;
-		break;
-	}
-	case "right": {
-		style.left = popRect.width * 1.0;
-		break;
-	}
+		case "left": {
+			style.left = 0;
+			break;
+		}
+		case "center": {
+			style.left = popRect.width * 0.5;
+			break;
+		}
+		case "right": {
+			style.left = popRect.width * 1.0;
+			break;
+		}
 	}
 	// eslint-disable-next-line default-case
 	switch (overlayOrigin.vertical) {
-	case "top": {
-		style.top += gap;
-		break;
-	}
-	case "center": {
-		style.top -= overRect.height * 0.5;
-		break;
-	}
-	case "bottom": {
-		style.top -= overRect.height * 1.0 + gap;
-		break;
-	}
+		case "top": {
+			style.top += gap;
+			break;
+		}
+		case "center": {
+			style.top -= overRect.height * 0.5;
+			break;
+		}
+		case "bottom": {
+			style.top -= overRect.height * 1.0 + gap;
+			break;
+		}
 	}
 	// eslint-disable-next-line default-case
 	switch (overlayOrigin.horizontal) {
-	case "left": {
-		style.left += gap;
-		break;
-	}
-	case "center": {
-		style.left -= overRect.width * 0.5;
-		break;
-	}
-	case "right": {
-		style.left -= overRect.width * 1.0 + gap;
-		break;
-	}
+		case "left": {
+			style.left += gap;
+			break;
+		}
+		case "center": {
+			style.left -= overRect.width * 0.5;
+			break;
+		}
+		case "right": {
+			style.left -= overRect.width * 1.0 + gap;
+			break;
+		}
 	}
 
 	return (
