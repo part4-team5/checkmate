@@ -63,9 +63,18 @@ export default function Header() {
 		<header className="z-50 h-[60px] border border-border-primary/10 bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center gap-4 px-4 tablet:gap-10 tablet:px-6">
 				{/* 모바일 메뉴 드롭다운? 사이드바? */}
-				<button type="button" aria-label="Menu" className="block tablet:hidden">
-					<MenuIcon width={24} height={24} />
-				</button>
+				<div className="z-50">
+					<DropDown
+						options={teamDropdown}
+						gapX={10}
+						anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+						overlayOrigin={{ vertical: "top", horizontal: "left" }}
+					>
+						<button type="button" aria-label="Menu" className="block tablet:hidden">
+							<MenuIcon width={24} height={24} />
+						</button>
+					</DropDown>
+				</div>
 
 				<Link href="/" className="">
 					<div className="h-5 w-[102px] desktop:h-8 desktop:w-[158px]">
@@ -81,15 +90,12 @@ export default function Header() {
 									<DropDown
 										options={teamDropdown}
 										gapX={10}
-										gapY={-10}
-										anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-										overlayOrigin={{ vertical: "top", horizontal: "left" }}
+										anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+										overlayOrigin={{ vertical: "top", horizontal: "right" }}
 									>
 										<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
 											{/* 현재 팀 이름 받아오기 */}팀 이름
-											<div className="">
-												<CheckIcon width={16} height={16} />
-											</div>
+											<CheckIcon width={16} height={16} />
 										</button>
 									</DropDown>
 								</li>
