@@ -13,16 +13,6 @@ const options = [
 	{
 		text: "옵션 2",
 		onClick: () => alert("옵션 2 클릭됨"),
-		options: [
-			{
-				text: "서브 옵션 1",
-				onClick: () => alert("서브 옵션 1 클릭됨"),
-			},
-			{
-				text: "서브 옵션 2",
-				onClick: () => alert("서브 옵션 2 클릭됨"),
-			},
-		],
 	},
 	{
 		text: "옵션 3",
@@ -38,7 +28,7 @@ export default {
 const Template: StoryFn<DropDownProps> = (args) => (
 	<DropDown {...args}>
 		<Button>
-			<div className="w-32 py-2">드롭다운</div>
+			<div className="w-64 py-2">드롭다운</div>
 		</Button>
 	</DropDown>
 );
@@ -46,112 +36,99 @@ const Template: StoryFn<DropDownProps> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
 	options,
+	anchorOrigin: { vertical: "bottom", horizontal: "center" },
+	overlayOrigin: { vertical: "top", horizontal: "center" },
+	gapX: 0,
+	gapY: 0,
 };
 
-export const WithSubOptionsAndContent = Template.bind({});
-WithSubOptionsAndContent.args = {
+export const WithImage = Template.bind({});
+WithImage.args = {
 	options: [
 		{
-			text: "옵션 1",
-			onClick: () => alert("옵션 1 클릭됨"),
-			options: [
-				{
-					text: "서브 옵션 1",
-					onClick: () => alert("서브 옵션 1 클릭됨"),
-				},
-				{
-					text: "서브 옵션 2",
-					onClick: () => alert("서브 옵션 2 클릭됨"),
-				},
-			],
+			text: "안녕하세요",
+			image: "https://via.placeholder.com/150",
+			onClick: () => alert("안녕하세요 클릭됨"),
 		},
 		{
-			text: "옵션 2",
-			onClick: () => alert("옵션 2 클릭됨"),
-			options: [
-				{
-					text: "서브 옵션 1",
-					onClick: () => alert("서브 옵션 1 클릭됨"),
-				},
-				{
-					text: "서브 옵션 2",
-					onClick: () => alert("서브 옵션 2 클릭됨"),
-				},
-			],
+			text: "반갑습니다",
+			image: "https://via.placeholder.com/150",
+		},
+		{
+			text: "반가워요",
+			image: "https://via.placeholder.com/150",
+		},
+		{
+			content: (
+				<button
+					type="button"
+					className="h-[46px] w-[186px] rounded-[12px] border border-[#F8FAFC] text-[#F8FAFC] hover:bg-[#63748D]"
+					onClick={() => alert("팀 추가하기 클릭됨")}
+				>
+					팀 추가하기
+				</button>
+			),
 		},
 	],
+	anchorOrigin: { vertical: "bottom", horizontal: "right" },
+	overlayOrigin: { vertical: "top", horizontal: "right" },
+	gapX: 0,
+	gapY: 0,
 };
 
 export const WithSubOptionsAndImage = Template.bind({});
 WithSubOptionsAndImage.args = {
 	options: [
 		{
-			text: "옵션 1",
-			onClick: () => alert("옵션 1 클릭됨"),
+			text: "안녕하세요",
 			image: "https://via.placeholder.com/150",
 			options: [
 				{
-					text: "서브 옵션 1",
-					onClick: () => alert("서브 옵션 1 클릭됨"),
+					text: "수정하기",
+					onClick: () => {
+						alert("수정하기 클릭됨");
+					},
 				},
 				{
-					text: "서브 옵션 2",
-					onClick: () => alert("서브 옵션 2 클릭됨"),
+					text: "삭제하기",
+					onClick: () => {
+						alert("삭제하기 클릭됨");
+					},
 				},
 			],
 		},
 		{
-			text: "옵션 2",
-			onClick: () => alert("옵션 2 클릭됨"),
+			text: "반갑습니다",
 			image: "https://via.placeholder.com/150",
 			options: [
 				{
-					text: "서브 옵션 1",
-					onClick: () => alert("서브 옵션 1 클릭됨"),
+					text: "수정하기",
+					onClick: () => {
+						alert("수정하기 클릭됨");
+					},
 				},
 				{
-					text: "서브 옵션 2",
-					onClick: () => alert("서브 옵션 2 클릭됨"),
+					text: "삭제하기",
+					onClick: () => {
+						alert("삭제하기 클릭됨");
+					},
 				},
 			],
+		},
+		{
+			content: (
+				<button
+					type="button"
+					className="h-[46px] w-[186px] rounded-[12px] border border-[#F8FAFC] text-[#F8FAFC] hover:bg-[#63748D]"
+					onClick={() => alert("팀 추가하기 클릭됨")}
+				>
+					팀 추가하기
+				</button>
+			),
 		},
 	],
-};
-
-export const WithSubOptionsAndContentAndImage = Template.bind({});
-WithSubOptionsAndContentAndImage.args = {
-	options: [
-		{
-			text: "옵션 1",
-			onClick: () => alert("옵션 1 클릭됨"),
-			image: "https://via.placeholder.com/150",
-			content: <div className="p-4">컨텐츠</div>,
-			options: [
-				{
-					text: "서브 옵션 1",
-					onClick: () => alert("서브 옵션 1 클릭됨"),
-				},
-				{
-					text: "서브 옵션 2",
-					onClick: () => alert("서브 옵션 2 클릭됨"),
-				},
-			],
-		},
-		{
-			text: "옵션 2",
-			onClick: () => alert("옵션 2 클릭됨"),
-			image: "https://via.placeholder.com/150",
-			content: <div className="">컨텐츠</div>,
-			options: [
-				{
-					text: "서브 옵션 1",
-					onClick: () => alert("서브 옵션 1 클릭됨"),
-				},
-				{
-					text: "서브 옵션 2",
-					onClick: () => alert("서브 옵션 2 클릭됨"),
-				},
-			],
-		},
-	],
+	anchorOrigin: { vertical: "top", horizontal: "right" },
+	overlayOrigin: { vertical: "top", horizontal: "left" },
+	gapX: 0,
+	gapY: 0,
 };
