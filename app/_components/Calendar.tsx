@@ -4,26 +4,37 @@ import ArrowLeftIcon from "@/public/icons/ArrowLeftIcon";
 import ArrowRightIcon from "@/public/icons/ArrowRightIcon";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-interface CalenderProps extends React.PropsWithChildren {
+interface CalendarProps extends React.PropsWithChildren {
 	onChange?: (value: Date) => void;
 }
 
-interface CalenderContext {
+interface CalendarContext {
 	date: Date;
 	setDate: (value: Date) => void;
 }
 
-const CTX = createContext<CalenderContext>({ date: new Date(), setDate() {} });
+const CTX = createContext<CalendarContext>({ date: new Date(), setDate() {} });
 
-export default function Calender({ children, onChange }: Readonly<CalenderProps>) {
+export default function Calendar({ children, onChange }: Readonly<CalendarProps>) {
 	const [date, setDate] = useState(new Date());
 
 	useEffect(() => {
 		onChange?.(date);
 	}, [date, onChange]);
 
-	// eslint-disable-next-line react/jsx-no-constructed-context-values
-	return <CTX.Provider value={{ date, setDate }}>{children}</CTX.Provider>;
+	const ctx = useMemo<CalendarContext>(
+		() => ({
+			date,
+			setDate: (value) => {
+				if (value.getFullYear() !== date.getFullYear() || value.getMonth() !== date.getMonth() || value.getDate() !== date.getDate()) {
+					setDate(value);
+				}
+			},
+		}),
+		[date],
+	);
+
+	return <CTX.Provider value={ctx}>{children}</CTX.Provider>;
 }
 
 function useCTX() {
@@ -34,55 +45,39 @@ function useCTX() {
 	return ctx;
 }
 
-Calender.Date = function Date({ children }: Readonly<{ children: (value: Date) => React.ReactNode }>) {
+Calendar.Date = function Date({ children }: Readonly<{ children: (value: Date) => React.ReactNode }>) {
 	const ctx = useCTX();
 
 	return children(ctx.date);
 };
 
-Calender.Jump = function Jump({
-	to,
-	children,
-}: Readonly<React.PropsWithChildren & { to: "-year" | "-month" | "-week" | "-day" | "+day" | "+week" | "+month" | "+year" | Date }>) {
+Calendar.Jump = function Jump({ to, children }: Readonly<React.PropsWithChildren & { to: { unit: "day" | "week" | "month" | "year"; times: number } | Date }>) {
 	const ctx = useCTX();
 
 	const onClick = useCallback(() => {
-		switch (to) {
-			case "-year": {
-				ctx.setDate(new Date(ctx.date.getFullYear() - 1, ctx.date.getMonth(), ctx.date.getDate()));
-				break;
-			}
-			case "-month": {
-				ctx.setDate(new Date(ctx.date.getFullYear(), ctx.date.getMonth() - 1, ctx.date.getDate()));
-				break;
-			}
-			case "-week": {
-				ctx.setDate(new Date(ctx.date.getFullYear(), ctx.date.getMonth(), ctx.date.getDate() - 7));
-				break;
-			}
-			case "-day": {
-				ctx.setDate(new Date(ctx.date.getFullYear(), ctx.date.getMonth(), ctx.date.getDate() - 1));
-				break;
-			}
-			case "+day": {
-				ctx.setDate(new Date(ctx.date.getFullYear(), ctx.date.getMonth(), ctx.date.getDate() + 1));
-				break;
-			}
-			case "+week": {
-				ctx.setDate(new Date(ctx.date.getFullYear(), ctx.date.getMonth(), ctx.date.getDate() - 7));
-				break;
-			}
-			case "+month": {
-				ctx.setDate(new Date(ctx.date.getFullYear(), ctx.date.getMonth() + 1, ctx.date.getDate()));
-				break;
-			}
-			case "+year": {
-				ctx.setDate(new Date(ctx.date.getFullYear() + 1, ctx.date.getMonth(), ctx.date.getDate()));
-				break;
-			}
-			default: {
-				ctx.setDate(to);
-				break;
+		if (to instanceof Date) {
+			ctx.setDate(to);
+		} else {
+			switch (to.unit) {
+				case "year": {
+					ctx.setDate(new Date(ctx.date.getFullYear() + to.times, ctx.date.getMonth(), ctx.date.getDate()));
+					break;
+				}
+				case "month": {
+					ctx.setDate(new Date(ctx.date.getFullYear(), ctx.date.getMonth() + to.times, ctx.date.getDate()));
+					break;
+				}
+				case "week": {
+					ctx.setDate(new Date(ctx.date.getFullYear(), ctx.date.getMonth(), ctx.date.getDate() + 7 * to.times));
+					break;
+				}
+				case "day": {
+					ctx.setDate(new Date(ctx.date.getFullYear(), ctx.date.getMonth(), ctx.date.getDate() + to.times));
+					break;
+				}
+				default: {
+					throw new Error();
+				}
 			}
 		}
 	}, [to, ctx]);
@@ -96,7 +91,7 @@ Calender.Jump = function Jump({
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
-Calender.Picker = function Picker() {
+Calendar.Picker = function Picker() {
 	const ctx = useCTX();
 
 	const [date, setDate] = useState(ctx.date);
