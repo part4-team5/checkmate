@@ -7,12 +7,9 @@ import API from "@/app/_api";
 import Form from "@/app/_components/Form";
 import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { Suspense, useCallback, useEffect } from "react";
 
-export default function ResetPasswordPage() {
-	// TODO: 로그인 상태 확인 (테스트 용으로 false로 설정 추후에 User 정보를 받아와서 확인)
-	const isUser = false;
-
+function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 	const passwordToken = useSearchParams().get("token") ?? "";
 
 	useEffect(() => {
@@ -82,7 +79,7 @@ export default function ResetPasswordPage() {
 				const payload: Parameters<(typeof API)["{teamId}/user/reset-password"]["PATCH"]>[1] = {
 					passwordConfirmation,
 					password,
-					token: passwordToken,
+					token: "",
 				};
 
 				for (const [key, value] of data.entries()) {
@@ -260,5 +257,16 @@ export default function ResetPasswordPage() {
 				</Form>
 			</section>
 		</main>
+	);
+}
+
+export default function ResetPasswordPage() {
+	// TODO: 로그인 상태 확인 (테스트 용으로 false로 설정 추후에 User 정보를 받아와서 확인)
+	const isUser = false;
+
+	return (
+		<Suspense>
+			<ResetPasswordForm isUser={isUser} />
+		</Suspense>
 	);
 }
