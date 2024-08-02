@@ -1,7 +1,6 @@
 interface IconProps {
 	width: number;
 	height: number;
-	// eslint-disable-next-line react/require-default-props
 	color?: string;
 }
 

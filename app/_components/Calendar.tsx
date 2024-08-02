@@ -101,7 +101,7 @@ Calendar.Picker = function Picker() {
 	}, [ctx.date]);
 
 	const days = useMemo(() => {
-		const impl = [] as Date[];
+		const impl: Date[] = [];
 
 		const [prev, start, end, next] = [
 			new Date(date.getFullYear(), date.getMonth(), 0),
@@ -111,14 +111,17 @@ Calendar.Picker = function Picker() {
 		];
 		// eslint-disable-next-line no-plusplus
 		for (let i = 0; i < start.getDay(); i++) {
+			// fill remaining days from previous month
 			impl.unshift(new Date(prev.getFullYear(), prev.getMonth(), prev.getDate() - i));
 		}
 		// eslint-disable-next-line no-plusplus
 		for (let i = 0; i < end.getDate(); i++) {
+			// fill remaining days from current month
 			impl.push(new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
 		}
 		// eslint-disable-next-line no-plusplus
 		for (let i = 0; i < 6 - end.getDay(); i++) {
+			// fill remaining days from next month
 			impl.push(new Date(next.getFullYear(), next.getMonth(), next.getDate() + i));
 		}
 		return impl;
@@ -139,7 +142,6 @@ Calendar.Picker = function Picker() {
 			if (value.getMonth() !== date.getMonth()) {
 				impl.color = "#64748B";
 			} else {
-				// :3
 				const today = new Date();
 
 				if (value.getFullYear() === today.getFullYear() && value.getMonth() === today.getMonth() && value.getDate() === today.getDate()) {
