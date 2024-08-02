@@ -1,11 +1,15 @@
 import QueryProvider from "@/app/_components/QureyProvider";
+import GlobalModals from "@/app/_components/GlobalModals";
 import "./globals.css";
 
-export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
+export default function RootLayout({ children }: Readonly<React.PropsWithChildren>) {
 	return (
 		<html lang="ko">
 			<body>
-				<QueryProvider>{children}</QueryProvider>
+				<QueryProvider>
+				  {children}
+				  <GlobalModals />
+        </QueryProvider>
 			</body>
 		</html>
 	);
