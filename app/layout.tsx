@@ -17,4 +17,4 @@ export default function Layout({ children }: Readonly<React.PropsWithChildren>) 
 }
 
 /** @type {import("next").Metadata} */
-export const metadata = { title: { template: "%s | coworkers", default: "coworkers" } };
+export const metadata = { title: { template: "%s | Coworkers", default: "Coworkers" } };
