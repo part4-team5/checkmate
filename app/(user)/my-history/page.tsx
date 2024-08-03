@@ -3,4 +3,4 @@ export default function Page() {
 }
 
 /** @type {import("next").Metadata} */
-export const metadata = { title: "회원가입" };
+export const metadata = { title: "내할일" };
