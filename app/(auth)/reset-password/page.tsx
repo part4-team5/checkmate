@@ -9,6 +9,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect } from "react";
 
+type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
+
 function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 	const passwordToken = useSearchParams().get("token") ?? "";
 
@@ -59,22 +61,10 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 			// TODO: 유저가 로그인 상태인지 확인
 			if (!isUser) {
 				if (!password || !passwordConfirmation || !passwordToken) {
-					console.log(
-						"비밀번호 변경 오류. ",
-						"\n비밀번호: ",
-						password,
-						"\n비밀번호 확인: ",
-						passwordConfirmation,
-						"\n유저: ",
-						isUser,
-						"\n비밀번호 토큰: ",
-						passwordToken,
-					);
 					return { message: "비밀번호 변경 오류" };
 				}
 
 				console.log("비로그인 상태에서 비밀번호 변경");
-
 				// 비로그인 상태에서 비밀번호 재설정 API 호출
 				const payload: Parameters<(typeof API)["{teamId}/user/reset-password"]["PATCH"]>[1] = {
 					passwordConfirmation,
@@ -92,7 +82,6 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 			}
 
 			console.log("로그인 상태에서 비밀번호 변경");
-
 			// 로그인 상태에서 비밀번호 재설정 API 호출
 			const payload: Parameters<(typeof API)["{teamId}/user/password"]["PATCH"]>[1] = {
 				passwordConfirmation,
@@ -119,19 +108,29 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 	});
 
 	const handleSendEmail = useCallback(
-		(data: FormData) => {
+		(ctx: FormContext) => {
 			if (sendEmailMutation.status === "pending") return;
 
-			sendEmailMutation.mutate(data);
+			const formData = new FormData();
+			for (const [key, value] of Object.entries(ctx.values)) {
+				formData.append(key, value as string);
+			}
+
+			sendEmailMutation.mutate(formData);
 		},
 		[sendEmailMutation],
 	);
 
 	const handleSubmit = useCallback(
-		(data: FormData) => {
+		(ctx: FormContext) => {
 			if (passwordResetMutation.status === "pending") return;
 
-			passwordResetMutation.mutate(data);
+			const formData = new FormData();
+			for (const [key, value] of Object.entries(ctx.values)) {
+				formData.append(key, value as string);
+			}
+
+			passwordResetMutation.mutate(formData);
 		},
 		[passwordResetMutation],
 	);
@@ -160,7 +159,7 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 										error: "이메일을 입력해주세요.",
 									},
 									{
-										type: "pattern",
+										type: "match",
 										data: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 										error: "이메일 형식을 확인해주세요.",
 									},
@@ -202,7 +201,7 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 										error: "비밀번호를 입력해주세요.",
 									},
 									{
-										type: "pattern",
+										type: "match",
 										data: /^[a-zA-Z0-9!@#%^&*]*$/,
 										error: "비밀번호는 숫자, 영문, 특수문자만 가능합니다.",
 									},
