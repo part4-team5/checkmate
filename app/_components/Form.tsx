@@ -9,7 +9,7 @@ import { createContext, useContext, useEffect, useCallback, useMemo, useState, u
 const [OK, NO] = [Symbol("ok"), Symbol("no")];
 
 interface FormProps extends React.PropsWithChildren {
-	onSubmit: (data: FormData) => void;
+	onSubmit: (ctx: FormContext) => void;
 }
 
 interface FormContext {
@@ -69,18 +69,9 @@ export default function Form({ onSubmit, children }: Readonly<FormProps>) {
 			// :skull:
 			event.preventDefault();
 			// bye bye
-			onSubmit(
-				(() => {
-					const impl = new FormData();
-					// eslint-disable-next-line no-restricted-syntax
-					for (const [key, value] of Object.entries(values)) {
-						impl.set(key, value);
-					}
-					return impl;
-				})(),
-			);
+			onSubmit(ctx);
 		},
-		[onSubmit, values],
+		[onSubmit, ctx],
 	);
 
 	return (
