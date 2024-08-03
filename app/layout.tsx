@@ -4,6 +4,7 @@ import GlobalModals from "@/app/_components/GlobalModals";
 import QueryProvider from "@/app/_components/QureyProvider";
 
 export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
+export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
 	return (
 		<html lang="ko">
 			<body>
@@ -15,6 +16,9 @@ export default function Layout({ children }: Readonly<React.PropsWithChildren>) 
 		</html>
 	);
 }
+
+/** @type {import("next").Metadata} */
+export const metadata = { title: { template: "%s | Coworkers", default: "Coworkers" } };
 
 /** @type {import("next").Metadata} */
 export const metadata = { title: { template: "%s | Coworkers", default: "Coworkers" } };
