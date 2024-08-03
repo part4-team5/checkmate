@@ -102,7 +102,8 @@ type Verify<T> = { data: T; error: string };
 
 type Validator =
 	| ({ type: "sync" } & Verify<string>)
-	| ({ type: "pattern" } & Verify<RegExp>)
+	| ({ type: "match" } & Verify<RegExp>)
+	| ({ type: "unmatch" } & Verify<RegExp>)
 	| ({ type: "require" } & Verify<boolean>)
 	| ({ type: "minlength" } & Verify<number>)
 	| ({ type: "maxlength" } & Verify<number>)
@@ -131,8 +132,15 @@ Form.Input = function Input({ id, type, tests, placeholder }: Readonly<{ id: str
 					}
 					break;
 				}
-				case "pattern": {
+				case "match": {
 					if (!test.data.test(value)) {
+						ctx.setError(id, focus ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "unmatch": {
+					if (test.data.test(value)) {
 						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
@@ -247,8 +255,15 @@ Form.TextArea = function TextArea({ id, tests, placeholder }: Readonly<{ id: str
 					}
 					break;
 				}
-				case "pattern": {
+				case "match": {
 					if (!test.data.test(value)) {
+						ctx.setError(id, focus ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "unmatch": {
+					if (test.data.test(value)) {
 						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
