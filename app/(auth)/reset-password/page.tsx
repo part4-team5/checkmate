@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-restricted-syntax */
 
 "use client";
@@ -22,9 +21,14 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 	}, [passwordToken]);
 
 	// 비밀번호 재설정 링크 이메일 전송 Mutation (tanstack/react-query)
-	const sendEmailMutation = useMutation<{ message: string }, Error, FormData>({
-		mutationFn: async (data: FormData): Promise<{ message: string }> => {
-			const email = data.get("email") as string;
+	const sendEmailMutation = useMutation<{ message: string }, Error, FormContext>({
+		mutationFn: async (ctx: FormContext): Promise<{ message: string }> => {
+			const formData = new FormData();
+			for (const [key, value] of Object.entries(ctx.values)) {
+				formData.append(key, value as string);
+			}
+
+			const email = formData.get("email") as string;
 
 			const payload: Parameters<(typeof API)["{teamId}/user/send-reset-password-email"]["POST"]>[1] = {
 				email,
@@ -32,7 +36,7 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 				redirectUrl: "http://localhost:3000",
 			};
 
-			for (const [key, value] of data.entries()) {
+			for (const [key, value] of formData.entries()) {
 				payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
 			}
 
@@ -53,10 +57,15 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 	});
 
 	// 비밀번호 재설정 Mutation (tanstack/react-query)
-	const passwordResetMutation = useMutation<{ message: string }, Error, FormData>({
-		mutationFn: async (data: FormData): Promise<{ message: string }> => {
-			const password = data.get("password") as string;
-			const passwordConfirmation = data.get("passwordConfirmation") as string;
+	const passwordResetMutation = useMutation<{ message: string }, Error, FormContext>({
+		mutationFn: async (ctx: FormContext): Promise<{ message: string }> => {
+			const formData = new FormData();
+			for (const [key, value] of Object.entries(ctx.values)) {
+				formData.append(key, value as string);
+			}
+
+			const password = formData.get("password") as string;
+			const passwordConfirmation = formData.get("passwordConfirmation") as string;
 
 			// TODO: 유저가 로그인 상태인지 확인
 			if (!isUser) {
@@ -72,7 +81,7 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 					token: "",
 				};
 
-				for (const [key, value] of data.entries()) {
+				for (const [key, value] of formData.entries()) {
 					payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
 				}
 
@@ -88,7 +97,7 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 				password,
 			};
 
-			for (const [key, value] of data.entries()) {
+			for (const [key, value] of formData.entries()) {
 				payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
 			}
 
@@ -111,12 +120,7 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 		(ctx: FormContext) => {
 			if (sendEmailMutation.status === "pending") return;
 
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
-			}
-
-			sendEmailMutation.mutate(formData);
+			sendEmailMutation.mutate(ctx);
 		},
 		[sendEmailMutation],
 	);
@@ -125,12 +129,7 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 		(ctx: FormContext) => {
 			if (passwordResetMutation.status === "pending") return;
 
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
-			}
-
-			passwordResetMutation.mutate(formData);
+			passwordResetMutation.mutate(ctx);
 		},
 		[passwordResetMutation],
 	);
