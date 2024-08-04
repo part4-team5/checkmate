@@ -1,7 +1,6 @@
-export const metadata = {
-	title: "회원가입",
-};
-
-export default function SignUpPage() {
-	return <div>회원가입 페이지 입니다.</div>;
+export default function Page() {
+	return <div>WIP</div>;
 }
+
+/** @type {import("next").Metadata} */
+export const metadata = { title: "회원가입" };
