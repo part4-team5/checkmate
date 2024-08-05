@@ -72,32 +72,35 @@ export default function CreateTeamPage() {
 				<div className="w-full">
 					<Form onSubmit={handleTeamManagement}>
 						<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
-							<label htmlFor="team-image" className="w-full pb-3 text-start text-text-primary">
-								팀 프로필
-							</label>
-							<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
-								{(file) => (
-									// eslint-disable-next-line react/jsx-no-useless-fragment
-									<>
-										{file ? (
-											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
-												<Image src={file as string} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
-												<div className="relative size-full">
+							<div className="w-fit">
+								<label htmlFor="team-image" className="w-full pb-3 text-start text-text-primary">
+									팀 프로필
+								</label>
+								<div className="pb-3" />
+								<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
+									{(file) => (
+										// eslint-disable-next-line react/jsx-no-useless-fragment
+										<>
+											{file ? (
+												<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
+													<Image src={file as string} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
+													<div className="relative size-full">
+														<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
+													</div>
+												</div>
+											) : (
+												<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
+													<div className="relative size-5">
+														<Image src="/icons/imageIcon.svg" alt="Profile Preview" fill />
+													</div>
+
 													<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
 												</div>
-											</div>
-										) : (
-											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
-												<div className="relative size-5">
-													<Image src="/icons/imageIcon.svg" alt="Profile Preview" fill />
-												</div>
-
-												<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
-											</div>
-										)}
-									</>
-								)}
-							</Form.ImageInput>
+											)}
+										</>
+									)}
+								</Form.ImageInput>
+							</div>
 							<Form.Error htmlFor="team-image" />
 
 							<div className="pt-6" />

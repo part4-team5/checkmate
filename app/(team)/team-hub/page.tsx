@@ -18,10 +18,10 @@ export default function TeamHubPage() {
 
 				<div className="mt-12 flex w-full max-w-[186px] flex-col gap-4 tablet:mt-20">
 					<div className="h-[48px]">
-						<Button href="/team-entry?type=create">팀 생성하기</Button>
+						<Button href="/create-team">팀 생성하기</Button>
 					</div>
 					<div className="h-[48px]">
-						<Button variant="outline" href="/team-entry?type=join">
+						<Button variant="outline" href="/join-team">
 							팀 참여하기
 						</Button>
 					</div>

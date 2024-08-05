@@ -13,6 +13,7 @@ export default async function TeamEditPage({ params }: { params: { id: string } 
 		queryKey: ["teamInfo", { id: Number(id) }],
 		queryFn: async () => {
 			const response = await API["{teamId}/groups/{id}"].GET({ id: Number(id) }).then((res) => res);
+			console.log(response);
 			return response;
 		},
 	});

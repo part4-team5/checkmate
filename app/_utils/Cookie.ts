@@ -9,10 +9,10 @@ function deserialize(value: string) {
 export default class Cookie {
 	public static get(key: string) {
 		switch (typeof window) {
+			//
+			// server side
+			//
 			case "undefined": {
-				//
-				// server side
-				//
 				// eslint-disable-next-line global-require
 				const { cookies } = require("next/headers");
 
@@ -20,10 +20,10 @@ export default class Cookie {
 
 				return store.has(key) ? deserialize(store.get(key).value) : null;
 			}
+			//
+			// client side
+			//
 			default: {
-				//
-				// client side
-				//
 				const match = new RegExp(`${key}=[^;]+`).exec(document.cookie);
 				return match ? deserialize(decodeURIComponent(match.toString().replace(/^[^=]+./, ""))) : null;
 			}
@@ -35,22 +35,26 @@ export default class Cookie {
 		const data = encodeURIComponent(serialize(value));
 
 		switch (typeof window) {
+			//
+			// server side
+			//
 			case "undefined": {
-				//
-				// server side
-				//
 				// eslint-disable-next-line global-require
 				const { cookies } = require("next/headers");
 
 				const store = cookies();
 
-				store.set(key, data, { path: "/", maxAge: 60 * 60 * 24 });
+				try {
+					store.set(key, data, { path: "/", maxAge: 60 * 60 * 24 });
+				} catch (_) {
+					// ignore
+				}
 				break;
 			}
+			//
+			// client side
+			//
 			default: {
-				//
-				// client side
-				//
 				document.cookie = `${key}=${data}; path=/; max-age=${60 * 60 * 24}`;
 				break;
 			}

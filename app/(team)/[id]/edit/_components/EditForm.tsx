@@ -5,14 +5,15 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function TeamEditForm() {
+	const queryClient = useQueryClient();
 	const { id } = useParams<{ id: string }>();
 
 	const teamInfo = useQuery({
@@ -51,12 +52,14 @@ export default function TeamEditForm() {
 			};
 
 			const response = await API["{teamId}/groups/{id}"].PATCH({ id: Number(id) }, payload);
-
 			return response;
 		},
 		onSuccess: (data) => {
 			// TODO: 팀 생성 성공 시 팀 페이지로 이동
 			console.log("Success: ", data);
+
+			// 쿼리 무효화
+			queryClient.invalidateQueries({ queryKey: ["teamInfo", { id: Number(id) }] });
 		},
 		onError: (error) => {
 			console.log("Error: ", error);
@@ -82,33 +85,41 @@ export default function TeamEditForm() {
 
 				<div className="w-full">
 					<Form onSubmit={handleTeamManagement}>
-						<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
-							<label htmlFor="team-image" className="w-full pb-3 text-start text-text-primary">
-								팀 프로필
-							</label>
-							<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
-								{(file) => (
-									// eslint-disable-next-line react/jsx-no-useless-fragment
-									<>
-										{file ? (
-											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
-												<Image src={file as string} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
-												<div className="relative size-full">
+						<div className="mx-auto flex size-full max-w-[340px] flex-col tablet:max-w-[460px]">
+							<div className="w-fit">
+								<label htmlFor="team-name" className="w-full text-start text-text-primary">
+									팀 프로필
+								</label>
+								<div className="pb-3" />
+								<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
+									{(file) => (
+										// eslint-disable-next-line react/jsx-no-useless-fragment
+										<>
+											{file || teamInfo.data?.image ? (
+												<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
+													<Image
+														src={(file as string) ?? teamInfo.data?.image ?? ""}
+														alt="Profile Preview"
+														fill
+														className="rounded-[12px] object-cover object-center"
+													/>
+													<div className="relative size-full">
+														<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
+													</div>
+												</div>
+											) : (
+												<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
+													<div className="relative size-5">
+														<Image src="/icons/imageIcon.svg" alt="Profile Preview" fill />
+													</div>
+
 													<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
 												</div>
-											</div>
-										) : (
-											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
-												<div className="relative size-5">
-													<Image src="/icons/imageIcon.svg" alt="Profile Preview" fill />
-												</div>
-
-												<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
-											</div>
-										)}
-									</>
-								)}
-							</Form.ImageInput>
+											)}
+										</>
+									)}
+								</Form.ImageInput>
+							</div>
 							<Form.Error htmlFor="team-image" />
 
 							<div className="pt-6" />
@@ -120,6 +131,7 @@ export default function TeamEditForm() {
 								id="teamName"
 								type="text"
 								placeholder="팀 이름을 입력하세요"
+								init={teamInfo.data?.name}
 								tests={[{ type: "require", data: true, error: "팀 이름은 필수입니다" }]}
 							/>
 							<Form.Error htmlFor="team-name" />

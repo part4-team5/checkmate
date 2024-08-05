@@ -28,18 +28,50 @@ function createURL(url: string, query: object) {
 	return location.toString();
 }
 
+abstract class Token {
+	private static readonly CACHE: Record<string, string> = {};
+
+	private constructor() {
+		// final
+	}
+
+	public static get ACCESS() {
+		// eslint-disable-next-line no-return-assign
+		return (this.CACHE.accessToken ??= Cookie.get("accessToken") as string);
+	}
+
+	public static set ACCESS(value: string) {
+		if (typeof window === "undefined") {
+			this.CACHE.accessToken = value;
+		}
+		Cookie.set("accessToken", value);
+	}
+
+	public static get REFRESH() {
+		// eslint-disable-next-line no-return-assign
+		return (this.CACHE.refreshToken ??= Cookie.get("refreshToken") as string);
+	}
+
+	public static set REFRESH(value: string) {
+		if (typeof window === "undefined") {
+			this.CACHE.refreshToken = value;
+		}
+		Cookie.set("refreshToken", value);
+	}
+}
+
 /** @see https://fe-project-cowokers.vercel.app/docs/ */
 export default abstract class API {
 	private constructor() {
 		// final
 	}
 
-	private static async SEND<T>(type: MIME, method: string, url: string, { payload, retries = 0 }: { payload?: object; retries?: number }) {
+	private static SEND<T>(type: MIME, method: string, url: string, { payload, retries = 0 }: { payload?: object; retries?: number }) {
 		const [headers, body] = [
-			await (async () => {
+			(() => {
 				const impl: HeadersInit = { "Content-Type": type, accept: MIME.JSON };
 
-				impl.Authorization = `Bearer ${await Cookie.get("accessToken")}`;
+				impl.Authorization = `Bearer ${Token.ACCESS}`;
 
 				// eslint-disable-next-line default-case
 				switch (type) {
@@ -60,13 +92,10 @@ export default abstract class API {
 		return new Promise<T>((resolve, reject) => {
 			fetch(url, { method, headers, body }).then(async (response) => {
 				if (!response.ok) {
-					// :3
-					const JWT = await Cookie.get("refreshToken");
+					if (response.status === 401 && retries <= 1 && Token.REFRESH) {
+						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: Token.REFRESH });
 
-					if (response.status === 401 && retries < 5 && JWT) {
-						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: JWT });
-
-						Cookie.set("accessToken", data.accessToken);
+						Token.ACCESS = data.accessToken;
 
 						return resolve(await API.SEND(type, method, url, { payload, retries: retries + 1 }));
 					}
@@ -191,14 +220,16 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 그룹 정보
 		 */
 		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
-			return API.GET<{
-				role: Role;
-				userImage: string;
-				userEmail: string;
-				userName: string;
-				groupId: number;
-				userId: number;
-			}>(MIME.JSON, `${BASE_URL}/${teamId}/user/groups`, query);
+			return API.GET<
+				{
+					updatedAt: string;
+					createdAt: string;
+					image: string;
+					name: string;
+					teamId: string;
+					id: number;
+				}[]
+			>(MIME.JSON, `${BASE_URL}/${teamId}/user/groups`, query);
 		}
 	})();
 
@@ -454,7 +485,7 @@ export default abstract class API {
 		 */
 		public override PATCH(
 			{ teamId = "6-5", groupId, taskListId, taskId, ...query }: { teamId?: string; groupId?: number; taskListId?: number; taskId: number },
-			body: { name: string; description: string; displayIndex: number; done: boolean },
+			body: { name: string; description: string; done: boolean },
 		) {
 			return API.PATCH<TodoBase>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query, body);
 		}
@@ -560,8 +591,7 @@ export default abstract class API {
 			const data = new FormData();
 
 			data.append("image", body);
-
-			return API.POST<{ url: string | undefined }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images/upload`, query, data);
+			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images/upload`, query, data);
 		}
 	})();
 
@@ -575,7 +605,7 @@ export default abstract class API {
 		 * 그룹 정보 확인
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - 그룹 ID
+		 * @param {number} id - 그룹 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 그룹 정보
 		 */
@@ -587,7 +617,7 @@ export default abstract class API {
 		 * 그룹 정보 수정
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - 그룹 ID
+		 * @param {number} id - 그룹 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @param {Object} body - 수정할 그룹 정보
 		 * @returns {Promise<Object>} - 그룹 정보
@@ -605,7 +635,7 @@ export default abstract class API {
 		 * 그룹 삭제
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - 그룹 ID
+		 * @param {number} id - 그룹 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
@@ -732,7 +762,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 할일 리스트
 		 */
 		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
-			return API.GET<{ tasks: Task[] }>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}/tasks`, query);
+			return API.GET<Task[]>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}/tasks`, query);
 		}
 	})();
 
