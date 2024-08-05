@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 /* eslint-disable indent */
 /* eslint-disable react/require-default-props */
 
@@ -11,7 +12,7 @@ interface ButtonProps extends PropsWithChildren {
 	fontSize?: "lg" | "md";
 	rounded?: "full" | "xl";
 	href?: string;
-	// eslint-disable-next-line no-unused-vars
+	type?: "button" | "submit" | "reset";
 	onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 	disabled?: boolean;
 }
@@ -25,11 +26,12 @@ interface ButtonProps extends PropsWithChildren {
  * @param {("lg" | "md")} [props.fontSize="lg"] - 버튼 텍스트의 폰트 크기.
  * @param {("full" | "xl")} [props.rounded="xl"] - 버튼의 테두리 반경.
  * @param {string} [props.href] - 버튼이 링크로 사용될 경우의 URL.
+ * @param {("button" | "submit" | "reset")} [props.type="button"] - 버튼의 타입.
  * @param {(e: MouseEvent<HTMLButtonElement>) => void} [props.onClick=() => {}] - 버튼 클릭 이벤트 핸들러.
  * @param {boolean} [props.disabled=false] - 버튼 비활성화 여부.
  * @returns {JSX.Element} 주어진 속성에 따라 스타일링된 버튼 또는 링크 엘리먼트를 반환합니다.
  */
-export default function Button({ children, variant = "primary", fontSize = "lg", rounded = "xl", href, onClick, disabled }: ButtonProps) {
+export default function Button({ children, variant = "primary", fontSize = "lg", rounded = "xl", href, type = "button", onClick, disabled }: ButtonProps) {
 	let btnVariant = "";
 
 	switch (variant) {
@@ -68,7 +70,7 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 	}
 
 	return (
-		<button type="button" className={`${btnStyle}`} onClick={onClick} disabled={disabled}>
+		<button type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled}>
 			{children}
 		</button>
 	);
