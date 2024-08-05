@@ -607,7 +607,7 @@ export default abstract class API {
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 그룹 정보
 		 */
-		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }) {
+		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
 			return API.GET<Team>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}`, query);
 		}
 
@@ -620,7 +620,7 @@ export default abstract class API {
 		 * @param {Object} body - 수정할 그룹 정보
 		 * @returns {Promise<Object>} - 그룹 정보
 		 */
-		public override PATCH({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }, body: { image?: string; name: string }) {
+		public override PATCH({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }, body: { image?: string; name: string }) {
 			return API.PATCH<{ updatedAt: string; createdAt: string; image?: string; name: string; teamId: string; id: number }>(
 				MIME.JSON,
 				`${BASE_URL}/${teamId}/groups/${id}`,
@@ -637,7 +637,7 @@ export default abstract class API {
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override DELETE({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }) {
+		public override DELETE({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
 			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}`, query);
 		}
 	})();
