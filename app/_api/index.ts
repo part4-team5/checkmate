@@ -82,7 +82,7 @@ export default abstract class API {
 				return impl;
 			})(),
 			(() => {
-				const impl: BodyInit = JSON.stringify(payload);
+				const impl: BodyInit = payload instanceof FormData ? payload : JSON.stringify(payload);
 
 				return impl;
 			})(),
@@ -588,7 +588,8 @@ export default abstract class API {
 			const data = new FormData();
 
 			data.append("image", body);
-			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images`, query, data);
+
+			return API.POST<{ url: string | undefined }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images/upload`, query, data);
 		}
 	})();
 
