@@ -5,28 +5,6 @@ import Cookie from "@/app/_utils/Cookie";
 
 const BASE_URL = "https://fe-project-cowokers.vercel.app";
 
-abstract class Token {
-	private constructor() {
-		// final
-	}
-
-	public static get ACCESS() {
-		return Cookie.get("accessToken");
-	}
-
-	public static set ACCESS(value: string) {
-		Cookie.set("accessToken", value);
-	}
-
-	public static get REFRESH() {
-		return Cookie.get("refreshToken");
-	}
-
-	public static set REFRESH(value: string) {
-		Cookie.set("refreshToken", value);
-	}
-}
-
 const enum MIME {
 	JSON = "application/json",
 	FORM_DATA = "multipart/form-data",
@@ -56,14 +34,13 @@ export default abstract class API {
 		// final
 	}
 
-	private static SEND<T>(type: MIME, method: string, url: string, { payload, retries = 0 }: { payload?: object; retries?: number }) {
+	private static async SEND<T>(type: MIME, method: string, url: string, { payload, retries = 0 }: { payload?: object; retries?: number }) {
 		const [headers, body] = [
-			(() => {
+			await (async () => {
 				const impl: HeadersInit = { "Content-Type": type, accept: MIME.JSON };
 
-				if (Token.ACCESS) {
-					impl.Authorization = `Bearer ${Token.ACCESS}`;
-				}
+				impl.Authorization = `Bearer ${await Cookie.get("accessToken")}`;
+
 				// eslint-disable-next-line default-case
 				switch (type) {
 					case MIME.FORM_DATA: {
@@ -83,10 +60,13 @@ export default abstract class API {
 		return new Promise<T>((resolve, reject) => {
 			fetch(url, { method, headers, body }).then(async (response) => {
 				if (!response.ok) {
-					if (response.status === 401 && retries < 5 && Token.REFRESH) {
-						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: Token.REFRESH });
+					// :3
+					const JWT = await Cookie.get("refreshToken");
 
-						Token.ACCESS = data.accessToken;
+					if (response.status === 401 && retries < 5 && JWT) {
+						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: JWT });
+
+						Cookie.set("accessToken", data.accessToken);
 
 						return resolve(await API.SEND(type, method, url, { payload, retries: retries + 1 }));
 					}
