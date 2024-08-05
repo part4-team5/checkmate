@@ -9,7 +9,7 @@ import { createContext, useContext, useEffect, useCallback, useMemo, useState, u
 const [OK, NO] = [Symbol("ok"), Symbol("no")];
 
 interface FormProps extends React.PropsWithChildren {
-	onSubmit: (data: FormData) => void;
+	onSubmit: (ctx: FormContext) => void;
 }
 
 interface FormContext {
@@ -69,18 +69,9 @@ export default function Form({ onSubmit, children }: Readonly<FormProps>) {
 			// :skull:
 			event.preventDefault();
 			// bye bye
-			onSubmit(
-				(() => {
-					const impl = new FormData();
-					// eslint-disable-next-line no-restricted-syntax
-					for (const [key, value] of Object.entries(values)) {
-						impl.set(key, value);
-					}
-					return impl;
-				})(),
-			);
+			onSubmit(ctx);
 		},
-		[onSubmit, values],
+		[onSubmit, ctx],
 	);
 
 	return (
@@ -111,7 +102,8 @@ type Verify<T> = { data: T; error: string };
 
 type Validator =
 	| ({ type: "sync" } & Verify<string>)
-	| ({ type: "pattern" } & Verify<RegExp>)
+	| ({ type: "match" } & Verify<RegExp>)
+	| ({ type: "unmatch" } & Verify<RegExp>)
 	| ({ type: "require" } & Verify<boolean>)
 	| ({ type: "minlength" } & Verify<number>)
 	| ({ type: "maxlength" } & Verify<number>)
@@ -140,8 +132,15 @@ Form.Input = function Input({ id, type, tests, placeholder }: Readonly<{ id: str
 					}
 					break;
 				}
-				case "pattern": {
+				case "match": {
 					if (!test.data.test(value)) {
+						ctx.setError(id, focus ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "unmatch": {
+					if (test.data.test(value)) {
 						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
@@ -256,8 +255,15 @@ Form.TextArea = function TextArea({ id, tests, placeholder }: Readonly<{ id: str
 					}
 					break;
 				}
-				case "pattern": {
+				case "match": {
 					if (!test.data.test(value)) {
+						ctx.setError(id, focus ? test.error : NO);
+						return;
+					}
+					break;
+				}
+				case "unmatch": {
+					if (test.data.test(value)) {
 						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
