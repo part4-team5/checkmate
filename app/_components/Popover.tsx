@@ -1,6 +1,6 @@
 import { useLayoutEffect, useEffect, useState, useRef, cloneElement } from "react";
 
-interface PopoverProps extends React.PropsWithChildren {
+export interface PopoverProps extends React.PropsWithChildren {
 	gapX?: number;
 	gapY?: number;
 	overlay: (close: () => void) => JSX.Element;
