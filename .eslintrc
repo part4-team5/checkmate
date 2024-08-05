@@ -7,17 +7,36 @@
 		"prettier"
 	],
 	"rules": {
-		"indent": [
-			"error",
-			"tab"
+		"yoda": [
+			"off"
 		],
 		"quotes": [
 			"error",
 			"double"
 		],
-		"no-tabs": "off",
-		"react/jsx-indent": "off",
-		"react/require-default-props": "off"
+		"indent": [
+			"error",
+			"tab",
+			{
+				"SwitchCase": 1
+			}
+		],
+		"react/jsx-indent": [
+			"error",
+			"tab"
+		],
+		"react/require-default-props": [
+			"off"
+		],
+		"jsx-a11y/label-has-associated-control": [
+			"error",
+			{
+				"controlComponents": [
+					"Form.TextArea",
+					"Form.TextInput"
+				]
+			}
+		]
 	},
 	"parserOptions": {
 		"project": "./tsconfig.json",
