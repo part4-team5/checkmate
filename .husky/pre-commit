@@ -1,7 +1,7 @@
 if ! git diff-index --quiet HEAD --; then
 	echo "There are staged changes. Running ESLint and Prettier..."
 
-	npx prettier --write "app/**/*.{jsx,ts,tsx,json,css,md}"
+	npx prettier --write "app/**/*.{tsx,ts}"
 	PRETTIER_RESULT=$?
 
 	if [ $PRETTIER_RESULT -ne 0 ]; then
@@ -9,7 +9,7 @@ if ! git diff-index --quiet HEAD --; then
 		exit 1
 	fi
 
-	npx eslint --fix .
+	npx eslint --fix . "app/**/*.{tsx,ts}"
 	ESLINT_RESULT=$?
 
 	if [ $ESLINT_RESULT -ne 0 ]; then

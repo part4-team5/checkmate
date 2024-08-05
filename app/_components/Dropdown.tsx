@@ -26,7 +26,7 @@ type Option = {
 	options?: Option[];
 };
 
-interface DropDownProps {
+export interface DropDownProps {
 	options: Option[];
 	children: React.ReactNode;
 	anchorOrigin?: Origin;
