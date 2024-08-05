@@ -28,7 +28,7 @@
 		"@storybook/addon-onboarding": "^8.2.6",
 		"@storybook/blocks": "^8.2.6",
 		"@storybook/nextjs": "^8.2.6",
-		"@storybook/react": "^8.2.6",
+		"@storybook/react": "^8.2.7",
 		"@storybook/test": "^8.2.6",
 		"@types/node": "^20.14.12",
 		"@types/react": "^18.3.3",

@@ -1,39 +1,9 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 
+import Cookie from "@/app/_utils/Cookie";
+
 const BASE_URL = "https://fe-project-cowokers.vercel.app";
-
-abstract class Token {
-	private static readonly KEY = Object.freeze({ access: "accessToken", refresh: "refreshToken" });
-
-	private constructor() {
-		// final
-	}
-
-	public static get ACCESS() {
-		return localStorage.getItem(this.KEY.access);
-	}
-
-	public static set ACCESS(value: string | null) {
-		if (value) {
-			localStorage.setItem(this.KEY.access, value);
-		} else {
-			localStorage.removeItem(this.KEY.access);
-		}
-	}
-
-	public static get REFRESH() {
-		return localStorage.getItem(this.KEY.refresh);
-	}
-
-	public static set REFRESH(value: string | null) {
-		if (value) {
-			localStorage.setItem(this.KEY.refresh, value);
-		} else {
-			localStorage.removeItem(this.KEY.refresh);
-		}
-	}
-}
 
 const enum MIME {
 	JSON = "application/json",
@@ -64,14 +34,13 @@ export default abstract class API {
 		// final
 	}
 
-	private static SEND<T>(type: MIME, method: string, url: string, { payload, retries = 0 }: { payload?: object; retries?: number }) {
+	private static async SEND<T>(type: MIME, method: string, url: string, { payload, retries = 0 }: { payload?: object; retries?: number }) {
 		const [headers, body] = [
-			(() => {
+			await (async () => {
 				const impl: HeadersInit = { "Content-Type": type, accept: MIME.JSON };
 
-				if (Token.ACCESS) {
-					impl.Authorization = `Bearer ${Token.ACCESS}`;
-				}
+				impl.Authorization = `Bearer ${await Cookie.get("accessToken")}`;
+
 				// eslint-disable-next-line default-case
 				switch (type) {
 					case MIME.FORM_DATA: {
@@ -91,10 +60,13 @@ export default abstract class API {
 		return new Promise<T>((resolve, reject) => {
 			fetch(url, { method, headers, body }).then(async (response) => {
 				if (!response.ok) {
-					if (response.status === 401 && retries < 5 && Token.REFRESH) {
-						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: Token.REFRESH });
+					// :3
+					const JWT = await Cookie.get("refreshToken");
 
-						Token.ACCESS = data.accessToken;
+					if (response.status === 401 && retries < 5 && JWT) {
+						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: JWT });
+
+						Cookie.set("accessToken", data.accessToken);
 
 						return resolve(await API.SEND(type, method, url, { payload, retries: retries + 1 }));
 					}
