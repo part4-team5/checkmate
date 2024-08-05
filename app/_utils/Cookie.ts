@@ -7,13 +7,14 @@ function deserialize(value: string) {
 }
 
 export default class Cookie {
-	public static async get(key: string) {
+	public static get(key: string) {
 		switch (typeof window) {
 			case "undefined": {
 				//
 				// server side
 				//
-				const { cookies } = await import("next/headers");
+				// eslint-disable-next-line global-require
+				const { cookies } = require("next/headers");
 
 				const store = cookies();
 
@@ -29,7 +30,7 @@ export default class Cookie {
 		}
 	}
 
-	public static async set(key: string, value: unknown) {
+	public static set(key: string, value: unknown) {
 		// :3
 		const data = encodeURIComponent(serialize(value));
 
@@ -38,7 +39,8 @@ export default class Cookie {
 				//
 				// server side
 				//
-				const { cookies } = await import("next/headers");
+				// eslint-disable-next-line global-require
+				const { cookies } = require("next/headers");
 
 				const store = cookies();
 
