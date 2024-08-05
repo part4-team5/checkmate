@@ -18,7 +18,7 @@ export default class Cookie {
 
 				const store = cookies();
 
-				return store.get(key) ?? null;
+				return store.has(key) ? deserialize(store.get(key).value) : null;
 			}
 			default: {
 				//
