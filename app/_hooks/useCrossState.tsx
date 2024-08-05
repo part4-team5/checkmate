@@ -33,18 +33,18 @@ export default function useCrossState<T>(key: string, fallback?: T | (() => T)) 
 	});
 
 	const setter = useCallback(
-		(value: T | ((_: T) => T)) => {
-			const signal = value instanceof Function ? value(data) : value;
-
+		(_: T | ((_: T) => T)) => {
+			const signal = _ instanceof Function ? _(data) : _;
+			//
+			// STEP 3. (waterfall) component -> page -> tabs
+			//
 			if (signal !== data) {
-				setData(signal);
-
 				const msg = new Message(Protocol.UPDATE, key, signal);
-				//
-				// STEP 3. waterfall cache -> target -> channel
-				//
-				CACHE.set(key, signal);
-				TARGET.dispatchEvent(new CustomEvent("msg", { detail: msg }));
+				// component
+				setData(signal);
+				// page
+				TARGET.dispatchEvent(CACHE.set(key, signal) && new CustomEvent("msg", { detail: msg }));
+				// tabs
 				CHANNEL.postMessage(msg);
 			}
 		},
