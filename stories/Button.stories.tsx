@@ -1,24 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/function-component-definition */
-/* eslint-disable import/no-extraneous-dependencies */
-import React, { MouseEvent, PropsWithChildren } from "react";
+/* eslint-disable no-console */
+import React from "react";
 import { Meta, StoryFn } from "@storybook/react";
-import Button from "../app/_components/Button";
+import Button, { ButtonProps } from "../app/_components/Button";
 
 export default {
 	title: "Button",
 	component: Button,
 } as Meta;
-
-interface ButtonProps extends PropsWithChildren {
-	variant?: "primary" | "secondary" | "white" | "outline" | "danger";
-	fontSize?: "lg" | "md";
-	rounded?: "full" | "xl";
-	href?: string;
-	type?: "button" | "submit" | "reset";
-	onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
-	disabled?: boolean;
-}
 
 const Template: StoryFn<ButtonProps> = (args) => (
 	<div className="h-14 max-w-52">

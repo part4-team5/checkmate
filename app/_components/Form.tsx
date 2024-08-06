@@ -110,7 +110,13 @@ type Validator =
 	| ({ type: "file_name" } & Verify<RegExp>)
 	| ({ type: "file_size" } & Verify<number>);
 
-Form.Input = function Input({ id, type, tests, placeholder }: Readonly<{ id: string; type: string; tests?: Validator[]; placeholder?: string }>) {
+Form.Input = function Input({
+	id,
+	type,
+	init,
+	tests,
+	placeholder,
+}: Readonly<{ id: string; type: string; init?: string; tests?: Validator[]; placeholder?: string }>) {
 	const ctx = useCTX();
 
 	const [value, setValue] = useState("");
@@ -222,6 +228,7 @@ Form.Input = function Input({ id, type, tests, placeholder }: Readonly<{ id: str
 				onPaste={onPaste}
 				onChange={onChange}
 				placeholder={placeholder}
+				defaultValue={init}
 				className="h-[48px] grow bg-transparent text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
 			/>
 			{type === "password" && (
@@ -233,8 +240,8 @@ Form.Input = function Input({ id, type, tests, placeholder }: Readonly<{ id: str
 	);
 };
 
-Form.TextArea = function TextArea({ id, tests, placeholder }: Readonly<{ id: string; tests?: Validator[]; placeholder?: string }>) {
-	const ctx = useCTX();
+Form.TextArea = function TextArea({ id, init, tests, placeholder }: Readonly<{ id: string; init?: string; tests?: Validator[]; placeholder?: string }>) {
+	const ctx = uinseCTX();
 
 	const [value, setValue] = useState("");
 	const [focus, setFocus] = useState(false);
@@ -346,6 +353,7 @@ Form.TextArea = function TextArea({ id, tests, placeholder }: Readonly<{ id: str
 			onPaste={onPaste}
 			onChange={onChange}
 			placeholder={placeholder}
+			defaultValue={init}
 			className="h-auto grow resize-none overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
 		/>
 	);
