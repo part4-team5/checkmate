@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { createContext, useContext, ReactNode, useMemo } from "react";
-import Author from "@/app/_components/Author";
+import defaultImage from "@/public/images/profile.png";
 import HeartIcon from "@/public/icons/ic_heart";
 import CommentIcon from "@/public/icons/ic_comment";
 
@@ -46,9 +46,16 @@ Message.Date = function Date() {
 	return <div className="text-secondary text-md">{data.date}</div>;
 };
 
-Message.Author = function MessageAuthor() {
+Message.Author = function Author() {
 	const data = useMessageContext();
-	return <Author userName={data.userName || ""} userProfile={data.userProfile} />;
+	return (
+		<div className="flex items-center gap-[12px]">
+			<Image src={data.userProfile ?? defaultImage} alt={data.userName ?? ""} width={32} height={32} />
+			<div>
+				<div className="text-primary text-md font-medium">{data.userName}</div>
+			</div>
+		</div>
+	);
 };
 
 Message.Reaction = function Reaction() {
@@ -67,10 +74,11 @@ Message.Reaction = function Reaction() {
 	);
 };
 
-Message.BoardImage = function BoardImage({ src }: { src: string }) {
+Message.BoardImage = function BoardImage() {
+	const data = useMessageContext();
 	return (
 		<div className="md:w-[72px] md:h-[72px] border-[1px_solid_rgb(248 250 252 / 10%)] relative h-[64px] w-[64px] overflow-hidden rounded-lg">
-			<Image src={src} alt="board" fill />
+			<Image src={data.boardImage ?? ""} alt="board" fill />
 		</div>
 	);
 };
