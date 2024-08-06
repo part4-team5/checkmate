@@ -17,10 +17,10 @@ export default function TeamEditForm() {
 
 	const { id } = useParams<{ id: string }>();
 
-	const teamInfo = useQuery({
+	const { data: teamInfo } = useQuery({
 		queryKey: ["teamInfo", { id: Number(id) }],
 		queryFn: async () => {
-			const response = await API["{teamId}/groups/{id}"].GET({ id: Number(id) }).then((res) => res);
+			const response = await API["{teamId}/groups/{id}"].GET({ id: Number(id) });
 			return response;
 		},
 	});
@@ -90,10 +90,10 @@ export default function TeamEditForm() {
 									{(file) => (
 										// eslint-disable-next-line react/jsx-no-useless-fragment
 										<>
-											{file || teamInfo.data?.image ? (
+											{file || teamInfo?.image ? (
 												<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
 													<Image
-														src={(file as string) ?? teamInfo.data?.image ?? ""}
+														src={(file as string) ?? teamInfo?.image ?? ""}
 														alt="Profile Preview"
 														fill
 														className="rounded-[12px] object-cover object-center"
@@ -126,7 +126,7 @@ export default function TeamEditForm() {
 								id="teamName"
 								type="text"
 								placeholder="팀 이름을 입력하세요"
-								init={teamInfo.data?.name}
+								init={teamInfo?.name}
 								tests={[{ type: "require", data: true, error: "팀 이름은 필수입니다" }]}
 							/>
 							<Form.Error htmlFor="team-name" />
