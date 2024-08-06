@@ -13,10 +13,20 @@ import DropDown from "@/app/_components/Dropdown";
 export default function Page() {
 	const { data } = useQuery({ queryKey: ["my-history"], queryFn: () => API["{teamId}/user/history"].GET({}) });
 
-	const builder = useMemo(() => ({}), [data]);
+	const builder = useMemo(
+		() =>
+			data?.reduce((accumulate: Record<string, (typeof data)[number]["tasksDone"]>, { tasksDone }) => {
+				for (const task of tasksDone) {
+					// eslint-disable-next-line no-param-reassign
+					(accumulate[task.doneAt.split("T")[0]] ??= []).push(task);
+				}
+				return accumulate;
+			}, {}),
+		[data],
+	);
 
 	return (
-		<main className="mt-[40px] flex justify-center text-text-primary h-max">
+		<main className="mt-[40px] flex justify-center text-text-primary">
 			<div className="flex w-full flex-col gap-[24px] px-[16px] desktop:container tablet:px-[24px] desktop:px-0">
 				<div className="text-xl font-bold">마이 히스토리</div>
 				{/* eslint-disable-next-line react/no-array-index-key */}
