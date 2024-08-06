@@ -1,6 +1,6 @@
-import Header from "@/app/_components/header";
 import "./globals.css";
 
+import Header from "@/app/_components/Header";
 import GlobalModals from "@/app/_components/GlobalModals";
 import QueryProvider from "@/app/_components/QureyProvider";
 
