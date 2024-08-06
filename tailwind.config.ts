@@ -43,6 +43,8 @@ export default {
 				default: "#64748B",
 				inverse: "#FFFFFF",
 				disabled: "#94A3B8",
+				emerald: "#10B981",
+				lime: "#A3E635",
 			},
 			status: {
 				danger: "#EF4444",
