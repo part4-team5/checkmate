@@ -28,18 +28,50 @@ function createURL(url: string, query: object) {
 	return location.toString();
 }
 
+abstract class Token {
+	private static readonly CACHE: Record<string, string> = {};
+
+	private constructor() {
+		// final
+	}
+
+	public static get ACCESS() {
+		// eslint-disable-next-line no-return-assign
+		return (this.CACHE.accessToken ??= Cookie.get("accessToken") as string);
+	}
+
+	public static set ACCESS(value: string) {
+		if (typeof window === "undefined") {
+			this.CACHE.accessToken = value;
+		}
+		Cookie.set("accessToken", value);
+	}
+
+	public static get REFRESH() {
+		// eslint-disable-next-line no-return-assign
+		return (this.CACHE.refreshToken ??= Cookie.get("refreshToken") as string);
+	}
+
+	public static set REFRESH(value: string) {
+		if (typeof window === "undefined") {
+			this.CACHE.refreshToken = value;
+		}
+		Cookie.set("refreshToken", value);
+	}
+}
+
 /** @see https://fe-project-cowokers.vercel.app/docs/ */
 export default abstract class API {
 	private constructor() {
 		// final
 	}
 
-	private static async SEND<T>(type: MIME, method: string, url: string, { payload, retries = 0 }: { payload?: object; retries?: number }) {
+	private static SEND<T>(type: MIME, method: string, url: string, { payload, retries = 0 }: { payload?: object; retries?: number }) {
 		const [headers, body] = [
-			await (async () => {
+			(() => {
 				const impl: HeadersInit = { "Content-Type": type, accept: MIME.JSON };
 
-				impl.Authorization = `Bearer ${await Cookie.get("accessToken")}`;
+				impl.Authorization = `Bearer ${Token.ACCESS}`;
 
 				// eslint-disable-next-line default-case
 				switch (type) {
@@ -51,7 +83,7 @@ export default abstract class API {
 				return impl;
 			})(),
 			(() => {
-				const impl: BodyInit = JSON.stringify(payload);
+				const impl: BodyInit = payload instanceof FormData ? payload : JSON.stringify(payload);
 
 				return impl;
 			})(),
@@ -60,13 +92,10 @@ export default abstract class API {
 		return new Promise<T>((resolve, reject) => {
 			fetch(url, { method, headers, body }).then(async (response) => {
 				if (!response.ok) {
-					// :3
-					const JWT = await Cookie.get("refreshToken");
+					if (response.status === 401 && retries <= 1 && Token.REFRESH) {
+						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: Token.REFRESH });
 
-					if (response.status === 401 && retries < 5 && JWT) {
-						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: JWT });
-
-						Cookie.set("accessToken", data.accessToken);
+						Token.ACCESS = data.accessToken;
 
 						return resolve(await API.SEND(type, method, url, { payload, retries: retries + 1 }));
 					}
@@ -191,14 +220,16 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 그룹 정보
 		 */
 		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
-			return API.GET<{
-				role: Role;
-				userImage: string;
-				userEmail: string;
-				userName: string;
-				groupId: number;
-				userId: number;
-			}>(MIME.JSON, `${BASE_URL}/${teamId}/user/groups`, query);
+			return API.GET<
+				{
+					updatedAt: string;
+					createdAt: string;
+					image: string;
+					name: string;
+					teamId: string;
+					id: number;
+				}[]
+			>(MIME.JSON, `${BASE_URL}/${teamId}/user/groups`, query);
 		}
 	})();
 
@@ -214,20 +245,24 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 투두 히스토리
 		 */
 		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
-			return API.GET<{
-				tasksDone: {
-					deletedAt: string;
-					userId: number;
-					recurringId: number;
-					frequency: Frequency;
-					date: string;
-					doneAt: string;
-					description: string;
-					name: string;
-					updatedAt: string;
-					id: number;
-				}[];
-			}>(MIME.JSON, `${BASE_URL}/${teamId}/user/history`, query);
+			return API.GET<
+				[
+					{
+						tasksDone: {
+							deletedAt: string;
+							userId: number;
+							recurringId: number;
+							frequency: Frequency;
+							date: string;
+							doneAt: string;
+							description: string;
+							name: string;
+							updatedAt: string;
+							id: number;
+						}[];
+					},
+				]
+			>(MIME.JSON, `${BASE_URL}/${teamId}/user/history`, query);
 		}
 	})();
 
@@ -292,11 +327,11 @@ export default abstract class API {
 		 * Task 목록 확인
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - Task 목록 ID
+		 * @param {number} id - Task 목록 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - Task 목록 정보
 		 */
-		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: string; date?: string }) {
+		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: number; date?: string }) {
 			return API.GET<{
 				groupId: number;
 				displayIndex: number;
@@ -313,12 +348,12 @@ export default abstract class API {
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
 		 * @param {number} groupId - 그룹 ID
-		 * @param {string} id - Task 목록 ID
+		 * @param {number} id - Task 목록 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @param {Object} body - 수정할 Task 목록 정보
 		 * @returns {Promise<Object>} - Task 목록 정보
 		 */
-		public override PATCH({ teamId = "6-5", groupId, id, ...query }: { teamId?: string; groupId: number; id: string }, body: { name: string }) {
+		public override PATCH({ teamId = "6-5", groupId, id, ...query }: { teamId?: string; groupId: number; id: number }, body: { name: string }) {
 			return API.PATCH<{
 				groupId: number;
 				displayIndex: number;
@@ -333,11 +368,11 @@ export default abstract class API {
 		 * Task 목록 삭제
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - Task 목록 ID
+		 * @param {number} id - Task 목록 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override DELETE({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }) {
+		public override DELETE({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
 			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/{groupsId}/task-lists/${id}`, query);
 		}
 	})();
@@ -454,7 +489,7 @@ export default abstract class API {
 		 */
 		public override PATCH(
 			{ teamId = "6-5", groupId, taskListId, taskId, ...query }: { teamId?: string; groupId?: number; taskListId?: number; taskId: number },
-			body: { name: string; description: string; displayIndex: number; done: boolean },
+			body: { name: string; description: string; done: boolean },
 		) {
 			return API.PATCH<TodoBase>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query, body);
 		}
@@ -574,11 +609,11 @@ export default abstract class API {
 		 * 그룹 정보 확인
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - 그룹 ID
+		 * @param {number} id - 그룹 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 그룹 정보
 		 */
-		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }) {
+		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
 			return API.GET<Team>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}`, query);
 		}
 
@@ -586,12 +621,12 @@ export default abstract class API {
 		 * 그룹 정보 수정
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - 그룹 ID
+		 * @param {number} id - 그룹 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @param {Object} body - 수정할 그룹 정보
 		 * @returns {Promise<Object>} - 그룹 정보
 		 */
-		public override PATCH({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }, body: { image?: string; name: string }) {
+		public override PATCH({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }, body: { image?: string; name: string }) {
 			return API.PATCH<{ updatedAt: string; createdAt: string; image?: string; name: string; teamId: string; id: number }>(
 				MIME.JSON,
 				`${BASE_URL}/${teamId}/groups/${id}`,
@@ -604,11 +639,11 @@ export default abstract class API {
 		 * 그룹 삭제
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - 그룹 ID
+		 * @param {number} id - 그룹 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override DELETE({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }) {
+		public override DELETE({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
 			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}`, query);
 		}
 	})();
@@ -731,7 +766,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 할일 리스트
 		 */
 		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
-			return API.GET<{ tasks: Task[] }>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}/tasks`, query);
+			return API.GET<Task[]>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${id}/tasks`, query);
 		}
 	})();
 
@@ -858,7 +893,7 @@ export default abstract class API {
 	/**
 	 * 간편 로그인 API
 	 */
-	public static readonly ["/{teamId}/auth/signIn/{provider}"] = new (class extends API {
+	public static readonly ["{teamId}/auth/signIn/{provider}"] = new (class extends API {
 		/**
 		 * 간편 로그인
 		 * @param {Object} param - 파라미터 객체
@@ -911,7 +946,7 @@ export default abstract class API {
 	/**
 	 * 게시글 댓글 수정, 삭제 API
 	 */
-	public static readonly ["/{teamId}/comments/{commentId}"] = new (class extends API {
+	public static readonly ["{teamId}/comments/{commentId}"] = new (class extends API {
 		/**
 		 * 게시글 댓글 수정
 		 * @param {Object} param - 파라미터 객체
@@ -1201,7 +1236,7 @@ interface TaskList {
 	createdAt: string;
 	name: string;
 	id: number;
-	tasks: string[];
+	tasks: Task[];
 }
 
 interface Team {
