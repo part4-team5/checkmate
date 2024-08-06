@@ -117,6 +117,13 @@ Form.Input = function Input({
 	tests,
 	placeholder,
 }: Readonly<{ id: string; type: string; init?: string; tests?: Validator[]; placeholder?: string }>) {
+Form.Input = function Input({
+	id,
+	type,
+	init,
+	tests,
+	placeholder,
+}: Readonly<{ id: string; type: string; init?: string; tests?: Validator[]; placeholder?: string }>) {
 	const ctx = useCTX();
 
 	const [value, setValue] = useState("");
@@ -228,6 +235,7 @@ Form.Input = function Input({
 				onPaste={onPaste}
 				onChange={onChange}
 				placeholder={placeholder}
+				defaultValue={init}
 				defaultValue={init}
 				className="h-[48px] grow bg-transparent text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
 			/>
@@ -354,6 +362,7 @@ Form.TextArea = function TextArea({ id, init, tests, placeholder }: Readonly<{ i
 			onChange={onChange}
 			placeholder={placeholder}
 			defaultValue={init}
+			defaultValue={init}
 			className="h-auto grow resize-none overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
 		/>
 	);
@@ -361,13 +370,14 @@ Form.TextArea = function TextArea({ id, init, tests, placeholder }: Readonly<{ i
 
 Form.ImageInput = function ImageInput({
 	id,
+	init,
 	tests,
 	children,
-}: Readonly<{ id: string; tests?: Validator[]; children: (file?: FileReader["result"]) => React.ReactNode }>) {
+}: Readonly<{ id: string; init?: string; tests?: Validator[]; children: (file?: FileReader["result"]) => React.ReactNode }>) {
 	const ctx = useCTX();
 
-	const [init, setInit] = useState(false);
 	const [file, setFile] = useState<File>();
+	const [focus, setFocus] = useState(false);
 	const [image, setImage] = useState<FileReader["result"]>();
 
 	useEffect(() => {
@@ -376,26 +386,36 @@ Form.ImageInput = function ImageInput({
 	}, [file]);
 
 	useEffect(() => {
+		if (init) {
+			fetch(init).then((response) => {
+				response.blob().then((data) => {
+					setFile(new File([data], `init.${data.type}`, { type: data.type }));
+				});
+			});
+		}
+	}, [init]);
+
+	useEffect(() => {
 		// eslint-disable-next-line no-restricted-syntax
 		for (const test of tests ?? []) {
 			switch (test.type) {
 				case "require": {
 					if (!file) {
-						ctx.setError(id, init ? test.error : NO);
+						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
 					break;
 				}
 				case "file_name": {
 					if (file && !test.data.test(file.name)) {
-						ctx.setError(id, init ? test.error : NO);
+						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
 					break;
 				}
 				case "file_size": {
 					if (file && test.data < file.size) {
-						ctx.setError(id, init ? test.error : NO);
+						ctx.setError(id, focus ? test.error : NO);
 						return;
 					}
 					break;
@@ -416,11 +436,11 @@ Form.ImageInput = function ImageInput({
 		// you've made all the way through here..! congrats
 		ctx.setError(id, OK);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [file, init, tests]);
+	}, [file, focus, tests]);
 
 	const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		// :<
-		setInit(true);
+		setFocus(true);
 		// :3
 		setFile(event.target.files![0]!);
 	}, []);
