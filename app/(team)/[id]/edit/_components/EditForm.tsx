@@ -14,6 +14,7 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function TeamEditForm() {
 	const queryClient = useQueryClient();
+
 	const { id } = useParams<{ id: string }>();
 
 	const teamInfo = useQuery({
@@ -24,15 +25,12 @@ export default function TeamEditForm() {
 		},
 	});
 
-	const imageUpload = async (file: File) => {
-		if (typeof file === "string") {
-			return { url: undefined };
-		}
+	const imageUpload = useCallback(async (file: File): Promise<{ url: string | undefined }> => {
+		if (typeof file === "string") return { url: undefined };
 
 		const response = await API["{teamId}/images/upload"].POST({}, file);
-
 		return response;
-	};
+	}, []);
 
 	const teamEditMutation = useMutation<{}, Error, FormContext>({
 		mutationFn: async (ctx: FormContext) => {
@@ -46,10 +44,7 @@ export default function TeamEditForm() {
 
 			const { url } = await imageUpload(file);
 
-			const payload: Parameters<(typeof API)["{teamId}/groups/{id}"]["PATCH"]>[1] = {
-				image: url,
-				name: teamName,
-			};
+			const payload: Parameters<(typeof API)["{teamId}/groups/{id}"]["PATCH"]>[1] = { image: url, name: teamName };
 
 			const response = await API["{teamId}/groups/{id}"].PATCH({ id: Number(id) }, payload);
 			return response;
@@ -59,7 +54,7 @@ export default function TeamEditForm() {
 			console.log("Success: ", data);
 
 			// 쿼리 무효화
-			queryClient.invalidateQueries({ queryKey: ["teamInfo", { id: Number(id) }] });
+			queryClient.invalidateQueries({ queryKey: ["teamInfo"] });
 		},
 		onError: (error) => {
 			console.log("Error: ", error);
