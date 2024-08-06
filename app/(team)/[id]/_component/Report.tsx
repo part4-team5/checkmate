@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import TodoIcon from "@/public/icons/TodoIcon.svg";
@@ -11,30 +11,31 @@ import CircularProgressBar from "./CircularProgressBar";
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
 
-const fetchGroupInfo = async (groupId: string): Promise<Team> => {
-	try {
-		const response = await API["{teamId}/groups/{id}"].GET({ id: groupId });
-		return response;
-	} catch (error) {
-		console.error("그룹 정보 조회 실패:", error);
-		throw error;
-	}
-};
-
 function Report() {
 	const { id } = useParams();
-	const [groupId] = Array.isArray(id) ? id : [id];
+	const groupId = Array.isArray(id) ? id[0] : id;
 
+	const fetchGroupInfo = useCallback(async (): Promise<Team> => {
+		try {
+			const response = await API["{teamId}/groups/{id}"].GET({ id: groupId });
+			return response;
+		} catch (error) {
+			console.error("그룹 정보 조회 실패:", error);
+			throw error;
+		}
+	}, [groupId]);
 	const { data, isLoading, error } = useQuery<Team>({
 		queryKey: ["groupInfo", groupId],
-		queryFn: () => fetchGroupInfo(groupId!),
+		queryFn: fetchGroupInfo,
 		enabled: !!groupId,
 		refetchInterval: 60000,
 		staleTime: 10000,
+		retry: 3,
+		retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
 	});
 
 	if (isLoading) return <div>Loading...</div>;
-	if (error) return <div>오류 발생: {error.message}</div>;
+	if (error) return <div>오류 발생: {error instanceof Error ? error.message : "Unknown error"}</div>;
 
 	let totalTasks = 0;
 	let doneTasks = 0;
