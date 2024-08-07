@@ -448,7 +448,7 @@ export default abstract class API {
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - Task 목록
 		 */
-		public override GET({ teamId = "6-5", groupId, taskListId, ...query }: { teamId?: string; groupId: number; taskListId: number }) {
+		public override GET({ teamId = "6-5", groupId, taskListId, ...query }: { teamId?: string; groupId: number; taskListId: number; date: string }) {
 			return API.GET<Task[]>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks`, query);
 		}
 	})();
