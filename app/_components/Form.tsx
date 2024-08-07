@@ -181,7 +181,7 @@ Form.Input = function Input({
 		// you've made all the way through here..! congrats
 		ctx.setError(id, OK);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [value, focus, tests, ctx.values]);
+	}, [value, focus, ctx.values, JSON.stringify(tests)]);
 
 	const self = useRef<HTMLDivElement>(null);
 
@@ -241,7 +241,7 @@ Form.Input = function Input({
 };
 
 Form.TextArea = function TextArea({ id, init, tests, placeholder }: Readonly<{ id: string; init?: string; tests?: Validator[]; placeholder?: string }>) {
-	const ctx = uinseCTX();
+	const ctx = useCTX();
 
 	const [value, setValue] = useState("");
 	const [focus, setFocus] = useState(false);
@@ -305,7 +305,7 @@ Form.TextArea = function TextArea({ id, init, tests, placeholder }: Readonly<{ i
 		// you've made all the way through here..! congrats
 		ctx.setError(id, OK);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [value, focus, tests, ctx.values]);
+	}, [value, focus, ctx.values, JSON.stringify(tests)]);
 
 	const self = useRef<HTMLTextAreaElement>(null);
 
@@ -416,7 +416,7 @@ Form.ImageInput = function ImageInput({
 		// you've made all the way through here..! congrats
 		ctx.setError(id, OK);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [file, init, tests]);
+	}, [file, init, JSON.stringify(tests)]);
 
 	const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		// :<
