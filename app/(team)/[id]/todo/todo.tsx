@@ -29,7 +29,7 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 	// 	setRefreshToken(newToken);
 	// };
 
-	const { data: taskList } = useQuery({
+	const { data: taskList, isLoading } = useQuery({
 		queryKey: ["taskList", { groupId }],
 		queryFn: async () => {
 			const response = API["{teamId}/groups/{id}"].GET({
@@ -101,6 +101,9 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 	const handleCalendarClick = () => {
 		setIsCalendarOpen((prev) => !prev);
 	};
+
+	if (isLoading) return <div>로딩중...</div>;
+
 	return (
 		<>
 			{/* <div className="fixed right-2 top-2 flex flex-col gap-3">

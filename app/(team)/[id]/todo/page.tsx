@@ -18,12 +18,14 @@ export default async function Page({ params, searchParams }: PageProps) {
 	await queryClient.prefetchQuery({
 		queryKey: ["tasks", { groupId }],
 		queryFn: async () => {
-			API["{teamId}/groups/{id}"].GET({
+			const res = API["{teamId}/groups/{id}"].GET({
 				id: groupId,
 			});
+			return res;
 		},
 		staleTime: 1000 * 60,
 	});
+
 	return (
 		<div className="pt-10">
 			<h1 className="text-xl font-bold">할 일</h1>
