@@ -84,6 +84,7 @@ export default abstract class API {
 			})(),
 			(() => {
 				const impl: BodyInit = payload instanceof FormData ? payload : JSON.stringify(payload);
+
 				return impl;
 			})(),
 		];
@@ -594,7 +595,7 @@ export default abstract class API {
 			const data = new FormData();
 
 			data.append("image", body);
-			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images/upload`, query, data);
+			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images`, query, data);
 		}
 	})();
 
