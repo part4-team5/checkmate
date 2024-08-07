@@ -14,9 +14,7 @@ function CircularProgressBar({ percent }: CircularProgressBarProps) {
 	const progressRef = useRef<SVGCircleElement | null>(null);
 	const [isGlowing, setIsGlowing] = useState(false);
 
-	const offset = useMemo(() => {
-		return circumference - (percent / 100) * circumference;
-	}, [percent]);
+	const offset = useMemo(() => circumference - (percent / 100) * circumference, [percent]);
 
 	useEffect(() => {
 		setIsGlowing(true);
