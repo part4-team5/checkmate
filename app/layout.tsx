@@ -5,8 +5,8 @@ import QueryProvider from "@/app/_components/QureyProvider";
 
 export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
 	return (
-		<html lang="ko" className="bg-background-primary">
-			<body>
+		<html lang="ko">
+			<body className="h-[100dvh] w-[100dvw] bg-background-primary">
 				<QueryProvider>
 					{children}
 					<GlobalModals />
