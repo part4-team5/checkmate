@@ -24,7 +24,7 @@ export default function Page() {
 					<div className="flex items-center justify-center gap-1 tablet:gap-4 desktop:gap-6">
 						<p className="text-2xl font-semibold text-text-primary tablet:text-[40px] desktop:text-[48px]">함께 만들어가는 투두 리스트</p>
 						<div className="relative h-7 w-7 tablet:h-12 tablet:w-12 desktop:h-14 desktop:w-14">
-							<Image src="/icons/RepairIcon.svg" alt="Repair" fill />
+							<Image src="/icons/landingRepair.svg" alt="Repair" fill />
 						</div>
 					</div>
 
@@ -55,7 +55,7 @@ export default function Page() {
 
 						<div className="flex w-[251px] flex-col tablet:w-fit tablet:justify-center">
 							<div className="relative size-[72px]">
-								<Image src="/icons/FolderIcon.svg" alt="Folder Icon" fill />
+								<Image src="/icons/landingFolder.svg" alt="Folder Icon" fill />
 							</div>
 							<p className="pl-[12px] pt-1 text-2lg font-medium text-text-primary desktop:text-2xl">
 								그룹으로 <br />할 일을 관리해요
@@ -72,7 +72,7 @@ export default function Page() {
 
 					<div className="flex w-[251px] flex-col tablet:w-fit tablet:items-end tablet:justify-center">
 						<div className="relative flex size-[72px]">
-							<Image src="/icons/MailIcon.svg" alt="Mail Icon" fill />
+							<Image src="/icons/landingMail.svg" alt="Mail Icon" fill />
 						</div>
 						<p className="pl-[12px] pt-1 font-medium text-text-primary tablet:pl-0 tablet:pr-[12px] tablet:text-right tablet:text-2lg desktop:text-2xl">
 							간단하게 멤버들을 <br />
@@ -89,7 +89,7 @@ export default function Page() {
 
 					<div className="flex w-[251px] flex-col tablet:w-fit tablet:justify-center">
 						<div className="relative size-[72px]">
-							<Image src="/icons/CheckedIcon.svg" alt="Checked Icon" fill />
+							<Image src="/icons/landingChecked.svg" alt="Checked Icon" fill />
 						</div>
 						<p className="pl-[12px] pt-1 text-2lg font-medium text-text-primary desktop:text-2xl">
 							할 일도 간편하게 <br /> 체크해요
