@@ -6,7 +6,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 export default async function TeamEditPage({ params }: { params: { id: string } }) {
 	const { id } = params;
 
-	const queryClient = getQueryClient();
+	const queryClient = getQueryClient({ staleTime: 0 });
 
 	await queryClient.prefetchQuery({
 		queryKey: ["teamInfo", { id: Number(id) }],

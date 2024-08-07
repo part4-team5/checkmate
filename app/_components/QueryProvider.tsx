@@ -15,7 +15,7 @@ function makeQueryClient() {
 
 let browserQueryClient: QueryClient | undefined;
 
-function getQueryClient() {
+export function getQueryClient() {
 	if (isServer) {
 		// 서버: 항상 새로운 query client를 만듭니다.
 		return makeQueryClient();
