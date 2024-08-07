@@ -27,7 +27,7 @@ export default function Page() {
 			<div className="flex w-full flex-col gap-[24px] px-[16px] desktop:container tablet:px-[24px] desktop:px-0">
 				<div className="text-xl font-bold">마이 히스토리</div>
 				{/* eslint-disable-next-line react/no-array-index-key */}
-				<div className="flex flex-col gap-[40px] h-full">
+				<div className="flex h-full flex-col gap-[40px]">
 					{(() => {
 						if (data && 0 < Object.keys(data).length) {
 							return Object.keys(data).map((key) => (
