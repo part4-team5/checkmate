@@ -84,16 +84,16 @@ export default function CreateTeamPage() {
 											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
 												<Image src={file as string} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
 												<div className="relative size-full">
-													<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
+													<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
 												</div>
 											</div>
 										) : (
 											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
 												<div className="relative size-5">
-													<Image src="/icons/imageIcon.svg" alt="Profile Preview" fill />
+													<Image src="/icons/emptyImage.svg" alt="Profile Preview" fill />
 												</div>
 
-												<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
+												<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
 											</div>
 										)}
 									</>
