@@ -1,26 +1,26 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 
 interface CircularProgressBarProps {
 	percent: number;
 }
 
+const radius = 70;
+const circumference = 2 * Math.PI * radius;
+
 function CircularProgressBar({ percent }: CircularProgressBarProps) {
 	const progressRef = useRef<SVGCircleElement | null>(null);
 	const [isGlowing, setIsGlowing] = useState(false);
 
-	const radius = 70;
-	const circumference = 2 * Math.PI * radius;
-	const offset = circumference - (percent / 100) * circumference;
+	const offset = useMemo(() => {
+		return circumference - (percent / 100) * circumference;
+	}, [percent]);
 
 	useEffect(() => {
-		// 막대바가 차오를 때 빛나게 설정
 		setIsGlowing(true);
-		// 300ms 후 빛남 효과 제거
 		const timer = setTimeout(() => setIsGlowing(false), 300);
-		// 컴포넌트 언마운트 시 타이머 클리어
 		return () => clearTimeout(timer);
 	}, [percent]);
 
@@ -32,8 +32,7 @@ function CircularProgressBar({ percent }: CircularProgressBarProps) {
 				height="170"
 				viewBox="0 0 170 170"
 				animate={{
-					// 100%일 때 5% 확대
-					scale: percent === 100 ? 1.05 : 1,
+					scale: 1.0 + (percent === 100 ? 0.05 : 0.0),
 				}}
 				transition={{
 					duration: 0.6,
@@ -61,7 +60,6 @@ function CircularProgressBar({ percent }: CircularProgressBarProps) {
 					strokeLinecap="round"
 					animate={{
 						strokeDashoffset: offset,
-						// 막대바가 차오를 때만 빛남
 						filter: isGlowing ? "brightness(1.2)" : "brightness(1)",
 					}}
 					transition={{
