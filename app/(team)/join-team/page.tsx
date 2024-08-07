@@ -31,8 +31,6 @@ export default function JoinTeam() {
 			console.log("Success: ", data);
 		},
 		onError: (error, ctx) => {
-			// TODO: 팀 참여 실패 시 에러 메시지 표시
-			console.log("Error: ", error);
 			ctx.setError("teamUrl", "팀 링크가 올바르지 않습니다.");
 		},
 	});

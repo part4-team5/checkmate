@@ -5,13 +5,17 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function CreateTeamPage() {
+	const queryClient = useQueryClient();
+	const router = useRouter();
+
 	const imageUpload = async (file: File) => {
 		if (typeof file === "string") {
 			return { url: undefined };
@@ -22,8 +26,8 @@ export default function CreateTeamPage() {
 		return response;
 	};
 
-	const teamManagementMutation = useMutation<{}, Error, FormContext>({
-		mutationFn: async (ctx: FormContext) => {
+	const teamManagementMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/groups"]["POST"]>>, Error, FormContext>({
+		mutationFn: async (ctx: FormContext): Promise<Awaited<ReturnType<(typeof API)["{teamId}/groups"]["POST"]>>> => {
 			const formData = new FormData();
 			for (const [key, value] of Object.entries(ctx.values)) {
 				formData.append(key, value as string);
@@ -44,12 +48,14 @@ export default function CreateTeamPage() {
 			return response;
 		},
 		onSuccess: (data) => {
-			// TODO: 팀 생성 성공 시 팀 페이지로 이동
-			console.log("Success: ", data);
+			// 쿼리 무효화
+			queryClient.invalidateQueries({ queryKey: ["team"] });
+
+			router.push(`/${data.teamId}`);
 		},
-		onError: (error) => {
-			console.log("Error: ", error);
+		onError: (error, ctx) => {
 			// TODO: 팀 생성 실패 시 에러 메시지 표시
+			ctx.setError("teamName", "팀 생성에 실패했습니다.");
 		},
 	});
 

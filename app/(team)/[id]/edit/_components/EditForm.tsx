@@ -56,9 +56,8 @@ export default function TeamEditForm() {
 
 			router.push(`/${id}`);
 		},
-		onError: (error) => {
-			console.log("Error: ", error);
-			// TODO: 팀 생성 실패 시 에러 메시지 표시
+		onError: (error, ctx) => {
+			ctx.setError("teamName", "팀 수정에 실패했습니다.");
 		},
 	});
 
