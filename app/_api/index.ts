@@ -1232,7 +1232,7 @@ interface TaskList {
 	createdAt: string;
 	name: string;
 	id: number;
-	tasks: string[];
+	tasks: Task[];
 }
 
 interface Team {
