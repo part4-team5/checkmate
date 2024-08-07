@@ -3,7 +3,8 @@
 export default {
 	theme: {
 		screens: {
-			tablet: "744px",
+			mobile: "640px",
+			tablet: "1024px",
 			desktop: "1200px",
 		},
 		colors: {
