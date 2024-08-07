@@ -44,37 +44,35 @@ export default function JoinTeam() {
 	};
 
 	return (
-		<main className="h-dvh min-w-[320px] bg-background-primary text-text-default">
-			<section className="flex size-full flex-col items-center justify-center">
-				<div className="pb-20">
-					<h1 className="text-[40px] font-medium leading-[48px] text-white">팀 참여하기</h1>
-				</div>
+		<section className="flex size-full flex-col items-center justify-center">
+			<div className="pb-20">
+				<h1 className="text-[40px] font-medium leading-[48px] text-white">팀 참여하기</h1>
+			</div>
 
-				<div className="w-full">
-					<Form onSubmit={handleJoinTeam}>
-						<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
-							<label htmlFor="teamUrl" className="w-full pb-3 text-start text-text-primary">
-								팀 링크
-							</label>
-							<Form.Input
-								id="teamUrl"
-								type="text"
-								placeholder="팀 링크를 입력하세요"
-								tests={[{ type: "require", data: true, error: "팀 링크는 필수로 입력해야 합니다" }]}
-							/>
-							<Form.Error htmlFor="teamUrl" />
+			<div className="w-full">
+				<Form onSubmit={handleJoinTeam}>
+					<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
+						<label htmlFor="teamUrl" className="w-full pb-3 text-start text-text-primary">
+							팀 링크
+						</label>
+						<Form.Input
+							id="teamUrl"
+							type="text"
+							placeholder="팀 링크를 입력하세요"
+							tests={[{ type: "require", data: true, error: "팀 링크는 필수로 입력해야 합니다" }]}
+						/>
+						<Form.Error htmlFor="teamUrl" />
 
-							<div className="pt-10" />
+						<div className="pt-10" />
 
-							<div className="h-12">{joinTeamMutation.status === "pending" ? <Button disabled>팀 참여 중</Button> : <Form.Submit>참여하기</Form.Submit>}</div>
-						</div>
-					</Form>
-				</div>
+						<div className="h-12">{joinTeamMutation.status === "pending" ? <Button disabled>팀 참여 중</Button> : <Form.Submit>참여하기</Form.Submit>}</div>
+					</div>
+				</Form>
+			</div>
 
-				<div className="max-w-[340px] pt-6 tablet:max-w-[460px]">
-					<p className="text-md font-normal text-text-primary tablet:text-lg">공유받은 팀 링크를 입력해 참여할 수 있어요.</p>
-				</div>
-			</section>
-		</main>
+			<div className="max-w-[340px] pt-6 tablet:max-w-[460px]">
+				<p className="text-md font-normal text-text-primary tablet:text-lg">공유받은 팀 링크를 입력해 참여할 수 있어요.</p>
+			</div>
+		</section>
 	);
 }
