@@ -66,7 +66,6 @@ export default abstract class API {
 		// final
 	}
 
-
 	private static SEND<T>(type: MIME, method: string, url: string, { payload, retries = 0 }: { payload?: object; retries?: number }) {
 		const [headers, body] = [
 			(() => {
