@@ -7,7 +7,7 @@ import QueryProvider from "@/app/_components/QueryProvider";
 export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
 	return (
 		<html lang="ko">
-			<body className="bg-background-primary text-text-primary">
+			<body className="h-[100dvh] w-[100dvw] bg-background-primary">
 				<QueryProvider>
 					<Header />
 					{children}
