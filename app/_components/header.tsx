@@ -35,13 +35,17 @@ export default function Header() {
 		{ text: "로그아웃", onClick: () => console.log("로그아웃") }, // TODO: 로그아웃 처리
 	];
 
-	// TODO: 팀 목록 받아오기
-	const teamDropdown =
-		user?.memberships.map((membership) => ({
+	const teamDropdown = [
+		...(user?.memberships.map((membership) => ({
 			text: membership.group.name,
-			image: membership.group.image ?? "/icons/emptyImage.svg",
+			image: membership.group.image || "/icons/emptyImage.svg",
 			onClick: () => router.push(`/${membership.groupId}`),
-		})) ?? [];
+		})) || []),
+		{
+			content: <p className="size-full rounded-xl border py-3 text-lg font-medium hover:bg-background-tertiary">+ 팀 생성하기</p>,
+			onClick: () => router.push("/create-team"),
+		},
+	];
 
 	return (
 		<header className="sticky top-0 z-50 h-[60px] min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
@@ -59,7 +63,7 @@ export default function Header() {
 						role="button"
 						tabIndex={0}
 					>
-						<div className="z-40 h-full w-[50%] min-w-[135px] bg-background-secondary py-5 pl-6 pr-5">
+						<div className="z-40 h-full w-[50%] min-w-fit bg-background-secondary py-5 pl-6 pr-5">
 							<div className="flex w-full justify-end">
 								<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Close">
 									<Icon.Close width={24} height={24} />
@@ -93,7 +97,7 @@ export default function Header() {
 									<li key={membership.groupId} className="size-full">
 										<Link
 											href={`/${membership.groupId}`}
-											className="mr-2 flex items-center gap-2 rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary"
+											className="mr-2 flex min-w-max items-center gap-2 rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary"
 										>
 											<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt={membership.group.name ?? "empty"} width={32} height={32} />
 											{membership.group.name}
