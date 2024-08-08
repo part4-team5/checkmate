@@ -55,32 +55,23 @@ export default function DropDown({
 	function recursive(items: Option[], close: () => void) {
 		return (
 			<div
-				className={`flex min-w-[120px] rounded-[12px] border border-white border-opacity-5 bg-background-secondary text-[#F8FAFC] ${
+				className={`flex w-max min-w-[120px] rounded-[12px] border border-white border-opacity-5 bg-background-secondary text-[#F8FAFC] ${
 					items.some((option) => option.image) ? "space-y-2" : ""
 				}`}
 			>
 				{items.map((option, index) => (
-					<div
-						key={`${option.text} ${index}` || index}
-						className={`flex items-center rounded-[8px] ${option.content ? "" : "hover:bg-[#63748D]"} ${
-							option.image ? "mx-[16px] mt-[16px] w-[186px] justify-between" : "justify-center"
-						}`}
-					>
+					<div key={`${option.text} ${index}` || index} className={`flex size-full items-center rounded-[8px] ${option.content ? "" : "hover:bg-[#63748D]"} `}>
 						<div className="flex size-full items-center justify-center gap-[12px]">
-							{option.image && (
-								<div>
-									<Image src={option.image} alt={option.text || ""} width={32} height={32} />
-								</div>
-							)}
 							<button
 								type="button"
-								className="flex size-full cursor-pointer items-center justify-center p-[8px]"
+								className="flex size-full cursor-pointer items-center justify-center gap-2 p-[8px]"
 								onClick={(e) => handleOptionClick(e, option.onClick, close)}
 							>
-								<p className="full flex text-center">{option.text}</p>
+								{option.image && <Image src={option.image} alt={option.text || "empty"} width={32} height={32} />}
+								<p className={`full flex flex-grow ${!option.image && "justify-center"}`}>{option.text}</p>
 							</button>
 						</div>
-						{option.content && <div className="mb-[16px]">{option.content}</div>}
+						{option.content && <div className="mb-[16px] flex-grow">{option.content}</div>}
 						{option.options && option.options.length > 0 && (
 							<Popover
 								overlay={(subClose) =>

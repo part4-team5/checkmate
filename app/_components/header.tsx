@@ -4,6 +4,7 @@ import API from "@/app/_api";
 import DropDown from "@/app/_components/Dropdown";
 import Icon from "@/app/_icons";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -38,6 +39,7 @@ export default function Header() {
 	const teamDropdown =
 		user?.memberships.map((membership) => ({
 			text: membership.group.name,
+			image: membership.group.image ?? "/icons/emptyImage.svg",
 			onClick: () => router.push(`/${membership.groupId}`),
 		})) ?? [];
 
@@ -89,7 +91,11 @@ export default function Header() {
 							<ul className="max-h-[calc(100dvh-200px)] max-w-full overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary">
 								{user?.memberships.map((membership) => (
 									<li key={membership.groupId} className="size-full">
-										<Link href={`/${membership.groupId}`} className="mr-2 flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
+										<Link
+											href={`/${membership.groupId}`}
+											className="mr-2 flex items-center gap-2 rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary"
+										>
+											<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt={membership.group.name ?? "empty"} width={32} height={32} />
 											{membership.group.name}
 										</Link>
 									</li>
@@ -136,7 +142,7 @@ export default function Header() {
 							anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
 							overlayOrigin={{ vertical: "top", horizontal: "right" }}
 						>
-							<button type="button" aria-label="User" className="flex gap-2">
+							<button type="button" className="flex gap-2">
 								<div className="size-4 tablet:size-6">
 									<Icon.User width="100%" height="100%" />
 								</div>
