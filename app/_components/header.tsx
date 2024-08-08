@@ -86,10 +86,10 @@ export default function Header() {
 							{/* {isUser && <div className="my-2 border-t" />} */}
 
 							{/* max-h-[calc(100dvh-200px)]으로 위에 크기만큼 빼서 스크롤 넣어줌 */}
-							<ul className="max-h-[calc(100dvh-200px)] max-w-full overflow-y-scroll">
+							<ul className="max-h-[calc(100dvh-200px)] max-w-full overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary">
 								{user?.memberships.map((membership) => (
 									<li key={membership.groupId} className="size-full">
-										<Link href={`/${membership.groupId}`} className="flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
+										<Link href={`/${membership.groupId}`} className="mr-2 flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
 											{membership.group.name}
 										</Link>
 									</li>

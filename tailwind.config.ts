@@ -1,5 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 /** @type {import("tailwindcss").Config} */
+import plugin from "tailwindcss/plugin";
+
 export default {
 	theme: {
 		screens: {
@@ -75,4 +77,19 @@ export default {
 		},
 	},
 	content: ["./pages/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}", "./stories/**/*.{js,ts,jsx,tsx}"],
+	plugins: [
+		plugin(({ addUtilities, addVariant }) => {
+			addUtilities({
+				".scrollbar-hide": {
+					"scrollbar-width": "none",
+					"-ms-overflow-style": "none",
+					"&::-webkit-scrollbar": {
+						display: "none",
+					},
+				},
+			});
+			addVariant("scrollbar", "&::-webkit-scrollbar");
+			addVariant("scrollbar-thumb", "&::-webkit-scrollbar-thumb");
+		}),
+	],
 };
