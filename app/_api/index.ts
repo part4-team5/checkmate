@@ -1114,13 +1114,14 @@ interface UpdatePasswordBody {
 interface Task {
 	deletedAt: string;
 	recurringId: number;
-	frequency: string;
+	frequency: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY";
 	userId: number;
 	date: string;
 	doneAt: string;
 	updatedAt: string;
 	name: string;
 	id: number;
+	commentCount: number;
 }
 
 type TaskRecurringCreateDto = MonthlyRecurringCreateBody | WeeklyRecurringCreateBody | DailyRecurringCreateBody | OnceRecurringCreateBody;
