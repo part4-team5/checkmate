@@ -25,6 +25,9 @@
 			"error",
 			"tab"
 		],
+		"no-restricted-syntax": [
+			"off"
+		],
 		"react/require-default-props": [
 			"off"
 		],
