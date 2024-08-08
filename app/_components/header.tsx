@@ -104,6 +104,14 @@ export default function Header() {
 										</Link>
 									</li>
 								))}
+								<li>
+									<Link
+										href="/create-team"
+										className="mt-1 flex items-center justify-center rounded-xl border py-3 text-lg font-medium hover:bg-background-tertiary"
+									>
+										+ 팀 생성하기
+									</Link>
+								</li>
 							</ul>
 						</div>
 					</div>
