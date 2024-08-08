@@ -8,7 +8,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
-import AddTask from "@/app/(team)/[id]/todo/AddTask";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -134,16 +133,7 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 		setIsCalendarOpen((prev) => !prev);
 	};
 
-	const addTask = () => {
-		overlay.open(({ close }) => (
-			<AddTask
-				onClick={() => {
-					close();
-				}}
-				close={close}
-			/>
-		));
-	};
+	const addTask = () => {};
 
 	if (isLoading) return <div>로딩중...</div>;
 

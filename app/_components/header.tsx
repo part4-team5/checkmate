@@ -1,11 +1,13 @@
 "use client";
 
+import API from "@/app/_api";
 import DropDown from "@/app/_components/Dropdown";
 import CheckIcon from "@/public/icons/CheckIcon";
 import CloseIcon from "@/public/icons/ic_close";
 import LogoTypoIcon from "@/public/icons/LogoTypoIcon";
 import MenuIcon from "@/public/icons/MenuIcon";
 import UserIcon from "@/public/icons/UserIcon";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,8 +16,28 @@ export default function Header() {
 	const router = useRouter();
 	const [isOpen, setIsOpen] = useState(false);
 
-	// TODO: 유저 정보로 로그인 여부 확인
-	const isUser = true;
+	// 유저 정보 받아오기
+	const {
+		data: user,
+		isLoading,
+		isError,
+	} = useQuery({
+		queryKey: ["user"],
+		queryFn: async () => {
+			const response = await API["{teamId}/user"].GET({});
+			return response;
+		},
+	});
+
+	if (isError) {
+		console.log("error");
+	}
+
+	if (isLoading) {
+		console.log("loading");
+	}
+
+	const isUser = user !== undefined;
 
 	const userDropdown = [
 		{ text: "마이 히스토리", onClick: () => router.push("/my-history") },

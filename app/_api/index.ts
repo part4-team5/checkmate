@@ -89,7 +89,7 @@ export default abstract class API {
 		];
 
 		return new Promise<T>((resolve, reject) => {
-			fetch(url, { method, headers, body }).then(async (response) => {
+			fetch(url, { method, headers, body, cache: "no-store" }).then(async (response) => {
 				if (!response.ok) {
 					if (response.status === 401 && retries <= 1 && Token.REFRESH) {
 						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: Token.REFRESH });
