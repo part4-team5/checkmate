@@ -49,8 +49,8 @@ export default function LoginPage() {
 	);
 
 	return (
-		<main className="mobile:p-[140px_0] box-border min-h-screen w-full bg-background-primary p-[24px_0]">
-			<section className="mobile:m-[0_auto] mobile:w-[460px] m-[0_16px] w-auto">
+		<main className="box-border min-h-screen w-full bg-background-primary p-[24px_0] tablet:p-[140px_0]">
+			<section className="m-[0_16px] w-auto tablet:m-[0_auto] tablet:w-[460px]">
 				<h2 className="mb-[80px] text-center text-[40px] font-medium leading-[48px] text-text-primary">로그인</h2>
 				<Form onSubmit={handleSubmit}>
 					<div className="flex flex-col gap-[12px]">
