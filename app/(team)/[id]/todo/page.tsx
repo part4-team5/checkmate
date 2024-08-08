@@ -1,4 +1,4 @@
-import ClientTodo from "@/app/(team)/[id]/todo/Todo";
+import ClientTodo from "@/app/(team)/[id]/todo/todo";
 import API from "@/app/_api";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 
@@ -28,7 +28,7 @@ export default async function Page({ params, searchParams }: PageProps) {
 
 	return (
 		<div className="pt-10">
-			<h1 className="text-xl font-bold">할 일</h1>
+			<h1 className="text-xl font-bold text-text-primary">할 일</h1>
 			<HydrationBoundary state={dehydrate(queryClient)}>
 				<ClientTodo groupId={groupId} taskId={taskId} />
 			</HydrationBoundary>

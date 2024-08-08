@@ -6,8 +6,10 @@ import Button from "@/app/_components/Button";
 import useCookie from "@/app/_hooks/useCookie";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
+import SideBarWrapper from "@/app/_components/sidebar";
+import TodoDetail from "@/app/(team)/[id]/todo/todoDetail";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -32,10 +34,11 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 	const router = useRouter();
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
+	const [currentTaskId, setCurrentTaskId] = useState<number>(taskId);
 	const overlay = useOverlay();
 
-	const { data: taskList, isLoading } = useQuery({
-		queryKey: ["taskList", { groupId }],
+	const { data: taskList } = useQuery({
+		queryKey: ["tasks", { groupId }],
 		queryFn: async () => {
 			const response = API["{teamId}/groups/{id}"].GET({
 				id: groupId,
@@ -62,6 +65,7 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 					return response;
 				},
 				staleTime: 1000 * 60,
+				gcTime: 1000 * 60 * 60,
 			});
 		}
 	};
@@ -74,12 +78,18 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 				taskListId: taskId,
 				date: currentDate.toISOString(),
 			});
+
 			return response;
 		},
 		staleTime: 1000 * 60,
 	});
 
+	useEffect(() => {
+		console.log(todos);
+	}, [todos]);
+
 	const updateSearchParams = (name: string, value: number) => {
+		setCurrentTaskId(value);
 		const newSearchParams = new URLSearchParams(searchParams.toString());
 		newSearchParams.set(name, value.toString());
 		router.push(`${pathname}?${newSearchParams.toString()}`);
@@ -133,16 +143,33 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 		setIsCalendarOpen((prev) => !prev);
 	};
 
-	const addTask = () => {};
+	const handleTodoClick = (todoId: number) => {
+		overlay.open(({ close }) => (
+			<SideBarWrapper close={close}>
+				<TodoDetail id={todoId} close={close} />
+			</SideBarWrapper>
+		));
+	};
 
-	if (isLoading) return <div>로딩중...</div>;
-
+	/* eslint-disable jsx-a11y/click-events-have-key-events */
+	/* eslint-disable jsx-a11y/interactive-supports-focus */
+	/* eslint-disable jsx-a11y/click-events-have-key-events */
+	/* eslint-disable jsx-a11y/no-static-element-interactions */
 	return (
 		<>
+			<Button
+				onClick={() =>
+					setRefreshToken(
+						"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzUsInRlYW1JZCI6IjYtNSIsInNjb3BlIjoicmVmcmVzaCIsImlhdCI6MTcyMzExOTQwNSwiZXhwIjoxNzIzNzI0MjA1LCJpc3MiOiJzcC1jb3dvcmtlcnMifQ.M8WaNAcYAD2KECbWRrspgvNKZqK2GshB27mKu9vVy3A",
+					)
+				}
+			>
+				토큰 초기화
+			</Button>
 			<div className="my-6 flex justify-between">
 				<Calendar onChange={(date) => handleCurrentDate(date)}>
 					<div className="flex gap-3">
-						<div className="flex items-center text-lg font-medium">
+						<div className="flex items-center text-lg font-medium text-text-primary">
 							<Calendar.Date>{(date) => formatDate(date)}</Calendar.Date>
 						</div>
 						<div className="flex gap-1">
@@ -165,7 +192,7 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 						</div>
 					</div>
 				</Calendar>
-				<button onClick={addTask} type="button" className="text-brand-primary" aria-label="addtask">
+				<button type="button" className="text-brand-primary" aria-label="addtask">
 					+새로운 목록 추가하기
 				</button>
 			</div>
@@ -173,7 +200,7 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 				{tasks &&
 					tasks.map((task) => (
 						<button
-							className={`${task.id === taskId ? "underline" : "text-text-default"}`}
+							className={`${task.id === currentTaskId ? "text-text-primary underline" : "text-text-default"}`}
 							type="button"
 							key={task.id}
 							onMouseEnter={prefetch}
@@ -188,7 +215,11 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 					todos.map((todo) => {
 						const { date, time } = dateTimeSplit(todo.date); // 날짜 변환
 						return (
-							<div className="flex w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary" key={todo.id}>
+							<div
+								className="flex w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
+								key={todo.id}
+								onClick={() => handleTodoClick(todo.id)}
+							>
 								<div className="flex items-center justify-between">
 									<div className="flex gap-3">
 										<button type="button" aria-label="todo-done">

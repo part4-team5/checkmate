@@ -467,8 +467,8 @@ export default abstract class API {
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - Task 상세 정보
 		 */
-		public override GET({ teamId = "6-5", groupId, taskListId, taskId, ...query }: { teamId?: string; groupId: number; taskListId: number; taskId: number }) {
-			return API.GET<Todo>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query);
+		public override GET({ teamId = "6-5", taskId, ...query }: { teamId?: string; taskId: number }) {
+			return API.GET<Todo>(MIME.JSON, `${BASE_URL}/${teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/${taskId}`, query);
 		}
 
 		/**
