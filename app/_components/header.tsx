@@ -2,42 +2,30 @@
 
 import API from "@/app/_api";
 import DropDown from "@/app/_components/Dropdown";
-import CheckIcon from "@/public/icons/CheckIcon";
-import CloseIcon from "@/public/icons/ic_close";
-import LogoTypoIcon from "@/public/icons/LogoTypoIcon";
-import MenuIcon from "@/public/icons/MenuIcon";
-import UserIcon from "@/public/icons/UserIcon";
+import Icon from "@/app/_icons";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Header() {
 	const router = useRouter();
+	const { id } = useParams();
 	const [isOpen, setIsOpen] = useState(false);
 
+	// TODO: 클라이언트에서 유저 정보 받아오기
+	const isUser = true;
+
 	// 유저 정보 받아오기
-	const {
-		data: user,
-		isLoading,
-		isError,
-	} = useQuery({
+	const { data: user } = useQuery({
 		queryKey: ["user"],
 		queryFn: async () => {
+			if (!isUser) return null;
+
 			const response = await API["{teamId}/user"].GET({});
 			return response;
 		},
 	});
-
-	if (isError) {
-		console.log("error");
-	}
-
-	if (isLoading) {
-		console.log("loading");
-	}
-
-	const isUser = user !== undefined;
 
 	const userDropdown = [
 		{ text: "마이 히스토리", onClick: () => router.push("/my-history") },
@@ -47,22 +35,21 @@ export default function Header() {
 	];
 
 	// TODO: 팀 목록 받아오기
-	const teamId = "1";
-	const teamDropdown = [
-		{ text: "팀 이름 1", onClick: () => router.push(`/team-page/${teamId}`) },
-		{ text: "팀 이름 2", onClick: () => router.push(`/team-page/${teamId}`) },
-	];
-
-	const teamNames = ["팀 이름 1", "팀 이름 2", "팀 이름 3", "팀 이름 4", "팀 이름 5"]; // 예시 팀 이름 목록
+	const teamDropdown =
+		user?.memberships.map((membership) => ({
+			text: membership.group.name,
+			onClick: () => router.push(`/${membership.groupId}`),
+		})) ?? [];
 
 	return (
-		<header className="sticky top-0 z-50 h-[60px] border border-border-primary/10 bg-background-secondary text-text-primary">
+		<header className="sticky top-0 z-50 h-[60px] min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center gap-4 px-4 tablet:gap-10 tablet:px-6">
 				<div className="z-50">
 					<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="block tablet:hidden">
-						<MenuIcon width={24} height={24} />
+						<Icon.Hamburger width={24} height={24} />
 					</button>
 
+					{/* 사이드바 */}
 					<div
 						className={`fixed inset-0 left-0 top-[60px] z-30 bg-black/50 ${isOpen ? "block" : "hidden"} cursor-default`}
 						onClick={() => setIsOpen(!isOpen)}
@@ -73,22 +60,37 @@ export default function Header() {
 						<div className="z-40 h-full w-[50%] min-w-[135px] bg-background-secondary py-5 pl-6 pr-5">
 							<div className="flex w-full justify-end">
 								<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Close">
-									<CloseIcon width={24} height={24} />
+									<Icon.Close width={24} height={24} />
 								</button>
 							</div>
 
 							<div className="h-8" />
 
-							<ul className="flex flex-col gap-4">
-								<li>
-									<Link href="/boards" className="text-lg font-medium">
-										자유게시판
-									</Link>
-								</li>
-								{teamNames.map((teamName) => (
-									<li key={teamName}>
-										<Link href={`/team-page/${teamId}`} className="text-lg font-medium">
-											{teamName}
+							<div className="flex flex-col gap-4 pb-2">
+								<Link href="/boards" className="flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
+									자유게시판
+								</Link>
+
+								{!isUser && (
+									<>
+										<Link href="/login" className="flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
+											로그인
+										</Link>
+										<Link href="/signup" className="flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
+											회원가입
+										</Link>
+									</>
+								)}
+							</div>
+
+							{/* {isUser && <div className="my-2 border-t" />} */}
+
+							{/* max-h-[calc(100dvh-200px)]으로 위에 크기만큼 빼서 스크롤 넣어줌 */}
+							<ul className="max-h-[calc(100dvh-200px)] max-w-full overflow-y-scroll">
+								{user?.memberships.map((membership) => (
+									<li key={membership.groupId} className="size-full">
+										<Link href={`/${membership.groupId}`} className="flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
+											{membership.group.name}
 										</Link>
 									</li>
 								))}
@@ -97,9 +99,9 @@ export default function Header() {
 					</div>
 				</div>
 
-				<Link href="/" className="">
+				<Link href="/">
 					<div className="h-5 w-[102px] desktop:h-8 desktop:w-[158px]">
-						<LogoTypoIcon width="100%" height="100%" />
+						<Icon.LogoTypo width="100%" height="100%" />
 					</div>
 				</Link>
 
@@ -115,9 +117,8 @@ export default function Header() {
 										overlayOrigin={{ vertical: "top", horizontal: "right" }}
 									>
 										<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
-											{/* 현재 팀 이름 받아오기 */}
-											팀 이름
-											<CheckIcon width={16} height={16} />
+											{user?.memberships.find((membership) => membership.groupId === Number(id))?.group.name ?? "팀 선택"}
+											<Icon.ArrowDown width={16} height={16} />
 										</button>
 									</DropDown>
 								</li>
@@ -137,7 +138,7 @@ export default function Header() {
 						>
 							<button type="button" aria-label="User" className="flex gap-2">
 								<div className="size-4 tablet:size-6">
-									<UserIcon width="100%" height="100%" />
+									<Icon.User width="100%" height="100%" />
 								</div>
 								<span className="hidden desktop:block">유저 이름</span>
 							</button>
