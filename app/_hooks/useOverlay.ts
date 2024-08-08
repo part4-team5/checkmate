@@ -5,7 +5,7 @@ import { useCallback } from "react";
 
 // 모달을 열고 닫는 함수
 const useOverlay = () => {
-	const { addModal, removeModal, isArrEmpty, modalElements } = useModalStore();
+	const { addOverlay, removeOverlay, isArrEmpty, modalElements } = useModalStore();
 
 	const open = useCallback(
 		(render: ({ isOpen, close }: { isOpen: boolean; close: () => void }) => JSX.Element) => {
@@ -16,7 +16,7 @@ const useOverlay = () => {
 
 			// 모달 닫기 함수
 			const close = () => {
-				removeModal(id);
+				removeOverlay(id);
 				if (isArrEmpty()) {
 					// 모달이 모두 닫히면 body 스크롤 활성화
 					document.body.style.overflow = "unset";
@@ -25,11 +25,11 @@ const useOverlay = () => {
 
 			const element = () => render({ isOpen: true, close });
 
-			addModal({ id, element });
+			addOverlay({ id, element });
 			// 모달이 열리면 body 스크롤 비활성화
 			document.body.style.overflow = "hidden";
 		},
-		[addModal, removeModal, isArrEmpty, modalElements],
+		[addOverlay, removeOverlay, isArrEmpty, modalElements],
 	);
 
 	return { open };
