@@ -9,36 +9,49 @@ import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
-function ResetPasswordForm({ isUser }: { isUser: boolean }) {
-	const passwordToken = useSearchParams().get("token") ?? "";
+function ResetPasswordForm() {
+	// TODO: 로그인 상태 확인 (테스트 용으로 false로 설정 추후에 User 정보를 받아와서 확인)
+	const isUser = false;
 
 	const overlay = useOverlay();
 
+	const [passwordToken] = useState<string | null>(useSearchParams().get("token"));
+
 	const openModal = useCallback(
-		({ title, message, isEmail }: { title: string; message: string; isEmail: boolean }) => {
+		({ title, message, isEmail, isSuccess = true }: { title: string; message: string; isEmail: boolean; isSuccess?: boolean }) => {
 			overlay.open(({ close }) => (
 				<ModalWrapper close={close}>
 					<div className="flex h-max w-72 flex-col gap-7">
 						<p className="flex items-center justify-center pt-5 text-xl font-semibold">{title}</p>
-						{isEmail && (
+						{isSuccess && isEmail && (
 							<p className="flex flex-grow items-center justify-center text-center">
 								{message} 로 <br /> 비밀번호 재설정 주소를 전송했습니다.
 							</p>
 						)}
-						<div className="h-12">
-							<Button variant="secondary" onClick={close}>
-								닫기
-							</Button>
+
+						<div className="flex gap-2">
+							{isSuccess && passwordToken && (
+								<div className="h-12 w-full">
+									<Button variant="primary" onClick={() => window.history.pushState(null, "", "/login")}>
+										로그인
+									</Button>
+								</div>
+							)}
+							<div className="h-12 w-full">
+								<Button variant="secondary" onClick={close}>
+									닫기
+								</Button>
+							</div>
 						</div>
 					</div>
 				</ModalWrapper>
 			));
 		},
-		[overlay],
+		[overlay, passwordToken],
 	);
 
 	useEffect(() => {
@@ -274,12 +287,9 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 }
 
 export default function ResetPasswordPage() {
-	// TODO: 로그인 상태 확인 (테스트 용으로 false로 설정 추후에 User 정보를 받아와서 확인)
-	const isUser = false;
-
 	return (
 		<Suspense>
-			<ResetPasswordForm isUser={isUser} />
+			<ResetPasswordForm />
 		</Suspense>
 	);
 }
