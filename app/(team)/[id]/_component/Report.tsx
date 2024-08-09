@@ -6,33 +6,33 @@ import Image from "next/image";
 import TodoIcon from "@/public/icons/TodoIcon.svg";
 import DoneIcon from "@/public/icons/DoneIcon.svg";
 import API from "@/app/_api";
-import { useParams } from "next/navigation";
 import CircularProgressBar from "./CircularProgressBar";
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
 
-function Report() {
-	const { id } = useParams();
-	const groupId = Array.isArray(id) ? id[0] : id;
+export interface ReportProps {
+	id: string;
+}
 
+function Report({ id }: ReportProps) {
 	const fetchGroupInfo = useCallback(
 		(): Promise<Team> =>
 			API["{teamId}/groups/{id}"]
-				.GET({ id: Number(groupId) })
+				.GET({ id: Number(id) })
 				.then((response) => response)
 				.catch((error) => {
 					console.error("그룹 정보 조회 실패:", error);
 					throw error;
 				}),
-		[groupId],
+
+		[id],
 	);
 
 	const { data, isLoading, error } = useQuery<Team>({
-		queryKey: ["groupInfo", groupId],
+		queryKey: ["groupInfo", id],
 		queryFn: fetchGroupInfo,
-		enabled: !!groupId,
+		enabled: !!id,
 		refetchInterval: 60000,
-		staleTime: 10000,
 		retry: 3,
 		retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
 	});

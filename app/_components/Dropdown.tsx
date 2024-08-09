@@ -61,19 +61,23 @@ export default function DropDown({
 			>
 				{items.map((option, index) => (
 					<div
-						key={option.text || index}
+						key={`${option.text} ${index}` || index}
 						className={`flex items-center rounded-[8px] p-[8px] ${option.content ? "" : "hover:bg-[#63748D]"} ${
 							option.image ? "mx-[16px] mt-[16px] w-[186px] justify-between" : "justify-center"
 						}`}
 					>
-						<div className="flex items-center justify-center gap-[12px]">
+						<div className="flex size-full items-center justify-center gap-[12px]">
 							{option.image && (
 								<div>
 									<Image src={option.image} alt={option.text || ""} width={32} height={32} />
 								</div>
 							)}
-							<button type="button" className="cursor-pointer" onClick={(e) => handleOptionClick(e, option.onClick, close)}>
-								<p>{option.text}</p>
+							<button
+								type="button"
+								className="flex size-full cursor-pointer items-center justify-center p-[8px]"
+								onClick={(e) => handleOptionClick(e, option.onClick, close)}
+							>
+								<p className="full flex text-center">{option.text}</p>
 							</button>
 						</div>
 						{option.content && <div className="mb-[16px]">{option.content}</div>}
