@@ -156,3 +156,11 @@ Icon.Kebab = function Kebab({ width, height, color }: IconProps) {
 		</svg>
 	);
 };
+
+Icon.TodoCheck = function TodoCheck({ width = 16, height = 16, color = "none" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 16 16" fill={color} xmlns="http://www.w3.org/2000/svg">
+			<path d="M3 8.5L7.11349 11.7908C7.25974 11.9078 7.47219 11.8889 7.59553 11.748L13.5 5" stroke="#A3E635" strokeWidth="2" strokeLinecap="round" />
+		</svg>
+	);
+};
