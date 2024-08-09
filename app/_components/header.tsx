@@ -48,7 +48,7 @@ export default function Header() {
 	];
 
 	return (
-		<header className="sticky top-0 z-50 h-[60px] min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
+		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center gap-4 px-4 tablet:gap-10 tablet:px-6">
 				<div className="z-50">
 					<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="block tablet:hidden">
