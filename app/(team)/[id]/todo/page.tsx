@@ -23,14 +23,13 @@ export default async function Page({ params, searchParams }: PageProps) {
 			});
 			return res;
 		},
-		staleTime: 1000 * 60,
 	});
 
 	return (
 		<div className="pt-10">
 			<h1 className="text-xl font-bold text-text-primary">할 일</h1>
 			<HydrationBoundary state={dehydrate(queryClient)}>
-				<ClientTodo groupId={groupId} taskId={taskId} />
+				<ClientTodo groupId={groupId} taskListId={taskId} />
 			</HydrationBoundary>
 		</div>
 	);

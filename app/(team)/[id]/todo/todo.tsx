@@ -6,14 +6,14 @@ import Button from "@/app/_components/Button";
 import useCookie from "@/app/_hooks/useCookie";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import SideBarWrapper from "@/app/_components/sidebar";
 import TodoDetail from "@/app/(team)/[id]/todo/todoDetail";
 
 type ClientTodoProps = {
 	groupId: number;
-	taskId: number;
+	taskListId: number;
 };
 
 type FrequencyType = "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
@@ -24,18 +24,22 @@ const frequency: Record<FrequencyType, string> = {
 	ONCE: "반복 없음",
 };
 
-export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [refreshToken, setRefreshToken] = useCookie<string>("refreshToken");
-
+export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const queryClient = useQueryClient();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
-	const [currentTaskId, setCurrentTaskId] = useState<number>(taskId);
+	const [currentTaskId, setCurrentTaskId] = useState<number>(taskListId);
 	const overlay = useOverlay();
+
+	const updateSearchParams = (name: string, value: number) => {
+		setCurrentTaskId(value);
+		const newSearchParams = new URLSearchParams(searchParams.toString());
+		newSearchParams.set(name, value.toString());
+		router.push(`${pathname}?${newSearchParams.toString()}`);
+	};
 
 	const { data: taskList } = useQuery({
 		queryKey: ["tasks", { groupId }],
@@ -45,8 +49,6 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 			});
 			return response;
 		},
-
-		staleTime: 1000 * 30,
 	});
 
 	const tasks = taskList?.taskLists;
@@ -64,36 +66,22 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 					});
 					return response;
 				},
-				staleTime: 1000 * 60,
-				gcTime: 1000 * 60 * 60,
 			});
 		}
 	};
 
 	const { data: todos } = useQuery({
-		queryKey: ["tasks", { groupId, taskId, date: currentDate.toLocaleDateString("kr") }],
+		queryKey: ["tasks", { groupId, taskId: currentTaskId, date: currentDate.toLocaleDateString("kr") }],
 		queryFn: async () => {
 			const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].GET({
 				groupId,
-				taskListId: taskId,
+				taskListId,
 				date: currentDate.toISOString(),
 			});
 
 			return response;
 		},
-		staleTime: 1000 * 60,
 	});
-
-	useEffect(() => {
-		console.log(todos);
-	}, [todos]);
-
-	const updateSearchParams = (name: string, value: number) => {
-		setCurrentTaskId(value);
-		const newSearchParams = new URLSearchParams(searchParams.toString());
-		newSearchParams.set(name, value.toString());
-		router.push(`${pathname}?${newSearchParams.toString()}`);
-	};
 
 	const formatDate = (date: Date): string => {
 		// 날짜 포맷 지정
@@ -157,15 +145,6 @@ export default function ClientTodo({ groupId, taskId }: ClientTodoProps) {
 	/* eslint-disable jsx-a11y/no-static-element-interactions */
 	return (
 		<>
-			<Button
-				onClick={() =>
-					setRefreshToken(
-						"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzUsInRlYW1JZCI6IjYtNSIsInNjb3BlIjoicmVmcmVzaCIsImlhdCI6MTcyMzExOTQwNSwiZXhwIjoxNzIzNzI0MjA1LCJpc3MiOiJzcC1jb3dvcmtlcnMifQ.M8WaNAcYAD2KECbWRrspgvNKZqK2GshB27mKu9vVy3A",
-					)
-				}
-			>
-				토큰 초기화
-			</Button>
 			<div className="my-6 flex justify-between">
 				<Calendar onChange={(date) => handleCurrentDate(date)}>
 					<div className="flex gap-3">
