@@ -60,7 +60,6 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 
 			const payload: Parameters<(typeof API)["{teamId}/user/send-reset-password-email"]["POST"]>[1] = {
 				email,
-				// TODO: 추후에 redirectUrl을 변경해야 합니다. env 파일에서 dev, prod를 구분하여 설정해두겠습니다.
 				redirectUrl: process.env.NEXT_PUBLIC_REDIRECT_URL ?? "",
 			};
 
@@ -101,7 +100,7 @@ function ResetPasswordForm({ isUser }: { isUser: boolean }) {
 				const payload: Parameters<(typeof API)["{teamId}/user/reset-password"]["PATCH"]>[1] = {
 					passwordConfirmation,
 					password,
-					token: "",
+					token: passwordToken,
 				};
 
 				for (const [key, value] of formData.entries()) {

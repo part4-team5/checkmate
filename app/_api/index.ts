@@ -3,7 +3,7 @@
 
 import Cookie from "@/app/_utils/Cookie";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const enum MIME {
 	JSON = "application/json",

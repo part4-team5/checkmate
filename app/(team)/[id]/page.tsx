@@ -2,7 +2,7 @@ import Report from "@/app/(team)/[id]/_component/Report";
 
 export default function Page() {
 	return (
-		<main className="w-full text-[#F8FAFC]">
+		<main className="size-full text-[#F8FAFC]">
 			<section className="mt-[24px] h-[64px] rounded-[12px] bg-background-tertiary" />
 			<section className="mt-[24px] h-[245px] rounded-[12px] bg-background-tertiary" />
 			<section className="mt-[48px]">

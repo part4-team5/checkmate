@@ -56,7 +56,7 @@ export default function Header() {
 	const teamNames = ["팀 이름 1", "팀 이름 2", "팀 이름 3", "팀 이름 4", "팀 이름 5"]; // 예시 팀 이름 목록
 
 	return (
-		<header className="sticky top-0 z-50 h-[60px] border border-border-primary/10 bg-background-secondary text-text-primary">
+		<header className="fixed top-0 z-50 h-[60px] w-full border border-border-primary/10 bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center gap-4 px-4 tablet:gap-10 tablet:px-6">
 				<div className="z-50">
 					<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="block tablet:hidden">

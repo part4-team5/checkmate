@@ -17,12 +17,9 @@ export default function CreateTeamPage() {
 	const router = useRouter();
 
 	const imageUpload = async (file: File) => {
-		if (typeof file === "string") {
-			return { url: undefined };
-		}
+		if (typeof file === "string") return { url: undefined };
 
 		const response = await API["{teamId}/images/upload"].POST({}, file);
-
 		return response;
 	};
 
@@ -61,7 +58,7 @@ export default function CreateTeamPage() {
 
 	const handleTeamManagement = useCallback(
 		(ctx: FormContext) => {
-			if (teamManagementMutation.status === "pending") return;
+			if (teamManagementMutation.isPending) return;
 
 			teamManagementMutation.mutate(ctx);
 		},
@@ -118,9 +115,7 @@ export default function CreateTeamPage() {
 
 						<div className="pt-10" />
 
-						<div className="h-12">
-							{teamManagementMutation.status === "pending" ? <Button disabled>팀 생성 중</Button> : <Form.Submit>생성하기</Form.Submit>}
-						</div>
+						<div className="h-12">{teamManagementMutation.isPending ? <Button disabled>팀 생성 중</Button> : <Form.Submit>생성하기</Form.Submit>}</div>
 					</div>
 				</Form>
 			</div>

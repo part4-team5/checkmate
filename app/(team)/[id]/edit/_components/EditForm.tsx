@@ -7,21 +7,19 @@ import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
-export default function TeamEditForm() {
+export default function TeamEditForm({ id }: { id: number }) {
 	const queryClient = useQueryClient();
 	const router = useRouter();
 
-	const { id } = useParams<{ id: string }>();
-
 	const { data: teamInfo } = useQuery({
-		queryKey: ["teamInfo", { id: Number(id) }],
+		queryKey: ["teamInfo", { id }],
 		queryFn: async () => {
-			const response = await API["{teamId}/groups/{id}"].GET({ id: Number(id) });
+			const response = await API["{teamId}/groups/{id}"].GET({ id });
 			return response;
 		},
 	});
@@ -47,7 +45,7 @@ export default function TeamEditForm() {
 
 			const payload: Parameters<(typeof API)["{teamId}/groups/{id}"]["PATCH"]>[1] = { image: url, name: teamName };
 
-			const response = await API["{teamId}/groups/{id}"].PATCH({ id: Number(id) }, payload);
+			const response = await API["{teamId}/groups/{id}"].PATCH({ id }, payload);
 			return response;
 		},
 		onSuccess: () => {
