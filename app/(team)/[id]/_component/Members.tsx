@@ -1,5 +1,6 @@
-/* eslint-disable react/no-unstable-nested-components */
 "use client";
+
+/* eslint-disable react/no-unstable-nested-components */
 
 import { useQuery, useMutation } from "@tanstack/react-query";
 import React, { useCallback } from "react";
