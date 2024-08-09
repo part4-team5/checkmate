@@ -3,7 +3,7 @@
 
 import Cookie from "@/app/_utils/Cookie";
 
-const BASE_URL = "https://fe-project-cowokers.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const enum MIME {
 	JSON = "application/json",
@@ -562,7 +562,7 @@ export default abstract class API {
 		 * @param {Object} body - 등록/수정할 App 정보
 		 * @returns {Promise<Object>} - App 정보
 		 */
-		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { appSecret: string; appKey: string; provider: Provider }) {
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { appSecret: string; appKey: string; provider: "KAKAO" | "GOOGLE" }) {
 			return API.POST<{ updatedAt: string; createdAt: string; image?: string; name: string; teamId: string; id: number }>(
 				MIME.JSON,
 				`${BASE_URL}/${teamId}/oauthApps`,
@@ -899,7 +899,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 인증 정보
 		 */
 		public override POST(
-			{ teamId = "6-5", provider, ...query }: { teamId?: string; provider: Provider },
+			{ teamId = "6-5", provider, ...query }: { teamId?: string; provider: "KAKAO" | "GOOGLE" },
 			body: { state: string; redirectUri: string; token: string },
 		) {
 			return API.POST<Auth>(MIME.JSON, `${BASE_URL}/${teamId}/auth/signIn/${provider}`, query, body);
@@ -1083,11 +1083,6 @@ const enum Frequency {
 	DAILY = "DAILY",
 	WEEKLY = "WEEKLY",
 	MONTHLY = "MONTHLY",
-}
-
-const enum Provider {
-	GOOGLE = "GOOGLE",
-	KAKAO = "KAKAO",
 }
 
 interface UpdateUserBody {
