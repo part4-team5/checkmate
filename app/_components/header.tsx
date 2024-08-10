@@ -16,15 +16,12 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-function deleteCookie(key: string) {
-	document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-}
-
 export default function Header() {
 	const router = useRouter();
 	const params = useParams();
 
-	const [accessToken] = useCookie("accessToken");
+	const [accessToken, setAccessToken] = useCookie("accessToken");
+	const [, setRefreshToken] = useCookie("refreshToken");
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [isTeamOpen, setIsTeamOpen] = useState(false);
@@ -55,8 +52,8 @@ export default function Header() {
 				overlay.open(({ close }) => (
 					<Logout
 						onClick={() => {
-							deleteCookie("accessToken");
-							deleteCookie("refreshToken");
+							setRefreshToken(null);
+							setAccessToken(null);
 							setIsUser(false);
 							router.push("/");
 							close();
