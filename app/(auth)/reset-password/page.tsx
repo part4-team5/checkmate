@@ -6,6 +6,7 @@ import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
+import useCookie from "@/app/_hooks/useCookie";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
@@ -14,11 +15,12 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 function ResetPasswordForm() {
-	// TODO: 로그인 상태 확인 (테스트 용으로 false로 설정 추후에 User 정보를 받아와서 확인)
-	const isUser = false;
+	// 로그인 상태인지 확인
+	const [isUser] = useCookie("accessToken");
 
 	const overlay = useOverlay();
 
+	// 비밀번호 재설정 토큰
 	const [passwordToken] = useState<string | null>(useSearchParams().get("token"));
 
 	const openModal = useCallback(
