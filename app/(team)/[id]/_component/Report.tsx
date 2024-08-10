@@ -24,7 +24,6 @@ function Report({ id }: ReportProps) {
 					console.error("그룹 정보 조회 실패:", error);
 					throw error;
 				}),
-
 		[id],
 	);
 
