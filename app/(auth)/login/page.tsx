@@ -4,8 +4,10 @@ import Form from "@/app/_components/Form";
 import useCookie from "@/app/_hooks/useCookie";
 import API from "@/app/_api/index";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useCallback } from "react";
+import useAuthStore from "@/app/_store/useAuthStore";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -13,13 +15,15 @@ export default function LoginPage() {
 	const router = useRouter();
 	const [accessToken, setAccessToken] = useCookie<string>("accessToken");
 	const [refreshToken, setRefreshToken] = useCookie<string>("refreshToken");
+	const setUser = useAuthStore((state) => state.setUser);
+	const user = useAuthStore((state) => state.user);
 
-	if (accessToken && refreshToken) {
+	if (accessToken && refreshToken && user) {
 		router.push("/");
 	}
 
-	const handleSubmit = useCallback(
-		async (ctx: FormContext) => {
+	const loginMutation = useMutation({
+		mutationFn: async (ctx: FormContext) => {
 			const formData = new FormData();
 			Object.entries(ctx.values).forEach(([key, value]) => {
 				formData.append(key, value as string);
@@ -28,24 +32,35 @@ export default function LoginPage() {
 			const email = formData.get("email") as string;
 			const password = formData.get("password") as string;
 
-			const payload: Parameters<(typeof API)["{teamId}/auth/signIn"]["POST"]>[1] = {
-				email,
-				password,
-			};
+			const payload = { email, password };
 
-			try {
-				const response = await API["{teamId}/auth/signIn"].POST({}, payload);
-				// 로그인 성공 시 보여줄 요소
-				alert("로그인 성공");
-				setAccessToken(response.accessToken);
-				setRefreshToken(response.refreshToken);
-				router.push("/");
-			} catch (error) {
-				// 로그인 실패 시 보여줄 요소
-				alert("로그인 실패");
-			}
+			return API["{teamId}/auth/signIn"].POST({}, payload);
 		},
-		[router, setAccessToken, setRefreshToken],
+		onSuccess: (response) => {
+			setUser({
+				id: response.user.id,
+				email: response.user.email || "",
+				nickname: response.user.nickname,
+				image: response.user.image !== undefined ? response.user.image : null,
+			});
+
+			setAccessToken(response.accessToken);
+			setRefreshToken(response.refreshToken);
+			router.push("/");
+		},
+		onError: (error) => {
+			// 로그인 실패 시
+			alert("로그인 실패");
+			console.log(error.message);
+		},
+	});
+
+	const handleSubmit = useCallback(
+		(ctx: FormContext) => {
+			if (loginMutation.status === "pending") return;
+			loginMutation.mutate(ctx);
+		},
+		[loginMutation],
 	);
 
 	return (
