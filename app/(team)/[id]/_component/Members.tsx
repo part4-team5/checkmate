@@ -19,9 +19,9 @@ type Token = string;
 function Members({ id }: ReportProps) {
 	const overlay = useOverlay();
 
-	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id: Number(id) }), [id]);
+	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id }), [id]);
 
-	const getInvitationLink = useCallback((): Promise<Token> => API["{teamId}/groups/{id}/invitation"].GET({ id: Number(id) }), [id]);
+	const getInvitationLink = useCallback((): Promise<Token> => API["{teamId}/groups/{id}/invitation"].GET({ id }), [id]);
 
 	const { refetch } = useQuery<Token>({
 		queryKey: ["invitationLink", id],
@@ -50,7 +50,7 @@ function Members({ id }: ReportProps) {
 		if (invitationToken) {
 			const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL ?? "";
 			const params = new URLSearchParams({
-				groupID: String(id),
+				groupId: String(id),
 				token: invitationToken,
 			});
 			const invitationUrl = `${redirectUrl}/join-team?${params.toString()}`;

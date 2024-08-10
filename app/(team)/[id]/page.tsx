@@ -5,14 +5,14 @@ import Report from "@/app/(team)/[id]/_component/Report";
 import Members from "@/app/(team)/[id]/_component/Members";
 
 export default async function Page({ params }: { params: { id: string } }) {
-	const { id } = params;
+	const id = Number(params.id);
 
 	const queryClient = getQueryClient({ staleTime: 10000 });
 
 	await queryClient.prefetchQuery({
 		queryKey: ["groupInfo", id],
 		queryFn: async () => {
-			const response = await API["{teamId}/groups/{id}"].GET({ id: Number(id) });
+			const response = await API["{teamId}/groups/{id}"].GET({ id });
 			return response;
 		},
 	});
