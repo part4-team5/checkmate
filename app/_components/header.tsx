@@ -32,7 +32,7 @@ export default function Header() {
 	const overlay = useOverlay();
 
 	// TODO: 클라이언트에서 유저 정보 받아오기
-	const isUser = !!accessToken;
+	const [isUser, setIsUser] = useState(!!accessToken);
 
 	// 유저 정보 받아오기
 	const { data: user } = useQuery({
@@ -57,7 +57,9 @@ export default function Header() {
 						onClick={() => {
 							deleteCookie("accessToken");
 							deleteCookie("refreshToken");
+							setIsUser(false);
 							router.push("/");
+							close();
 						}}
 						close={close}
 					/>
