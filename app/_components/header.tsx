@@ -80,23 +80,28 @@ export default function Header() {
 		},
 	];
 
+	const sideBarClose = useCallback(() => {
+		setIsOpen(false);
+		setIsTeamOpen(false);
+	}, []);
+
 	useEffect(() => {
 		if (!isOpen) return;
 		window.addEventListener(
 			"resize",
 			debounce(() => {
 				if (window.innerWidth > 744) {
-					setIsOpen(false);
+					sideBarClose();
 				}
 			}, 300),
 		);
-	}, [isOpen]);
+	}, [isOpen, sideBarClose]);
 
 	useEffect(() => {
 		if (params) {
-			setIsOpen(false);
+			sideBarClose();
 		}
-	}, [params]);
+	}, [params, sideBarClose]);
 
 	return (
 		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
@@ -117,21 +122,25 @@ export default function Header() {
 
 							{/* {isUser && <div className="border-t-[2px] border-border-primary/10 pb-2" />} */}
 
-							<button type="button" onClick={() => setIsTeamOpen(!isTeamOpen)} className="flex items-center gap-2 text-lg font-medium">
+							<button
+								type="button"
+								onClick={() => setIsTeamOpen(!isTeamOpen)}
+								className={`w-full items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${isUser ? "flex" : "hidden"}`}
+							>
 								<Image src="/icons/landingFolder.svg" alt="selectArrow" width={42} height={42} />
 								{/* <div className="size-2 rounded-full bg-background-inverse" /> */}팀 목록
 							</button>
 
 							{/* max-h-[calc(100dvh-200px)]으로 위에 크기만큼 빼서 스크롤 넣어줌 */}
-							<div className={`transition-animation overflow-hidden ${isTeamOpen ? "max-h-[calc(100dvh-250px)]" : "max-h-0"}`}>
-								<ul className="scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary max-h-[calc(100dvh-250px)] max-w-full overflow-y-auto">
+							<div className={`overflow-hidden transition-animation ${isTeamOpen ? "max-h-[calc(100dvh-270px)]" : "max-h-0"} `}>
+								<ul className="max-h-[calc(100dvh-270px)] max-w-full overflow-y-auto rounded-md scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary">
 									{user?.memberships.map((membership) => (
 										<li key={membership.groupId} className="size-full">
 											<Link
 												href={`/${membership.groupId}`}
 												className="mr-2 flex min-w-max items-center gap-2 rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary"
 											>
-												<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt={membership.group.name ?? "empty"} width={32} height={32} />
+												<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={32} height={32} />
 												{membership.group.name}
 											</Link>
 										</li>
@@ -141,30 +150,37 @@ export default function Header() {
 
 							<div className="h-2" />
 
-							<Link href="/create-team" className="mt-1 flex items-center gap-2 text-lg font-medium">
+							<Link
+								href="/create-team"
+								className={`mt-1 items-center gap-2 text-lg font-medium ${isUser ? "flex" : "hidden"} rounded-md hover:bg-background-tertiary`}
+							>
 								<Image src="/icons/landingMail.svg" alt="selectArrow" width={42} height={42} />
 								{/* <div className="size-2 rounded-full bg-background-inverse" /> */}팀 생성하기
 							</Link>
 
 							<div className="h-2" />
 
-							<div className="flex flex-col gap-4 pb-2">
-								<Link href="/create-team" className="mt-1 flex items-center gap-2 text-lg font-medium">
+							<div className="flex flex-col pb-2">
+								<Link href="/create-team" className="mt-1 flex items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary">
 									{/* <div className="size-2 rounded-full bg-background-inverse" /> */}
 									<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
 									자유게시판
 								</Link>
 
-								{!isUser && (
-									<>
-										<Link href="/login" className="flex items-center rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
-											로그인
-										</Link>
-										<Link href="/signup" className="flex items-center rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
-											회원가입
-										</Link>
-									</>
-								)}
+								<Link
+									href="/login"
+									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${isUser ? "hidden" : "flex"}`}
+								>
+									<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
+									로그인
+								</Link>
+								<Link
+									href="/signup"
+									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${isUser ? "hidden" : "flex"}`}
+								>
+									<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
+									회원가입
+								</Link>
 							</div>
 						</div>
 					</div>
