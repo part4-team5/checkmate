@@ -1,38 +1,69 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+
 "use client";
 
 import API from "@/app/_api";
 import DropDown from "@/app/_components/Dropdown";
+import Logout from "@/app/_components/modal-contents/Logout";
+import useCookie from "@/app/_hooks/useCookie";
+import useOverlay from "@/app/_hooks/useOverlay";
 import Icon from "@/app/_icons";
+import debounce from "@/app/_utils/debounce";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+function deleteCookie(key: string) {
+	document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+}
 
 export default function Header() {
 	const router = useRouter();
-	const { id } = useParams();
+	const params = useParams();
+
+	const [accessToken] = useCookie("accessToken");
+
 	const [isOpen, setIsOpen] = useState(false);
+	const [isTeamOpen, setIsTeamOpen] = useState(false);
+
+	const overlay = useOverlay();
 
 	// TODO: 클라이언트에서 유저 정보 받아오기
-	const isUser = true;
+	const isUser = !!accessToken;
 
 	// 유저 정보 받아오기
 	const { data: user } = useQuery({
 		queryKey: ["user"],
-		queryFn: async () => {
+		queryFn: useCallback(async () => {
 			if (!isUser) return null;
 
 			const response = await API["{teamId}/user"].GET({});
 			return response;
-		},
+		}, [isUser]),
 	});
 
 	const userDropdown = [
 		{ text: "마이 히스토리", onClick: () => router.push("/my-history") },
 		{ text: "계정 설정", onClick: () => router.push("/my-page") },
 		{ text: "팀 참여", onClick: () => router.push("/join-team") },
-		{ text: "로그아웃", onClick: () => console.log("로그아웃") }, // TODO: 로그아웃 처리
+		{
+			text: "로그아웃",
+			onClick: () => {
+				overlay.open(({ close }) => (
+					<Logout
+						onClick={() => {
+							deleteCookie("accessToken");
+							deleteCookie("refreshToken");
+							router.push("/");
+						}}
+						close={close}
+					/>
+				));
+			},
+		}, // TODO: 로그아웃 처리
 	];
 
 	const teamDropdown = [
@@ -47,6 +78,24 @@ export default function Header() {
 		},
 	];
 
+	useEffect(() => {
+		if (!isOpen) return;
+		window.addEventListener(
+			"resize",
+			debounce(() => {
+				if (window.innerWidth > 744) {
+					setIsOpen(false);
+				}
+			}, 300),
+		);
+	}, [isOpen]);
+
+	useEffect(() => {
+		if (params) {
+			setIsOpen(false);
+		}
+	}, [params]);
+
 	return (
 		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center gap-4 px-4 tablet:gap-10 tablet:px-6">
@@ -56,63 +105,65 @@ export default function Header() {
 					</button>
 
 					{/* 사이드바 */}
-					<div
-						className={`fixed inset-0 left-0 top-[60px] z-30 bg-black/50 ${isOpen ? "block" : "hidden"} cursor-default`}
-						onClick={() => setIsOpen(!isOpen)}
-						onKeyDown={() => {}}
-						role="button"
-						tabIndex={0}
-					>
-						<div className="z-40 h-full w-[50%] min-w-fit bg-background-secondary py-5 pl-6 pr-5">
+					<div className={`fixed inset-0 left-0 top-[60px] z-30 bg-black/50 ${isOpen ? "block" : "hidden"} cursor-default`} onClick={() => setIsOpen(false)}>
+						<div className="z-40 h-full w-[50%] min-w-fit bg-background-secondary py-5 pl-6 pr-5" onClick={(event) => event.stopPropagation()}>
 							<div className="flex w-full justify-end">
 								<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Close">
 									<Icon.Close width={24} height={24} />
 								</button>
 							</div>
 
-							<div className="h-8" />
+							{/* {isUser && <div className="border-t-[2px] border-border-primary/10 pb-2" />} */}
+
+							<button type="button" onClick={() => setIsTeamOpen(!isTeamOpen)} className="flex items-center gap-2 text-lg font-medium">
+								<Image src="/icons/landingFolder.svg" alt="selectArrow" width={42} height={42} />
+								{/* <div className="size-2 rounded-full bg-background-inverse" /> */}팀 목록
+							</button>
+
+							{/* max-h-[calc(100dvh-200px)]으로 위에 크기만큼 빼서 스크롤 넣어줌 */}
+							<div className={`transition-animation overflow-hidden ${isTeamOpen ? "max-h-[calc(100dvh-250px)]" : "max-h-0"}`}>
+								<ul className="scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary max-h-[calc(100dvh-250px)] max-w-full overflow-y-auto">
+									{user?.memberships.map((membership) => (
+										<li key={membership.groupId} className="size-full">
+											<Link
+												href={`/${membership.groupId}`}
+												className="mr-2 flex min-w-max items-center gap-2 rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary"
+											>
+												<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt={membership.group.name ?? "empty"} width={32} height={32} />
+												{membership.group.name}
+											</Link>
+										</li>
+									))}
+								</ul>
+							</div>
+
+							<div className="h-2" />
+
+							<Link href="/create-team" className="mt-1 flex items-center gap-2 text-lg font-medium">
+								<Image src="/icons/landingMail.svg" alt="selectArrow" width={42} height={42} />
+								{/* <div className="size-2 rounded-full bg-background-inverse" /> */}팀 생성하기
+							</Link>
+
+							<div className="h-2" />
 
 							<div className="flex flex-col gap-4 pb-2">
-								<Link href="/boards" className="flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
+								<Link href="/create-team" className="mt-1 flex items-center gap-2 text-lg font-medium">
+									{/* <div className="size-2 rounded-full bg-background-inverse" /> */}
+									<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
 									자유게시판
 								</Link>
 
 								{!isUser && (
 									<>
-										<Link href="/login" className="flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
+										<Link href="/login" className="flex items-center rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
 											로그인
 										</Link>
-										<Link href="/signup" className="flex rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
+										<Link href="/signup" className="flex items-center rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary">
 											회원가입
 										</Link>
 									</>
 								)}
 							</div>
-
-							{/* {isUser && <div className="my-2 border-t" />} */}
-
-							{/* max-h-[calc(100dvh-200px)]으로 위에 크기만큼 빼서 스크롤 넣어줌 */}
-							<ul className="max-h-[calc(100dvh-200px)] max-w-full overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary">
-								{user?.memberships.map((membership) => (
-									<li key={membership.groupId} className="size-full">
-										<Link
-											href={`/${membership.groupId}`}
-											className="mr-2 flex min-w-max items-center gap-2 rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary"
-										>
-											<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt={membership.group.name ?? "empty"} width={32} height={32} />
-											{membership.group.name}
-										</Link>
-									</li>
-								))}
-								<li>
-									<Link
-										href="/create-team"
-										className="mt-1 flex items-center justify-center rounded-xl border py-3 text-lg font-medium hover:bg-background-tertiary"
-									>
-										+ 팀 생성하기
-									</Link>
-								</li>
-							</ul>
 						</div>
 					</div>
 				</div>
@@ -135,7 +186,7 @@ export default function Header() {
 										overlayOrigin={{ vertical: "top", horizontal: "right" }}
 									>
 										<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
-											{user?.memberships.find((membership) => membership.groupId === Number(id))?.group.name ?? "팀 선택"}
+											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
 											<Icon.ArrowDown width={16} height={16} />
 										</button>
 									</DropDown>
@@ -158,7 +209,7 @@ export default function Header() {
 								<div className="size-4 tablet:size-6">
 									<Icon.User width="100%" height="100%" />
 								</div>
-								<span className="hidden desktop:block">유저 이름</span>
+								<span className="hidden desktop:block">{user?.nickname}</span>
 							</button>
 						</DropDown>
 					</div>

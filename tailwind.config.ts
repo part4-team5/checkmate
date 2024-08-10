@@ -1,5 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 /** @type {import("tailwindcss").Config} */
+// eslint-disable-next-line import/no-extraneous-dependencies
 import plugin from "tailwindcss/plugin";
 
 export default {
@@ -86,6 +87,11 @@ export default {
 					"&::-webkit-scrollbar": {
 						display: "none",
 					},
+				},
+			});
+			addUtilities({
+				".transition-animation": {
+					transition: "0.5s ease-in-out",
 				},
 			});
 			addVariant("scrollbar", "&::-webkit-scrollbar");
