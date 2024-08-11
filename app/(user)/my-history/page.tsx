@@ -49,8 +49,7 @@ export default function Page() {
 															text: "뭘 넣어야 할까요..?",
 														},
 													]}
-													anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-													overlayOrigin={{ vertical: "top", horizontal: "right" }}
+													align="right"
 												>
 													<div className="mx-[4px] my-[4px] flex items-center justify-center">
 														<Icon.Kebab width={16} height={16} color="#64748B" />
