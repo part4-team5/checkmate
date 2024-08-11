@@ -101,6 +101,9 @@ export default abstract class API {
 					}
 					return reject(await response.json());
 				}
+				if (response.status === 204) {
+					return resolve({} as T);
+				}
 				return resolve(await response.json());
 			});
 		});

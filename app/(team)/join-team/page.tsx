@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-syntax */
-
 "use client";
 
 import API from "@/app/_api";
@@ -15,15 +13,18 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function JoinTeam() {
 	// TODO: 유저 정보에서 이메일 가져오기 (임시 이메일)
-	const userEmail = "wwww@naver.com";
+	const userEmail = "qq@qq.qq";
 
-	const [groupId] = useState(useSearchParams().get("groupID"));
-	const [token, setToken] = useState<string | null>(useSearchParams().get("token"));
+	const searchParams = useSearchParams();
+	const [groupId] = useState(searchParams.get("groupID"));
+	const [token, setToken] = useState<string | null>(searchParams.get("token"));
 
 	const router = useRouter();
-
 	const overlay = useOverlay();
 
+	const hasExecutedRef = useRef(false);
+
+	// Modal을 띄우는 함수
 	const openModal = useCallback(
 		(onClick: () => void, err?: string) => {
 			overlay.open(({ close }) => (
@@ -41,7 +42,17 @@ export default function JoinTeam() {
 							</>
 						)}
 						<div className="flex h-12 w-full gap-2">
-							{!!err || <Button onClick={onClick}>팀으로 이동</Button>}
+							{/* 그룹 아이디가 있을 경우 팀으로 이동 버튼을 띄웁니다. */}
+							{!err && groupId && (
+								<Button
+									onClick={() => {
+										onClick();
+										close();
+									}}
+								>
+									팀으로 이동
+								</Button>
+							)}
 							<Button variant="secondary" onClick={close}>
 								확인
 							</Button>
@@ -50,7 +61,7 @@ export default function JoinTeam() {
 				</ModalWrapper>
 			));
 		},
-		[overlay],
+		[groupId, overlay],
 	);
 
 	useEffect(() => {
@@ -60,6 +71,7 @@ export default function JoinTeam() {
 		}
 	}, [groupId, token]);
 
+	// Form을 통해 팀 참여 요청을 보내는 mutation
 	const joinTeamFormMutation = useMutation<{}, Error, FormContext>({
 		mutationFn: useCallback(async (ctx: FormContext) => {
 			const formData = new FormData();
@@ -68,10 +80,7 @@ export default function JoinTeam() {
 			}
 
 			const teamUrl = formData.get("teamUrl") as string;
-
-			const response = await API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: teamUrl });
-
-			return response;
+			return API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: teamUrl });
 		}, []),
 		onSuccess: () => {
 			openModal(() => {
@@ -86,15 +95,12 @@ export default function JoinTeam() {
 
 	const handleJoinTeam = async (ctx: FormContext) => {
 		if (joinTeamFormMutation.isPending) return;
-
 		joinTeamFormMutation.mutate(ctx);
 	};
 
+	// 팀 참여 요청을 보내는 mutation
 	const joinTeamMutation = useMutation<{}, Error, { token: string }>({
-		mutationFn: async () => {
-			const response = await API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: token || "" });
-			return response;
-		},
+		mutationFn: useCallback(async () => API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: token || "" }), [token]),
 		onSuccess: () => {
 			openModal(() => {
 				router.push(`/${groupId}`);
@@ -106,15 +112,14 @@ export default function JoinTeam() {
 		},
 	});
 
-	const hasExecutedRef = useRef(false);
-
+	// token이 있을 경우 바로 팀 참여 요청을 보냅니다.
 	useEffect(() => {
+		// 한 번만 실행되도록 합니다.
 		if (token && !hasExecutedRef.current) {
 			hasExecutedRef.current = true;
 			joinTeamMutation.mutate({ token });
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [token, joinTeamMutation]);
 
 	if (token) {
 		return <section className="flex size-full flex-col items-center justify-center text-3xl font-bold">팀참여 중...</section>;
@@ -132,6 +137,7 @@ export default function JoinTeam() {
 						<label htmlFor="teamUrl" className="w-full pb-3 text-start text-lg text-text-primary">
 							팀 링크
 						</label>
+
 						<Form.Input
 							id="teamUrl"
 							type="text"
