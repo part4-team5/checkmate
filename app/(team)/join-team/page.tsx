@@ -17,7 +17,7 @@ function JoinTeamForm() {
 
 	const searchParams = useSearchParams();
 	const [groupId] = useState(searchParams.get("groupID"));
-	const [token, setToken] = useState<string | null>(searchParams.get("token"));
+	const [token, setToken] = useState(searchParams.get("token"));
 
 	const router = useRouter();
 	const overlay = useOverlay();
@@ -100,7 +100,7 @@ function JoinTeamForm() {
 
 	// 팀 참여 요청을 보내는 mutation
 	const joinTeamMutation = useMutation<{}, Error, { token: string }>({
-		mutationFn: useCallback(async () => API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: token || "" }), [token]),
+		mutationFn: useCallback(async () => API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: token ?? "" }), [token]),
 		onSuccess: () => {
 			openModal(() => {
 				router.push(`/${groupId}`);
