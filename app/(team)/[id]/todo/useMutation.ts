@@ -92,6 +92,7 @@ export const useAddCommentMutation = (comment: string, todoId: number, userName:
 				...oldData, // oldData의 다른 속성을 유지
 				comments: [...(oldData?.comments || []), newComment], // 기존 comments 배열에 newComment 추가
 			};
+			queryClient.setQueryData(["tasks", { taskId: todoId }], newData);
 
 			// 이전 데이터를 반환
 			return { oldData };

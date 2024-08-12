@@ -11,9 +11,9 @@ import SideBarWrapper from "@/app/_components/sidebar";
 import TodoDetail from "@/app/(team)/[id]/todo/todoDetail";
 import { convertIsoToDateAndTime, convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
-import useTodoCheckMutation from "@/app/(team)/[id]/todo/useMutation";
 import tasksKey from "@/app/(team)/[id]/todo/queryFactory";
 import Popover from "@/app/_components/Popover";
+import { useTodoCheckMutation } from "@/app/(team)/[id]/todo/useMutation";
 
 type ClientTodoProps = {
 	groupId: number;
