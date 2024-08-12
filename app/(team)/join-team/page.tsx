@@ -29,7 +29,7 @@ function JoinTeamForm() {
 		(onClick: () => void, err?: string) => {
 			overlay.open(({ close }) => (
 				<ModalWrapper close={close}>
-					<div className="flex flex-col items-center justify-center gap-5 px-5 pt-5">
+					<div className="flex min-w-[300px] flex-col items-center justify-center gap-5 px-5 pt-5">
 						{err ? (
 							<>
 								<p className="text-2xl font-medium">팀 참여 실패</p>
