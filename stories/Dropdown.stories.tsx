@@ -36,10 +36,9 @@ const Template: StoryFn<DropDownProps> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
 	options,
-	anchorOrigin: { vertical: "bottom", horizontal: "center" },
-	overlayOrigin: { vertical: "top", horizontal: "center" },
 	gapX: 0,
 	gapY: 0,
+	align: "RL",
 };
 
 export const WithImage = Template.bind({});
@@ -70,8 +69,7 @@ WithImage.args = {
 			),
 		},
 	],
-	anchorOrigin: { vertical: "bottom", horizontal: "right" },
-	overlayOrigin: { vertical: "top", horizontal: "right" },
+	align: "RL",
 	gapX: 0,
 	gapY: 0,
 };
@@ -127,8 +125,7 @@ WithSubOptionsAndImage.args = {
 			),
 		},
 	],
-	anchorOrigin: { vertical: "top", horizontal: "right" },
-	overlayOrigin: { vertical: "top", horizontal: "left" },
+	align: "RL",
 	gapX: 0,
 	gapY: 0,
 };
