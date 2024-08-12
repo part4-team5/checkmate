@@ -7,3 +7,53 @@
 :root {
 	font-family: Pretendard;
 }
+
+@layer utilities {
+	.md h1 {
+		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+	}
+
+	.md h2 {
+		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+	}
+
+	.md h3 {
+		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+	}
+
+	.md h4 {
+		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+	}
+
+	.md h5 {
+		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+	}
+
+	.md h6 {
+		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+	}
+
+	.md hr {
+		@apply my-[15px];
+	}
+
+	.md blockquote {
+		@apply border-brand-primary border-l-[5px] pl-[20px];
+	}
+
+	.md img {
+		@apply rounded-[10px];
+	}
+
+	.md ol {
+		@apply list-decimal pl-[20px];
+	}
+
+	.md ul {
+		@apply list-disc pl-[20px];
+	}
+
+	.md a {
+		@apply text-brand-primary hover:underline;
+	}
+}

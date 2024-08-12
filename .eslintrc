@@ -7,9 +7,7 @@
 		"prettier"
 	],
 	"rules": {
-		"yoda": [
-			"off"
-		],
+		"yoda": "off",
 		"quotes": [
 			"error",
 			"double"
@@ -21,16 +19,14 @@
 				"SwitchCase": 1
 			}
 		],
+		"no-labels": "off",
 		"react/jsx-indent": [
 			"error",
 			"tab"
 		],
-		"no-restricted-syntax": [
-			"off"
-		],
-		"react/require-default-props": [
-			"off"
-		],
+		"no-restricted-syntax": "off",
+		"no-use-before-define": "off",
+		"react/require-default-props": "off",
 		"jsx-a11y/label-has-associated-control": [
 			"error",
 			{
@@ -39,8 +35,12 @@
 					"Form.TextInput"
 				]
 			}
-		]
+		],
+		"@typescript-eslint/no-use-before-define": "off"
 	},
+	"ignorePatterns": [
+		"ignore"
+	],
 	"parserOptions": {
 		"project": "./tsconfig.json",
 		"warnOnUnsupportedTypeScriptVersion": false
