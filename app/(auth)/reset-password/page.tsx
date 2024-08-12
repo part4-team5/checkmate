@@ -27,7 +27,7 @@ function ResetPasswordForm() {
 		({ title, message, isEmail, isSuccess = true }: { title: string; message: string; isEmail: boolean; isSuccess?: boolean }) => {
 			overlay.open(({ close }) => (
 				<ModalWrapper close={close}>
-					<div className="flex h-max w-72 flex-col gap-7">
+					<div className="flex h-max min-w-72 flex-col gap-7">
 						<p className="flex items-center justify-center pt-5 text-xl font-semibold">{title}</p>
 						{isSuccess && isEmail && (
 							<p className="flex flex-grow items-center justify-center text-center">
