@@ -1,9 +1,11 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+/* eslint-disable react/jsx-props-no-spreading */
 
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import KebabIcon from "@/public/icons/KebabIcon";
 import Popover from "./Popover";
 
@@ -21,7 +23,7 @@ type Option = {
 export interface DropDownProps {
 	options: Option[];
 	children: React.ReactNode;
-	align?: "left" | "center" | "right";
+	align?: "left" | "center" | "right" | "LL" | "RR";
 	gapX?: number;
 	gapY?: number;
 }
@@ -29,6 +31,7 @@ export interface DropDownProps {
 export default function DropDown({ options, children, align = "left", gapX = 0, gapY = 0 }: DropDownProps) {
 	const menuRefs = useRef<HTMLDivElement[]>([]); // 메뉴 항목 참조 배열
 	const addButtonRef = useRef<HTMLButtonElement>(null); // 팀 추가 버튼 참조
+	const router = useRouter();
 
 	// 키보드 이동 기능 추가
 	useEffect(() => {
@@ -79,11 +82,46 @@ export default function DropDown({ options, children, align = "left", gapX = 0, 
 		}
 	}
 
+	function getPopoverOrigins() {
+		switch (align) {
+			case "left":
+				return {
+					anchorOrigin: { vertical: "bottom" as const, horizontal: "left" as const },
+					overlayOrigin: { vertical: "top" as const, horizontal: "right" as const },
+				};
+			case "center":
+				return {
+					anchorOrigin: { vertical: "bottom" as const, horizontal: "center" as const },
+					overlayOrigin: { vertical: "top" as const, horizontal: "center" as const },
+				};
+			case "right":
+				return {
+					anchorOrigin: { vertical: "bottom" as const, horizontal: "right" as const },
+					overlayOrigin: { vertical: "top" as const, horizontal: "left" as const },
+				};
+			case "LL":
+				return {
+					anchorOrigin: { vertical: "bottom" as const, horizontal: "left" as const },
+					overlayOrigin: { vertical: "top" as const, horizontal: "left" as const },
+				};
+			case "RR":
+				return {
+					anchorOrigin: { vertical: "bottom" as const, horizontal: "right" as const },
+					overlayOrigin: { vertical: "top" as const, horizontal: "right" as const },
+				};
+			default:
+				return {
+					anchorOrigin: { vertical: "bottom" as const, horizontal: "left" as const },
+					overlayOrigin: { vertical: "top" as const, horizontal: "right" as const },
+				};
+		}
+	}
+
 	function recursive(items: Option[], close: () => void) {
 		return (
 			<div className="flex w-max min-w-[120px] flex-col rounded-[12px] border border-white border-opacity-5 bg-background-secondary text-[#F8FAFC]">
 				<div
-					className={`flex max-h-[308px] flex-col overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary ${items.some((option) => option.image) ? "space-y-2 p-[16px]" : ""}`}
+					className={`flex max-h-[308px] flex-col overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary ${items.some((option) => option.image) ? "mt-2 space-y-2 p-[16px]" : ""}`}
 				>
 					{items.map((option, index) => (
 						<div
@@ -95,11 +133,15 @@ export default function DropDown({ options, children, align = "left", gapX = 0, 
 							}}
 							onClick={(e) => handleOptionClick(e, option.onClick, close)}
 						>
-							<div className="flex size-full items-center justify-center gap-[12px]">
-								<button type="button" className="flex size-full cursor-pointer items-center justify-center gap-2 p-[8px]">
+							<div className={`flex size-full items-center ${option.image ? "justify-start" : "justify-center"} gap-[12px]`}>
+								<button type="button" className="flex max-w-[220px] cursor-pointer items-center justify-start gap-2 p-[8px]">
 									{/* 이미지가 있는 경우 이미지를 렌더링 */}
-									{option.image && <Image src={option.image} alt={option.text || "empty"} width={32} height={32} />}
-									<p className={`full flex flex-grow ${!option.image && "justify-center"}`}>{option.text}</p>
+									{option.image && (
+										<div className="flex-shrink-0">
+											<Image src={option.image} alt={option.text || "empty"} width={32} height={32} />
+										</div>
+									)}
+									<p className="flex-grow truncate text-left">{option.text}</p>
 								</button>
 							</div>
 							{/* 하위 옵션이 있는 경우 Popover를 렌더링 */}
@@ -111,7 +153,9 @@ export default function DropDown({ options, children, align = "left", gapX = 0, 
 											close();
 										})
 									}
-									align={align}
+									{...getPopoverOrigins()}
+									gapX={gapX}
+									gapY={gapY}
 								>
 									<div className={`cursor-pointer ${option.options && option.options.length > 0 ? "block" : "hidden"}`}>
 										<KebabIcon />
@@ -131,7 +175,7 @@ export default function DropDown({ options, children, align = "left", gapX = 0, 
 							tabIndex={0}
 							className="mx-[16px] mb-[16px] flex size-full h-[48px] cursor-pointer items-center justify-center rounded-[12px] border px-[47px] text-[16px] hover:bg-[#63748D] focus:bg-[#475569] focus:outline-none"
 							onClick={() => {
-								console.log("Extra button clicked");
+								router.push("/create-team");
 							}}
 						>
 							+ 팀 추가하기
@@ -144,7 +188,7 @@ export default function DropDown({ options, children, align = "left", gapX = 0, 
 
 	return (
 		<div className="flex">
-			<Popover overlay={(close) => recursive(options, close)} align={align} gapX={gapX} gapY={gapY}>
+			<Popover overlay={(close) => recursive(options, close)} {...getPopoverOrigins()} gapX={gapX} gapY={gapY}>
 				<div className="cursor-pointer">{children}</div>
 			</Popover>
 		</div>

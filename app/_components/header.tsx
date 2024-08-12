@@ -108,7 +108,7 @@ export default function Header() {
 						<nav className="hidden tablet:flex">
 							<ul className="flex items-center gap-10">
 								<li>
-									<DropDown options={teamDropdown} gapX={10} align="right">
+									<DropDown options={teamDropdown} gapY={25} align="center">
 										<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
 											{/* 현재 팀 이름 받아오기 */}
 											팀 이름
