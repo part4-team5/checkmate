@@ -18,7 +18,7 @@ export default function TeamEditForm({ id }: { id: number }) {
 
 	const { data: teamInfo } = useQuery({
 		queryKey: ["teamInfo", { id }],
-		queryFn: async () => {
+		queryFn: useCallback(async () => {
 			const response = await API["{teamId}/groups/{id}"].GET({ id });
 			return response;
 		}, [id]),
