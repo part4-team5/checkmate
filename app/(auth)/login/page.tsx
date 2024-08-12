@@ -19,7 +19,7 @@ export default function LoginPage() {
 	const user = useAuthStore((state) => state.user);
 
 	if (accessToken && refreshToken && user) {
-		router.push("/");
+		router.replace("/");
 	}
 
 	const loginMutation = useMutation({
@@ -36,12 +36,12 @@ export default function LoginPage() {
 				id: response.user.id,
 				email: response.user.email || "",
 				nickname: response.user.nickname,
-				image: response.user.image !== undefined ? response.user.image : null,
+				image: response.user.image ? response.user.image : null,
 			});
 
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);
-			router.push("/");
+			router.replace("/");
 		},
 		onError: (error) => {
 			// 로그인 실패 시

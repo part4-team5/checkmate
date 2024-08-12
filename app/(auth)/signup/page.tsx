@@ -18,7 +18,7 @@ export default function SignupPage() {
 	const user = useAuthStore((state) => state.user);
 
 	if (accessToken && refreshToken && user) {
-		router.push("/");
+		router.replace("/");
 	}
 
 	const signupMutation = useMutation({
@@ -37,12 +37,12 @@ export default function SignupPage() {
 				id: response.user.id,
 				email: response.user.email || "",
 				nickname: response.user.nickname,
-				image: response.user.image !== undefined ? response.user.image : null,
+				image: response.user.image ? response.user.image : null,
 			});
 
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);
-			router.push("/login");
+			router.replace("/login");
 		},
 		onError: (error) => {
 			alert("회원가입 실패");
