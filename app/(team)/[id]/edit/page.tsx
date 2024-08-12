@@ -18,7 +18,7 @@ export default async function TeamEditPage({ params }: { params: { id: string } 
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<TeamEditForm />
+			<TeamEditForm id={Number(id)} />
 		</HydrationBoundary>
 	);
 }

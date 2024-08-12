@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import Cookie from "@/app/_utils/Cookie";
 
-import useCrossState from "@/app/_hooks/useCrossState";
+import useSyncState from "@/app/_hooks/useSyncState";
 //
 // overloads
 //
@@ -13,12 +13,16 @@ export default function useCookie<T>(key: string, fallback?: T | (() => T)): [T,
 //
 export default function useCookie<T>(key: string, fallback?: T | (() => T)) {
 	// :3
-	const [value, setValue] = useCrossState<T>(key, Cookie.get(key) ?? (fallback instanceof Function ? fallback() : fallback));
+	const [value, setValue] = useSyncState<T>(key, Cookie.get(key) ?? (fallback instanceof Function ? fallback() : fallback));
 
 	const setter = useCallback(
 		(_: T | ((_: T) => T)) => {
 			const signal = _ instanceof Function ? _(value) : _;
-			Cookie.set(key, signal);
+			if (signal === null) {
+				Cookie.delete(key);
+			} else {
+				Cookie.set(key, signal);
+			}
 			setValue(signal);
 		},
 		[key, value, setValue],

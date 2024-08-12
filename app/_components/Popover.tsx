@@ -1,4 +1,7 @@
+/* eslint-disable consistent-return */
+
 import { useLayoutEffect, useEffect, useState, useRef, cloneElement } from "react";
+import { usePathname } from "next/navigation";
 
 export interface PopoverProps extends React.PropsWithChildren {
 	gapX?: number;
@@ -19,12 +22,17 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 	const pop = useRef<HTMLDivElement>(null);
 	const over = useRef<HTMLDivElement>(null);
 
+	const pathname = usePathname();
+
 	const [popRect, setPopRect] = useState({ width: 0, height: 0 });
 	const [overRect, setOverRect] = useState({ width: 0, height: 0 });
 
 	const [toggle, setToggle] = useState(false);
 
-	// eslint-disable-next-line consistent-return
+	useEffect(() => {
+		setToggle(false);
+	}, [pathname]);
+
 	useEffect(() => {
 		if (toggle) {
 			const handle = (event: MouseEvent) => {
@@ -55,7 +63,7 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 		}
 	}, [toggle, onOpen, onClose]);
 
-	const style: React.CSSProperties = { position: "absolute", display: toggle ? "block" : "none", top: NaN, left: NaN };
+	const style: React.CSSProperties = { position: "absolute", display: toggle ? "block" : "none", top: 0, left: 0, zIndex: 1000 };
 
 	// eslint-disable-next-line default-case
 	switch (anchorOrigin.vertical) {
@@ -72,6 +80,7 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 			break;
 		}
 	}
+
 	// eslint-disable-next-line default-case
 	switch (anchorOrigin.horizontal) {
 		case "left": {
@@ -90,7 +99,7 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 	// eslint-disable-next-line default-case
 	switch (overlayOrigin.vertical) {
 		case "top": {
-			style.top += gapX;
+			style.top += gapY;
 			break;
 		}
 		case "center": {
@@ -98,14 +107,15 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 			break;
 		}
 		case "bottom": {
-			style.top -= overRect.height * 1.0 + gapX;
+			style.top -= overRect.height * 1.0 + gapY;
 			break;
 		}
 	}
+
 	// eslint-disable-next-line default-case
 	switch (overlayOrigin.horizontal) {
 		case "left": {
-			style.left += gapY;
+			style.left += gapX;
 
 			break;
 		}
@@ -114,7 +124,7 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 			break;
 		}
 		case "right": {
-			style.left -= overRect.width * 1.0 + gapY;
+			style.left -= overRect.width * 1.0 + gapX;
 			break;
 		}
 	}
