@@ -3,7 +3,7 @@
 import { useLayoutEffect, useEffect, useState, useRef, cloneElement } from "react";
 import { usePathname } from "next/navigation";
 
-interface PopoverProps extends React.PropsWithChildren {
+export interface PopoverProps extends React.PropsWithChildren {
 	gapX?: number;
 	gapY?: number;
 	overlay: (close: () => void) => JSX.Element;
