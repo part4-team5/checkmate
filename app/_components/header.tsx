@@ -28,7 +28,6 @@ export default function Header() {
 
 	const overlay = useOverlay();
 
-	// TODO: 클라이언트에서 유저 정보 받아오기
 	const [isUser, setIsUser] = useState(!!accessToken);
 
 	// 유저 정보 받아오기
@@ -68,9 +67,9 @@ export default function Header() {
 	const teamDropdown = [
 		...(user?.memberships.map((membership) => ({
 			text: membership.group.name,
-			image: membership.group.image || "/icons/emptyImage.svg",
+			image: membership.group.image ?? "/icons/emptyImage.svg",
 			onClick: () => router.push(`/${membership.groupId}`),
-		})) || []),
+		})) ?? []),
 		{
 			content: <p className="size-full rounded-xl border py-3 text-lg font-medium hover:bg-background-tertiary">+ 팀 생성하기</p>,
 			onClick: () => router.push("/create-team"),
@@ -84,21 +83,17 @@ export default function Header() {
 
 	useEffect(() => {
 		if (!isOpen) return;
-		window.addEventListener(
-			"resize",
-			debounce(() => {
-				if (window.innerWidth > 744) {
-					sideBarClose();
-				}
-			}, 300),
-		);
-	}, [isOpen, sideBarClose]);
 
-	useEffect(() => {
-		if (params) {
-			sideBarClose();
-		}
-	}, [params, sideBarClose]);
+		const handleResize = debounce(() => {
+			if (window.innerWidth > 744) {
+				sideBarClose();
+			}
+		}, 300);
+		window.addEventListener("resize", handleResize);
+
+		// eslint-disable-next-line consistent-return
+		return () => window.removeEventListener("resize", handleResize);
+	}, [isOpen, sideBarClose]);
 
 	return (
 		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
@@ -136,6 +131,7 @@ export default function Header() {
 											<Link
 												href={`/${membership.groupId}`}
 												className="mr-2 flex min-w-max items-center gap-2 rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary"
+												onClick={sideBarClose}
 											>
 												<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={32} height={32} />
 												{membership.group.name}
@@ -150,6 +146,7 @@ export default function Header() {
 							<Link
 								href="/create-team"
 								className={`mt-1 items-center gap-2 text-lg font-medium ${isUser ? "flex" : "hidden"} rounded-md hover:bg-background-tertiary`}
+								onClick={sideBarClose}
 							>
 								<Image src="/icons/landingMail.svg" alt="selectArrow" width={42} height={42} />
 								{/* <div className="size-2 rounded-full bg-background-inverse" /> */}팀 생성하기
@@ -158,7 +155,11 @@ export default function Header() {
 							<div className="h-2" />
 
 							<div className="flex flex-col pb-2">
-								<Link href="/create-team" className="mt-1 flex items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary">
+								<Link
+									href="/boards"
+									className="mt-1 flex items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary"
+									onClick={sideBarClose}
+								>
 									{/* <div className="size-2 rounded-full bg-background-inverse" /> */}
 									<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
 									자유게시판

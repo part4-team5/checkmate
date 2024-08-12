@@ -106,7 +106,7 @@ export default abstract class API {
 		});
 	}
 
-	private static GET<T>(type: MIME, url: string, query: object): Promise<T> {
+	private static GET<T>(type: MIME, url: string, query: object) {
 		return this.SEND<T>(type, "GET", createURL(url, query), {});
 	}
 

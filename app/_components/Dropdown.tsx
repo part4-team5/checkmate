@@ -60,7 +60,7 @@ export default function DropDown({
 				}`}
 			>
 				{items.map((option, index) => (
-					<div key={`${option.text} ${index}` || index} className={`flex size-full items-center rounded-[8px] ${option.content ? "" : "hover:bg-[#63748D]"} `}>
+					<div key={`${option.text}` || index} className={`flex size-full items-center rounded-[8px] ${option.content ? "" : "hover:bg-[#63748D]"} `}>
 						{option.content ? (
 							<button type="button" onClick={(e) => handleOptionClick(e, option.onClick, close)} className="size-full">
 								{option.content}
