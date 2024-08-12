@@ -1,17 +1,9 @@
+import Cookie from "@/app/_utils/Cookie";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Page() {
-	/* 
-	TODO: 로그인 상태 체크
-	팀이 없는 경우 팀 생성 페이지로 이동
-	팀이 있는 경우 팀 페이지로 이동
-	로그인 상태가 아닌 경우 로그인 페이지로 이동
-	const isLogin = useStore((state) => state.increasePopulation);
-	const hasTeam = false;
-	const [href, setHref] = useState<string>("/login");
-	if(isLogin) { if(!hasTeam) { setHref("/team/create") } else { setHref("/team") } } else { setHref("/login") }
-	*/
+	const accessToken = Cookie.get("accessToken");
 
 	return (
 		<main className="h-full min-w-[320px] bg-background-primary">
@@ -34,12 +26,21 @@ export default function Page() {
 				</div>
 
 				<div className="z-10 flex items-center justify-center pb-[180px]">
-					<Link
-						href="/login"
-						className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
-					>
-						지금 시작하기
-					</Link>
+					{accessToken ? (
+						<Link
+							href="/get-started"
+							className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
+						>
+							지금 시작하기
+						</Link>
+					) : (
+						<Link
+							href="/login"
+							className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
+						>
+							지금 시작하기
+						</Link>
+					)}
 				</div>
 			</section>
 

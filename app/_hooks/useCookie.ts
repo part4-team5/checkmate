@@ -18,7 +18,11 @@ export default function useCookie<T>(key: string, fallback?: T | (() => T)) {
 	const setter = useCallback(
 		(_: T | ((_: T) => T)) => {
 			const signal = _ instanceof Function ? _(value) : _;
-			Cookie.set(key, signal);
+			if (signal === null) {
+				Cookie.delete(key);
+			} else {
+				Cookie.set(key, signal);
+			}
 			setValue(signal);
 		},
 		[key, value, setValue],
