@@ -143,36 +143,42 @@ export default function Quill({ init, placeholder }: EditorProps) {
 	);
 
 	return (
-		<div className="relative flex h-full min-h-max w-full rounded-[10px] border border-brand-primary drop-shadow-sm">
+		<div className="relative flex h-full min-h-max w-full rounded-[10px] border border-brand-primary bg-text-disabled drop-shadow-sm">
 			<Switch init="editor">
 				<div className="flex h-full w-full flex-col">
-					<div className="m-[-1px] overflow-hidden rounded-t-[10px] bg-background-tertiary">
+					<div className="m-[-1px] rounded-t-[10px] border border-brand-primary bg-background-tertiary">
 						<Switch.Case of="editor">
-							<div className="flex items-center">
-								<button type="button" className="rounded-t-[10px] border border-brand-primary border-b-text-disabled bg-text-disabled px-[16px] py-[8px]">
+							<div className="mt-[-1px] mx-[-1px] flex">
+								<button
+									type="button"
+									className="mb-[-1px] rounded-t-[10px] border border-brand-primary border-b-transparent bg-text-disabled px-[16px] py-[8px]"
+								>
 									Write
 								</button>
 								<Switch.Jump to="viewer">
-									<button type="button" className="t border border-transparent border-b-brand-primary px-[16px] py-[8px]">
+									<button type="button" className="mb-[-1px] border border-transparent px-[16px] py-[8px]">
 										Preview
 									</button>
 								</Switch.Jump>
 							</div>
 						</Switch.Case>
 						<Switch.Case of="viewer">
-							<div className="flex items-center">
+							<div className="mx-[-1px] mt-[-1px] flex">
 								<Switch.Jump to="editor">
-									<button type="button" className="border border-transparent px-[16px] py-[8px]">
+									<button type="button" className="mb-[-1px] border border-transparent px-[16px] py-[8px]">
 										Write
 									</button>
 								</Switch.Jump>
-								<button type="button" className="rounded-t-[10px] border border-brand-primary border-b-text-disabled bg-text-disabled px-[16px] py-[8px]">
+								<button
+									type="button"
+									className="mb-[-1px] rounded-t-[10px] border border-brand-primary border-b-transparent bg-text-disabled px-[16px] py-[8px]"
+								>
 									Preview
 								</button>
 							</div>
 						</Switch.Case>
 					</div>
-					<div className="rounded-b-[10px] bg-text-disabled px-[10px] py-[10px]">
+					<div className="z-0 rounded-b-[10px] px-[10px] py-[10px]">
 						<Switch.Case of="editor">
 							<div className="relative flex">
 								<div
