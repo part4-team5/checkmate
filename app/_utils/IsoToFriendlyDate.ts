@@ -43,3 +43,37 @@ export const convertIsoToDateToKorean = (date: Date): string => {
 	// 결과 문자열 구성
 	return `${month.slice(0, -1)}월 ${day.slice(0, -1)}일 ${weekday}`;
 };
+
+export const calculateTimeDifference = (startDateString: string, endDate: Date) => {
+	// startDateString 문자열을 Date 객체로 변환하고 밀리초로 변환
+	const startDateInMs = new Date(startDateString).getTime();
+	// endDate를 밀리초로 변환
+	const endDateInMs = endDate.getTime();
+
+	// 두 시간의 차이를 절대값으로 계산
+	const timeDifferenceInMs = Math.abs(endDateInMs - startDateInMs);
+
+	// 시간 단위 계산을 위한 상수 정의
+	const msInAMinute = 60 * 1000;
+	const msInAnHour = 60 * msInAMinute;
+	const msInADay = 24 * msInAnHour;
+	const msInAYear = 365 * msInADay;
+
+	// 차이를 년, 일, 시간, 분으로 계산
+	const years = Math.floor(timeDifferenceInMs / msInAYear);
+	const days = Math.floor((timeDifferenceInMs % msInAYear) / msInADay);
+	const hours = Math.floor((timeDifferenceInMs % msInADay) / msInAnHour);
+	const minutes = Math.floor((timeDifferenceInMs % msInAnHour) / msInAMinute);
+
+	// 결과 반환
+	if (years > 0) {
+		return `${years}년 전`;
+	}
+	if (days > 0) {
+		return `${days}일 전`;
+	}
+	if (hours > 0) {
+		return `${hours}시간 전`;
+	}
+	return `${minutes}분 전`;
+};

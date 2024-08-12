@@ -10,8 +10,8 @@ import addComment from "@/public/icons/addComment.svg";
 import Button from "@/app/_components/Button";
 import KebabIcon from "@/public/icons/KebabIcon";
 import tasksKey from "@/app/(team)/[id]/todo/queryFactory";
-import useTodoCheckMutation from "@/app/(team)/[id]/todo/useMutation";
-import { convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
+import { calculateTimeDifference, convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
+import { useTodoCheckMutation } from "@/app/(team)/[id]/todo/useMutation";
 
 type TodoDetailProps = {
 	todoId: number;
@@ -47,57 +47,25 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 		},
 	});
 
-	const calculateTimeDifference = (startDateString: string, endDate: Date) => {
-		// startDateString 문자열을 Date 객체로 변환하고 밀리초로 변환
-		const startDateInMs = new Date(startDateString).getTime();
-		// endDate를 밀리초로 변환
-		const endDateInMs = endDate.getTime();
-
-		// 두 시간의 차이를 절대값으로 계산
-		const timeDifferenceInMs = Math.abs(endDateInMs - startDateInMs);
-
-		// 시간 단위 계산을 위한 상수 정의
-		const msInAMinute = 60 * 1000;
-		const msInAnHour = 60 * msInAMinute;
-		const msInADay = 24 * msInAnHour;
-		const msInAYear = 365 * msInADay;
-
-		// 차이를 년, 일, 시간, 분으로 계산
-		const years = Math.floor(timeDifferenceInMs / msInAYear);
-		const days = Math.floor((timeDifferenceInMs % msInAYear) / msInADay);
-		const hours = Math.floor((timeDifferenceInMs % msInADay) / msInAnHour);
-		const minutes = Math.floor((timeDifferenceInMs % msInAnHour) / msInAMinute);
-
-		// 결과 반환
-		if (years > 0) {
-			return `${years}년 전`;
-		}
-		if (days > 0) {
-			return `${days}일 전`;
-		}
-		if (hours > 0) {
-			return `${hours}시간 전`;
-		}
-		return `${minutes}분 전`;
-	};
-
 	const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setCommentText(e.target.value);
 	};
 
+	const postAddComment = async (newComment: string) => {
+		const body = { content: newComment };
+		// API 호출
+		const response = await API["{teamId}/tasks/{taskId}/comments"].POST(
+			{
+				taskId: todoId,
+			},
+			body,
+		);
+		return response;
+	};
+
 	const useAddCommentMutation = () =>
 		useMutation({
-			mutationFn: async (newComment: string) => {
-				const body = { content: newComment };
-				// API 호출
-				const response = await API["{teamId}/tasks/{taskId}/comments"].POST(
-					{
-						taskId: todoId,
-					},
-					body,
-				);
-				return response;
-			},
+			mutationFn: postAddComment,
 			onSuccess: () => {
 				// 요청 성공 시 수행할 작업
 				queryClient.invalidateQueries({
