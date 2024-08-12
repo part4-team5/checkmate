@@ -7,11 +7,11 @@ import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
-export default function JoinTeam() {
+function JoinTeamForm() {
 	// TODO: 유저 정보에서 이메일 가져오기 (임시 이메일)
 	const userEmail = "qq@qq.qq";
 
@@ -160,5 +160,13 @@ export default function JoinTeam() {
 				<p className="text-md font-normal text-text-primary tablet:text-lg">공유받은 팀 링크를 입력해 참여할 수 있어요.</p>
 			</div>
 		</section>
+	);
+}
+
+export default function JoinTeamPage() {
+	return (
+		<Suspense>
+			<JoinTeamForm />
+		</Suspense>
 	);
 }
