@@ -24,16 +24,11 @@ export default function LoginPage() {
 
 	const loginMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
-			const formData = new FormData();
-			Object.entries(ctx.values).forEach(([key, value]) => {
-				formData.append(key, value as string);
-			});
-
-			const email = formData.get("email") as string;
-			const password = formData.get("password") as string;
-
+			const { email, password } = ctx.values as {
+				email: string;
+				password: string;
+			};
 			const payload = { email, password };
-
 			return API["{teamId}/auth/signIn"].POST({}, payload);
 		},
 		onSuccess: (response) => {

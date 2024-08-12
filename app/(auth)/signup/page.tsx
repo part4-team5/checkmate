@@ -23,18 +23,13 @@ export default function SignupPage() {
 
 	const signupMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
-			const formData = new FormData();
-			Object.entries(ctx.values).forEach(([key, value]) => {
-				formData.append(key, value as string);
-			});
-
-			const email = formData.get("email") as string;
-			const nickname = formData.get("nickname") as string;
-			const password = formData.get("password") as string;
-			const passwordConfirmation = formData.get("passwordConfirmation") as string;
-
+			const { email, nickname, password, passwordConfirmation } = ctx.values as {
+				email: string;
+				nickname: string;
+				password: string;
+				passwordConfirmation: string;
+			};
 			const payload = { email, nickname, password, passwordConfirmation };
-
 			return API["{teamId}/auth/signUp"].POST({}, payload);
 		},
 		onSuccess: (response) => {
