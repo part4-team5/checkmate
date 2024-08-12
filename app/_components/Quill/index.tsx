@@ -146,7 +146,7 @@ export default function Quill({ init, placeholder }: EditorProps) {
 		<div className="relative flex h-full min-h-max w-full rounded-[10px] border border-brand-primary drop-shadow-sm">
 			<Switch init="editor">
 				<div className="flex h-full w-full flex-col">
-					<div className="overflow-hidden rounded-t-[10px] bg-background-tertiary m-[-1px]">
+					<div className="m-[-1px] overflow-hidden rounded-t-[10px] bg-background-tertiary">
 						<Switch.Case of="editor">
 							<div className="flex items-center">
 								<button type="button" className="rounded-t-[10px] border border-brand-primary border-b-text-disabled bg-text-disabled px-[16px] py-[8px]">

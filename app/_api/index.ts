@@ -595,7 +595,7 @@ export default abstract class API {
 			const data = new FormData();
 
 			data.append("image", body);
-			
+
 			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images/upload`, query, data);
 		}
 	})();
