@@ -577,7 +577,7 @@ export default abstract class API {
 		 * @param {Object} body - 등록/수정할 App 정보
 		 * @returns {Promise<Object>} - App 정보
 		 */
-		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { appSecret: string; appKey: string; provider: "KAKAO" | "GOOGLE" }) {
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { appKey: string; provider: "KAKAO" | "GOOGLE" }) {
 			return API.POST<{ updatedAt: string; createdAt: string; image?: string; name: string; teamId: string; id: number }>(
 				MIME.JSON,
 				`${BASE_URL}/${teamId}/oauthApps`,
@@ -915,7 +915,7 @@ export default abstract class API {
 		 */
 		public override POST(
 			{ teamId = "6-5", provider, ...query }: { teamId?: string; provider: "KAKAO" | "GOOGLE" },
-			body: { state: string; redirectUri: string; token: string },
+			body: { state?: string; redirectUri: string; token: string },
 		) {
 			return API.POST<Auth>(MIME.JSON, `${BASE_URL}/${teamId}/auth/signIn/${provider}`, query, body);
 		}
