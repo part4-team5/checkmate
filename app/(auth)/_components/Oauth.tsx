@@ -11,7 +11,7 @@ export default function Oauth() {}
 Oauth.Kakao = function Kakao() {
 	const [token] = useState<string>(useSearchParams().get("code") ?? "");
 	const router = useRouter();
-	const isMounted = useRef(false);
+	const isMounted = useRef(true);
 
 	const kakaoAppsMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/oauthApps"]["POST"]>>, Error>({
 		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/oauthApps"]["POST"]>>> => {
@@ -25,24 +25,20 @@ Oauth.Kakao = function Kakao() {
 
 			return response;
 		},
-		onSuccess: (data) => {
-			console.log(data);
+		onSuccess: () => {
 			router.push(process.env.NEXT_PUBLIC_KAKAO_URL ?? "");
 		},
 	});
 
-	const kakaoLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["/{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({
-		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["/{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
-			const payload: Parameters<(typeof API)["/{teamId}/auth/signIn/{provider}"]["POST"]>[1] = {
+	const kakaoLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({
+		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
+			const payload: Parameters<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>[1] = {
 				state: "signin",
 				redirectUri: process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ?? "",
 				token,
 			};
 
-			const response = await API["/{teamId}/auth/signIn/{provider}"].POST({ provider: "KAKAO" }, payload);
-
-			console.log(response);
-			return response;
+			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "KAKAO" }, payload);
 		},
 		onSuccess: (data) => {
 			console.log(data);
@@ -53,25 +49,19 @@ Oauth.Kakao = function Kakao() {
 	});
 
 	useEffect(() => {
-		if (!isMounted.current) {
-			isMounted.current = true;
-			return;
-		}
+		if (isMounted.current) {
+			isMounted.current = false;
 
-		if (kakaoLoginMutation.isPending) return;
-		if (kakaoLoginMutation.isError) return;
-
-		const handleKakaoLogin = () => {
-			kakaoLoginMutation.mutate();
-		};
-
-		if (token) {
-			handleKakaoLogin();
+			if (token) {
+				kakaoLoginMutation.mutate();
+			}
 		}
 	}, [kakaoLoginMutation, token]);
 
 	const handleKakaoApps = () => {
+		// TODO: 카카오 앱 등록 한번 실행하면 더 이상 실행하지 않도록 수정
 		if (!kakaoAppsMutation.isPending) kakaoAppsMutation.mutate();
+		// router.push(process.env.NEXT_PUBLIC_KAKAO_URL ?? "");
 	};
 
 	return (
