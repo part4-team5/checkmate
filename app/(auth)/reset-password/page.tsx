@@ -66,24 +66,16 @@ function ResetPasswordForm() {
 	// 비밀번호 재설정 링크 이메일 전송 Mutation (tanstack/react-query)
 	const sendEmailMutation = useMutation<{ message: string }, Error, FormContext>({
 		mutationFn: async (ctx: FormContext): Promise<{ message: string }> => {
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
-			}
-
-			const email = formData.get("email") as string;
-
+			const email = ctx.values.email as string;
 			const payload: Parameters<(typeof API)["{teamId}/user/send-reset-password-email"]["POST"]>[1] = {
 				email,
 				redirectUrl: process.env.NEXT_PUBLIC_REDIRECT_URL ?? "",
 			};
 
-			for (const [key, value] of formData.entries()) {
+			for (const [key, value] of Object.entries(ctx.values)) {
 				payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
 			}
-
 			const response = await API["{teamId}/user/send-reset-password-email"].POST({}, payload);
-
 			return response;
 		},
 		onSuccess: (data, ctx) => {
@@ -97,13 +89,8 @@ function ResetPasswordForm() {
 	// 비밀번호 재설정 Mutation (tanstack/react-query)
 	const passwordResetMutation = useMutation<{ message: string }, Error, FormContext>({
 		mutationFn: async (ctx: FormContext): Promise<{ message: string }> => {
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
-			}
-
-			const password = formData.get("password") as string;
-			const passwordConfirmation = formData.get("passwordConfirmation") as string;
+			const password = ctx.values.password as string;
+			const passwordConfirmation = ctx.values.passwordConfirmation as string;
 
 			// 유저가 로그인 상태인지 확인
 			if (!isUser) {
@@ -118,13 +105,11 @@ function ResetPasswordForm() {
 					token: passwordToken,
 				};
 
-				for (const [key, value] of formData.entries()) {
+				for (const [key, value] of Object.entries(ctx.values)) {
 					payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
 				}
 
-				const response = await API["{teamId}/user/reset-password"].PATCH({}, payload);
-
-				return response;
+				return API["{teamId}/user/reset-password"].PATCH({}, payload);
 			}
 
 			// 로그인 상태에서 비밀번호 재설정 API 호출
@@ -133,7 +118,7 @@ function ResetPasswordForm() {
 				password,
 			};
 
-			for (const [key, value] of formData.entries()) {
+			for (const [key, value] of Object.entries(ctx.values)) {
 				payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
 			}
 
