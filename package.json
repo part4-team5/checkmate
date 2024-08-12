@@ -19,8 +19,7 @@
 		"next": "14.2.5",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
-		"zustand": "^4.5.4",
-		"tailwindcss": "^3.4.7"
+		"zustand": "^4.5.4"
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "^1.6.1",
@@ -53,6 +52,7 @@
 		"prettier": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.5",
 		"storybook": "^8.2.6",
+		"tailwindcss": "^3.4.7",
 		"typescript": "^5.5.4"
 	},
 	"eslintConfig": {
