@@ -259,7 +259,7 @@ export default function Quill({ init, placeholder }: EditorProps) {
 										}
 									}}
 								/>
-								<div ref={outline} className="pointer-events-none absolute inset-[5px] rounded-[10px] border-[1.75px] border-dashed border-transparent" />
+								<div ref={outline} className="pointer-events-none absolute inset-[5px] rounded-[10px] border-[2.25px] border-dashed border-transparent" />
 							</div>
 						</Switch.Case>
 						<Switch.Case of="viewer">

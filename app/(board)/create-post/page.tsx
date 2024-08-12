@@ -1,11 +1,20 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import Quill from "@/app/_components/Quill";
 import Button from "@/app/_components/Button";
+import API from "@/app/_api";
+
+const [FILE_SIZE, FILE_NAME] = [1024 * 10000, /^[a-zA-Z0-9._\-\s]+\.(?:gif|png|jpe?g|webp)$/];
 
 export default function Page() {
+	const [img, setImg] = useState("");
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [title, setTitle] = useState("");
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [content, setContent] = useState("");
+
 	const outline = useRef<HTMLDivElement>(null);
 
 	const onDragEnter = useCallback((event: React.DragEvent) => {
@@ -13,7 +22,7 @@ export default function Page() {
 		event.preventDefault();
 		event.stopPropagation();
 
-		outline.current?.style.setProperty("border-color", "#474d66");
+		outline.current?.style.setProperty("border-color", "black");
 	}, []);
 
 	const onDragLeave = useCallback((event: React.DragEvent) => {
@@ -29,6 +38,16 @@ export default function Page() {
 		event.preventDefault();
 		event.stopPropagation();
 
+		const file = event.dataTransfer.items[0].getAsFile();
+
+		if (!file) return;
+		if (FILE_SIZE < file.size) return;
+		if (!FILE_NAME.test(file.name)) return;
+
+		API["{teamId}/images/upload"].POST({}, file).then((response) => {
+			setImg(response.url);
+		});
+
 		outline.current?.style.setProperty("border-color", null);
 	}, []);
 
@@ -43,22 +62,23 @@ export default function Page() {
 					onDragLeave={onDragLeave}
 					className="relative flex h-[150px] items-center justify-center overflow-hidden tablet:rounded-t-[10px]"
 				>
-					<div className="pointer-events-none absolute inset-0 bg-background-tertiary bg-cover bg-center transition-colors" />
+					<div
+						style={{ backgroundImage: `url("${img}")` }}
+						className="pointer-events-none absolute inset-0 bg-background-tertiary bg-cover bg-center transition-colors"
+					/>
 					<div
 						ref={outline}
-						className="pointer-events-none absolute inset-[5px] flex items-center justify-center rounded-[10px] border-[1.75px] border-dashed border-transparent text-3xl text-text-default"
+						className="pointer-events-none absolute inset-[5px] flex items-center justify-center rounded-[10px] border-[2.25px] border-dashed border-transparent text-3xl text-text-default"
 					>
 						대표 사진
 					</div>
 				</div>
-				<div className="mx-[15px] mt-[15px] flex h-[40px] items-center gap-[15px]">
+				<div className="mx-[15px] mt-[15px] flex h-[45px] items-center gap-[15px]">
 					<div className="flex h-full grow items-center gap-[10px] overflow-hidden rounded-[10px] border border-white/15 px-[10px]">
 						<input className="h-full grow bg-transparent text-text-primary outline-none" placeholder="제목을 입력해주세요" />
 					</div>
-					<div className="h-full w-[70px]">
-						<Button>
-							<div className="text-xs">작성하기</div>
-						</Button>
+					<div className="h-full w-[75px]">
+						<Button fontSize="md">작성하기</Button>
 					</div>
 				</div>
 				<div className="px-[15px] py-[15px]">
