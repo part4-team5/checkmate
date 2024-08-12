@@ -11,6 +11,9 @@ import SideBarWrapper from "@/app/_components/sidebar";
 import TodoDetail from "@/app/(team)/[id]/todo/todoDetail";
 import { convertIsoToDateAndTime, convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
+import useTodoCheckMutation from "@/app/(team)/[id]/todo/useMutation";
+import tasksKey from "@/app/(team)/[id]/todo/queryFactory";
+import Popover from "@/app/_components/Popover";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -25,12 +28,19 @@ const frequency: Record<FrequencyType, string> = {
 	ONCE: "반복 없음",
 };
 
+function CalendarPopoverContent() {
+	return (
+		<div className="rounded shadow-lg">
+			<Calendar.Picker />
+		</div>
+	);
+}
+
 export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const queryClient = useQueryClient();
 	const pathname = usePathname();
 
 	const [currentDate, setCurrentDate] = useState(new Date());
-	const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
 	const [currentTaskId, setCurrentTaskId] = useState<number>(taskListId);
 	const overlay = useOverlay();
 
@@ -38,6 +48,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		setCurrentTaskId(value);
 		window.history.pushState(null, "", `${pathname}?taskId=${value}`);
 	};
+	const todoPatchMutation = useTodoCheckMutation(groupId, currentTaskId, currentDate);
 
 	const { data: taskList } = useQuery({
 		queryKey: ["tasks", { groupId }],
@@ -55,7 +66,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		if (!tasks) return;
 		for (const task of tasks) {
 			queryClient.prefetchQuery({
-				queryKey: ["tasks", { groupId, taskId: task.id, date: currentDate.toLocaleDateString("ko-KR") }],
+				queryKey: tasksKey.detail(groupId, task.id, currentDate.toLocaleDateString("ko-KR")),
 				queryFn: async () => {
 					const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].GET({
 						groupId,
@@ -77,7 +88,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	};
 
 	const { data: todos } = useQuery({
-		queryKey: ["tasks", { groupId, taskId: currentTaskId, date: currentDate.toLocaleDateString("ko-KR") }],
+		queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")),
 		queryFn: fetchTodos,
 	});
 
@@ -85,14 +96,14 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		setCurrentDate(() => date);
 	};
 
-	const handleCalendarClick = () => {
-		setIsCalendarOpen((prev) => !prev);
+	const handleCheckButtonClick = (todoId: number, doneAt: string) => {
+		todoPatchMutation.mutate({ taskId: todoId, done: !doneAt });
 	};
 
-	const handleTodoClick = (todoId: number) => {
+	const handleTodoClick = (todoId: number, gid: number, taskId: number, date: Date, doneAt: string) => {
 		overlay.open(({ close }) => (
 			<SideBarWrapper close={close}>
-				<TodoDetail id={todoId} close={close} />
+				<TodoDetail todoId={todoId} close={close} currentDate={date} groupId={gid} currentTaskId={taskId} doneAt={doneAt} />
 			</SideBarWrapper>
 		));
 	};
@@ -106,7 +117,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			<div className="my-6 flex justify-between">
 				<Calendar onChange={(date) => handleCurrentDate(date)}>
 					<div className="flex gap-3">
-						<div className="flex items-center text-lg font-medium text-text-primary">
+						<div className="flex min-w-24 items-center text-lg font-medium text-text-primary">
 							<Calendar.Date>{(date) => convertIsoToDateToKorean(date)}</Calendar.Date>
 						</div>
 						<div className="flex gap-1">
@@ -118,14 +129,19 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							</Calendar.Jump>
 						</div>
 						<div className="relative flex items-center">
-							<button type="button" onClick={handleCalendarClick} aria-label="Open calendar">
-								<Image src="/icons/calendarCircle.svg" alt="calendar" width={24} height={24} />
-							</button>
-							{isCalendarOpen && (
-								<div className="absolute bottom-[-230px] right-[-260px]">
-									<Calendar.Picker />
+							<Popover
+								gapX={-2} // X축 간격 조절
+								gapY={10} // Y축 간격 조절
+								anchorOrigin={{ vertical: "top", horizontal: "right" }}
+								overlayOrigin={{ vertical: "top", horizontal: "left" }}
+								overlay={CalendarPopoverContent}
+							>
+								<div className="flex items-center">
+									<button type="button" aria-label="Open calendar">
+										<Image src="/icons/calendarCircle.svg" alt="calendar" width={24} height={24} />
+									</button>
 								</div>
-							)}
+							</Popover>
 						</div>
 					</div>
 				</Calendar>
@@ -155,32 +171,42 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							<div
 								className="flex w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
 								key={todo.id}
-								onClick={() => handleTodoClick(todo.id)}
+								onClick={() => handleTodoClick(todo.id, groupId, currentTaskId, currentDate, todo.doneAt)}
 							>
 								<div className="flex items-center justify-between">
 									<div className="flex gap-3">
-										<button type="button" aria-label="todo-done">
+										<button
+											type="button"
+											aria-label="todo-done"
+											onClick={(event) => {
+												event.stopPropagation();
+												handleCheckButtonClick(todo.id, todo.doneAt);
+											}}
+										>
 											{todo.doneAt ? (
 												<Image src="/icons/checkBox.svg" alt="done" width={24} height={24} />
 											) : (
 												<Image src="/icons/uncheckBox.svg" alt="not done" width={24} height={24} />
 											)}
 										</button>
-										<div>{todo.name}</div>
+										<div className={`${todo.doneAt ? "line-through" : ""} text-text-primary`}>{todo.name}</div>
 										<div className="flex items-center justify-center gap-1 text-xs font-normal text-text-default">
 											<Image src="/icons/comment.svg" alt="comment" width={16} height={16} />
 											{todo.commentCount}
 										</div>
 									</div>
 								</div>
-								<div className="flex items-center gap-5 text-xs font-normal text-text-default">
+								<div className="flex items-center text-xs font-normal text-text-default">
 									<div className="flex gap-[6px]">
 										<Image src="/icons/calendar.svg" alt="calendar" width={16} height={16} />
 										<div>{date}</div>
 									</div>
-									<div className="flex items-center gap-[6px]">
+									<div className="flex items-center gap-[6px] px-[10px]">
+										<div className="h-2 border-l" />
 										<Image src="/icons/clock.svg" alt="time" width={16} height={16} />
 										<div>{time}</div>
+										<div className="h-2 border-r" />
+										<Image src="/icons/clock.svg" alt="time" width={16} height={16} />
 									</div>
 									<div className="flex items-center gap-[6px]">
 										<Image src="/icons/cycles.svg" alt="frequency" width={16} height={16} />
