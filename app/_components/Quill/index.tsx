@@ -143,15 +143,15 @@ export default function Quill({ init, placeholder }: EditorProps) {
 	);
 
 	return (
-		<div className="relative flex h-full min-h-max w-full rounded-[10px] border border-brand-primary bg-text-disabled drop-shadow-sm">
+		<div className="relative flex h-full min-h-max w-full rounded-[10px] border border-white/15 bg-background-secondary drop-shadow-sm">
 			<Switch init="editor">
 				<div className="flex h-full w-full flex-col">
-					<div className="m-[-1px] rounded-t-[10px] border border-brand-primary bg-background-tertiary">
+					<div className="m-[-1px] rounded-t-[10px] border border-white/15 bg-background-tertiary text-text-default">
 						<Switch.Case of="editor">
-							<div className="mt-[-1px] mx-[-1px] flex">
+							<div className="mx-[-1px] mt-[-1px] flex">
 								<button
 									type="button"
-									className="mb-[-1px] rounded-t-[10px] border border-brand-primary border-b-transparent bg-text-disabled px-[16px] py-[8px]"
+									className="mb-[-1px] rounded-t-[10px] border border-white/15 border-b-transparent bg-background-secondary px-[16px] py-[8px] text-text-primary"
 								>
 									Write
 								</button>
@@ -171,41 +171,41 @@ export default function Quill({ init, placeholder }: EditorProps) {
 								</Switch.Jump>
 								<button
 									type="button"
-									className="mb-[-1px] rounded-t-[10px] border border-brand-primary border-b-transparent bg-text-disabled px-[16px] py-[8px]"
+									className="mb-[-1px] rounded-t-[10px] border border-white/15 border-b-transparent bg-background-secondary px-[16px] py-[8px] text-text-primary"
 								>
 									Preview
 								</button>
 							</div>
 						</Switch.Case>
 					</div>
-					<div className="z-0 rounded-b-[10px] px-[10px] py-[10px]">
+					<div className="rounded-b-[10px] px-[10px] py-[10px]">
 						<Switch.Case of="editor">
 							<div className="relative flex">
 								<div
 									ref={helper}
 									style={style}
-									className="absolute flex h-[35px] items-center justify-center overflow-hidden rounded-[7.5px] border border-brand-primary bg-text-disabled px-[3px] drop-shadow-lg [&>button:hover]:bg-background-tertiary [&>button]:flex [&>button]:aspect-square [&>button]:items-center [&>button]:rounded-[5px] [&>button]:px-[1.5px] [&>button]:py-[1.5px]"
+									className="absolute flex h-[35px] items-center justify-center overflow-hidden rounded-[7.5px] border border-white/15 bg-background-secondary px-[3px] drop-shadow-lg [&>button:hover]:bg-white/15 [&>button]:flex [&>button]:aspect-square [&>button]:items-center [&>button]:rounded-[5px] [&>button]:px-[1.5px] [&>button]:py-[1.5px]"
 								>
 									<button type="button" aria-label="bold">
-										<Icon.Bold width={20} height={20} />
+										<Icon.Bold width={20} height={20} color="#64748b" />
 									</button>
 									<button type="button" aria-label="italic">
-										<Icon.Italic width={20} height={20} />
+										<Icon.Italic width={20} height={20} color="#64748b" />
 									</button>
 									<button type="button" aria-label="underline">
-										<Icon.Underline width={20} height={20} />
+										<Icon.Underline width={20} height={20} color="#64748b" />
 									</button>
 									<button type="button" aria-label="strikethrough">
-										<Icon.StrikeThrough width={20} height={20} />
+										<Icon.StrikeThrough width={20} height={20} color="#64748b" />
 									</button>
 									<button type="button" aria-label="ol">
-										<Icon.OrderedList width={25} height={25} />
+										<Icon.OrderedList width={25} height={25} color="#64748b" />
 									</button>
 									<button type="button" aria-label="ul">
-										<Icon.UnorderedList width={25} height={25} />
+										<Icon.UnorderedList width={25} height={25} color="#64748b" />
 									</button>
 									<button type="button" aria-label="photo">
-										<Icon.Photo width={25} height={25} />
+										<Icon.Photo width={25} height={25} color="#64748b" />
 									</button>
 								</div>
 								{/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
@@ -213,7 +213,7 @@ export default function Quill({ init, placeholder }: EditorProps) {
 									ref={editor}
 									contentEditable={!readonly}
 									data-placeholder={placeholder}
-									className="text-gray-500 text-disabledspace-pre-wrap inline-block h-full min-h-[130px] w-full grow resize-y overflow-auto break-all rounded-[10px] border border-brand-primary px-[10px] py-[10px] text-lg before:text-brand-primary [&:not(:focus):empty]:before:content-[attr(data-placeholder)]"
+									className="space-pre-wrap inline-block h-full min-h-[130px] w-full grow resize-y overflow-auto break-all rounded-[10px] border border-white/15 px-[10px] py-[10px] text-lg text-text-primary outline-none before:text-text-default focus:border-brand-primary [&:not(:focus):empty]:before:content-[attr(data-placeholder)]"
 									//
 									// feat: drop & drop
 									//
@@ -233,6 +233,19 @@ export default function Quill({ init, placeholder }: EditorProps) {
 										// inset raw data
 										document.execCommand("insertHTML", false, raw.replace(/\r?\n/g, "<br>"));
 									}}
+									onInput={(event) => {
+										// cache
+										const target = event.target as HTMLElement;
+
+										if (target.children.length === 1 && target.firstChild?.nodeName === "BR") {
+											target.lastChild?.remove();
+										}
+										// update
+										setData(unescape(event.target as HTMLElement));
+										// auto resize
+										target.style.height = "auto";
+										target.style.height = `calc(${target.style.borderTopWidth} + ${target.scrollHeight}px + ${target.style.borderBottomWidth})`;
+									}}
 									onKeyDown={(event) => {
 										// eslint-disable-next-line default-case
 										switch (event.key) {
@@ -245,21 +258,13 @@ export default function Quill({ init, placeholder }: EditorProps) {
 											}
 										}
 									}}
-									onInput={(event) => {
-										// @ts-ignore
-										if (event.target.children.length === 1 && event.target.firstChild.nodeName === "BR") {
-											// @ts-ignore
-											event.target.lastChild.remove();
-										}
-										setData(unescape(event.target as HTMLElement));
-									}}
 								/>
 								<div ref={outline} className="pointer-events-none absolute inset-[5px] rounded-[10px] border-[1.75px] border-dashed border-transparent" />
 							</div>
 						</Switch.Case>
 						<Switch.Case of="viewer">
 							<div
-								className="text-gray-500 h-full min-h-[130px] w-full rounded-[10px] border border-transparent px-[10px] py-[10px] text-lg font-normal"
+								className="h-full min-h-[130px] w-full rounded-[10px] border border-transparent px-[10px] py-[10px] text-lg font-normal text-text-primary"
 								// eslint-disable-next-line react/no-danger
 								dangerouslySetInnerHTML={{ __html: CORE.run(data) }}
 							/>

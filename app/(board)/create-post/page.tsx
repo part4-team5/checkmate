@@ -52,7 +52,7 @@ export default function Page() {
 					</div>
 				</div>
 				<div className="mx-[15px] mt-[15px] flex h-[40px] items-center gap-[15px]">
-					<div className="flex h-full grow items-center gap-[10px] overflow-hidden rounded-[10px] border border-background-tertiary px-[10px]">
+					<div className="flex h-full grow items-center gap-[10px] overflow-hidden rounded-[10px] border border-white/15 px-[10px]">
 						<input className="h-full grow bg-transparent text-text-primary outline-none" placeholder="제목을 입력해주세요" />
 					</div>
 					<div className="h-full w-[70px]">
@@ -62,7 +62,7 @@ export default function Page() {
 					</div>
 				</div>
 				<div className="px-[15px] py-[15px]">
-					<Quill />
+					<Quill placeholder="본문을 입력해주세요" />
 				</div>
 			</form>
 			<div className="mt-[32px] h-[45px] w-[140px]">
