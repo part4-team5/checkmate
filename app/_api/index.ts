@@ -84,6 +84,7 @@ export default abstract class API {
 			})(),
 			(() => {
 				const impl: BodyInit = payload instanceof FormData ? payload : JSON.stringify(payload);
+
 				return impl;
 			})(),
 		];
@@ -244,20 +245,24 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 투두 히스토리
 		 */
 		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
-			return API.GET<{
-				tasksDone: {
-					deletedAt: string;
-					userId: number;
-					recurringId: number;
-					frequency: Frequency;
-					date: string;
-					doneAt: string;
-					description: string;
-					name: string;
-					updatedAt: string;
-					id: number;
-				}[];
-			}>(MIME.JSON, `${BASE_URL}/${teamId}/user/history`, query);
+			return API.GET<
+				[
+					{
+						tasksDone: {
+							deletedAt: string;
+							userId: number;
+							recurringId: number;
+							frequency: Frequency;
+							date: string;
+							doneAt: string;
+							description: string;
+							name: string;
+							updatedAt: string;
+							id: number;
+						}[];
+					},
+				]
+			>(MIME.JSON, `${BASE_URL}/${teamId}/user/history`, query);
 		}
 	})();
 
@@ -322,11 +327,11 @@ export default abstract class API {
 		 * Task 목록 확인
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - Task 목록 ID
+		 * @param {number} id - Task 목록 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - Task 목록 정보
 		 */
-		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: string; date?: string }) {
+		public override GET({ teamId = "6-5", id, ...query }: { teamId?: string; id: number; date?: string }) {
 			return API.GET<{
 				groupId: number;
 				displayIndex: number;
@@ -343,12 +348,12 @@ export default abstract class API {
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
 		 * @param {number} groupId - 그룹 ID
-		 * @param {string} id - Task 목록 ID
+		 * @param {number} id - Task 목록 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @param {Object} body - 수정할 Task 목록 정보
 		 * @returns {Promise<Object>} - Task 목록 정보
 		 */
-		public override PATCH({ teamId = "6-5", groupId, id, ...query }: { teamId?: string; groupId: number; id: string }, body: { name: string }) {
+		public override PATCH({ teamId = "6-5", groupId, id, ...query }: { teamId?: string; groupId: number; id: number }, body: { name: string }) {
 			return API.PATCH<{
 				groupId: number;
 				displayIndex: number;
@@ -363,11 +368,11 @@ export default abstract class API {
 		 * Task 목록 삭제
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {string} id - Task 목록 ID
+		 * @param {number} id - Task 목록 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override DELETE({ teamId = "6-5", id, ...query }: { teamId?: string; id: string }) {
+		public override DELETE({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }) {
 			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/{groupsId}/task-lists/${id}`, query);
 		}
 	})();
@@ -590,7 +595,7 @@ export default abstract class API {
 			const data = new FormData();
 
 			data.append("image", body);
-			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images/upload`, query, data);
+			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images`, query, data);
 		}
 	})();
 
@@ -888,7 +893,7 @@ export default abstract class API {
 	/**
 	 * 간편 로그인 API
 	 */
-	public static readonly ["/{teamId}/auth/signIn/{provider}"] = new (class extends API {
+	public static readonly ["{teamId}/auth/signIn/{provider}"] = new (class extends API {
 		/**
 		 * 간편 로그인
 		 * @param {Object} param - 파라미터 객체
@@ -941,7 +946,7 @@ export default abstract class API {
 	/**
 	 * 게시글 댓글 수정, 삭제 API
 	 */
-	public static readonly ["/{teamId}/comments/{commentId}"] = new (class extends API {
+	public static readonly ["{teamId}/comments/{commentId}"] = new (class extends API {
 		/**
 		 * 게시글 댓글 수정
 		 * @param {Object} param - 파라미터 객체
