@@ -6,12 +6,15 @@ import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function JoinTeam() {
 	// TODO: 유저 정보에서 이메일 가져오기 (임시 이메일)
 	const userEmail = "wwww@naver.com";
+
+	const router = useRouter();
 
 	const joinTeamMutation = useMutation<{}, Error, FormContext>({
 		mutationFn: async (ctx: FormContext) => {
@@ -26,9 +29,9 @@ export default function JoinTeam() {
 
 			return response;
 		},
-		onSuccess: (data) => {
+		onSuccess: () => {
 			// TODO: 팀 참여 성공 시 팀 페이지로 이동
-			console.log("Success: ", data);
+			router.push("/get-started");
 		},
 		onError: (error, ctx) => {
 			ctx.setError("teamUrl", "팀 링크가 올바르지 않습니다.");
