@@ -9,8 +9,6 @@ import Link from "next/link";
 export default function TeamList() {
 	const [accessToken] = useCookie("accessToken");
 
-	console.log(accessToken, "accessToken", !!accessToken);
-
 	const { data: user, isLoading } = useQuery({
 		queryKey: ["user"],
 		queryFn: async () => {
