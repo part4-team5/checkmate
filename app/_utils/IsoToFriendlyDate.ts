@@ -1,4 +1,7 @@
-export const convertIsoToDateAndTime = (isoString: string) => {
+export const convertIsoToDateAndTime = (isoString?: string) => {
+	if (!isoString) {
+		return { date: "", time: "" };
+	}
 	// ISO 8601 문자열을 Date 객체로 변환
 	const date = new Date(isoString);
 

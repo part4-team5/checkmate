@@ -484,7 +484,7 @@ export default abstract class API {
 		 */
 		public override PATCH(
 			{ teamId = "6-5", groupId, taskListId, taskId, ...query }: { teamId?: string; groupId?: number; taskListId?: number; taskId: number },
-			body: { name: string; description: string; done: boolean },
+			body: { name?: string; description?: string; done: boolean },
 		) {
 			return API.PATCH<TodoBase>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query, body);
 		}
@@ -1173,7 +1173,7 @@ interface Recurring {
 	createdAt: string;
 	updatedAt: string;
 	displayIndex: number;
-	frequencyType: string;
+	frequencyType: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY";
 	weekDays: number[];
 	monthDay: number | null;
 	taskListId: number;
