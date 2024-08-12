@@ -23,12 +23,12 @@ type Option = {
 export interface DropDownProps {
 	options: Option[];
 	children: React.ReactNode;
-	align?: "left" | "center" | "right" | "LL" | "RR";
+	align?: "LR" | "CC" | "RL" | "LL" | "RR";
 	gapX?: number;
 	gapY?: number;
 }
 
-export default function DropDown({ options, children, align = "left", gapX = 0, gapY = 0 }: DropDownProps) {
+export default function DropDown({ options, children, align = "LR", gapX = 0, gapY = 0 }: DropDownProps) {
 	const menuRefs = useRef<HTMLDivElement[]>([]); // 메뉴 항목 참조 배열
 	const addButtonRef = useRef<HTMLButtonElement>(null); // 팀 추가 버튼 참조
 	const router = useRouter();
@@ -84,17 +84,17 @@ export default function DropDown({ options, children, align = "left", gapX = 0, 
 
 	function getPopoverOrigins() {
 		switch (align) {
-			case "left":
+			case "LR":
 				return {
 					anchorOrigin: { vertical: "bottom" as const, horizontal: "left" as const },
 					overlayOrigin: { vertical: "top" as const, horizontal: "right" as const },
 				};
-			case "center":
+			case "CC":
 				return {
 					anchorOrigin: { vertical: "bottom" as const, horizontal: "center" as const },
 					overlayOrigin: { vertical: "top" as const, horizontal: "center" as const },
 				};
-			case "right":
+			case "RL":
 				return {
 					anchorOrigin: { vertical: "bottom" as const, horizontal: "right" as const },
 					overlayOrigin: { vertical: "top" as const, horizontal: "left" as const },
