@@ -14,6 +14,7 @@ import Image from "next/image";
 import tasksKey from "@/app/(team)/[id]/todo/queryFactory";
 import Popover from "@/app/_components/Popover";
 import { useTodoCheckMutation } from "@/app/(team)/[id]/todo/useMutation";
+import AddTaskModal from "@/app/(team)/[id]/todo/AddTask";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -100,6 +101,10 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		todoPatchMutation.mutate({ taskId: todoId, done: !doneAt });
 	};
 
+	const handleAddTaskClick = () => {
+		overlay.open(({ close }) => <AddTaskModal close={close} groupId={groupId} />);
+	};
+
 	const handleTodoClick = (todoId: number, gid: number, taskId: number, date: Date, doneAt: string) => {
 		overlay.open(({ close }) => (
 			<SideBarWrapper close={close}>
@@ -145,7 +150,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						</div>
 					</div>
 				</Calendar>
-				<button type="button" className="text-brand-primary" aria-label="addtask">
+				<button onClick={handleAddTaskClick} type="button" className="text-brand-primary" aria-label="addtask">
 					+새로운 목록 추가하기
 				</button>
 			</div>
