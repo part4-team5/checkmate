@@ -21,7 +21,7 @@ export default function TeamEditForm({ id }: { id: number }) {
 		queryFn: async () => {
 			const response = await API["{teamId}/groups/{id}"].GET({ id });
 			return response;
-		},
+		}, [id]),
 	});
 
 	const imageUpload = useCallback(async (file: File): Promise<{ url: string | undefined }> => {

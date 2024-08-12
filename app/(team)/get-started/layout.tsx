@@ -3,4 +3,4 @@ export default function Layout({ children }: Readonly<React.PropsWithChildren>) 
 }
 
 /** @type {import("next").Metadata} */
-export const metadata = { title: "팀 참가하기" };
+export const metadata = { title: "시작하기" };

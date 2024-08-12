@@ -60,4 +60,32 @@ export default class Cookie {
 			}
 		}
 	}
+
+	public static delete(key: string) {
+		switch (typeof window) {
+			//
+			// server side
+			//
+			case "undefined": {
+				// eslint-disable-next-line global-require
+				const { cookies } = require("next/headers");
+
+				const store = cookies();
+
+				try {
+					store.delete(key, { path: "/" });
+				} catch (_) {
+					// ignore
+				}
+				break;
+			}
+			//
+			// client side
+			//
+			default: {
+				document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+				break;
+			}
+		}
+	}
 }
