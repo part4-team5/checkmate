@@ -122,7 +122,7 @@ function JoinTeamForm() {
 	}, [token, joinTeamMutation]);
 
 	if (token) {
-		return <section className="flex size-full flex-col items-center justify-center text-3xl font-bold">팀참여 중...</section>;
+		return <section className="flex size-full flex-col items-center justify-center text-3xl font-bold">팀 참여 중...</section>;
 	}
 
 	return (

@@ -10,10 +10,7 @@ export default async function TeamEditPage({ params }: { params: { id: string } 
 
 	await queryClient.prefetchQuery({
 		queryKey: ["teamInfo", { id: Number(id) }],
-		queryFn: async () => {
-			const response = await API["{teamId}/groups/{id}"].GET({ id: Number(id) });
-			return response;
-		},
+		queryFn: async () => API["{teamId}/groups/{id}"].GET({ id: Number(id) }),
 	});
 
 	return (
