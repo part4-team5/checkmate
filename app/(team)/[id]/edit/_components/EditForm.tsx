@@ -20,10 +20,10 @@ export default function TeamEditForm() {
 
 	const { data: teamInfo } = useQuery({
 		queryKey: ["teamInfo", { id: Number(id) }],
-		queryFn: async () => {
+		queryFn: useCallback(async () => {
 			const response = await API["{teamId}/groups/{id}"].GET({ id: Number(id) });
 			return response;
-		},
+		}, [id]),
 	});
 
 	const imageUpload = useCallback(async (file: File): Promise<{ url: string | undefined }> => {
