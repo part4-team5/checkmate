@@ -61,7 +61,7 @@ export default function Header() {
 					/>
 				));
 			},
-		}, // TODO: 로그아웃 처리
+		},
 	];
 
 	const teamDropdown = [
@@ -70,10 +70,6 @@ export default function Header() {
 			image: membership.group.image ?? "/icons/emptyImage.svg",
 			onClick: () => router.push(`/${membership.groupId}`),
 		})) ?? []),
-		{
-			content: <p className="size-full rounded-xl border py-3 text-lg font-medium hover:bg-background-tertiary">+ 팀 생성하기</p>,
-			onClick: () => router.push("/create-team"),
-		},
 	];
 
 	const sideBarClose = useCallback(() => {
@@ -105,7 +101,7 @@ export default function Header() {
 
 					{/* 사이드바 */}
 					<div className={`fixed inset-0 left-0 top-[60px] z-30 bg-black/50 ${isOpen ? "block" : "hidden"} cursor-default`} onClick={() => setIsOpen(false)}>
-						<div className="z-40 h-full w-[50%] min-w-fit bg-background-secondary py-5 pl-6 pr-5" onClick={(event) => event.stopPropagation()}>
+						<div className="z-40 h-full w-fit min-w-[220px] max-w-[50%] bg-background-secondary py-5 pl-6 pr-5" onClick={(event) => event.stopPropagation()}>
 							<div className="flex w-full justify-end">
 								<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Close">
 									<Icon.Close width={24} height={24} />
@@ -124,17 +120,17 @@ export default function Header() {
 							</button>
 
 							{/* max-h-[calc(100dvh-200px)]으로 위에 크기만큼 빼서 스크롤 넣어줌 */}
-							<div className={`overflow-hidden transition-animation ${isTeamOpen ? "max-h-[calc(100dvh-270px)]" : "max-h-0"} `}>
+							<div className={`overflow-hidden duration-500 ease-in-out ${isTeamOpen ? "max-h-[calc(100dvh-270px)]" : "max-h-0"} `}>
 								<ul className="max-h-[calc(100dvh-270px)] max-w-full overflow-y-auto rounded-md scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary">
 									{user?.memberships.map((membership) => (
 										<li key={membership.groupId} className="size-full">
 											<Link
 												href={`/${membership.groupId}`}
-												className="mr-2 flex min-w-max items-center gap-2 rounded-md py-2 pl-3 text-lg font-medium hover:bg-background-tertiary"
+												className="mr-2 flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-lg font-medium hover:bg-background-tertiary"
 												onClick={sideBarClose}
 											>
-												<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={32} height={32} />
-												{membership.group.name}
+												<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={32} height={32} className="size-8" />
+												<p className="w-fit overflow-x-hidden text-ellipsis">{membership.group.name}</p>
 											</Link>
 										</li>
 									))}
@@ -195,12 +191,7 @@ export default function Header() {
 						<nav className="hidden tablet:flex">
 							<ul className="flex items-center gap-10">
 								<li>
-									<DropDown
-										options={teamDropdown}
-										gapX={10}
-										anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-										overlayOrigin={{ vertical: "top", horizontal: "right" }}
-									>
+									<DropDown options={teamDropdown} gapX={10} align="RR">
 										<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
 											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
 											<Icon.ArrowDown width={16} height={16} />
@@ -215,12 +206,7 @@ export default function Header() {
 							</ul>
 						</nav>
 
-						<DropDown
-							options={userDropdown}
-							gapX={10}
-							anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-							overlayOrigin={{ vertical: "top", horizontal: "right" }}
-						>
+						<DropDown options={userDropdown} gapX={10} align="RR">
 							<button type="button" className="flex gap-2">
 								<div className="size-4 tablet:size-6">
 									<Icon.User width="100%" height="100%" />
@@ -230,6 +216,13 @@ export default function Header() {
 						</DropDown>
 					</div>
 				)}
+
+				<nav className={`flex size-full items-center justify-end ${isUser ? "hidden" : "flex"}`}>
+					<Link href="/login" className="flex items-center gap-2 px-4 text-lg font-medium">
+						<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
+						로그인
+					</Link>
+				</nav>
 			</div>
 		</header>
 	);

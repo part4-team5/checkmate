@@ -89,11 +89,6 @@ export default {
 					},
 				},
 			});
-			addUtilities({
-				".transition-animation": {
-					transition: "0.5s ease-in-out",
-				},
-			});
 			addVariant("scrollbar", "&::-webkit-scrollbar");
 			addVariant("scrollbar-thumb", "&::-webkit-scrollbar-thumb");
 		}),
