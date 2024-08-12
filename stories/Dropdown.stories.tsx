@@ -38,7 +38,7 @@ Default.args = {
 	options,
 	gapX: 0,
 	gapY: 0,
-	align: "right",
+	align: "RL",
 };
 
 export const WithImage = Template.bind({});
@@ -69,7 +69,7 @@ WithImage.args = {
 			),
 		},
 	],
-	align: "right",
+	align: "RL",
 	gapX: 0,
 	gapY: 0,
 };
@@ -125,7 +125,7 @@ WithSubOptionsAndImage.args = {
 			),
 		},
 	],
-	align: "right",
+	align: "RL",
 	gapX: 0,
 	gapY: 0,
 };
