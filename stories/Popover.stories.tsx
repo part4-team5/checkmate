@@ -24,5 +24,4 @@ Default.args = {
 	gapX: 0,
 	gapY: 0,
 	overlay: () => <div className="flex h-[40px] w-[150px] items-center justify-center bg-brand-secondary">Overlay</div>,
-	align: "right",
 };
