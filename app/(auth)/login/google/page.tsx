@@ -3,7 +3,7 @@
 import API from "@/app/_api";
 import useCookie from "@/app/_hooks/useCookie";
 import useAuthStore from "@/app/_store/useAuthStore";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -15,6 +15,8 @@ export default function GoogleLogin() {
 	const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
 	const setUser = useAuthStore((state) => state.setUser);
+
+	const queryClient = useQueryClient();
 
 	// 구글 로그인 Mutation
 	const googleLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({
@@ -38,6 +40,9 @@ export default function GoogleLogin() {
 			// 쿠키에 토큰 저장
 			setAccessToken(data.accessToken);
 			setRefreshToken(data.refreshToken);
+
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			router.replace("/");
 		},
 		onError: (error) => {

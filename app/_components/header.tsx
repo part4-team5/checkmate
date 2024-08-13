@@ -9,6 +9,7 @@ import Logout from "@/app/_components/modal-contents/Logout";
 import useCookie from "@/app/_hooks/useCookie";
 import useOverlay from "@/app/_hooks/useOverlay";
 import Icon from "@/app/_icons";
+import useAuthStore from "@/app/_store/useAuthStore";
 import debounce from "@/app/_utils/debounce";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -28,17 +29,17 @@ export default function Header() {
 
 	const overlay = useOverlay();
 
-	const [isUser, setIsUser] = useState(!!accessToken);
+	const clearUserStorage = useAuthStore.persist.clearStorage;
 
 	// 유저 정보 받아오기
 	const { data: user } = useQuery({
 		queryKey: ["user"],
 		queryFn: useCallback(async () => {
-			if (!isUser) return null;
+			if (!accessToken) return null;
 
 			const response = await API["{teamId}/user"].GET({});
 			return response;
-		}, [isUser]),
+		}, [accessToken]),
 	});
 
 	const userDropdown = [
@@ -53,7 +54,7 @@ export default function Header() {
 						onClick={() => {
 							setRefreshToken(null);
 							setAccessToken(null);
-							setIsUser(false);
+							clearUserStorage();
 							router.push("/");
 							close();
 						}}
@@ -113,7 +114,7 @@ export default function Header() {
 							<button
 								type="button"
 								onClick={() => setIsTeamOpen(!isTeamOpen)}
-								className={`w-full items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${isUser ? "flex" : "hidden"}`}
+								className={`w-full items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 							>
 								<Image src="/icons/landingFolder.svg" alt="selectArrow" width={42} height={42} />
 								{/* <div className="size-2 rounded-full bg-background-inverse" /> */}팀 목록
@@ -141,7 +142,7 @@ export default function Header() {
 
 							<Link
 								href="/create-team"
-								className={`mt-1 items-center gap-2 text-lg font-medium ${isUser ? "flex" : "hidden"} rounded-md hover:bg-background-tertiary`}
+								className={`mt-1 items-center gap-2 text-lg font-medium ${accessToken ? "flex" : "hidden"} rounded-md hover:bg-background-tertiary`}
 								onClick={sideBarClose}
 							>
 								<Image src="/icons/landingMail.svg" alt="selectArrow" width={42} height={42} />
@@ -163,14 +164,14 @@ export default function Header() {
 
 								<Link
 									href="/login"
-									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${isUser ? "hidden" : "flex"}`}
+									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "hidden" : "flex"}`}
 								>
 									<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
 									로그인
 								</Link>
 								<Link
 									href="/signup"
-									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${isUser ? "hidden" : "flex"}`}
+									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "hidden" : "flex"}`}
 								>
 									<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
 									회원가입
@@ -186,7 +187,7 @@ export default function Header() {
 					</div>
 				</Link>
 
-				{isUser && (
+				{!!accessToken && (
 					<div className="z-50 flex w-full items-center justify-end tablet:justify-between">
 						<nav className="hidden tablet:flex">
 							<ul className="flex items-center gap-10">
@@ -217,7 +218,7 @@ export default function Header() {
 					</div>
 				)}
 
-				<nav className={`flex size-full items-center justify-end ${isUser ? "hidden" : "flex"}`}>
+				<nav className={`flex size-full items-center justify-end ${accessToken ? "hidden" : "flex"}`}>
 					<Link href="/login" className="flex items-center gap-2 px-4 text-lg font-medium">
 						<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
 						로그인
