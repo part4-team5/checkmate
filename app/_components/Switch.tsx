@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-import Capsule from "@/app/_utils/capsule";
+import Capsule from "@/app/_utils/Capsule";
 
 interface SwitchContext {
 	index: ReturnType<typeof Capsule<string>>;
@@ -51,9 +51,10 @@ Switch.Jump = function Jump({ to, children }: React.PropsWithChildren & { to: st
 	const ctx = useCTX();
 
 	return (
-		<button type="button" onClick={() => ctx.index(to)}>
+		// eslint-disable-next-line jsx-a11y/click-events-have-key-events
+		<div role="button" tabIndex={0} onClick={() => ctx.index(to)}>
 			{children}
-		</button>
+		</div>
 	);
 };
 

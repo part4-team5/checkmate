@@ -227,7 +227,7 @@ Icon.Photo = function Photo({ width, height, color }: IconProps) {
 		</svg>
 	);
 };
-        
+
 Icon.LogoTypo = function LogoTypo({ width, height, color = "#10B981" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 163 32" fill="none" xmlns="http://www.w3.org/2000/svg">
