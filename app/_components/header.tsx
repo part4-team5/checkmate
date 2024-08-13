@@ -29,8 +29,6 @@ export default function Header() {
 
 	const overlay = useOverlay();
 
-	const clearUserStorage = useAuthStore.persist.clearStorage;
-
 	// 유저 정보 받아오기
 	const { data: user } = useQuery({
 		queryKey: ["user"],
@@ -54,7 +52,7 @@ export default function Header() {
 						onClick={() => {
 							setRefreshToken(null);
 							setAccessToken(null);
-							clearUserStorage();
+							useAuthStore.persist.clearStorage();
 							router.push("/");
 							close();
 						}}

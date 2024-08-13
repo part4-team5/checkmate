@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function GoogleLogin() {
-	const [token] = useState<string>(useSearchParams().get("code") ?? "");
+	const [code] = useState<string>(useSearchParams().get("code") ?? "");
 	const isMounted = useRef(true);
 	const router = useRouter();
 
@@ -18,12 +18,41 @@ export default function GoogleLogin() {
 
 	const queryClient = useQueryClient();
 
+	// 구글 토큰 변환 Mutation
+	const googleTokenMutation = useMutation({
+		mutationFn: async (): Promise<{ id_token: string }> => {
+			const payload = new URLSearchParams({
+				client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "",
+				client_secret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET ?? "",
+				code,
+				grant_type: "authorization_code",
+				redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ?? "",
+			});
+
+			const response = await fetch("https://oauth2.googleapis.com/token", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+				body: payload,
+			});
+
+			const data = await response.json();
+			return data;
+		},
+		onError: (error) => {
+			console.log(error);
+		},
+	});
+
 	// 구글 로그인 Mutation
 	const googleLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({
 		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
+			const data = await googleTokenMutation.mutateAsync();
+
 			const payload: Parameters<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>[1] = {
 				redirectUri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ?? "",
-				token,
+				token: data.id_token,
 			};
 
 			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "GOOGLE" }, payload);
@@ -52,10 +81,10 @@ export default function GoogleLogin() {
 
 	useEffect(() => {
 		// token이 존재하고, 컴포넌트가 마운트 되었을 때
-		if (isMounted.current && token) {
+		if (isMounted.current && code) {
 			isMounted.current = false;
 
 			googleLoginMutation.mutate();
 		}
-	}, [googleLoginMutation, token]);
+	}, [googleLoginMutation, code]);
 }
