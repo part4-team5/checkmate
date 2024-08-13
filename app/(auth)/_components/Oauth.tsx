@@ -3,16 +3,48 @@
 import API from "@/app/_api";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 
-export default function Oauth() {}
+export default function Oauth({ type = "signin" }: { type?: "signin" | "signup" }) {
+	let sign = "signin";
+	switch (type) {
+		case "signin":
+			sign = "간편 로그인하기";
+			break;
+		case "signup":
+			sign = "간편 회원가입하기";
+			break;
+		default:
+			sign = "간편 로그인하기";
+			break;
+	}
+
+	return (
+		<div className="flex flex-col pt-6 text-lg text-text-primary">
+			<div className="flex items-center justify-center">
+				<div className="w-full border-b border-border-primary/50" />
+				<p className="px-5 font-normal">OR</p>
+				<div className="w-full border-b border-border-primary/50" />
+			</div>
+
+			<div className="pt-4" />
+
+			<div className="flex items-center justify-between">
+				<div className="font-medium">{sign}</div>
+
+				<div className="flex gap-4">
+					<Oauth.Kakao />
+					<Oauth.Google />
+				</div>
+			</div>
+		</div>
+	);
+}
 
 Oauth.Kakao = function Kakao() {
-	const [token] = useState<string>(useSearchParams().get("code") ?? "");
 	const router = useRouter();
-	const isMounted = useRef(true);
 
+	// 카카오 앱 등록 Mutation
 	const kakaoAppsMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/oauthApps"]["POST"]>>, Error>({
 		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/oauthApps"]["POST"]>>> => {
 			const payload: Parameters<(typeof API)["{teamId}/oauthApps"]["POST"]>[1] = {
@@ -23,36 +55,10 @@ Oauth.Kakao = function Kakao() {
 			return API["{teamId}/oauthApps"].POST({}, payload);
 		},
 		onSuccess: () => {
-			router.push(process.env.NEXT_PUBLIC_KAKAO_URL ?? "");
+			// 카카오 앱 등록 성공 시 카카오 로그인 페이지로 이동
+			router.replace(process.env.NEXT_PUBLIC_KAKAO_URL ?? "");
 		},
 	});
-
-	const kakaoLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({
-		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
-			const payload: Parameters<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>[1] = {
-				redirectUri: process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ?? "",
-				token,
-			};
-
-			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "KAKAO" }, payload);
-		},
-		onSuccess: (data) => {
-			console.log(data);
-		},
-		onError: (error) => {
-			console.log(error);
-		},
-	});
-
-	useEffect(() => {
-		if (isMounted.current) {
-			isMounted.current = false;
-
-			if (token) {
-				kakaoLoginMutation.mutate();
-			}
-		}
-	}, [kakaoLoginMutation, token]);
 
 	const handleKakaoApps = () => {
 		// TODO: 카카오 앱 등록 한번 실행하면 더 이상 실행하지 않도록 수정
@@ -62,16 +68,15 @@ Oauth.Kakao = function Kakao() {
 
 	return (
 		<button type="button" onClick={handleKakaoApps}>
-			<Image src="/icons/kakaotalk.svg" alt="kakao" width={32} height={32} />
+			<Image src="/icons/kakaotalk.svg" alt="kakao" width={42} height={42} />
 		</button>
 	);
 };
 
 Oauth.Google = function Google() {
-	const [token, setToken] = useState<string>("");
 	const router = useRouter();
-	const isMounted = useRef(true);
 
+	// 구글 앱 등록 Mutation
 	const googleAppsMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/oauthApps"]["POST"]>>, Error>({
 		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/oauthApps"]["POST"]>>> => {
 			const payload: Parameters<(typeof API)["{teamId}/oauthApps"]["POST"]>[1] = {
@@ -82,36 +87,10 @@ Oauth.Google = function Google() {
 			return API["{teamId}/oauthApps"].POST({}, payload);
 		},
 		onSuccess: () => {
-			router.push(process.env.NEXT_PUBLIC_GOOGLE_URL ?? "");
+			// 구글 앱 등록 성공 시 구글 로그인 페이지로 이동
+			router.replace(process.env.NEXT_PUBLIC_GOOGLE_URL ?? "");
 		},
 	});
-
-	const googleLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({
-		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
-			const payload: Parameters<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>[1] = {
-				redirectUri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ?? "",
-				token,
-			};
-
-			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "GOOGLE" }, payload);
-		},
-		onSuccess: (data) => {
-			console.log(data);
-		},
-		onError: (error) => {
-			console.log(error);
-		},
-	});
-
-	useEffect(() => {
-		const urlParams = new URLSearchParams(window.location.search);
-		const code = urlParams.get("code");
-		if (isMounted.current && code) {
-			isMounted.current = false;
-			setToken(code);
-			googleLoginMutation.mutate();
-		}
-	}, [googleLoginMutation]);
 
 	const handleGoogleApps = () => {
 		// TODO: 구글 앱 등록 한번 실행하면 더 이상 실행하지 않도록 수정
@@ -121,7 +100,7 @@ Oauth.Google = function Google() {
 
 	return (
 		<button type="button" onClick={handleGoogleApps}>
-			<Image src="/icons/google.svg" alt="google" width={32} height={32} />
+			<Image src="/icons/google.svg" alt="google" width={42} height={42} />
 		</button>
 	);
 };
