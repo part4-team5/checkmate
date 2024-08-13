@@ -117,7 +117,7 @@ export default function Page() {
 					<div className="flex items-center justify-between">
 						게시글
 						<DropDown
-							gapX={6}
+							gapY={6}
 							align="RR"
 							options={[
 								{
@@ -134,7 +134,7 @@ export default function Page() {
 								},
 							]}
 						>
-							<div className="flex w-[78px] items-center justify-between rounded-[12px] bg-background-secondary px-[8px] py-[8px] text-md font-normal text-text-primary tablet:w-[92px]">
+							<div className="flex w-[94px] items-center justify-between rounded-[12px] bg-background-secondary px-[8px] py-[8px] text-md font-normal text-text-primary tablet:w-[120px]">
 								{orderBy === "recent" ? "최신순" : "좋아요순"}
 								<Icon.Toggle width={24} height={24} color="#64748B" />
 							</div>
