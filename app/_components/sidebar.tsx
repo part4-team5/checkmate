@@ -14,10 +14,10 @@ export default function SideBarWrapper({ close, children }: SideBarProps) {
 	};
 	const isAboveMobile = window.innerWidth > 744;
 	/* eslint-disable jsx-a11y/click-events-have-key-events */
-	/* eslint-disable jsx-a11y/interactive-supports-focus */
+	/* eslint-disable jsx-a11y/no-static-element-interactions */
 	return (
 		<AnimatePresence>
-			<div className="fixed inset-0 z-50" onClick={handleButtonClick} role="button">
+			<div className="fixed inset-0 z-50" onClick={handleButtonClick}>
 				<motion.div
 					className="fixed bottom-0 h-[calc(100vh-60px)] w-full overflow-hidden bg-background-secondary tablet:right-0 tablet:w-[55%] desktop:w-[45%]"
 					onClick={(e) => e.stopPropagation()}

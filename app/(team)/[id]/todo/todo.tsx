@@ -9,24 +9,18 @@ import { useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import SideBarWrapper from "@/app/_components/sidebar";
 import TodoDetail from "@/app/(team)/[id]/todo/todoDetail";
-import { convertIsoToDateAndTime, convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
+import { convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
 import tasksKey from "@/app/(team)/[id]/todo/queryFactory";
 import Popover from "@/app/_components/Popover";
 import { useTodoCheckMutation } from "@/app/(team)/[id]/todo/useMutation";
 import AddTaskModal from "@/app/(team)/[id]/todo/AddTask";
+import TodoItem from "@/app/(team)/[id]/todo/_components/TodoItem";
+import useGetTodoItems from "@/app/(team)/[id]/todo/useQuery";
 
 type ClientTodoProps = {
 	groupId: number;
 	taskListId: number;
-};
-
-type FrequencyType = "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
-const frequency: Record<FrequencyType, string> = {
-	DAILY: "매일 반복",
-	WEEKLY: "매주 반복",
-	MONTHLY: "매월 반복",
-	ONCE: "반복 없음",
 };
 
 function CalendarPopoverContent() {
@@ -50,8 +44,9 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		window.history.pushState(null, "", `${pathname}?taskId=${value}`);
 	};
 	const todoPatchMutation = useTodoCheckMutation(groupId, currentTaskId, currentDate);
+	const { data: todoItems } = useGetTodoItems(groupId, currentTaskId, currentDate);
 
-	const { data: taskList } = useQuery({
+	const { data: groupList } = useQuery({
 		queryKey: ["tasks", { groupId }],
 		queryFn: async () => {
 			const response = API["{teamId}/groups/{id}"].GET({
@@ -61,9 +56,9 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		},
 	});
 
-	const tasks = taskList?.taskLists;
+	const tasks = groupList?.taskLists;
 	/* eslint-disable no-restricted-syntax */
-	const prefetch = () => {
+	const prefetchTasks = () => {
 		if (!tasks) return;
 		for (const task of tasks) {
 			queryClient.prefetchQuery({
@@ -79,25 +74,12 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			});
 		}
 	};
-	const fetchTodos = async () => {
-		const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].GET({
-			groupId,
-			taskListId: currentTaskId,
-			date: currentDate.toLocaleDateString("ko-KR"),
-		});
-		return response;
-	};
-
-	const { data: todos } = useQuery({
-		queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")),
-		queryFn: fetchTodos,
-	});
 
 	const handleCurrentDate = (date: Date) => {
 		setCurrentDate(() => date);
 	};
 
-	const handleCheckButtonClick = (todoId: number, doneAt: string) => {
+	const handleToggleTodoStatus = (todoId: number, doneAt: string) => {
 		todoPatchMutation.mutate({ taskId: todoId, done: !doneAt });
 	};
 
@@ -113,10 +95,6 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		));
 	};
 
-	/* eslint-disable jsx-a11y/click-events-have-key-events */
-	/* eslint-disable jsx-a11y/interactive-supports-focus */
-	/* eslint-disable jsx-a11y/click-events-have-key-events */
-	/* eslint-disable jsx-a11y/no-static-element-interactions */
 	return (
 		<>
 			<div className="my-6 flex justify-between">
@@ -161,7 +139,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							className={`${task.id === currentTaskId ? "text-text-primary underline" : "text-text-default"}`}
 							type="button"
 							key={task.id}
-							onMouseEnter={prefetch}
+							onMouseEnter={prefetchTasks}
 							onClick={() => updateSearchParams("taskId", task.id)}
 						>
 							{task.name}
@@ -169,58 +147,17 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					))}
 			</div>
 			<div className="mt-4 flex flex-col gap-4">
-				{todos &&
-					todos.map((todo) => {
-						const { date, time } = convertIsoToDateAndTime(todo.date); // 날짜 변환
-						return (
-							<div
-								className="flex w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
-								key={todo.id}
-								onClick={() => handleTodoClick(todo.id, groupId, currentTaskId, currentDate, todo.doneAt)}
-							>
-								<div className="flex items-center justify-between">
-									<div className="flex gap-3">
-										<button
-											type="button"
-											aria-label="todo-done"
-											onClick={(event) => {
-												event.stopPropagation();
-												handleCheckButtonClick(todo.id, todo.doneAt);
-											}}
-										>
-											{todo.doneAt ? (
-												<Image src="/icons/checkBox.svg" alt="done" width={24} height={24} />
-											) : (
-												<Image src="/icons/uncheckBox.svg" alt="not done" width={24} height={24} />
-											)}
-										</button>
-										<div className={`${todo.doneAt ? "line-through" : ""} text-text-primary`}>{todo.name}</div>
-										<div className="flex items-center justify-center gap-1 text-xs font-normal text-text-default">
-											<Image src="/icons/comment.svg" alt="comment" width={16} height={16} />
-											{todo.commentCount}
-										</div>
-									</div>
-								</div>
-								<div className="flex items-center text-xs font-normal text-text-default">
-									<div className="flex gap-[6px]">
-										<Image src="/icons/calendar.svg" alt="calendar" width={16} height={16} />
-										<div>{date}</div>
-									</div>
-									<div className="flex items-center gap-[6px] px-[10px]">
-										<div className="h-2 border-l" />
-										<Image src="/icons/clock.svg" alt="time" width={16} height={16} />
-										<div>{time}</div>
-										<div className="h-2 border-r" />
-										<Image src="/icons/clock.svg" alt="time" width={16} height={16} />
-									</div>
-									<div className="flex items-center gap-[6px]">
-										<Image src="/icons/cycles.svg" alt="frequency" width={16} height={16} />
-										{frequency[todo.frequency]}
-									</div>
-								</div>
-							</div>
-						);
-					})}
+				{todoItems &&
+					todoItems.map((todoItem) => (
+						<TodoItem
+							key={todoItem.id}
+							todoItem={todoItem}
+							onToggleTodo={handleToggleTodoStatus}
+							onClick={handleTodoClick}
+							groupId={groupId}
+							currentDate={currentDate}
+						/>
+					))}
 			</div>
 			<div>
 				<div className="fixed bottom-12 flex w-full max-w-[1233px] justify-end">

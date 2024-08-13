@@ -4,13 +4,13 @@ import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query
 
 type PageProps = {
 	params: {
-		team: string;
 		id: string;
 	};
 	searchParams: {
-		taskId: string;
+		taskId?: string;
 	};
 };
+
 export default async function Page({ params, searchParams }: PageProps) {
 	const queryClient = new QueryClient();
 	const groupId = Number(params.id);

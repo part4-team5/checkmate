@@ -1,6 +1,6 @@
 import API from "@/app/_api";
 import CloseIcon from "@/public/icons/ic_close";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Icon from "@/app/_icons/index";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import Image from "next/image";
@@ -9,9 +9,9 @@ import disabledAddComment from "@/public/icons/disableAddComment.svg";
 import addComment from "@/public/icons/addComment.svg";
 import Button from "@/app/_components/Button";
 import KebabIcon from "@/public/icons/KebabIcon";
-import tasksKey from "@/app/(team)/[id]/todo/queryFactory";
 import { calculateTimeDifference, convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
-import { useTodoCheckMutation } from "@/app/(team)/[id]/todo/useMutation";
+import { useAddCommentMutation, useTodoCheckMutation } from "@/app/(team)/[id]/todo/useMutation";
+import useAuthStore from "@/app/_store/useAuthStore";
 
 type TodoDetailProps = {
 	todoId: number;
@@ -30,15 +30,23 @@ const frequency: Record<FrequencyType, string> = {
 	ONCE: "반복 없음",
 };
 
+type User = {
+	id: number;
+	email: string;
+	nickname: string;
+	image: string | null;
+};
+
 export default function TodoDetail({ todoId, close, groupId, currentTaskId, currentDate, doneAt }: TodoDetailProps) {
+	const user = useAuthStore((state) => state.user) as User;
 	const [commentText, setCommentText] = useState("");
 	const [isCheck, setIsCheck] = useState(!!doneAt);
-	const queryClient = useQueryClient();
-	const currentTime = new Date();
 	const todoPatchMutation = useTodoCheckMutation(groupId, currentTaskId, currentDate);
+	const addCommentMutation = useAddCommentMutation(groupId, todoId, currentTaskId, currentDate, user, setCommentText);
+	const currentTime = new Date();
 
 	const { data } = useQuery({
-		queryKey: ["tasks", { taskId: todoId }],
+		queryKey: ["todo", { todoId }],
 		queryFn: async () => {
 			const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].GET({
 				taskId: todoId,
@@ -51,42 +59,23 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 		setCommentText(e.target.value);
 	};
 
-	const postAddComment = async (newComment: string) => {
-		const body = { content: newComment };
+	const getComments = async () => {
 		// API 호출
-		const response = await API["{teamId}/tasks/{taskId}/comments"].POST(
-			{
-				taskId: todoId,
-			},
-			body,
-		);
+		const response = await API["{teamId}/tasks/{taskId}/comments"].GET({
+			taskId: todoId,
+		});
 		return response;
 	};
 
-	const useAddCommentMutation = () =>
-		useMutation({
-			mutationFn: postAddComment,
-			onSuccess: () => {
-				// 요청 성공 시 수행할 작업
-				queryClient.invalidateQueries({
-					queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")),
-				});
-				queryClient.invalidateQueries({
-					queryKey: ["tasks", { taskId: todoId }],
-				});
-				setCommentText(""); // 입력 필드를 초기화
-			},
-			onError: () => {
-				// 요청 실패 시 수행할 작업
-				alert("댓글 작성에 실패했습니다.");
-			},
-		});
-
-	const addCommentMutation = useAddCommentMutation();
+	const { data: comments } = useQuery({
+		queryKey: ["todo", { todoId, comments: true }],
+		queryFn: getComments,
+	});
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (commentText.length === 0) return;
+		if (addCommentMutation.isPending) return;
 		addCommentMutation.mutate(commentText);
 	};
 
@@ -98,7 +87,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 	const { date, time } = convertIsoToDateAndTime(data?.date);
 
 	return (
-		<div className="px-6 pb-[38px] pt-6">
+		<div className="px-6 pb-[38px] pt-6 text-text-primary">
 			<button type="button" onClick={close} aria-label="버튼" className="">
 				<CloseIcon width={24} height={24} />
 			</button>
@@ -173,30 +162,31 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 						<hr className="border-icon-primary" />
 					</form>
 
-					<div className="desktop:max-h-[699px]scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary flex max-h-[326px] flex-col gap-4 overflow-y-scroll tablet:max-h-[309px]">
-						{data.comments.map((comment) => {
-							const timeDifference = calculateTimeDifference(comment.createdAt, currentTime);
-							return (
-								<div key={comment.id}>
-									<div className="flex justify-between">
-										<div className="text-md font-normal">{comment.content}</div>
-										<button type="button" aria-label="dropdown">
-											<KebabIcon />
-										</button>
+					<div className="desktop:max-h-[699px]scrollbar:w-2 flex max-h-[326px] flex-col gap-4 overflow-y-scroll scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary tablet:max-h-[309px]">
+						{comments &&
+							comments.map((comment) => {
+								const timeDifference = calculateTimeDifference(comment.createdAt, currentTime);
+								return (
+									<div key={comment.id}>
+										<div className="flex justify-between">
+											<div className="text-md font-normal">{comment.content}</div>
+											<button type="button" aria-label="dropdown">
+												<KebabIcon />
+											</button>
+										</div>
+										<div className="my-4 flex items-center justify-between">
+											{comment.user && (
+												<div className="flex items-center gap-3">
+													<Image src={defaultImage} alt={data.name} width={32} height={32} />
+													<div>{comment.user.nickname}</div>
+												</div>
+											)}
+											<div className="text-text-secondary">{timeDifference}</div>
+										</div>
+										<hr className="border-icon-primary" />
 									</div>
-									<div className="my-4 flex items-center justify-between">
-										{comment.user && (
-											<div className="flex items-center gap-3">
-												<Image src={defaultImage} alt={data.name} width={32} height={32} />
-												<div>{comment.user.nickname}</div>
-											</div>
-										)}
-										<div className="text-text-secondary">{timeDifference}</div>
-									</div>
-									<hr className="border-icon-primary" />
-								</div>
-							);
-						})}
+								);
+							})}
 					</div>
 				</div>
 			)}
