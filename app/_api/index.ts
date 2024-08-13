@@ -936,7 +936,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 댓글 리스트
 		 */
 		public override GET({ teamId = "6-5", articleId, ...query }: { teamId?: string; articleId: number }) {
-			return API.GET<ArticleComments>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}/comments`, query);
+			return API.GET<CursorBasedPaginationResponse<Comment>>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}/comments`, query);
 		}
 
 		/**
@@ -990,17 +990,6 @@ export default abstract class API {
 	 */
 	public static readonly ["{teamId}/articles"] = new (class extends API {
 		/**
-		 * 게시글 목록 확인
-		 * @param {Object} param - 파라미터 객체
-		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {Object} query - 쿼리 파라미터
-		 * @returns {Promise<Object>} - 게시글 리스트
-		 */
-		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
-			return API.GET<Articles>(MIME.JSON, `${BASE_URL}/${teamId}/articles`, query);
-		}
-
-		/**
 		 * 게시글 생성
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
@@ -1010,6 +999,17 @@ export default abstract class API {
 		 */
 		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { image?: string; content: string; title: string }) {
 			return API.POST<Article>(MIME.JSON, `${BASE_URL}/${teamId}/articles`, query, body);
+		}
+
+		/**
+		 * 게시글 목록 확인
+		 * @param {Object} param - 파라미터 객체
+		 * @param {string} [param.teamId="6-5"] - 팀 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 게시글 리스트
+		 */
+		public override GET({ teamId = "6-5", ...query }: { teamId?: string; orderBy?: "like" | "recent"; pageSize?: number; keyword?: string; page?: number }) {
+			return API.GET<OffsetBasedPaginationResponse<Article>>(MIME.JSON, `${BASE_URL}/${teamId}/articles`, query);
 		}
 	})();
 
@@ -1274,11 +1274,6 @@ interface ArticleListItem {
 	id: number;
 }
 
-interface ArticleComments {
-	nextCursor: number;
-	list: ArticleListItem[];
-}
-
 interface Article {
 	updatedAt: string;
 	createdAt: string;
@@ -1292,7 +1287,12 @@ interface Article {
 	content?: string;
 }
 
-interface Articles {
-	list: Article[];
+interface OffsetBasedPaginationResponse<T> {
+	list: T[];
 	totalCount: number;
+}
+
+interface CursorBasedPaginationResponse<T> {
+	list: T[];
+	nextCursor?: number;
 }
