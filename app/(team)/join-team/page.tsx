@@ -5,14 +5,15 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
+import useAuthStore from "@/app/_store/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function JoinTeam() {
-	// TODO: 유저 정보에서 이메일 가져오기 (임시 이메일)
-	const userEmail = "wwww@naver.com";
+	const user = useAuthStore((state) => state.user);
+	const userEmail = user?.email ?? "";
 
 	const router = useRouter();
 
@@ -24,6 +25,10 @@ export default function JoinTeam() {
 			}
 
 			const teamUrl = formData.get("teamUrl") as string;
+
+			if (!userEmail) {
+				throw new Error("로그인이 필요합니다.");
+			}
 
 			const response = await API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: teamUrl });
 
