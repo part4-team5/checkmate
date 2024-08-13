@@ -76,7 +76,7 @@ export default function Page() {
 							placeholder="검색어를 입력해주세요"
 							className="grow bg-transparent outline-none"
 							onChange={(event) => {
-								// debounce
+								// @ts-ignore debounce
 								timeout.current = clearTimeout(timeout.current) ?? setTimeout(() => setKeyword(event.target.value), 250);
 							}}
 						/>

@@ -1000,7 +1000,7 @@ export default abstract class API {
 		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { image?: string; content: string; title: string }) {
 			return API.POST<Article>(MIME.JSON, `${BASE_URL}/${teamId}/articles`, query, body);
 		}
-		
+
 		/**
 		 * 게시글 목록 확인
 		 * @param {Object} param - 파라미터 객체
