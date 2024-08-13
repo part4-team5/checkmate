@@ -15,10 +15,15 @@ const [CORE, FILE_SIZE, FILE_NAME] = [new Markdown(...Preset.ARUM), 1024 * 10000
 interface EditorProps {
 	init?: string;
 	placeholder?: string;
+	onChange?: (data: string) => void;
 }
 
-export default function Quill({ init, placeholder }: EditorProps) {
+export default function Quill({ init, placeholder, onChange }: EditorProps) {
 	const [data, setData] = useState(init ?? "");
+
+	useEffect(() => {
+		onChange?.(data);
+	}, [data, onChange]);
 
 	const helper = useRef<HTMLDivElement>(null);
 	const editor = useRef<HTMLDivElement>(null);
@@ -123,12 +128,17 @@ export default function Quill({ init, placeholder }: EditorProps) {
 
 				Promise.all(
 					files.map((file, index) =>
-						API["{teamId}/images/upload"].POST({}, file).then((response) => {
-							// alter
-							buffer[index] = `![${file.name}](${response.url})`;
-							// render
-							editor.current!.innerHTML = (0 < data.length ? [data.replace(/\n/g, "<br>"), ...buffer] : buffer).join("<br>");
-						}),
+						API["{teamId}/images/upload"]
+							.POST({}, file)
+							.then((response) => {
+								buffer[index] = `![${file.name}](${response.url})`;
+							})
+							.catch((error) => {
+								buffer[index] = `![${file.name}](${error})`;
+							})
+							.finally(() => {
+								editor.current!.innerHTML = (0 < data.length ? [data.replace(/\n/g, "<br>"), ...buffer] : buffer).join("<br>");
+							}),
 					),
 				).finally(() => {
 					// unseal
@@ -184,19 +194,19 @@ export default function Quill({ init, placeholder }: EditorProps) {
 								<div
 									ref={helper}
 									style={style}
-									className="absolute flex h-[35px] items-center justify-center overflow-hidden rounded-[7.5px] border border-white/15 bg-background-secondary px-[3px] drop-shadow-lg [&>button:hover]:bg-white/15 [&>button]:flex [&>button]:aspect-square [&>button]:items-center [&>button]:rounded-[5px] [&>button]:px-[1.5px] [&>button]:py-[1.5px]"
+									className="absolute flex h-[40px] items-center justify-center overflow-hidden rounded-[7.5px] border border-white/15 bg-background-tertiary px-[3px] drop-shadow-lg [&>button:hover]:bg-white/15 [&>button]:flex [&>button]:aspect-square [&>button]:items-center [&>button]:rounded-[5px] [&>button]:px-[1.5px] [&>button]:py-[1.5px]"
 								>
 									<button type="button" aria-label="bold">
-										<Icon.Bold width={20} height={20} color="#64748b" />
+										<Icon.Bold width={25} height={25} color="#64748b" />
 									</button>
 									<button type="button" aria-label="italic">
-										<Icon.Italic width={20} height={20} color="#64748b" />
+										<Icon.Italic width={25} height={25} color="#64748b" />
 									</button>
 									<button type="button" aria-label="underline">
-										<Icon.Underline width={20} height={20} color="#64748b" />
+										<Icon.Underline width={25} height={25} color="#64748b" />
 									</button>
 									<button type="button" aria-label="strikethrough">
-										<Icon.StrikeThrough width={20} height={20} color="#64748b" />
+										<Icon.StrikeThrough width={25} height={25} color="#64748b" />
 									</button>
 									<button type="button" aria-label="ol">
 										<Icon.OrderedList width={25} height={25} color="#64748b" />
