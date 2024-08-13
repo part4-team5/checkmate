@@ -3,4 +3,4 @@ export default function CreateTeamLayout({ children }: Readonly<React.PropsWithC
 }
 
 /** @type {import("next").Metadata} */
-export const metadata = { title: "팀 생성하기" };
+export const metadata = { title: "팀 생성하기 " };
