@@ -18,6 +18,14 @@ const getTodoItems = async (groupId: number, taskListId: number, currentDate: Da
 	return response;
 };
 
+const getComments = async (todoId: number) => {
+	// API 호출
+	const response = await API["{teamId}/tasks/{taskId}/comments"].GET({
+		taskId: todoId,
+	});
+	return response;
+};
+
 export const useGetGroupList = (groupId: number) => {
 	const query = useQuery({
 		queryKey: ["tasks", { groupId }],
@@ -32,5 +40,28 @@ export const useGetTodoItems = (groupId: number, taskListId: number, currentDate
 		queryFn: () => getTodoItems(groupId, taskListId, currentDate),
 	});
 
+	return query;
+};
+
+export const useGetComments = (todoId: number) => {
+	const query = useQuery({
+		queryKey: ["todo", { todoId, comments: true }],
+		queryFn: () => getComments(todoId),
+	});
+	return query;
+};
+
+const getTodoContent = async (todoId: number) => {
+	const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].GET({
+		taskId: todoId,
+	});
+	return response;
+};
+
+export const useGetTodoContent = (todoId: number) => {
+	const query = useQuery({
+		queryKey: ["todo", { todoId }],
+		queryFn: () => getTodoContent(todoId),
+	});
 	return query;
 };

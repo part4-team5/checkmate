@@ -1,6 +1,4 @@
-import API from "@/app/_api";
 import CloseIcon from "@/public/icons/ic_close";
-import { useQuery } from "@tanstack/react-query";
 import Icon from "@/app/_icons/index";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import Image from "next/image";
@@ -13,6 +11,7 @@ import { calculateTimeDifference, convertIsoToDateAndTime } from "@/app/_utils/I
 import useAuthStore from "@/app/_store/useAuthStore";
 import { useAddCommentMutation, useTodoCheckMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFrequency";
+import { useGetComments, useGetTodoContent } from "@/app/(team)/[id]/todo/_components/api/useQuery";
 
 type TodoDetailProps = {
 	todoId: number;
@@ -42,36 +41,15 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 	const user = useAuthStore((state) => state.user) as User;
 	const [commentText, setCommentText] = useState("");
 	const [isCheck, setIsCheck] = useState(!!doneAt);
+	const { data: todoContent } = useGetTodoContent(todoId);
+	const { data: comments } = useGetComments(todoId);
 	const todoPatchMutation = useTodoCheckMutation(groupId, currentTaskId, currentDate);
 	const addCommentMutation = useAddCommentMutation(groupId, currentTaskId, todoId, currentDate, user, setCommentText);
 	const currentTime = new Date();
 
-	const { data } = useQuery({
-		queryKey: ["todo", { todoId }],
-		queryFn: async () => {
-			const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].GET({
-				taskId: todoId,
-			});
-			return response;
-		},
-	});
-
 	const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setCommentText(e.target.value);
 	};
-
-	const getComments = async () => {
-		// API 호출
-		const response = await API["{teamId}/tasks/{taskId}/comments"].GET({
-			taskId: todoId,
-		});
-		return response;
-	};
-
-	const { data: comments } = useQuery({
-		queryKey: ["todo", { todoId, comments: true }],
-		queryFn: getComments,
-	});
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -85,14 +63,14 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 		todoPatchMutation.mutate({ taskId: todoId, done: !isCheck });
 	};
 
-	const { date, time } = convertIsoToDateAndTime(data?.date);
+	const { date, time } = convertIsoToDateAndTime(todoContent?.date);
 
 	return (
 		<div className="px-6 pb-[38px] pt-6 text-text-primary">
 			<button type="button" onClick={close} aria-label="버튼" className="">
 				<CloseIcon width={24} height={24} />
 			</button>
-			{data && (
+			{todoContent && (
 				<div>
 					<div className="mb-[116px] mt-[22px] h-40 tablet:mb-[198px]">
 						{isCheck && (
@@ -102,21 +80,23 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 							</div>
 						)}
 						<div className="flex justify-between">
-							<div className={`${isCheck ? "line-through" : ""} text-xl font-bold text-text-primary`}>{data.name}</div>
+							<div className={`${isCheck ? "line-through" : ""} text-xl font-bold text-text-primary`}>{todoContent.name}</div>
 							<KebabIcon />
 						</div>
 						<div className="my-4 flex justify-between">
 							<div className="flex items-center gap-3">
-								<Image src={defaultImage} alt={data.name} width={32} height={32} />
-								<div className="text-md font-medium">{data.user?.nickname}</div>
+								<Image src={defaultImage} alt={todoContent.name} width={32} height={32} />
+								<div className="text-md font-medium">{todoContent.user?.nickname}</div>
 							</div>
 							{/**
 							 * 어떤 날짜를 사용할지 나중에 수정
 							 * */}
-							<div className="flex items-center text-md font-normal text-text-secondary">{data.recurring.createdAt.split("T")[0].split("-").join(".")}</div>
+							<div className="flex items-center text-md font-normal text-text-secondary">
+								{todoContent.recurring.createdAt.split("T")[0].split("-").join(".")}
+							</div>
 						</div>
-						<DateTimeFrequency date={date} time={time} frequency={frequency[data.frequency as FrequencyType]} />
-						<div>{data.description}</div>
+						<DateTimeFrequency date={date} time={time} frequency={frequency[todoContent.frequency as FrequencyType]} />
+						<div>{todoContent.description}</div>
 					</div>
 
 					<form className="mb-6" onSubmit={handleSubmit}>
@@ -162,7 +142,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 										<div className="my-4 flex items-center justify-between">
 											{comment.user && (
 												<div className="flex items-center gap-3">
-													<Image src={defaultImage} alt={data.name} width={32} height={32} />
+													<Image src={defaultImage} alt={todoContent.name} width={32} height={32} />
 													<div>{comment.user.nickname}</div>
 												</div>
 											)}

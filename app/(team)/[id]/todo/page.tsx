@@ -1,4 +1,4 @@
-import ClientTodo from "@/app/(team)/[id]/todo/todo";
+import ClientTodo from "@/app/(team)/[id]/todo/_components/todo";
 import API from "@/app/_api";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 
