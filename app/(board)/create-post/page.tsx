@@ -13,9 +13,9 @@ const [FILE_SIZE, FILE_NAME] = [1024 * 10000, /^[a-zA-Z0-9._\-\s]+\.(?:gif|png|j
 export default function Page() {
 	const router = useRouter();
 
-	const [image, setImage] = useState("");
-	const [title, setTitle] = useState("");
-	const [content, setContent] = useState("");
+	const [image, setImage] = useState<string>();
+	const [title, setTitle] = useState<string>();
+	const [content, setContent] = useState<string>();
 
 	const outline = useRef<HTMLDivElement>(null);
 
@@ -79,7 +79,7 @@ export default function Page() {
 			event.preventDefault();
 			event.stopPropagation();
 
-			if (!disabled) {
+			if (!disabled && title && content) {
 				API["{teamId}/articles"].POST({}, { image, title, content }).then((response) => {
 					router.push(`boards/${response.id}`);
 				});
@@ -89,7 +89,7 @@ export default function Page() {
 		[image, title, content, disabled],
 	);
 
-	useEffect(() => setDisabled(!(1 <= title.length && 1 <= content.length)), [title, content]);
+	useEffect(() => setDisabled(!(1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0))), [title, content]);
 
 	return (
 		<main className="flex w-full flex-col items-center tablet:px-[60px] tablet:py-[30px] desktop:pt-[60px]">
