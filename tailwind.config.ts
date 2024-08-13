@@ -6,7 +6,7 @@ import plugin from "tailwindcss/plugin";
 export default {
 	theme: {
 		screens: {
-			tablet: "744px",
+			tablet: "768px",
 			desktop: "1200px",
 		},
 		colors: {
