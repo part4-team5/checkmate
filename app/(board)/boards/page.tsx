@@ -2,7 +2,7 @@
 
 import API from "@/app/_api";
 
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import Icon from "@/app/_icons";
@@ -57,6 +57,8 @@ export default function Page() {
 		}
 	}, [viewport, hasNextPage, fetchNextPage]);
 
+	const timeout = useRef<NodeJS.Timeout>();
+
 	return (
 		<main className="h-full">
 			<Link
@@ -70,7 +72,14 @@ export default function Page() {
 					자유게시판
 					<div className="flex h-[56px] w-full items-center gap-[8px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px] has-[input:focus]:border-brand-primary">
 						<Icon.Search width={24} height={24} color="#64748B" />
-						<input placeholder="검색어를 입력해주세요" className="grow bg-transparent outline-none" onChange={(event) => setKeyword(event.target.value)} />
+						<input
+							placeholder="검색어를 입력해주세요"
+							className="grow bg-transparent outline-none"
+							onChange={(event) => {
+								// debounce
+								timeout.current = clearTimeout(timeout.current) ?? setTimeout(() => setKeyword(event.target.value), 250);
+							}}
+						/>
 					</div>
 				</div>
 				<div className="flex flex-col gap-[24px] text-2lg font-bold text-text-primary">
@@ -109,6 +118,7 @@ export default function Page() {
 						게시글
 						<DropDown
 							gapX={6}
+							align="RR"
 							options={[
 								{
 									text: "최신순",
@@ -123,8 +133,6 @@ export default function Page() {
 									},
 								},
 							]}
-							anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-							overlayOrigin={{ vertical: "top", horizontal: "right" }}
 						>
 							<div className="flex w-[78px] items-center justify-between rounded-[12px] bg-background-secondary px-[8px] py-[8px] text-md font-normal text-text-primary tablet:w-[92px]">
 								{orderBy === "recent" ? "최신순" : "좋아요순"}
