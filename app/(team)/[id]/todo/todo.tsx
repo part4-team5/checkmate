@@ -3,7 +3,7 @@
 import API from "@/app/_api";
 import Calendar from "@/app/_components/Calendar";
 import Button from "@/app/_components/Button";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
@@ -11,12 +11,12 @@ import SideBarWrapper from "@/app/_components/sidebar";
 import TodoDetail from "@/app/(team)/[id]/todo/todoDetail";
 import { convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
-import tasksKey from "@/app/(team)/[id]/todo/queryFactory";
+import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import Popover from "@/app/_components/Popover";
-import { useTodoCheckMutation } from "@/app/(team)/[id]/todo/useMutation";
 import AddTaskModal from "@/app/(team)/[id]/todo/AddTask";
 import TodoItem from "@/app/(team)/[id]/todo/_components/TodoItem";
-import useGetTodoItems from "@/app/(team)/[id]/todo/useQuery";
+import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_components/api/useQuery";
+import { useTodoCheckMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -32,29 +32,15 @@ function CalendarPopoverContent() {
 }
 
 export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
-	const queryClient = useQueryClient();
-	const pathname = usePathname();
-
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [currentTaskId, setCurrentTaskId] = useState<number>(taskListId);
+	const queryClient = useQueryClient();
+	const pathname = usePathname();
 	const overlay = useOverlay();
 
-	const updateSearchParams = (name: string, value: number) => {
-		setCurrentTaskId(value);
-		window.history.pushState(null, "", `${pathname}?taskId=${value}`);
-	};
-	const todoPatchMutation = useTodoCheckMutation(groupId, currentTaskId, currentDate);
+	const { data: groupList } = useGetGroupList(groupId);
 	const { data: todoItems } = useGetTodoItems(groupId, currentTaskId, currentDate);
-
-	const { data: groupList } = useQuery({
-		queryKey: ["tasks", { groupId }],
-		queryFn: async () => {
-			const response = API["{teamId}/groups/{id}"].GET({
-				id: groupId,
-			});
-			return response;
-		},
-	});
+	const todoPatchMutation = useTodoCheckMutation(groupId, currentTaskId, currentDate);
 
 	const tasks = groupList?.taskLists;
 	/* eslint-disable no-restricted-syntax */
@@ -75,6 +61,11 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		}
 	};
 
+	const updateSearchParams = (value: number) => {
+		setCurrentTaskId(value);
+		window.history.pushState(null, "", `${pathname}?taskId=${value}`);
+	};
+
 	const handleCurrentDate = (date: Date) => {
 		setCurrentDate(() => date);
 	};
@@ -87,10 +78,10 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		overlay.open(({ close }) => <AddTaskModal close={close} groupId={groupId} />);
 	};
 
-	const handleTodoClick = (todoId: number, gid: number, taskId: number, date: Date, doneAt: string) => {
+	const handleTodoClick = (gid: number, taskId: number, todoId: number, date: Date, doneAt: string) => {
 		overlay.open(({ close }) => (
 			<SideBarWrapper close={close}>
-				<TodoDetail todoId={todoId} close={close} currentDate={date} groupId={gid} currentTaskId={taskId} doneAt={doneAt} />
+				<TodoDetail todoId={todoId} currentTaskId={taskId} close={close} currentDate={date} groupId={gid} doneAt={doneAt} />
 			</SideBarWrapper>
 		));
 	};
@@ -140,7 +131,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							type="button"
 							key={task.id}
 							onMouseEnter={prefetchTasks}
-							onClick={() => updateSearchParams("taskId", task.id)}
+							onClick={() => updateSearchParams(task.id)}
 						>
 							{task.name}
 						</button>
@@ -155,6 +146,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							onToggleTodo={handleToggleTodoStatus}
 							onClick={handleTodoClick}
 							groupId={groupId}
+							taskId={currentTaskId}
 							currentDate={currentDate}
 						/>
 					))}

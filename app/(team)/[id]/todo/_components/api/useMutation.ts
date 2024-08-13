@@ -1,4 +1,4 @@
-import tasksKey from "@/app/(team)/[id]/todo/queryFactory";
+import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import API from "@/app/_api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -9,6 +9,18 @@ const PatchTodo = async (id: number, done: boolean) => {
 	const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].PATCH(
 		{
 			taskId: id,
+		},
+		body,
+	);
+	return response;
+};
+
+const postAddComment = async (newComment: string, todoId: number) => {
+	const body = { content: newComment };
+	// API 호출
+	const response = await API["{teamId}/tasks/{taskId}/comments"].POST(
+		{
+			taskId: todoId,
 		},
 		body,
 	);
@@ -53,18 +65,6 @@ export const useTodoCheckMutation = (groupId: number, currentTaskId: number, cur
 	});
 };
 
-const postAddComment = async (newComment: string, todoId: number) => {
-	const body = { content: newComment };
-	// API 호출
-	const response = await API["{teamId}/tasks/{taskId}/comments"].POST(
-		{
-			taskId: todoId,
-		},
-		body,
-	);
-	return response;
-};
-
 type TodoType = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"]["GET"]>>;
 type CommentType = TodoType["comments"][0];
 type User = {
@@ -76,8 +76,8 @@ type User = {
 
 export const useAddCommentMutation = (
 	groupId: number,
-	todoId: number,
 	currentTaskId: number,
+	todoId: number,
 	currentDate: Date,
 	user: User,
 	setCommentInput: React.Dispatch<React.SetStateAction<string>>,
@@ -120,10 +120,12 @@ export const useAddCommentMutation = (
 			}
 			alert(`오류: ${error.message} - 댓글 작성에 실패했습니다.`);
 		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), refetchType: "all" });
+		},
 		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
-			console.log(currentDate.toLocaleDateString("ko-KR"));
-			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
+			queryClient.refetchQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 			queryClient.invalidateQueries({ queryKey: ["todo", { todoId, comments: true }] });
 		},
 	});

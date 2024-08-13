@@ -1,3 +1,4 @@
+import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFrequency";
 import API from "@/app/_api";
 import { convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
@@ -16,8 +17,9 @@ type TodoItemProps = {
 	todoItem: Todo;
 	groupId: number;
 	currentDate: Date;
+	taskId: number;
 	onToggleTodo: (todoId: number, doneAt: string) => void;
-	onClick: (todoId: number, groupId: number, taskId: number, date: Date, doneAt: string) => void;
+	onClick: (groupId: number, taskId: number, todoId: number, date: Date, doneAt: string) => void;
 };
 
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -25,13 +27,13 @@ type TodoItemProps = {
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
-export default function TodoItem({ todoItem, groupId, currentDate, onToggleTodo, onClick }: TodoItemProps) {
+export default function TodoItem({ taskId, todoItem, groupId, currentDate, onToggleTodo, onClick }: TodoItemProps) {
 	const { date, time } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
 	return (
 		<div
 			className="flex w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
 			key={todoItem.id}
-			onClick={() => onClick(todoItem.id, groupId, todoItem.id, currentDate, todoItem.doneAt)}
+			onClick={() => onClick(groupId, taskId, todoItem.id, currentDate, todoItem.doneAt)}
 		>
 			<div className="flex items-center justify-between">
 				<div className="flex gap-3">
@@ -56,23 +58,7 @@ export default function TodoItem({ todoItem, groupId, currentDate, onToggleTodo,
 					</div>
 				</div>
 			</div>
-			<div className="flex items-center text-xs font-normal text-text-default">
-				<div className="flex gap-[6px]">
-					<Image src="/icons/calendar.svg" alt="calendar" width={16} height={16} />
-					<div>{date}</div>
-				</div>
-				<div className="flex items-center gap-[6px] px-[10px]">
-					<div className="h-2 border-l" />
-					<Image src="/icons/clock.svg" alt="time" width={16} height={16} />
-					<div>{time}</div>
-					<div className="h-2 border-r" />
-					<Image src="/icons/clock.svg" alt="time" width={16} height={16} />
-				</div>
-				<div className="flex items-center gap-[6px]">
-					<Image src="/icons/cycles.svg" alt="frequency" width={16} height={16} />
-					{frequency[todoItem.frequency]}
-				</div>
-			</div>
+			<DateTimeFrequency date={date} time={time} frequency={frequency[todoItem.frequency]} />
 		</div>
 	);
 }

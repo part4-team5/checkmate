@@ -10,8 +10,9 @@ import addComment from "@/public/icons/addComment.svg";
 import Button from "@/app/_components/Button";
 import KebabIcon from "@/public/icons/KebabIcon";
 import { calculateTimeDifference, convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
-import { useAddCommentMutation, useTodoCheckMutation } from "@/app/(team)/[id]/todo/useMutation";
 import useAuthStore from "@/app/_store/useAuthStore";
+import { useAddCommentMutation, useTodoCheckMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFrequency";
 
 type TodoDetailProps = {
 	todoId: number;
@@ -42,7 +43,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 	const [commentText, setCommentText] = useState("");
 	const [isCheck, setIsCheck] = useState(!!doneAt);
 	const todoPatchMutation = useTodoCheckMutation(groupId, currentTaskId, currentDate);
-	const addCommentMutation = useAddCommentMutation(groupId, todoId, currentTaskId, currentDate, user, setCommentText);
+	const addCommentMutation = useAddCommentMutation(groupId, currentTaskId, todoId, currentDate, user, setCommentText);
 	const currentTime = new Date();
 
 	const { data } = useQuery({
@@ -114,23 +115,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 							 * */}
 							<div className="flex items-center text-md font-normal text-text-secondary">{data.recurring.createdAt.split("T")[0].split("-").join(".")}</div>
 						</div>
-						<div className="mb-6 flex items-center text-xs font-normal text-text-default">
-							<div className="flex gap-[6px]">
-								<Image src="/icons/calendar.svg" alt="calendar" width={16} height={16} />
-								<div>{date}</div>
-							</div>
-							<div className="flex items-center gap-[6px] px-[10px]">
-								<div className="h-2 border-l" />
-								<Image src="/icons/clock.svg" alt="time" width={16} height={16} />
-								<div>{time}</div>
-								<div className="h-2 border-r" />
-								<Image src="/icons/clock.svg" alt="time" width={16} height={16} />
-							</div>
-							<div className="flex items-center gap-[6px]">
-								<Image src="/icons/cycles.svg" alt="frequency" width={16} height={16} />
-								{frequency[data.recurring.frequencyType]}
-							</div>
-						</div>
+						<DateTimeFrequency date={date} time={time} frequency={frequency[data.frequency as FrequencyType]} />
 						<div>{data.description}</div>
 					</div>
 
