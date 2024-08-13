@@ -1,6 +1,6 @@
 interface Route {
-	// @ts-expect-error [key: "default"] is used for fallback
 	[key: string]: Route | Token;
+	// @ts-expect-error [key: "default"] is used for fallback
 	default?: Token;
 }
 
