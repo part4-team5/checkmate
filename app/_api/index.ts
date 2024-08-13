@@ -1127,16 +1127,18 @@ interface UpdatePasswordBody {
 }
 
 interface Task {
+	displayIndex: number;
+	commentCount: number;
 	deletedAt: string;
 	recurringId: number;
 	frequency: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY";
 	userId: number;
-	date: string;
+	updateAt: string;
 	doneAt: string;
-	updatedAt: string;
+	date: string;
+	description: string;
 	name: string;
 	id: number;
-	commentCount: number;
 }
 
 type TaskRecurringCreateDto = MonthlyRecurringCreateBody | WeeklyRecurringCreateBody | DailyRecurringCreateBody | OnceRecurringCreateBody;
@@ -1202,7 +1204,7 @@ interface Auth {
 }
 
 interface User {
-	image?: string;
+	image?: string | null;
 	nickname: string;
 	id: number;
 	teamId?: string;
