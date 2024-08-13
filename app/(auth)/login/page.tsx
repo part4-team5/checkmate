@@ -1,103 +1,126 @@
 "use client";
 
-/* eslint-disable no-restricted-syntax */
-import API from "@/app/_api";
 import Form from "@/app/_components/Form";
 import useCookie from "@/app/_hooks/useCookie";
+import API from "@/app/_api/index";
+import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
 import { useCallback } from "react";
+import useAuthStore from "@/app/_store/useAuthStore";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
-export default function Page() {
-	const [, setAccessToken] = useCookie<string>("accessToken");
-	const [, setRefreshToken] = useCookie<string>("refreshToken");
+export default function LoginPage() {
+	const router = useRouter();
+	const [accessToken, setAccessToken] = useCookie<string>("accessToken");
+	const [refreshToken, setRefreshToken] = useCookie<string>("refreshToken");
+	const setUser = useAuthStore((state) => state.setUser);
+	const user = useAuthStore((state) => state.user);
 
-	const loginMutation = useMutation<{ accessToken: string; refreshToken: string }, Error, FormContext>({
+	if (accessToken && refreshToken && user) {
+		router.replace("/");
+	}
+
+	const loginMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
-			}
-
-			const email = formData.get("email") as string;
-			const password = formData.get("password") as string;
-
-			const payload: Parameters<(typeof API)["{teamId}/auth/signIn"]["POST"]>[1] = {
-				email,
-				password,
+			const { email, password } = ctx.values as {
+				email: string;
+				password: string;
 			};
-
-			for (const [key, value] of formData.entries()) {
-				payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
-			}
-
-			const response = await API["{teamId}/auth/signIn"].POST({}, payload);
-
-			return response;
+			const payload = { email, password };
+			return API["{teamId}/auth/signIn"].POST({}, payload);
 		},
-		onSuccess: (data) => {
-			setAccessToken(data.accessToken);
-			setRefreshToken(data.refreshToken);
+		onSuccess: (response) => {
+			setUser({
+				id: response.user.id,
+				email: response.user.email || "",
+				nickname: response.user.nickname,
+				image: response.user.image ? response.user.image : null,
+			});
+
+			setAccessToken(response.accessToken);
+			setRefreshToken(response.refreshToken);
+			router.replace("/");
 		},
-		onError: (error, ctx) => {
-			ctx.setError("password", "이메일 또는 비밀번호가 올바르지 않습니다.");
+		onError: (error) => {
+			// 로그인 실패 시
+			alert("로그인 실패");
+			console.log(error.message);
 		},
 	});
 
-	const handleLogin = useCallback(
+	const handleSubmit = useCallback(
 		(ctx: FormContext) => {
 			if (loginMutation.status === "pending") return;
-
 			loginMutation.mutate(ctx);
 		},
 		[loginMutation],
 	);
 
 	return (
-		<main>
-			<div>
-				<Form onSubmit={handleLogin}>
-					<div>
-						<label htmlFor="email">이메일</label>
-						<Form.Input id="email" type="email" tests={[{ type: "require", data: true, error: "이메일은 필수입니다." }]} />
-						<Form.Error htmlFor="email" />
-
-						<div />
-
-						<label htmlFor="password">비밀번호</label>
-						<Form.Input
-							id="password"
-							type="password"
-							tests={[
-								{
-									type: "match",
-									data: /^[a-zA-Z0-9!@#%^&*]*$/,
-									error: "비밀번호는 숫자, 영문, 특수문자만 가능합니다.",
-								},
-								{
-									type: "minlength",
-									data: 8,
-									error: "비밀번호는 최소 8자입니다.",
-								},
-								{
-									type: "maxlength",
-									data: 20,
-									error: "비밀번호는 최대 20자입니다.",
-								},
-							]}
-							placeholder="비밀번호를 입력해주세요."
-						/>
-						<Form.Error htmlFor="password" />
-
-						<div />
-
-						<div>
-							<Form.Submit>로그인</Form.Submit>
-						</div>
-					</div>
-				</Form>
+		<>
+			<h2 className="mb-[80px] text-center text-[40px] font-medium leading-[48px] text-text-primary">로그인</h2>
+			<Form onSubmit={handleSubmit}>
+				<div className="flex flex-col gap-[12px]">
+					<label htmlFor="email" className="text-text-primary">
+						이메일
+					</label>
+					<Form.Input
+						id="email"
+						type="email"
+						placeholder="이메일을 입력해주세요."
+						tests={[
+							{ type: "require", data: true, error: "이메일을 입력해주세요." },
+							{ type: "match", data: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, error: "유효한 이메일이 아닙니다." },
+						]}
+					/>
+					<Form.Error htmlFor="email" />
+					<label htmlFor="password" className="mt-[12px] text-text-primary">
+						비밀번호
+					</label>
+					<Form.Input
+						id="password"
+						type="password"
+						placeholder="비밀번호를 입력해주세요."
+						tests={[
+							{
+								type: "require",
+								data: true,
+								error: "비밀번호를 입력해주세요.",
+							},
+							{
+								type: "match",
+								data: /^[a-zA-Z0-9!@#%^&*]*$/,
+								error: "비밀번호는 숫자, 영문, 특수문자만 가능합니다.",
+							},
+							{
+								type: "minlength",
+								data: 8,
+								error: "비밀번호는 최소 8자입니다.",
+							},
+							{
+								type: "maxlength",
+								data: 20,
+								error: "비밀번호는 최대 20자입니다.",
+							},
+						]}
+					/>
+					<Form.Error htmlFor="password" />
+					<Link href="/reset-password" className="text-right text-brand-primary underline">
+						비밀번호를 잊으셨나요?
+					</Link>
+				</div>
+				<div className="mb-[24px] mt-[40px] h-12">
+					<Form.Submit>로그인</Form.Submit>
+				</div>
+			</Form>
+			<div className="text-center text-text-primary">
+				처음이신가요?
+				<Link href="/signup" className="ml-[12px] text-right text-brand-primary underline">
+					가입하기
+				</Link>
 			</div>
-		</main>
+		</>
 	);
 }

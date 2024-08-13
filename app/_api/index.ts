@@ -3,7 +3,7 @@
 
 import Cookie from "@/app/_utils/Cookie";
 
-const BASE_URL = "https://fe-project-cowokers.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const enum MIME {
 	JSON = "application/json",
@@ -166,21 +166,31 @@ export default abstract class API {
 		 */
 		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
 			return API.GET<{
-				groups: {
-					role: Role;
-					userImage: string;
-					userEmail: string;
-					userName: string;
-					groupId: number;
-					userId: number;
-				}[];
-				teamId?: string;
-				image: string;
-				nickname: string;
-				updatedAt: string;
-				createdAt: string;
-				email: string;
 				id: number;
+				nickname: string;
+				createdAt: string;
+				updatedAt: string;
+				image: string;
+				teamId: string;
+				email: string;
+				memberships: [
+					{
+						userId: number;
+						groupId: number;
+						userName: string;
+						userEmail: string;
+						userImage: string;
+						role: Role;
+						group: {
+							id: number;
+							name: string;
+							image: string;
+							createdAt: string;
+							updatedAt: string;
+							teamId: number;
+						};
+					},
+				];
 			}>(MIME.JSON, `${BASE_URL}/${teamId}/user`, query);
 		}
 
