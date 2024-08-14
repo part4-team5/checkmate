@@ -100,7 +100,7 @@ export default abstract class API {
 					return reject(await response.json());
 				}
 				if (response.status === 204) {
-					return resolve({} as T);
+					return resolve(null as T);
 				}
 				return resolve(await response.json());
 			});
@@ -606,7 +606,7 @@ export default abstract class API {
 			const data = new FormData();
 
 			data.append("image", body);
-			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images`, query, data);
+			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images/upload`, query, data);
 		}
 	})();
 
@@ -672,7 +672,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 그룹 정보
 		 */
 		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { image?: string; name: string }) {
-			return API.POST<{ updatedAt: string; createdAt: string; image?: string; name: string; teamId: string; id: number }>(
+			return API.POST<{ updatedAt: string; createdAt: string; image?: string; name: string; id: number }>(
 				MIME.JSON,
 				`${BASE_URL}/${teamId}/groups`,
 				query,
