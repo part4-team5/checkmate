@@ -3,6 +3,7 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
+import useAuthStore from "@/app/_store/useAuthStore";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useMutation } from "@tanstack/react-query";
@@ -12,8 +13,8 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 function JoinTeamForm() {
-	// TODO: 유저 정보에서 이메일 가져오기 (임시 이메일)
-	const userEmail = "qq@qq.qq";
+	const user = useAuthStore((state) => state.user);
+	const userEmail = user?.email ?? "";
 
 	const searchParams = useSearchParams();
 	const [groupId] = useState(searchParams.get("groupID"));
@@ -73,10 +74,13 @@ function JoinTeamForm() {
 
 	// Form을 통해 팀 참여 요청을 보내는 mutation
 	const joinTeamFormMutation = useMutation<{}, Error, FormContext>({
-		mutationFn: useCallback(async (ctx: FormContext) => {
-			const teamUrl = ctx.values.teamUrl as string;
-			return API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: teamUrl });
-		}, []),
+		mutationFn: useCallback(
+			async (ctx: FormContext) => {
+				const teamUrl = ctx.values.teamUrl as string;
+				return API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: teamUrl });
+			},
+			[userEmail],
+		),
 		onSuccess: () => {
 			openModal(() => {
 				router.push(`/${groupId}`);
@@ -95,7 +99,7 @@ function JoinTeamForm() {
 
 	// 팀 참여 요청을 보내는 mutation
 	const joinTeamMutation = useMutation<{}, Error, { token: string }>({
-		mutationFn: useCallback(async () => API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: token ?? "" }), [token]),
+		mutationFn: useCallback(async () => API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: token ?? "" }), [token, userEmail]),
 		onSuccess: () => {
 			openModal(() => {
 				router.push(`/${groupId}`);
