@@ -464,7 +464,7 @@ export default abstract class API {
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - Task 목록
 		 */
-		public override GET({ teamId = "6-5", groupId, taskListId, ...query }: { teamId?: string; groupId: number; taskListId: number }) {
+		public override GET({ teamId = "6-5", groupId, taskListId, ...query }: { teamId?: string; groupId: number; taskListId: number; date: string }) {
 			return API.GET<Task[]>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks`, query);
 		}
 	})();
@@ -483,8 +483,8 @@ export default abstract class API {
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - Task 상세 정보
 		 */
-		public override GET({ teamId = "6-5", groupId, taskListId, taskId, ...query }: { teamId?: string; groupId: number; taskListId: number; taskId: number }) {
-			return API.GET<Todo>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query);
+		public override GET({ teamId = "6-5", taskId, ...query }: { teamId?: string; taskId: number }) {
+			return API.GET<Todo>(MIME.JSON, `${BASE_URL}/${teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/${taskId}`, query);
 		}
 
 		/**
@@ -500,7 +500,7 @@ export default abstract class API {
 		 */
 		public override PATCH(
 			{ teamId = "6-5", groupId, taskListId, taskId, ...query }: { teamId?: string; groupId?: number; taskListId?: number; taskId: number },
-			body: { name: string; description: string; done: boolean },
+			body: { name?: string; description?: string; done?: boolean },
 		) {
 			return API.PATCH<TodoBase>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query, body);
 		}
@@ -578,7 +578,7 @@ export default abstract class API {
 		 * @param {Object} body - 등록/수정할 App 정보
 		 * @returns {Promise<Object>} - App 정보
 		 */
-		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { appSecret: string; appKey: string; provider: Provider }) {
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { appKey: string; provider: "KAKAO" | "GOOGLE" }) {
 			return API.POST<{ updatedAt: string; createdAt: string; image?: string; name: string; teamId: string; id: number }>(
 				MIME.JSON,
 				`${BASE_URL}/${teamId}/oauthApps`,
@@ -915,8 +915,8 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 인증 정보
 		 */
 		public override POST(
-			{ teamId = "6-5", provider, ...query }: { teamId?: string; provider: Provider },
-			body: { state: string; redirectUri: string; token: string },
+			{ teamId = "6-5", provider, ...query }: { teamId?: string; provider: "KAKAO" | "GOOGLE" },
+			body: { state?: string; redirectUri: string; token: string },
 		) {
 			return API.POST<Auth>(MIME.JSON, `${BASE_URL}/${teamId}/auth/signIn/${provider}`, query, body);
 		}
@@ -1101,11 +1101,6 @@ const enum Frequency {
 	MONTHLY = "MONTHLY",
 }
 
-const enum Provider {
-	GOOGLE = "GOOGLE",
-	KAKAO = "KAKAO",
-}
-
 interface UpdateUserBody {
 	nickname: string;
 	image: string;
@@ -1128,13 +1123,16 @@ interface UpdatePasswordBody {
 }
 
 interface Task {
+	displayIndex: number;
+	commentCount: number;
 	deletedAt: string;
 	recurringId: number;
-	frequency: string;
+	frequency: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY";
 	userId: number;
-	date: string;
+	updateAt: string;
 	doneAt: string;
-	updatedAt: string;
+	date: string;
+	description: string;
 	name: string;
 	id: number;
 }
@@ -1188,11 +1186,13 @@ interface Recurring {
 	createdAt: string;
 	updatedAt: string;
 	displayIndex: number;
-	frequencyType: string;
+	frequencyType: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY";
 	weekDays: number[];
 	monthDay: number | null;
 	taskListId: number;
 	groupId: number;
+	writerId: number | null;
+	doneBy: User;
 }
 
 interface Auth {
@@ -1202,7 +1202,7 @@ interface Auth {
 }
 
 interface User {
-	image?: string;
+	image?: string | null;
 	nickname: string;
 	id: number;
 	teamId?: string;
@@ -1213,8 +1213,7 @@ interface User {
 }
 
 interface Todo extends TodoBase {
-	comments: Comment[];
-	user: User | null;
+	user: User;
 	recurring: Recurring;
 }
 
@@ -1222,13 +1221,16 @@ interface TodoBase {
 	deletedAt: string;
 	userId: number;
 	recurringId: number;
-	frequency: string;
+	frequency: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY";
 	date: string;
 	doneAt: string;
 	description: string;
 	name: string;
 	updatedAt: string;
 	id: number;
+	writerId: number | null;
+	displayIndex: number;
+	commentCount: number;
 }
 
 interface Member {
