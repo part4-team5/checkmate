@@ -13,11 +13,9 @@ export default function Page() {
 		queryKey: ["my-history"],
 		queryFn: () => API["{teamId}/user/history"].GET({}),
 		select: (response) =>
-			response.reduce((accumulate: Record<string, (typeof response)[number]["tasksDone"]>, { tasksDone }) => {
-				for (const task of tasksDone) {
-					// eslint-disable-next-line no-param-reassign
-					(accumulate[task.doneAt.split("T")[0]] ??= []).push(task);
-				}
+			response.tasksDone.reduce((accumulate: Record<string, (typeof response)["tasksDone"]>, task) => {
+				// eslint-disable-next-line no-param-reassign
+				(accumulate[task.doneAt.split("T")[0]] ??= []).push(task);
 				return accumulate;
 			}, {}),
 	});

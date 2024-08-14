@@ -219,7 +219,7 @@ Icon.UnorderedList = function UnorderedList({ width, height, color }: IconProps)
 		</svg>
 	);
 };
-  
+
 Icon.Photo = function Photo({ width, height, color }: IconProps) {
 	return (
 		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
@@ -227,7 +227,7 @@ Icon.Photo = function Photo({ width, height, color }: IconProps) {
 		</svg>
 	);
 };
-  
+
 Icon.Heart = function Heart({ width, height, color }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
