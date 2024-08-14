@@ -12,11 +12,9 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
-export default function JoinTeam() {
+function JoinTeamForm() {
 	const user = useAuthStore((state) => state.user);
 	const userEmail = user?.email ?? "";
-
-	const router = useRouter();
 
 	const searchParams = useSearchParams();
 	const [groupId] = useState(searchParams.get("groupID"));
@@ -76,10 +74,13 @@ export default function JoinTeam() {
 
 	// Form을 통해 팀 참여 요청을 보내는 mutation
 	const joinTeamFormMutation = useMutation<{}, Error, FormContext>({
-		mutationFn: useCallback(async (ctx: FormContext) => {
-			const teamUrl = ctx.values.teamUrl as string;
-			return API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: teamUrl });
-		}, []),
+		mutationFn: useCallback(
+			async (ctx: FormContext) => {
+				const teamUrl = ctx.values.teamUrl as string;
+				return API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: teamUrl });
+			},
+			[userEmail],
+		),
 		onSuccess: () => {
 			openModal(() => {
 				router.push(`/${groupId}`);
@@ -98,7 +99,7 @@ export default function JoinTeam() {
 
 	// 팀 참여 요청을 보내는 mutation
 	const joinTeamMutation = useMutation<{}, Error, { token: string }>({
-		mutationFn: useCallback(async () => API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: token ?? "" }), [token]),
+		mutationFn: useCallback(async () => API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: token ?? "" }), [token, userEmail]),
 		onSuccess: () => {
 			openModal(() => {
 				router.push(`/${groupId}`);
