@@ -93,8 +93,8 @@ export default function Header() {
 	return (
 		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
-				<div className="z-50 pl-4">
-					<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="block tablet:hidden">
+				<div className="z-50 block pl-4 tablet:hidden">
+					<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="flex size-full items-center justify-center">
 						<Icon.Hamburger width={24} height={24} />
 					</button>
 
@@ -179,7 +179,7 @@ export default function Header() {
 					</div>
 				</div>
 
-				<div className="pr-4 tablet:hidden tablet:pr-10" />
+				<div className="pr-4 tablet:pr-8 desktop:hidden" />
 
 				<Link href="/">
 					<div className="h-5 w-[102px] desktop:h-8 desktop:w-[158px]">
