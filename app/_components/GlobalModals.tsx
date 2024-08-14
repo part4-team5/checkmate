@@ -9,7 +9,7 @@ export default function GlobalModals() {
 		if (isArrEmpty()) {
 			document.body.style.overflow = "unset";
 		}
-	}, [modalElements]);
+	}, [modalElements, isArrEmpty]);
 
 	return (
 		<>
