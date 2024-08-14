@@ -94,12 +94,13 @@ export default abstract class API {
 				if (!response.ok) {
 					if (response.status === 401 && retries <= 1 && Token.REFRESH) {
 						const data = await API["{teamId}/auth/refresh-token"].POST({}, { refreshToken: Token.REFRESH });
-
 						Token.ACCESS = data.accessToken;
-
 						return resolve(await API.SEND(type, method, url, { payload, retries: retries + 1 }));
 					}
 					return reject(await response.json());
+				}
+				if (response.status === 204) {
+					return resolve({} as T);
 				}
 				return resolve(await response.json());
 			});
