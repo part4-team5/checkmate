@@ -9,7 +9,7 @@ import Button from "@/app/_components/Button";
 import KebabIcon from "@/public/icons/KebabIcon";
 import { calculateTimeDifference, convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
 import useAuthStore from "@/app/_store/useAuthStore";
-import { useAddCommentMutation, useTodoCheckMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import { useAddCommentMutation, useEditTodoMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFrequency";
 import { useGetComments, useGetTodoContent } from "@/app/(team)/[id]/todo/_components/api/useQuery";
 
@@ -41,17 +41,21 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 	const user = useAuthStore((state) => state.user) as User;
 	const [commentText, setCommentText] = useState("");
 	const [isCheck, setIsCheck] = useState(!!doneAt);
+	const [isEdit, setIsEdit] = useState(false);
+	const [editedTitle, setEditedTitle] = useState("");
+	const [editedDescription, setEditedDescription] = useState("");
 	const { data: todoContent } = useGetTodoContent(todoId);
 	const { data: comments } = useGetComments(todoId);
-	const todoPatchMutation = useTodoCheckMutation(groupId, currentTaskId, currentDate);
+	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
 	const addCommentMutation = useAddCommentMutation(groupId, currentTaskId, todoId, currentDate, user, setCommentText);
+	const todoEditMutation = useEditTodoMutation(groupId, currentTaskId, currentDate);
 	const currentTime = new Date();
 
 	const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setCommentText(e.target.value);
 	};
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleCommentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (commentText.length === 0) return;
 		if (addCommentMutation.isPending) return;
@@ -63,8 +67,36 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 		todoPatchMutation.mutate({ taskId: todoId, done: !isCheck });
 	};
 
-	const { date, time } = convertIsoToDateAndTime(todoContent?.date);
+	const handleEditButtonClick = () => {
+		if (!todoContent) return;
+		setEditedTitle(todoContent?.name);
+		setEditedDescription(todoContent?.description);
+		setIsEdit((prev) => !prev);
+	};
 
+	const handleCancelClick = () => {
+		setIsEdit(false);
+	};
+
+	const handleEditTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setEditedTitle(e.target.value);
+	};
+
+	const handleEditDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		setEditedDescription(e.target.value);
+	};
+
+	const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if (!todoContent) return;
+		todoEditMutation.mutate({
+			todoId,
+			name: editedTitle,
+			description: editedDescription,
+		});
+		setIsEdit(false);
+	};
+	const { date, time } = convertIsoToDateAndTime(todoContent?.date);
 	return (
 		<div className="px-6 pb-[38px] pt-6 text-text-primary">
 			<button type="button" onClick={close} aria-label="버튼" className="">
@@ -79,27 +111,61 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 								<div className="text-text-lime">완료</div>
 							</div>
 						)}
-						<div className="flex justify-between">
-							<div className={`${isCheck ? "line-through" : ""} text-xl font-bold text-text-primary`}>{todoContent.name}</div>
-							<KebabIcon />
-						</div>
-						<div className="my-4 flex justify-between">
-							<div className="flex items-center gap-3">
-								<Image src={defaultImage} alt={todoContent.name} width={32} height={32} />
-								<div className="text-md font-medium">{todoContent.user?.nickname}</div>
+						<form className="text-text-primary" onSubmit={handleEditSubmit}>
+							<div className="flex justify-between">
+								{isEdit ? (
+									<input
+										type="text"
+										onChange={handleEditTitleChange}
+										value={editedTitle}
+										className="rounded-md border-2 border-brand-secondary bg-background-secondary focus:outline-none"
+									/>
+								) : (
+									<div className={`${isCheck ? "line-through" : ""} text-xl font-bold text-text-primary`}>{todoContent.name}</div>
+								)}
+								{isEdit ? (
+									<div className="flex gap-2">
+										<button type="button" onClick={handleCancelClick} aria-label="todo-edit-cancel">
+											<Icon.EditCancel width={24} height={24} />
+										</button>
+										<button type="submit" aria-label="todo-edit-submit">
+											<Icon.EditCheck width={24} height={24} />
+										</button>
+									</div>
+								) : (
+									<button type="button" onClick={handleEditButtonClick} aria-label="todo-edit">
+										<Icon.Edit width={24} height={24} />
+									</button>
+								)}
 							</div>
-							{/**
-							 * 어떤 날짜를 사용할지 나중에 수정
-							 * */}
-							<div className="flex items-center text-md font-normal text-text-secondary">
-								{todoContent.recurring.createdAt.split("T")[0].split("-").join(".")}
+							<div className="my-4 flex justify-between">
+								<div className="flex items-center gap-3">
+									<Image src={defaultImage} alt={todoContent.name} width={32} height={32} />
+									<div className="text-md font-medium">{todoContent.user?.nickname}</div>
+								</div>
+								{/**
+								 * 어떤 날짜를 사용할지 나중에 수정
+								 * */}
+								<div className="flex items-center text-md font-normal text-text-secondary">
+									{todoContent.recurring.createdAt.split("T")[0].split("-").join(".")}
+								</div>
 							</div>
-						</div>
-						<DateTimeFrequency date={date} time={time} frequency={frequency[todoContent.frequency as FrequencyType]} />
-						<div>{todoContent.description}</div>
+							<DateTimeFrequency date={date} time={time} frequency={frequency[todoContent.frequency as FrequencyType]} />
+							<div className="mt-6">
+								{isEdit ? (
+									<textarea
+										onChange={handleEditDescriptionChange}
+										value={editedDescription}
+										className="h-20 w-full rounded-md border-2 border-brand-secondary bg-background-secondary focus:outline-none"
+									/>
+								) : (
+									<div>{todoContent.description}</div>
+								)}
+							</div>
+						</form>
 					</div>
 
-					<form className="mb-6" onSubmit={handleSubmit}>
+					<form className="mb-6" onSubmit={handleCommentSubmit}>
 						<label htmlFor="add-comment" className="sr-only">
 							댓글 입력
 						</label>

@@ -2,7 +2,7 @@ import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import API from "@/app/_api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const PatchTodo = async (id: number, done: boolean) => {
+const patchToggleTodoStatus = async (id: number, done: boolean) => {
 	const body = {
 		done,
 	};
@@ -27,11 +27,25 @@ const postAddComment = async (newComment: string, todoId: number) => {
 	return response;
 };
 
+const patchTodoEdit = async (todoId: number, name: string, description: string) => {
+	const body = {
+		name,
+		description,
+	};
+	const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].PATCH(
+		{
+			taskId: todoId,
+		},
+		body,
+	);
+	return response;
+};
+
 type TaskListType = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"]["GET"]>>;
-export const useTodoCheckMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
+export const useToggleTodoStatusMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: ({ taskId, done }: { taskId: number; done: boolean }) => PatchTodo(taskId, done),
+		mutationFn: ({ taskId, done }: { taskId: number; done: boolean }) => patchToggleTodoStatus(taskId, done),
 		onMutate: async ({ taskId, done }) => {
 			// 최신 데이터로 업데이트하기 위해 쿼리 캔슬
 			await queryClient.cancelQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
@@ -66,7 +80,7 @@ export const useTodoCheckMutation = (groupId: number, currentTaskId: number, cur
 };
 
 type TodoType = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"]["GET"]>>;
-type CommentType = TodoType["comments"][0];
+type CommentType = Awaited<ReturnType<(typeof API)["{teamId}/tasks/{taskId}/comments"]["GET"]>>[number];
 type User = {
 	id: number;
 	email: string;
@@ -127,6 +141,38 @@ export const useAddCommentMutation = (
 		onSettled: () => {
 			queryClient.refetchQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 			queryClient.invalidateQueries({ queryKey: ["todo", { todoId, comments: true }] });
+		},
+	});
+};
+
+export const useEditTodoMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ todoId, name, description }: { todoId: number; name: string; description: string }) => patchTodoEdit(todoId, name, description),
+		onMutate: async ({ todoId, name, description }) => {
+			// 최신 데이터로 업데이트하기 위해 쿼리 캔슬
+			await queryClient.cancelQueries({ queryKey: ["todo", { todoId }] });
+			// 이전 데이터를 저장
+			const oldData = queryClient.getQueryData<TodoType>(["todo", { todoId }]);
+			// 새로운 데이터로 업데이트
+			const newData = { ...oldData, name, description };
+			console.log(newData);
+			queryClient.setQueryData<TodoType>(["todo", { todoId }], newData as TodoType);
+
+			// 이전 데이터를 반환
+			return { oldData };
+		},
+		// 요청 실패 시 이전 데이터로 롤백
+		onError: (error, variables, context) => {
+			if (context?.oldData) {
+				queryClient.setQueryData(["todo", { todoId: variables.todoId }], context.oldData);
+			}
+			alert(`오류: ${error.message} - 할 일 수정에 실패했습니다.`);
+		},
+		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 		},
 	});
 };
