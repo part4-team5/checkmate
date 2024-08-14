@@ -37,7 +37,7 @@ export default function TeamList() {
 	if (isLoading) {
 		return (
 			<div className="flex h-fit w-full max-w-screen-desktop flex-col items-center justify-center gap-12">
-				<div className="size-full max-h-[60dvh] min-h-28 max-w-[525px] rounded-lg bg-background-secondary px-2 py-5">
+				<div className="size-full max-h-[60dvh] min-h-28 max-w-screen-tablet rounded-lg bg-background-secondary px-2 py-5">
 					<ul className="size-full min-h-28 max-w-full overflow-y-auto px-3 scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary">
 						{Array.from({ length: 6 }).map((_, i) => (
 							// eslint-disable-next-line react/no-array-index-key
@@ -58,8 +58,8 @@ export default function TeamList() {
 		<div className="flex h-fit w-full max-w-screen-desktop flex-col items-center justify-center gap-12">
 			{user && (
 				// 팀 있으면 목록 보여주기
-				<div className="max-h-[60dvh] min-h-28 w-full max-w-[525px] rounded-lg bg-background-secondary px-2 py-5">
-					<ul className="size-full min-h-28 max-w-full overflow-y-auto px-3 scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary">
+				<div className="max-h-[60dvh] min-h-28 w-full max-w-screen-tablet rounded-lg bg-background-secondary px-2 py-5">
+					<ul className="size-full min-h-28 overflow-y-auto px-3 scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary">
 						{user?.memberships.map((team) => (
 							<li key={team.groupId} className="mb-2 w-full">
 								<Link

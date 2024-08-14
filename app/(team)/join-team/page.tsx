@@ -74,12 +74,7 @@ function JoinTeamForm() {
 	// Form을 통해 팀 참여 요청을 보내는 mutation
 	const joinTeamFormMutation = useMutation<{}, Error, FormContext>({
 		mutationFn: useCallback(async (ctx: FormContext) => {
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
-			}
-
-			const teamUrl = formData.get("teamUrl") as string;
+			const teamUrl = ctx.values.teamUrl as string;
 			return API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: teamUrl });
 		}, []),
 		onSuccess: () => {
