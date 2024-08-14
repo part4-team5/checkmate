@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useCallback, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import API from "@/app/_api";
 import DropDown from "@/app/_components/Dropdown";
 import useOverlay from "@/app/_hooks/useOverlay";
@@ -17,46 +17,46 @@ type TeamTitleProps = {
 export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 	const overlay = useOverlay();
 	const router = useRouter();
-	const [teamName, setTeamName] = useState<string | undefined>(undefined); // 낙관적 업데이트를 위한 로컬 상태
+	const params = useParams();
+	const [teamName, setTeamName] = useState<string | undefined>(undefined);
+	const queryClient = useQueryClient();
+
+	// 유저 정보 받아오기
+	const { data: user } = useQuery({
+		queryKey: ["user"],
+		queryFn: async () => {
+			const response = await API["{teamId}/user"].GET({});
+			return response;
+		},
+	});
+
+	useEffect(() => {
+		if (user && params?.id) {
+			const currentGroup = user.memberships.find((membership) => membership.groupId === Number(params.id));
+			if (currentGroup) {
+				setTeamName(currentGroup.group.name);
+			}
+		}
+	}, [user, params.id]);
 
 	const mutation = useMutation({
 		mutationFn: async () => API["{teamId}/groups/{id}"].DELETE({ id }),
 		onSuccess: () => {
 			router.push("/get-started");
+			queryClient.invalidateQueries({ queryKey: ["user"] });
 		},
 		onError: () => {
 			overlay.open(({ close }) => <DeleteModal modalContent="삭제에 실패했습니다. 다시 시도하시겠어요?" close={close} onClick={close} />);
 		},
 	});
 
-	const { data, isLoading, error } = useQuery({
-		queryKey: ["groupInfo", { id }],
-		queryFn: useCallback(async () => {
-			const response = await API["{teamId}/groups/{id}"].GET({ id });
-			return response;
-		}, [id]),
-	});
-
-	useEffect(() => {
-		if (data) {
-			setTeamName(data.name); // 데이터가 성공적으로 로드되었을 때 상태 업데이트
-		}
-	}, [data]);
-
-	if (isLoading) return <div>Loading...</div>;
-	if (error) return <div>Error loading data</div>;
+	if (!teamName) return <div>Loading...</div>;
 
 	const EditDropdown = [
 		{
 			text: "수정하기",
 			onClick: () => {
-				overlay.open(({ close }) => (
-					<TeamEdit
-						close={close}
-						id={id}
-						setTeamName={setTeamName} // 콜백 함수 전달
-					/>
-				));
+				overlay.open(({ close }) => <TeamEdit close={close} id={id} initialTeamName={teamName} />);
 			},
 		},
 		{

@@ -11,12 +11,12 @@ import API from "@/app/_api";
 type TeamEditProps = {
 	close: () => void;
 	id: number;
-	setTeamName: React.Dispatch<React.SetStateAction<string | undefined>>;
+	initialTeamName: string;
 };
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
-export default function TeamEdit({ close, id, setTeamName }: TeamEditProps): JSX.Element {
+export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps): JSX.Element {
 	const queryClient = useQueryClient();
 	const router = useRouter();
 
@@ -50,8 +50,6 @@ export default function TeamEdit({ close, id, setTeamName }: TeamEditProps): JSX
 			const payload: Parameters<(typeof API)["{teamId}/groups/{id}"]["PATCH"]>[1] = { image: url, name: teamName };
 
 			const response = await API["{teamId}/groups/{id}"].PATCH({ id }, payload);
-
-			setTeamName(teamName); // 수정된 팀 이름을 상태에 반영
 
 			return response;
 		},
@@ -128,7 +126,7 @@ export default function TeamEdit({ close, id, setTeamName }: TeamEditProps): JSX
 								id="teamName"
 								type="text"
 								placeholder="팀 이름을 입력하세요"
-								init={teamInfo?.name}
+								init={initialTeamName}
 								tests={[{ type: "require", data: true, error: "팀 이름은 필수입니다" }]}
 							/>
 							<Form.Error htmlFor="team-name" />
