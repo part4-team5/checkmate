@@ -499,7 +499,7 @@ export default abstract class API {
 		 */
 		public override PATCH(
 			{ teamId = "6-5", groupId, taskListId, taskId, ...query }: { teamId?: string; groupId?: number; taskListId?: number; taskId: number },
-			body: { name?: string; description?: string; done: boolean },
+			body: { name?: string; description?: string; done?: boolean },
 		) {
 			return API.PATCH<TodoBase>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query, body);
 		}
@@ -1195,6 +1195,8 @@ interface Recurring {
 	monthDay: number | null;
 	taskListId: number;
 	groupId: number;
+	writerId: number | null;
+	doneBy: User;
 }
 
 interface Auth {
@@ -1215,8 +1217,7 @@ interface User {
 }
 
 interface Todo extends TodoBase {
-	comments: Comment[];
-	user: User | null;
+	user: User;
 	recurring: Recurring;
 }
 
@@ -1224,13 +1225,16 @@ interface TodoBase {
 	deletedAt: string;
 	userId: number;
 	recurringId: number;
-	frequency: string;
+	frequency: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY";
 	date: string;
 	doneAt: string;
 	description: string;
 	name: string;
 	updatedAt: string;
 	id: number;
+	writerId: number | null;
+	displayIndex: number;
+	commentCount: number;
 }
 
 interface Member {

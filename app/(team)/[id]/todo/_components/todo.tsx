@@ -14,9 +14,9 @@ import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import Popover from "@/app/_components/Popover";
 import TodoItem from "@/app/(team)/[id]/todo/_components/TodoItem";
 import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_components/api/useQuery";
-import { useTodoCheckMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import AddTaskModal from "@/app/(team)/[id]/todo/_components/AddTask";
 import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
+import { useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -40,7 +40,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 
 	const { data: groupList } = useGetGroupList(groupId);
 	const { data: todoItems } = useGetTodoItems(groupId, currentTaskId, currentDate);
-	const todoPatchMutation = useTodoCheckMutation(groupId, currentTaskId, currentDate);
+	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
 
 	const tasks = groupList?.taskLists;
 	/* eslint-disable no-restricted-syntax */
