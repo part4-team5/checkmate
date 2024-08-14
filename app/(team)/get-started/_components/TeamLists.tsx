@@ -19,7 +19,7 @@ export default function TeamList() {
 		enabled: !!accessToken,
 	});
 
-	if (!accessToken) {
+	if (!accessToken || !user?.memberships.length) {
 		return (
 			// 팀 없으면 안내 문구 보여주기
 			<div className="flex h-fit w-full max-w-screen-desktop flex-col items-center justify-center gap-12">
