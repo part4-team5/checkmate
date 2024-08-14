@@ -195,7 +195,7 @@ export default function Header() {
 							<ul className="flex items-center gap-10">
 								{teamDropdown.length > 0 && (
 									<li>
-										<DropDown options={teamDropdown} gapX={10} align="RR">
+										<DropDown options={teamDropdown} gapY={10} align="LL">
 											<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
 												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
 												<Icon.ArrowDown width={16} height={16} />
@@ -211,7 +211,7 @@ export default function Header() {
 							</ul>
 						</nav>
 
-						<DropDown options={userDropdown} gapX={10} align="RR">
+						<DropDown options={userDropdown} gapY={10} align="RR">
 							<button type="button" className="flex gap-2">
 								<div className="size-4 tablet:size-6">
 									<Icon.User width="100%" height="100%" />
@@ -228,6 +228,8 @@ export default function Header() {
 						로그인
 					</Link>
 				</nav>
+
+				<div className="pr-4 tablet:pr-10 desktop:p-0" />
 			</div>
 		</header>
 	);
