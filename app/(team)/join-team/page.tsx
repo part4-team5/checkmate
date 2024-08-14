@@ -134,7 +134,7 @@ function JoinTeamForm() {
 				<Form onSubmit={handleJoinTeam}>
 					<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
 						<label htmlFor="teamUrl" className="w-full pb-3 text-start text-lg text-text-primary">
-							팀 링크
+							팀 코드
 						</label>
 
 						<Form.Input
