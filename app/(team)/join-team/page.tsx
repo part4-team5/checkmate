@@ -17,7 +17,7 @@ function JoinTeamForm() {
 	const userEmail = user?.email ?? "";
 
 	const searchParams = useSearchParams();
-	const [groupId] = useState(searchParams.get("groupID"));
+	const [groupId] = useState(searchParams.get("groupId"));
 	const [token, setToken] = useState(searchParams.get("token"));
 
 	const router = useRouter();
@@ -68,7 +68,7 @@ function JoinTeamForm() {
 	useEffect(() => {
 		if (token) {
 			// token을 숨기기 위해 주소를 변경합니다.
-			window.history.replaceState(null, "", `/join-team?groupID=${groupId}`);
+			window.history.replaceState(null, "", `/join-team?groupId=${groupId}`);
 		}
 	}, [groupId, token]);
 
@@ -88,7 +88,7 @@ function JoinTeamForm() {
 		},
 		onError: (error, ctx) => {
 			openModal(() => {}, error.message);
-			ctx.setError("teamUrl", "팀 링크가 올바르지 않습니다.");
+			ctx.setError("teamUrl", "팀 코드가 올바르지 않습니다.");
 		},
 	});
 
@@ -140,8 +140,8 @@ function JoinTeamForm() {
 						<Form.Input
 							id="teamUrl"
 							type="text"
-							placeholder="팀 링크를 입력하세요"
-							tests={[{ type: "require", data: true, error: "팀 링크는 필수로 입력해야 합니다" }]}
+							placeholder="팀 코드를 입력하세요"
+							tests={[{ type: "require", data: true, error: "팀 코드는 필수로 입력해야 합니다" }]}
 						/>
 
 						<div className="pt-3" />
@@ -156,7 +156,7 @@ function JoinTeamForm() {
 			</div>
 
 			<div className="max-w-[340px] pt-6 tablet:max-w-[460px]">
-				<p className="text-md font-normal text-text-primary tablet:text-lg">공유받은 팀 링크를 입력해 참여할 수 있어요.</p>
+				<p className="text-md font-normal text-text-primary tablet:text-lg">공유받은 팀 코드를 입력해 참여할 수 있어요.</p>
 			</div>
 		</section>
 	);
