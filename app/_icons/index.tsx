@@ -18,7 +18,7 @@ Icon.Close = function Close({ width, height, color = "#64748B" }: IconProps) {
 	);
 };
 
-Icon.Toggle = function Toggle({ width, height, color }: IconProps) {
+Icon.Toggle = function Toggle({ width, height, color = "#64748B" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
