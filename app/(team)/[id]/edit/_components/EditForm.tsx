@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-syntax */
-
 "use client";
 
 import API from "@/app/_api";
@@ -18,28 +16,19 @@ export default function TeamEditForm({ id }: { id: number }) {
 
 	const { data: teamInfo } = useQuery({
 		queryKey: ["teamInfo", { id }],
-		queryFn: useCallback(async () => {
-			const response = await API["{teamId}/groups/{id}"].GET({ id });
-			return response;
-		}, [id]),
+		queryFn: useCallback(async () => API["{teamId}/groups/{id}"].GET({ id }), [id]),
 	});
 
 	const imageUpload = useCallback(async (file: File): Promise<{ url: string | undefined }> => {
 		if (typeof file === "string") return { url: undefined };
 
-		const response = await API["{teamId}/images/upload"].POST({}, file);
-		return response;
+		return API["{teamId}/images/upload"].POST({}, file);
 	}, []);
 
 	const teamEditMutation = useMutation<{}, Error, FormContext>({
 		mutationFn: async (ctx: FormContext) => {
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
-			}
-
-			const file = formData.get("profileImage") as File;
-			const teamName = formData.get("teamName") as string;
+			const file = ctx.values.profileImage as File;
+			const teamName = ctx.values.teamName as string;
 
 			const { url } = await imageUpload(file);
 
@@ -87,7 +76,7 @@ export default function TeamEditForm({ id }: { id: number }) {
 									// eslint-disable-next-line react/jsx-no-useless-fragment
 									<>
 										{file || teamInfo?.image ? (
-											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
+											<div className="relative flex size-16 cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10">
 												<Image
 													src={(file as string) ?? teamInfo?.image ?? ""}
 													alt="Profile Preview"
@@ -95,16 +84,16 @@ export default function TeamEditForm({ id }: { id: number }) {
 													className="rounded-[12px] object-cover object-center"
 												/>
 												<div className="relative size-full">
-													<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
+													<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
 												</div>
 											</div>
 										) : (
-											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
+											<div className="relative flex size-16 cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
 												<div className="relative size-5">
 													<Image src="/icons/imageIcon.svg" alt="Profile Preview" fill />
 												</div>
 
-												<Image src="/icons/editIcon.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
+												<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
 											</div>
 										)}
 									</>
