@@ -48,7 +48,7 @@ export default function CreateTeamPage() {
 			// 쿼리 무효화
 			queryClient.invalidateQueries({ queryKey: ["team"] });
 
-			router.push(`/${data.teamId}`);
+			router.push(`/${data.id}`);
 		},
 		onError: (error, ctx) => {
 			// TODO: 팀 생성 실패 시 에러 메시지 표시
