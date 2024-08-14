@@ -8,7 +8,7 @@ import DropDown from "@/app/_components/Dropdown";
 import useOverlay from "@/app/_hooks/useOverlay";
 import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import Icon from "@/app/_icons";
-import TeamEdit from "@/app/_components/TeamEdit";
+import TeamEdit from "@/app/_components/modal-contents/TeamEdit";
 
 type TeamTitleProps = {
 	id: number;
