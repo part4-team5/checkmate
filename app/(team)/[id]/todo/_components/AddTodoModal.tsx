@@ -35,7 +35,7 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 
 	const startYear = startDate.getUTCFullYear();
 	const startMonth = `0${startDate.getUTCMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 +1 필요
-	const startDay = `0${startDate.getUTCDate()}`.slice(-2);
+	const startDay = `0${startDate.getUTCDate() + 1}`.slice(-2);
 
 	const formattedDate = `${startYear}-${startMonth}-${startDay}`;
 	const formattedTime = `${startTime ? `T${startTime}:00` : "00:00:00"}Z`;
