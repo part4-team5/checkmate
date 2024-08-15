@@ -8,6 +8,7 @@ import Modal from "@/app/(team)/[id]/todo/_components/AddTodoModal";
 import { useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import Form from "@/app/_components/Form";
+import { useParams, useSearchParams } from "next/navigation";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -30,8 +31,8 @@ export default function AddTodo() {
 
 	const queryClient = useQueryClient();
 
-	const groupId = 10;
-	const taskListId = 20;
+	const groupId = Number(useParams().id);
+	const taskListId = Number(useSearchParams().get("taskId"));
 
 	const overlay = useOverlay();
 
