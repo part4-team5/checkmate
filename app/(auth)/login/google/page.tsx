@@ -18,10 +18,10 @@ export default function GoogleLogin() {
 
 	const queryClient = useQueryClient();
 
-	// 구글 토큰 변환 Mutation
-	const googleTokenMutation = useMutation({
-		mutationFn: async (): Promise<{ id_token: string }> => {
-			const payload = new URLSearchParams({
+	const googleLoginMutation = useMutation({
+		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
+			// 구글 토큰 변환
+			const tokenPayload = new URLSearchParams({
 				client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "",
 				client_secret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET ?? "",
 				code,
@@ -29,33 +29,24 @@ export default function GoogleLogin() {
 				redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ?? "",
 			});
 
-			const response = await fetch("https://oauth2.googleapis.com/token", {
+			const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
 				},
-				body: payload,
+				body: tokenPayload,
 			});
 
-			const data = await response.json();
-			return data;
-		},
-		onError: (error) => {
-			console.log(error);
-		},
-	});
+			const tokenData = await tokenResponse.json();
+			const idToken = tokenData.id_token;
 
-	// 구글 로그인 Mutation
-	const googleLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({
-		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
-			const data = await googleTokenMutation.mutateAsync();
-
-			const payload: Parameters<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>[1] = {
+			// 구글 로그인
+			const loginPayload: Parameters<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>[1] = {
 				redirectUri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ?? "",
-				token: data.id_token,
+				token: idToken,
 			};
 
-			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "GOOGLE" }, payload);
+			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "GOOGLE" }, loginPayload);
 		},
 		onSuccess: (data) => {
 			// 전역 상태에 유저 정보 저장
@@ -80,7 +71,7 @@ export default function GoogleLogin() {
 	});
 
 	useEffect(() => {
-		// token이 존재하고, 컴포넌트가 마운트 되었을 때
+		// 컴포넌트가 마운트 되었고, code가 존재할 때
 		if (isMounted.current && code) {
 			isMounted.current = false;
 
