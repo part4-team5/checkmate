@@ -27,10 +27,11 @@ const postAddComment = async (newComment: string, todoId: number) => {
 	return response;
 };
 
-const patchTodoEdit = async (todoId: number, name: string, description: string) => {
+const patchTodoEdit = async (todoId: number, name: string, description: string, doneAt: string | null) => {
 	const body = {
 		name,
 		description,
+		done: !!doneAt,
 	};
 	const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].PATCH(
 		{
@@ -149,7 +150,8 @@ export const useEditTodoMutation = (groupId: number, currentTaskId: number, curr
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ todoId, name, description }: { todoId: number; name: string; description: string }) => patchTodoEdit(todoId, name, description),
+		mutationFn: ({ todoId, name, description, doneAt }: { todoId: number; name: string; description: string; doneAt: string | null }) =>
+			patchTodoEdit(todoId, name, description, doneAt),
 		onMutate: async ({ todoId, name, description }) => {
 			// 최신 데이터로 업데이트하기 위해 쿼리 캔슬
 			await queryClient.cancelQueries({ queryKey: ["todo", { todoId }] });
@@ -157,7 +159,6 @@ export const useEditTodoMutation = (groupId: number, currentTaskId: number, curr
 			const oldData = queryClient.getQueryData<TodoType>(["todo", { todoId }]);
 			// 새로운 데이터로 업데이트
 			const newData = { ...oldData, name, description };
-			console.log(newData);
 			queryClient.setQueryData<TodoType>(["todo", { todoId }], newData as TodoType);
 
 			// 이전 데이터를 반환
