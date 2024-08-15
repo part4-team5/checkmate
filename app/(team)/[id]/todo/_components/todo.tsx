@@ -39,7 +39,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const overlay = useOverlay();
 
 	const { data: groupList } = useGetGroupList(groupId);
-	const { data: todoItems } = useGetTodoItems(groupId, currentTaskId, currentDate);
+	const { data: todoItems, isLoading: isTodoItemsLoading } = useGetTodoItems(groupId, currentTaskId, currentDate);
 	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
 
 	const tasks = groupList?.taskLists;
@@ -123,7 +123,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					+새로운 목록 추가하기
 				</button>
 			</div>
-			<div className="flex gap-3 text-lg font-medium">
+			<div className="flex flex-wrap gap-3 text-lg font-medium">
 				{tasks &&
 					tasks.map((task) => (
 						<button
@@ -137,6 +137,19 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						</button>
 					))}
 			</div>
+			{isTodoItemsLoading && (
+				<div>
+					{Array.from({ length: 5 }).map((_, i) => (
+						/* eslint-disable react/no-array-index-key */
+						<div
+							key={i}
+							className="mt-4 flex h-[75px] w-full flex-col items-center justify-center gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
+						>
+							<Image src="/icons/spinner.svg" alt="spinner" width={30} height={30} className="animate-spin" />
+						</div>
+					))}
+				</div>
+			)}
 			<div className="mt-4 flex flex-col gap-4">
 				{todoItems &&
 					todoItems.map((todoItem) => (
@@ -151,9 +164,18 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						/>
 					))}
 			</div>
+			{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
+				<div className="h-vh mt-60 flex items-center justify-center text-text-default">
+					<div className="text-center">
+						아직 할 일이 없습니다.
+						<br />
+						새로운 할일을 추가해주세요.
+					</div>
+				</div>
+			)}
 			<div>
-				<div className="fixed bottom-12 flex w-full max-w-[1233px] justify-end">
-					<div className="h-[48px] w-[125px]">
+				<div className="fixed bottom-12 flex w-full justify-end desktop:max-w-[1200px]">
+					<div className="mr-[38px] h-[48px] w-[125px]">
 						<Button rounded="full">+할 일 추가</Button>
 					</div>
 				</div>

@@ -55,7 +55,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 		setCommentText(e.target.value);
 	};
 
-	const handleCommentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleCommentSubmit = (e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLInputElement>) => {
 		e.preventDefault();
 		if (commentText.length === 0) return;
 		if (addCommentMutation.isPending) return;
@@ -86,39 +86,42 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 		setEditedDescription(e.target.value);
 	};
 
-	const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>, done: string | null) => {
 		e.preventDefault();
 		if (!todoContent) return;
 		todoEditMutation.mutate({
 			todoId,
 			name: editedTitle,
 			description: editedDescription,
+			doneAt: done,
 		});
 		setIsEdit(false);
 	};
 	const { date, time } = convertIsoToDateAndTime(todoContent?.date);
 	return (
-		<div className="px-6 pb-[38px] pt-6 text-text-primary">
-			<button type="button" onClick={close} aria-label="버튼" className="">
-				<CloseIcon width={24} height={24} />
-			</button>
+		<div className="px-6 text-text-primary">
+			<div className="sticky top-0 flex bg-background-secondary pb-5 pt-6">
+				<button type="button" onClick={close} aria-label="버튼" className="">
+					<CloseIcon width={24} height={24} />
+				</button>
+			</div>
 			{todoContent && (
 				<div>
-					<div className="mb-[116px] mt-[22px] h-40 tablet:mb-[198px]">
+					<div className="h-80">
 						{isCheck && (
 							<div className="mb-[13px] flex items-center gap-[6px]">
 								<Icon.TodoCheck width={16} height={16} />
 								<div className="text-text-lime">완료</div>
 							</div>
 						)}
-						<form className="text-text-primary" onSubmit={handleEditSubmit}>
+						<form className="text-text-primary" onSubmit={(e) => handleEditSubmit(e, todoContent.doneAt)}>
 							<div className="flex justify-between">
 								{isEdit ? (
 									<input
 										type="text"
 										onChange={handleEditTitleChange}
 										value={editedTitle}
-										className="rounded-md border-2 border-brand-secondary bg-background-secondary focus:outline-none"
+										className="rounded-md bg-background-secondary p-1 shadow-sm shadow-brand-secondary focus:outline-none"
 									/>
 								) : (
 									<div className={`${isCheck ? "line-through" : ""} text-xl font-bold text-text-primary`}>{todoContent.name}</div>
@@ -126,15 +129,15 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 								{isEdit ? (
 									<div className="flex gap-2">
 										<button type="button" onClick={handleCancelClick} aria-label="todo-edit-cancel">
-											<Icon.EditCancel width={24} height={24} />
+											<Icon.EditCancel width={24} height={24} color="#34D399" />
 										</button>
 										<button type="submit" aria-label="todo-edit-submit">
-											<Icon.EditCheck width={24} height={24} />
+											<Icon.EditCheck width={24} height={24} color="#34D399" />
 										</button>
 									</div>
 								) : (
 									<button type="button" onClick={handleEditButtonClick} aria-label="todo-edit">
-										<Icon.Edit width={24} height={24} />
+										<Icon.Edit width={24} height={24} color="#34D399" />
 									</button>
 								)}
 							</div>
@@ -156,10 +159,10 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 									<textarea
 										onChange={handleEditDescriptionChange}
 										value={editedDescription}
-										className="h-20 w-full rounded-md border-2 border-brand-secondary bg-background-secondary focus:outline-none"
+										className="w-full rounded-lg bg-background-secondary p-2 shadow-sm shadow-brand-secondary focus:outline-none"
 									/>
 								) : (
-									<div>{todoContent.description}</div>
+									<div className="break-words">{todoContent.description}</div>
 								)}
 							</div>
 						</form>
@@ -167,7 +170,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 
 					<form className="mb-6" onSubmit={handleCommentSubmit}>
 						<label htmlFor="add-comment" className="sr-only">
-							댓글 입력
+							댓글
 						</label>
 						<hr className="border-icon-primary" />
 						<div className="flex">
@@ -178,8 +181,9 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 								type="text"
 								value={commentText}
 								placeholder="댓글을 달아주세요"
+								onKeyDown={(e) => e.key === "Enter" && handleCommentSubmit(e)}
 							/>
-							{addCommentMutation.isPending && <div>로딩중...</div>}
+							{addCommentMutation.isPending && <Image src="/icons/loading.svg" alt="spinner" width={24} height={24} className="animate-spin" />}
 							{!addCommentMutation.isPending && (
 								<button type="submit">
 									{commentText.length > 0 ? (
@@ -193,7 +197,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 						<hr className="border-icon-primary" />
 					</form>
 
-					<div className="desktop:max-h-[699px]scrollbar:w-2 flex max-h-[326px] flex-col gap-4 overflow-y-scroll scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary tablet:max-h-[309px]">
+					<div className="flex flex-col gap-4 scrollbar-thumb:bg-background-tertiary">
 						{comments &&
 							comments.map((comment) => {
 								const timeDifference = calculateTimeDifference(comment.createdAt, currentTime);
