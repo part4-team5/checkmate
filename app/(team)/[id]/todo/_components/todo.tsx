@@ -127,7 +127,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				{tasks &&
 					tasks.map((task) => (
 						<button
-							className={`${task.id === currentTaskId ? "text-text-primary underline" : "text-text-default"}`}
+							className={`${task.id === currentTaskId ? "text-text-primary underline underline-offset-4" : "text-text-default"}`}
 							type="button"
 							key={task.id}
 							onMouseEnter={prefetchTasks}
