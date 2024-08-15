@@ -138,7 +138,7 @@ Icon.Search = function Search({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.ArrowLeft = function ArrowLeft({ width, height, color }: IconProps) {
+Icon.ArrowLeft = function ArrowLeft({ width, height, color = "#64748B" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M10 4L6 8L10 12" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -146,7 +146,7 @@ Icon.ArrowLeft = function ArrowLeft({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.ArrowRight = function ArrowRight({ width, height, color }: IconProps) {
+Icon.ArrowRight = function ArrowRight({ width, height, color = "#64748B" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M6 12L10 8L6 4" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

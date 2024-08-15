@@ -5,7 +5,7 @@ import Button from "@/app/_components/Button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import Modal from "@/app/(team)/[id]/todo/_components/AddTodoModal";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import Form from "@/app/_components/Form";
 
@@ -25,30 +25,28 @@ enum Frequency {
 export default function AddTodo() {
 	const [frequency, setFrequency] = useState<Frequency>(Frequency.ONCE);
 	const [weekDays, setWeekDays] = useState<number[]>([]);
-	const [monthDay, setMonthDay] = useState<number>();
+	const [monthDay, setMonthDay] = useState<number>(1);
+	const [startDate, setStartDate] = useState<string>("");
 
 	const queryClient = useQueryClient();
 
 	const groupId = 10;
-	const taskListId = 19;
+	const taskListId = 20;
 
 	const overlay = useOverlay();
+
 	const createTodoMutation = useMutation<TodoResponse, Error, FormContext>({
 		mutationFn: async (ctx: FormContext): Promise<Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>>> => {
-			const startDate = `${ctx.values.date}T${ctx.values.time || "00:00"}:00Z`;
 			const payload: RecurringCreateBody = {
-				name: (ctx.values.name as string) ?? "",
-				description: (ctx.values.description as string) ?? "",
-				startDate: startDate ?? "",
+				name: ctx.values.name as string,
+				description: ctx.values.description as string,
+				startDate,
 				frequencyType: frequency,
 				weekDays: frequency === Frequency.WEEKLY ? weekDays : undefined,
 				monthDay: frequency === Frequency.MONTHLY ? monthDay : undefined,
 			};
 
-			setFrequency(Frequency.ONCE);
-			const response = await API["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"].POST({ groupId, taskListId }, payload);
-
-			return response;
+			return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"].POST({ groupId, taskListId }, payload);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: tasksKey.all });
@@ -59,14 +57,11 @@ export default function AddTodo() {
 		createTodoMutation.mutate(ctx);
 	};
 
-	const handleModalClose = (
-		newFrequency: SetStateAction<Frequency>,
-		newWeekDays: SetStateAction<number[]>,
-		newMonthDay: SetStateAction<number | undefined>,
-	) => {
+	const handleModalClose = (newFrequency: Frequency, newWeekDays: number[], newMonthDay: number, newDate: string) => {
 		setFrequency(newFrequency);
 		setWeekDays(newWeekDays);
 		setMonthDay(newMonthDay);
+		setStartDate(newDate);
 	};
 
 	return (

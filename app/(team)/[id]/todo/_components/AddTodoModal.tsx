@@ -1,7 +1,11 @@
 /* eslint-disable no-nested-ternary */
+import Button from "@/app/_components/Button";
+import Calendar from "@/app/_components/Calendar";
+import { convertTo12HourFormat, convertTo24HourFormat } from "@/app/_components/ConvertTimeFormat";
 import DropDown from "@/app/_components/Dropdown";
 import Form from "@/app/_components/Form";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
+import TimePicker from "@/app/_components/TimePicker";
 import Icon from "@/app/_icons";
 import { useState } from "react";
 
@@ -17,24 +21,35 @@ enum Frequency {
 interface ModalProps {
 	close: () => void;
 	handleCreateTodo: (ctx: FormContext) => void;
-	onClose: (newFrequency: Frequency, newWeekDays: number[], newMonthDay: number | undefined) => void;
+	onClose: (newFrequency: Frequency, newWeekDays: number[], newMonthDay: number, newDate: string) => void;
 }
 
 export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) {
 	const [frequency, setFrequency] = useState<Frequency>(Frequency.ONCE);
 	const [weekDays, setWeekDays] = useState<number[]>([]);
-	const [monthDay, setMonthDay] = useState<number | undefined>();
+	const [monthDay, setMonthDay] = useState<number>(1);
+	const [startDate, setStartDate] = useState<Date>(() => new Date());
+	const [isOpenedCalendar, setIsOpenedCalendar] = useState(false);
+	const [startTime, setStartTime] = useState<string>();
+	const [isOpenedTime, setIsOpenedTime] = useState(false);
+
+	const startYear = startDate.getUTCFullYear();
+	const startMonth = `0${startDate.getUTCMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 +1 필요
+	const startDay = `0${startDate.getUTCDate()}`.slice(-2);
+
+	const formattedDate = `${startYear}-${startMonth}-${startDay}`;
+	const formattedTime = `${startTime ? `T${startTime}:00` : "00:00:00"}Z`;
 
 	const handleModalClose = () => {
-		onClose(frequency, weekDays, monthDay);
+		onClose(frequency, weekDays, monthDay, formattedDate + formattedTime);
 		close();
 	};
 
 	return (
 		<ModalWrapper close={handleModalClose}>
-			<div className="w-full">
-				<div className="relative flex w-full flex-col items-center justify-center gap-4 pt-4">
-					<button type="button" onClick={handleModalClose} className="absolute right-4 top-4" aria-label="close">
+			<div className="size-full max-h-dvh max-w-full overflow-y-auto px-10 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary tablet:max-h-[90dvh]">
+				<div className="relative flex size-full flex-col items-center justify-center gap-4 pt-4">
+					<button type="button" onClick={handleModalClose} className="absolute -right-6 top-0" aria-label="close">
 						<Icon.Close width={24} height={24} />
 					</button>
 
@@ -71,12 +86,46 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 						</label>
 
 						<div className="flex gap-2">
-							<div className="grow-[2]">
-								<Form.Input id="date" type="date" tests={[{ type: "require", data: true, error: "시작 날짜는 필수입니다" }]} />
+							<div className="w-[150px] grow">
+								{/* <Form.Input id="date" type="date" tests={[{ type: "require", data: true, error: "시작 날짜는 필수입니다" }]} /> */}
+								<button
+									type="button"
+									className="flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
+									onClick={() => {
+										setIsOpenedCalendar(!isOpenedCalendar);
+										setIsOpenedTime(false);
+									}}
+								>
+									{startDate.toLocaleDateString("ko-KR")}
+								</button>
 							</div>
 							<div className="grow">
-								<Form.Input id="time" type="time" />
+								{/* <Form.Input id="time" type="time" /> */}
+								<button
+									type="button"
+									className="flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
+									onClick={() => {
+										setIsOpenedTime(!isOpenedTime);
+										setIsOpenedCalendar(false);
+									}}
+								>
+									{convertTo12HourFormat(startTime || "00:00")}
+								</button>
 							</div>
+						</div>
+
+						<div className={`pt-2 ${!isOpenedCalendar ? "hidden" : "flex"}`}>
+							<Calendar onChange={(date) => setStartDate(date)}>
+								<div className="relative items-center">
+									<div className="rounded-xl border border-border-primary shadow-lg">
+										<Calendar.Picker />
+									</div>
+								</div>
+							</Calendar>
+						</div>
+
+						<div className={`pt-2 ${!isOpenedTime ? "hidden" : "flex"}`}>
+							<TimePicker onChange={(time, isAm) => setStartTime(convertTo24HourFormat(time, isAm))} />
 						</div>
 
 						<div className="pt-2" />
@@ -97,22 +146,10 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 						<DropDown
 							align="CC"
 							options={[
-								{
-									text: "한 번",
-									onClick: () => setFrequency(Frequency.ONCE),
-								},
-								{
-									text: "매일",
-									onClick: () => setFrequency(Frequency.DAILY),
-								},
-								{
-									text: "매주",
-									onClick: () => setFrequency(Frequency.WEEKLY),
-								},
-								{
-									text: "매월",
-									onClick: () => setFrequency(Frequency.MONTHLY),
-								},
+								{ text: "한 번", onClick: () => setFrequency(Frequency.ONCE) },
+								{ text: "매일", onClick: () => setFrequency(Frequency.DAILY) },
+								{ text: "매주", onClick: () => setFrequency(Frequency.WEEKLY) },
+								{ text: "매월", onClick: () => setFrequency(Frequency.MONTHLY) },
 							]}
 							gapY={4}
 						>
@@ -129,20 +166,21 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 
 						<Form.Error htmlFor="frequencyType" />
 
+						{/* 주간 반복 설정 */}
 						<div>
 							{frequency === Frequency.WEEKLY && (
 								<div className="flex flex-col gap-2 pb-4">
 									<div />
 
 									<label htmlFor="weekDays" className="w-full text-start text-text-primary">
-										반복 요일
+										<span className="text-text-emerald"> * </span> 반복 요일
 									</label>
-									<div className="flex gap-2">
+									<div className="flex max-w-full gap-2">
 										{[0, 1, 2, 3, 4, 5, 6].map((day) => (
 											<button
 												key={day}
 												type="button"
-												className={`flex h-[40px] w-[40px] items-center justify-center rounded-lg border border-border-primary text-text-default ${
+												className={`flex h-[40px] w-full items-center justify-center rounded-lg border border-border-primary text-text-default ${
 													weekDays.includes(day) ? "bg-brand-primary text-text-primary" : ""
 												}`}
 												onClick={() => {
@@ -157,15 +195,20 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 											</button>
 										))}
 									</div>
+
+									{frequency === Frequency.WEEKLY && weekDays.length === 0 && (
+										<div className="text-md font-medium text-status-danger">반복 요일을 선택해주세요</div>
+									)}
 								</div>
 							)}
 
+							{/* 월간 반복 일 설정 */}
 							{frequency === Frequency.MONTHLY && (
 								<div className="flex flex-col gap-2 pb-4">
 									<div />
 
 									<label htmlFor="monthDays" className="w-full text-start text-text-primary">
-										반복 일
+										<span className="text-text-emerald"> * </span> 반복 일
 									</label>
 
 									<div className="grid grid-cols-7 grid-rows-5 gap-1 rounded-xl border border-border-primary p-2">
@@ -193,10 +236,10 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 
 						<Form.Error htmlFor="description" />
 
-						<div className="pt-10" />
+						<div className="pt-6" />
 
 						<div className="h-12">
-							<Form.Submit>만들기</Form.Submit>
+							{frequency === Frequency.WEEKLY && weekDays.length === 0 ? <Button disabled>만들기</Button> : <Form.Submit>만들기</Form.Submit>}
 						</div>
 					</div>
 				</Form>
