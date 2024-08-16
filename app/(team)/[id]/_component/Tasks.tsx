@@ -13,8 +13,8 @@ import PostEditTasks from "@/app/_components/modal-contents/PostEditTasks";
 import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import DropDown from "@/app/_components/Dropdown";
 import Image from "next/image";
-import { ReportProps } from "./Report";
 import ToastPopup from "@/app/(team)/[id]/_component/ToastPopup"; // ToastPopup 컴포넌트 임포트
+import { ReportProps } from "./Report";
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
 
@@ -38,7 +38,7 @@ function getColorClass(index: number) {
 	return colors[index % colors.length];
 }
 
-//TasksItem 컴포넌트
+// TasksItem 컴포넌트
 function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { onEditTask: (name: string, id: number) => void }) {
 	const totalTasks = taskList.tasks?.length || 0;
 	const completedTasks = taskList.tasks ? taskList.tasks.filter((task) => task.doneAt !== null).length : 0;
@@ -139,6 +139,7 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { on
 									e.stopPropagation();
 									e.preventDefault();
 								}}
+								className="mr-[8px]"
 							>
 								<DropDown options={editDropdown} gapY={-20} gapX={19} align="RR">
 									<Icon.Kebab color="#64748B" width={16} height={16} />
@@ -152,7 +153,7 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { on
 	);
 }
 
-//Tasks 컴포넌트
+// Tasks 컴포넌트
 export default function Tasks({ id }: ReportProps) {
 	const [maxHeight, setMaxHeight] = useState(208);
 	const [isExpanded, setIsExpanded] = useState(false); // 높이 확장 여부
