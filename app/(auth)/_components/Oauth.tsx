@@ -69,19 +69,6 @@ function Google() {
 	);
 }
 export default function Oauth({ type = "signin" }: { type?: "signin" | "signup" }) {
-	let sign = "signin";
-	switch (type) {
-		case "signin":
-			sign = "간편 로그인하기";
-			break;
-		case "signup":
-			sign = "간편 회원가입하기";
-			break;
-		default:
-			sign = "간편 로그인하기";
-			break;
-	}
-
 	return (
 		<div className="flex flex-col pt-6 text-lg text-text-primary">
 			<div className="flex items-center justify-center">
@@ -93,7 +80,7 @@ export default function Oauth({ type = "signin" }: { type?: "signin" | "signup" 
 			<div className="pt-4" />
 
 			<div className="flex items-center justify-between">
-				<div className="font-medium">{sign}</div>
+				<div className="font-medium">{type === "signin" ? "간편 로그인하기" : "간편 회원가입하기"}</div>
 
 				<div className="flex gap-4">
 					<Kakao />
