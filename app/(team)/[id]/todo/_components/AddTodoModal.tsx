@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import Button from "@/app/_components/Button";
 import Calendar from "@/app/_components/Calendar";
-import { convertTo12HourFormat, convertTo24HourFormat } from "@/app/_components/ConvertTimeFormat";
+import { convertTo12HourFormat, convertTo24HourFormat } from "@/app/_utils/ConvertTimeFormat";
 import DropDown from "@/app/_components/Dropdown";
 import Form from "@/app/_components/Form";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
