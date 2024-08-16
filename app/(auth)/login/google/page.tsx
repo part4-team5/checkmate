@@ -5,11 +5,11 @@ import useCookie from "@/app/_hooks/useCookie";
 import useAuthStore from "@/app/_store/useAuthStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function GoogleLogin() {
 	const [code] = useState<string>(useSearchParams().get("code") ?? "");
-	const isMounted = useRef(true);
+	const [isMounted, setIsMounted] = useState(false);
 	const router = useRouter();
 
 	const [, setAccessToken] = useCookie<string>("accessToken");
@@ -52,7 +52,7 @@ export default function GoogleLogin() {
 			// 전역 상태에 유저 정보 저장
 			setUser({
 				id: data.user.id,
-				email: data.user.email || "",
+				email: data.user.email ?? "",
 				nickname: data.user.nickname,
 				image: data.user.image ? data.user.image : null,
 			});
@@ -72,10 +72,10 @@ export default function GoogleLogin() {
 
 	useEffect(() => {
 		// 컴포넌트가 마운트 되었고, code가 존재할 때
-		if (isMounted.current && code) {
-			isMounted.current = false;
+		if (!isMounted && code) {
+			setIsMounted(true);
 
 			googleLoginMutation.mutate();
 		}
-	}, [googleLoginMutation, code]);
+	}, [googleLoginMutation, code, isMounted]);
 }
