@@ -97,6 +97,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 		});
 		setIsEdit(false);
 	};
+
 	const { date, time } = convertIsoToDateAndTime(todoContent?.date);
 	return (
 		<div className="px-6 text-text-primary">

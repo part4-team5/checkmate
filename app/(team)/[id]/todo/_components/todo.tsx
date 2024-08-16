@@ -16,7 +16,8 @@ import TodoItem from "@/app/(team)/[id]/todo/_components/TodoItem";
 import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_components/api/useQuery";
 import AddTaskModal from "@/app/(team)/[id]/todo/_components/AddTask";
 import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
-import { useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import { useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import { Reorder } from "framer-motion";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -31,35 +32,37 @@ function CalendarPopoverContent() {
 	);
 }
 
+type TaskListType = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"]["GET"]>>;
 export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [currentTaskId, setCurrentTaskId] = useState<number>(taskListId);
 	const queryClient = useQueryClient();
 	const pathname = usePathname();
 	const overlay = useOverlay();
-
 	const { data: groupList } = useGetGroupList(groupId);
 	const { data: todoItems, isLoading: isTodoItemsLoading } = useGetTodoItems(groupId, currentTaskId, currentDate);
 	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
+	const todoOrderMutation = useTodoOrderMutation(groupId, currentTaskId, currentDate);
 
 	const tasks = groupList?.taskLists;
-	/* eslint-disable no-restricted-syntax */
-	const prefetchTasks = () => {
-		if (!tasks) return;
-		for (const task of tasks) {
-			queryClient.prefetchQuery({
-				queryKey: tasksKey.detail(groupId, task.id, currentDate.toLocaleDateString("ko-KR")),
-				queryFn: async () => {
-					const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].GET({
-						groupId,
-						taskListId: task.id,
-						date: currentDate.toLocaleDateString("ko-KR"),
-					});
-					return response;
-				},
-			});
-		}
-	};
+
+	// /* eslint-disable no-restricted-syntax */
+	// const prefetchTasks = () => {
+	// 	if (!tasks) return;
+	// 	for (const task of tasks) {
+	// 		queryClient.prefetchQuery({
+	// 			queryKey: tasksKey.detail(groupId, task.id, currentDate.toLocaleDateString("ko-KR")),
+	// 			queryFn: async () => {
+	// 				const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].GET({
+	// 					groupId,
+	// 					taskListId: task.id,
+	// 					date: currentDate.toLocaleDateString("ko-KR"),
+	// 				});
+	// 				return response;
+	// 			},
+	// 		});
+	// 	}
+	// };
 
 	const updateSearchParams = (value: number) => {
 		setCurrentTaskId(value);
@@ -84,6 +87,22 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				<TodoDetail todoId={todoId} currentTaskId={taskId} close={close} currentDate={date} groupId={gid} doneAt={doneAt} />
 			</SideBarWrapper>
 		));
+	};
+
+	const handleReorder = (ReorderItems: TaskListType) => {
+		queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), ReorderItems);
+	};
+
+	const handleDragEnd = () => {
+		if (!todoItems) return;
+		// index 와 displayIndex 가 다른 경우만 api 호출
+		todoItems.forEach((item, index) => {
+			if (index !== item.displayIndex) {
+				setTimeout(() => {
+					todoOrderMutation.mutate({ todoId: item.id, displayIndex: index });
+				}, index * 500);
+			}
+		});
 	};
 
 	return (
@@ -130,7 +149,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							className={`${task.id === currentTaskId ? "text-text-primary underline underline-offset-4" : "text-text-default"}`}
 							type="button"
 							key={task.id}
-							onMouseEnter={prefetchTasks}
+							// onMouseEnter={prefetchTasks}
 							onClick={() => updateSearchParams(task.id)}
 						>
 							{task.name}
@@ -150,20 +169,26 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					))}
 				</div>
 			)}
-			<div className="mt-4 flex flex-col gap-4">
-				{todoItems &&
-					todoItems.map((todoItem) => (
-						<TodoItem
-							key={todoItem.id}
-							todoItem={todoItem}
-							onToggleTodo={handleToggleTodoStatus}
-							onClick={handleTodoClick}
-							groupId={groupId}
-							taskId={currentTaskId}
-							currentDate={currentDate}
-						/>
+
+			{todoItems && (
+				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)}>
+					{todoItems.map((todoItem) => (
+						<Reorder.Item value={todoItem} key={todoItem.id} onDragEnd={handleDragEnd}>
+							<div className="mt-4 flex flex-col gap-4">
+								<TodoItem
+									key={todoItem.id}
+									todoItem={todoItem}
+									onToggleTodo={handleToggleTodoStatus}
+									onClick={handleTodoClick}
+									groupId={groupId}
+									taskId={currentTaskId}
+									currentDate={currentDate}
+								/>
+							</div>
+						</Reorder.Item>
 					))}
-			</div>
+				</Reorder.Group>
+			)}
 			{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
 				<div className="h-vh mt-60 flex items-center justify-center text-text-default">
 					<div className="text-center">
