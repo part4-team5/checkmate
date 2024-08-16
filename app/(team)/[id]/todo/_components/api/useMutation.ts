@@ -42,6 +42,20 @@ const patchTodoEdit = async (todoId: number, name: string, description: string, 
 	return response;
 };
 
+const patchTodoOrder = async (todoId: number, displayIndex: number) => {
+	console.log(todoId, displayIndex);
+	const body = {
+		displayIndex,
+	};
+	const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{id}/order"].PATCH(
+		{
+			id: todoId,
+		},
+		body,
+	);
+	return response;
+};
+
 type TaskListType = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"]["GET"]>>;
 export const useToggleTodoStatusMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
 	const queryClient = useQueryClient();
@@ -105,13 +119,10 @@ export const useAddCommentMutation = (
 			return postAddComment(commentInputText, todoId);
 		},
 		onMutate: async (commentInputText) => {
-			// 최신 데이터로 업데이트하기 위해 쿼리 캔슬
 			await queryClient.cancelQueries({ queryKey: ["todo", { todoId, comments: true }] });
-			// 이전 데이터를 저장
 			const oldData = queryClient.getQueryData<CommentType[]>(["todo", { todoId, comments: true }]);
 			const ids = oldData?.map((comment) => comment.id) || [];
 			const maxId = Math.max(...ids, 0);
-			// 새로운 데이터로 업데이트
 			// TODO: id검증 로직 정교하게 수정, 실패 시 재시도 로직 추가
 			const newComment = {
 				id: maxId + 1,
@@ -124,11 +135,8 @@ export const useAddCommentMutation = (
 			};
 			const newData = oldData ? [...oldData, newComment] : [newComment];
 			queryClient.setQueryData<CommentType[]>(["todo", { todoId, comments: true }], newData);
-
-			// 이전 데이터를 반환
 			return { oldData };
 		},
-		// 요청 실패 시 이전 데이터로 롤백
 		onError: (error, variables, context) => {
 			if (context?.oldData) {
 				queryClient.setQueryData(["todo", { todoId, comment: true }], context.oldData);
@@ -138,7 +146,6 @@ export const useAddCommentMutation = (
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), refetchType: "all" });
 		},
-		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
 			queryClient.refetchQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 			queryClient.invalidateQueries({ queryKey: ["todo", { todoId, comments: true }] });
@@ -153,27 +160,50 @@ export const useEditTodoMutation = (groupId: number, currentTaskId: number, curr
 		mutationFn: ({ todoId, name, description, doneAt }: { todoId: number; name: string; description: string; doneAt: string | null }) =>
 			patchTodoEdit(todoId, name, description, doneAt),
 		onMutate: async ({ todoId, name, description }) => {
-			// 최신 데이터로 업데이트하기 위해 쿼리 캔슬
 			await queryClient.cancelQueries({ queryKey: ["todo", { todoId }] });
-			// 이전 데이터를 저장
 			const oldData = queryClient.getQueryData<TodoType>(["todo", { todoId }]);
-			// 새로운 데이터로 업데이트
 			const newData = { ...oldData, name, description };
 			queryClient.setQueryData<TodoType>(["todo", { todoId }], newData as TodoType);
-
-			// 이전 데이터를 반환
 			return { oldData };
 		},
-		// 요청 실패 시 이전 데이터로 롤백
 		onError: (error, variables, context) => {
 			if (context?.oldData) {
 				queryClient.setQueryData(["todo", { todoId: variables.todoId }], context.oldData);
 			}
 			alert(`오류: ${error.message} - 할 일 수정에 실패했습니다.`);
 		},
-		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
+		},
+	});
+};
+
+type MutationVariables = {
+	todoId: number;
+	displayIndex: number;
+};
+
+export const useTodoOrderMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ todoId, displayIndex }: MutationVariables) => patchTodoOrder(todoId, displayIndex),
+		onMutate: async () => {
+			await queryClient.cancelQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
+			const oldData = queryClient.getQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")));
+			const newData = oldData?.map((todo, index) => {
+				// index 와 displayIndex 가 다른 경우만 쿼리 업데이트
+				if (todo.displayIndex !== index) {
+					return { ...todo, displayIndex: index };
+				}
+				return todo;
+			});
+			queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), newData);
+			return { oldData };
+		},
+		onError: (error, variables, context) => {
+			if (context?.oldData) {
+				queryClient.setQueryData(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), context.oldData);
+			}
 		},
 	});
 };
