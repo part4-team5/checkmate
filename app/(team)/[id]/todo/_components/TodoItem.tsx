@@ -30,11 +30,7 @@ type TodoItemProps = {
 export default function TodoItem({ taskId, todoItem, groupId, currentDate, onToggleTodo, onClick }: TodoItemProps) {
 	const { date, time } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
 	return (
-		<div
-			className="flex w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
-			key={todoItem.id}
-			onClick={() => onClick(groupId, taskId, todoItem.id, currentDate, todoItem.doneAt)}
-		>
+		<div className="flex w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary" key={todoItem.id}>
 			<div className="flex items-center justify-between">
 				<div className="flex gap-3">
 					<button
@@ -51,7 +47,16 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 							<Image src="/icons/uncheckBox.svg" alt="not done" width={24} height={24} />
 						)}
 					</button>
-					<div className={`${todoItem.doneAt ? "line-through" : ""} text-text-primary`}>{todoItem.name}</div>
+					<button
+						type="button"
+						className={`${todoItem.doneAt ? "line-through" : ""} text-text-primary`}
+						onClick={(e) => {
+							e.stopPropagation();
+							onClick(groupId, taskId, todoItem.id, currentDate, todoItem.doneAt);
+						}}
+					>
+						{todoItem.name}
+					</button>
 					<div className="flex items-center justify-center gap-1 text-xs font-normal text-text-default">
 						<Image src="/icons/comment.svg" alt="comment" width={16} height={16} />
 						{todoItem.commentCount}
