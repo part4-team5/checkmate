@@ -125,7 +125,7 @@ export default function Page() {
 	const openChangePasswordModal = useCallback(() => {
 		overlay.open(({ close }) => (
 			<ModalWrapper close={close}>
-				<div className="w-[280px] p-[20px_0] text-text-primary">
+				<div className="w-[280px] pt-[20px] text-text-primary">
 					<p className="mb-[16px] text-center font-medium">비밀번호 변경하기</p>
 					<Form onSubmit={handleChangePassword}>
 						<div className="flex flex-col gap-[8px]">
