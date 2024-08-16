@@ -22,11 +22,11 @@ export default function GoogleLogin() {
 		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
 			// 구글 토큰 변환
 			const tokenPayload = new URLSearchParams({
-				client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "",
-				client_secret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET ?? "",
+				client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
+				client_secret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string,
 				code,
 				grant_type: "authorization_code",
-				redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ?? "",
+				redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI as string,
 			});
 
 			const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
@@ -42,7 +42,7 @@ export default function GoogleLogin() {
 
 			// 구글 로그인
 			const loginPayload: Parameters<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>[1] = {
-				redirectUri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ?? "",
+				redirectUri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI as string,
 				token: idToken,
 			};
 

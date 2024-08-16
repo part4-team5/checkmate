@@ -1,9 +1,9 @@
-import Cookie from "@/app/_utils/Cookie";
+import useAuthStore from "@/app/_store/useAuthStore";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Page() {
-	const accessToken = Cookie.get("accessToken");
+	const user = useAuthStore((state) => state.user);
 
 	return (
 		<main className="h-full min-w-[320px] bg-background-primary">
@@ -26,7 +26,7 @@ export default function Page() {
 				</div>
 
 				<div className="z-10 flex items-center justify-center pb-[180px]">
-					{accessToken ? (
+					{user ? (
 						<Link
 							href="/get-started"
 							className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
