@@ -45,11 +45,11 @@ function Report({ id }: ReportProps) {
 
 		if (data) {
 			data.taskLists.forEach((taskList) => {
-				total += taskList.tasks.length;
-				done += taskList.tasks.filter((task) => task.doneAt !== null).length;
+				const tasks = taskList.tasks || [];
+				total += tasks.length;
+				done += tasks.filter((task) => task.doneAt !== null).length;
 			});
 		}
-
 		return { totalTasks: total, doneTasks: done };
 	})();
 
