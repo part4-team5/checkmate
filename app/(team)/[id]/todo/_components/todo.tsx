@@ -197,11 +197,9 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					</div>
 				</div>
 			)}
-			<div>
-				<div className="fixed bottom-12 flex w-full justify-end desktop:max-w-[1200px]">
-					<div className="mr-[38px] h-[48px] w-[125px]">
-						<Button rounded="full">+할 일 추가</Button>
-					</div>
+			<div className="fixed bottom-12 right-2 h-[48px] w-[125px] desktop:right-[calc((100dvw-1200px)/2)]">
+				<div className="mr-[38px] h-[48px] w-[125px]">
+					<Button rounded="full">+할 일 추가</Button>
 				</div>
 			</div>
 		</>
