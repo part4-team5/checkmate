@@ -1187,8 +1187,8 @@ interface Recurring {
 	writerId: number;
 	groupId: number;
 	taskListId: number;
-	monthDay: number | null;
-	weekDays: number[];
+	monthDay?: number;
+	weekDays?: number[];
 	frequencyType: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY";
 	startDate?: string;
 	updatedAt: string;

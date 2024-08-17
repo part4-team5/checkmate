@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-const padZero = (num: number) => (num < 10 ? `0${num}` : num);
+const padZero = (num: number) => num.toString().padStart(2, "0");
 
 const convertTo24HourFormat = (time: string, isAm: boolean) => {
 	const [hour, minute] = time.split(":").map(Number);

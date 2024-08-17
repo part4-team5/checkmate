@@ -25,9 +25,9 @@ export default function Modal({ close }: { close: () => void }) {
 	const [weekDays, setWeekDays] = useState<number[]>([]);
 	const [monthDay, setMonthDay] = useState<number>(1);
 	const [startDate, setStartDate] = useState<Date>(() => new Date());
-	const [isOpenedCalendar, setIsOpenedCalendar] = useState(false);
+	const [isCalendarOpened, setIsCalendarOpened] = useState(false);
 	const [startTime, setStartTime] = useState<string>();
-	const [isOpenedTime, setIsOpenedTime] = useState(false);
+	const [isTimeOpened, setIsTimeOpened] = useState(false);
 
 	const startYear = startDate.getFullYear();
 	const startMonth = `0${startDate.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 +1 필요
@@ -38,10 +38,33 @@ export default function Modal({ close }: { close: () => void }) {
 
 	const groupId = Number(useParams().id);
 	const taskListId = Number(useSearchParams().get("taskId"));
-	const createTodoMutation = useCreateTodoMutation(groupId, taskListId, startDate, formattedDate + formattedTime, frequency, weekDays, monthDay);
+	const createTodoMutation = useCreateTodoMutation(groupId, taskListId);
+
+	const dayLabels: { [key: number]: string } = {
+		0: "일",
+		1: "월",
+		2: "화",
+		3: "수",
+		4: "목",
+		5: "금",
+		6: "토",
+	};
 
 	const handleCreateTodo = async (ctx: FormContext) => {
-		createTodoMutation.mutate({ name: ctx.values.name as string, description: ctx.values.description as string });
+		createTodoMutation.mutate({
+			name: ctx.values.name as string,
+			description: ctx.values.description as string,
+			startDate: formattedDate + formattedTime,
+			frequencyType: frequency,
+			weekDays,
+			monthDay,
+			writerId: 0,
+			groupId,
+			taskListId,
+			updatedAt: "",
+			createdAt: "",
+			id: 1,
+		});
 	};
 
 	return (
@@ -94,8 +117,8 @@ export default function Modal({ close }: { close: () => void }) {
 									type="button"
 									className="flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
 									onClick={() => {
-										setIsOpenedCalendar((prev) => !prev);
-										setIsOpenedTime(false);
+										setIsCalendarOpened((prev) => !prev);
+										setIsTimeOpened(false);
 									}}
 								>
 									{startDate.toLocaleDateString("ko-KR")}
@@ -107,8 +130,8 @@ export default function Modal({ close }: { close: () => void }) {
 									type="button"
 									className="flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
 									onClick={() => {
-										setIsOpenedTime((prev) => !prev);
-										setIsOpenedCalendar(false);
+										setIsTimeOpened((prev) => !prev);
+										setIsCalendarOpened(false);
 									}}
 								>
 									{convertTo12HourFormat(startTime || "00:00")}
@@ -116,7 +139,7 @@ export default function Modal({ close }: { close: () => void }) {
 							</div>
 						</div>
 
-						<div className={`size-full pt-2 ${!isOpenedCalendar ? "hidden" : "flex"}`}>
+						<div className={`size-full pt-2 ${!isCalendarOpened ? "hidden" : "flex"}`}>
 							<Calendar
 								onChange={(date) => {
 									setStartDate(date);
@@ -130,7 +153,7 @@ export default function Modal({ close }: { close: () => void }) {
 							</Calendar>
 						</div>
 
-						<div className={`pt-2 ${!isOpenedTime ? "hidden" : "flex"}`}>
+						<div className={`pt-2 ${!isTimeOpened ? "hidden" : "flex"}`}>
 							<TimePicker
 								onChange={(time, isAm) => {
 									setStartTime(convertTo24HourFormat(time, isAm));
@@ -194,7 +217,7 @@ export default function Modal({ close }: { close: () => void }) {
 											<button
 												key={day}
 												type="button"
-												className={`flex h-[40px] w-full items-center justify-center rounded-lg border border-border-primary text-text-default ${
+												className={`flex h-[40px] w-full items-center justify-center rounded-lg border border-border-primary text-text-default hover:bg-brand-primary ${
 													weekDays.includes(day) ? "bg-brand-primary text-text-primary" : ""
 												}`}
 												onClick={() => {
@@ -205,7 +228,7 @@ export default function Modal({ close }: { close: () => void }) {
 													}
 												}}
 											>
-												{day === 0 ? "일" : day === 1 ? "월" : day === 2 ? "화" : day === 3 ? "수" : day === 4 ? "목" : day === 5 ? "금" : "토"}
+												{dayLabels[day]}
 											</button>
 										))}
 									</div>
@@ -225,8 +248,8 @@ export default function Modal({ close }: { close: () => void }) {
 										<span className="text-text-emerald"> * </span> 반복 일
 									</label>
 
-									<div className="grid grid-cols-7 grid-rows-5 gap-1 rounded-xl border border-border-primary p-2">
-										{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].map((day) => (
+									<div className="grid grid-cols-7 grid-rows-5 rounded-xl border border-border-primary p-2">
+										{Array.from({ length: new Date(2024, 12, 31).getDate() }, (_, i) => i + 1).map((day) => (
 											<button
 												key={day}
 												type="button"

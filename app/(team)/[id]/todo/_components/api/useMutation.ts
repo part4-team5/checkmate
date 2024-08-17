@@ -177,28 +177,28 @@ export const useEditTodoMutation = (groupId: number, currentTaskId: number, curr
 	});
 };
 
-export const useCreateTodoMutation = (
-	groupId: number,
-	taskListId: number,
-	currentDate: Date,
-	startDate: string,
-	frequencyType: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY",
-	weekDays: number[],
-	monthDay: number,
-) => {
+export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
 	const queryClient = useQueryClient();
+	const currentDate = new Date();
 
 	return useMutation({
-		mutationFn: ({ name, description }: { name: string; description: string }) => {
+		mutationFn: ({
+			name,
+			description,
+			startDate,
+			frequencyType,
+			weekDays,
+			monthDay,
+		}: Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>>) => {
 			const body = {
 				name,
 				description,
-				startDate,
+				startDate: startDate ?? new Date().toISOString(),
 				frequencyType,
 				weekDays: frequencyType === "WEEKLY" ? weekDays : undefined,
 				monthDay: frequencyType === "MONTHLY" ? monthDay : undefined,
 			};
-			return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].POST(
+			return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"].POST(
 				{
 					groupId,
 					taskListId,
@@ -206,7 +206,7 @@ export const useCreateTodoMutation = (
 				body,
 			);
 		},
-		onMutate: async ({ name, description }) => {
+		onMutate: async ({ name, description, startDate, frequencyType, weekDays, monthDay }) => {
 			// 최신 데이터로 업데이트하기 위해 쿼리 캔슬
 			await queryClient.cancelQueries({ queryKey: tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")) });
 			// 이전 데이터를 저장
@@ -215,7 +215,7 @@ export const useCreateTodoMutation = (
 			const newData = oldData
 				? [...oldData, { id: 1, name, description, date: startDate, frequency: frequencyType, weekDays, monthDay }]
 				: [{ id: 1, name, description, date: startDate, frequency: frequencyType, weekDays, monthDay }];
-			console.log(newData);
+
 			queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")), newData as TaskListType);
 
 			// 이전 데이터를 반환
