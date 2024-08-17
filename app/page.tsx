@@ -1,9 +1,9 @@
-import useAuthStore from "@/app/_store/useAuthStore";
+import Cookie from "@/app/_utils/Cookie";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Page() {
-	const user = useAuthStore((state) => state.user);
+	const user = Cookie.get("accessToken");
 
 	return (
 		<main className="h-full min-w-[320px] bg-background-primary">
