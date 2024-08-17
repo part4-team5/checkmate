@@ -8,8 +8,16 @@ import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import TimePicker from "@/app/_components/TimePicker";
 import Icon from "@/app/_icons";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import API from "@/app/_api";
+import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
+import { useParams, useSearchParams } from "next/navigation";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
+
+type RecurringCreateBody = Parameters<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>[1];
+
+type TodoResponse = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>>;
 
 enum Frequency {
 	ONCE = "ONCE",
@@ -18,13 +26,7 @@ enum Frequency {
 	MONTHLY = "MONTHLY",
 }
 
-interface ModalProps {
-	close: () => void;
-	handleCreateTodo: (ctx: FormContext) => void;
-	onClose: (newFrequency: Frequency, newWeekDays: number[], newMonthDay: number, newDate: string) => void;
-}
-
-export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) {
+export default function Modal({ close }: { close: () => void }) {
 	const [frequency, setFrequency] = useState<Frequency>(Frequency.ONCE);
 	const [weekDays, setWeekDays] = useState<number[]>([]);
 	const [monthDay, setMonthDay] = useState<number>(1);
@@ -40,16 +42,38 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 	const formattedDate = `${startYear}-${startMonth}-${startDay}`;
 	const formattedTime = `${startTime ? `T${startTime}:00` : "00:00:00"}Z`;
 
-	const handleModalClose = () => {
-		onClose(frequency, weekDays, monthDay, formattedDate + formattedTime);
-		close();
+	const queryClient = useQueryClient();
+
+	const groupId = Number(useParams().id);
+	const taskListId = Number(useSearchParams().get("taskId"));
+
+	const createTodoMutation = useMutation<TodoResponse, Error, FormContext>({
+		mutationFn: async (ctx: FormContext): Promise<Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>>> => {
+			const payload: RecurringCreateBody = {
+				name: ctx.values.name as string,
+				description: ctx.values.description as string,
+				startDate: formattedDate + formattedTime,
+				frequencyType: frequency,
+				weekDays: frequency === Frequency.WEEKLY ? weekDays : undefined,
+				monthDay: frequency === Frequency.MONTHLY ? monthDay : undefined,
+			};
+
+			return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"].POST({ groupId, taskListId }, payload);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: tasksKey.all });
+		},
+	});
+
+	const handleCreateTodo = async (ctx: FormContext) => {
+		createTodoMutation.mutate(ctx);
 	};
 
 	return (
-		<ModalWrapper close={handleModalClose}>
+		<ModalWrapper close={close}>
 			<div className="size-full max-h-[90dvh] overflow-y-auto px-2 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
 				<div className="relative flex size-full flex-col items-center justify-center gap-4 pt-4">
-					<button type="button" onClick={handleModalClose} className="absolute right-0 top-0" aria-label="close">
+					<button type="button" onClick={close} className="absolute right-0 top-0" aria-label="close">
 						<Icon.Close width={24} height={24} />
 					</button>
 
@@ -62,7 +86,7 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 				<Form
 					onSubmit={(ctx) => {
 						handleCreateTodo(ctx);
-						handleModalClose();
+						close();
 					}}
 				>
 					<div className="mx-auto flex w-full max-w-80 flex-col tablet:min-w-80">
