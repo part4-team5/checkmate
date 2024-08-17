@@ -176,3 +176,61 @@ export const useEditTodoMutation = (groupId: number, currentTaskId: number, curr
 		},
 	});
 };
+
+export const useCreateTodoMutation = (
+	groupId: number,
+	taskListId: number,
+	currentDate: Date,
+	startDate: string,
+	frequencyType: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY",
+	weekDays: number[],
+	monthDay: number,
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ name, description }: { name: string; description: string }) => {
+			const body = {
+				name,
+				description,
+				startDate,
+				frequencyType,
+				weekDays: frequencyType === "WEEKLY" ? weekDays : undefined,
+				monthDay: frequencyType === "MONTHLY" ? monthDay : undefined,
+			};
+			return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].POST(
+				{
+					groupId,
+					taskListId,
+				},
+				body,
+			);
+		},
+		onMutate: async ({ name, description }) => {
+			// 최신 데이터로 업데이트하기 위해 쿼리 캔슬
+			await queryClient.cancelQueries({ queryKey: tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")) });
+			// 이전 데이터를 저장
+			const oldData = queryClient.getQueryData<TaskListType>(tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")));
+			// 새로운 데이터로 업데이트
+			const newData = oldData
+				? [...oldData, { id: 1, name, description, date: startDate, frequency: frequencyType, weekDays, monthDay }]
+				: [{ id: 1, name, description, date: startDate, frequency: frequencyType, weekDays, monthDay }];
+			console.log(newData);
+			queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")), newData as TaskListType);
+
+			// 이전 데이터를 반환
+			return { oldData };
+		},
+		// 요청 실패 시 이전 데이터로 롤백
+		onError: (error, variables, context) => {
+			if (context?.oldData) {
+				queryClient.setQueryData(tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")), context.oldData);
+			}
+			alert(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
+		},
+		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")) });
+		},
+	});
+};

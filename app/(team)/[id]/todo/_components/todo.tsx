@@ -151,12 +151,8 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						/>
 					))}
 			</div>
-			<div>
-				<div className="fixed bottom-12 flex w-full max-w-[1233px] justify-end">
-					<div className="h-[48px] w-[125px]">
-						<AddTodo />
-					</div>
-				</div>
+			<div className="fixed bottom-12 right-[calc((100dvw-1200px)/2)] h-[48px] w-[125px]">
+				<AddTodo />
 			</div>
 		</>
 	);

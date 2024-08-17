@@ -8,16 +8,10 @@ import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import TimePicker from "@/app/_components/TimePicker";
 import Icon from "@/app/_icons";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import API from "@/app/_api";
-import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import { useParams, useSearchParams } from "next/navigation";
+import { useCreateTodoMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
-
-type RecurringCreateBody = Parameters<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>[1];
-
-type TodoResponse = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>>;
 
 enum Frequency {
 	ONCE = "ONCE",
@@ -42,31 +36,12 @@ export default function Modal({ close }: { close: () => void }) {
 	const formattedDate = `${startYear}-${startMonth}-${startDay}`;
 	const formattedTime = `${startTime ? `T${startTime}:00` : "00:00:00"}Z`;
 
-	const queryClient = useQueryClient();
-
 	const groupId = Number(useParams().id);
 	const taskListId = Number(useSearchParams().get("taskId"));
-
-	const createTodoMutation = useMutation<TodoResponse, Error, FormContext>({
-		mutationFn: async (ctx: FormContext): Promise<Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>>> => {
-			const payload: RecurringCreateBody = {
-				name: ctx.values.name as string,
-				description: ctx.values.description as string,
-				startDate: formattedDate + formattedTime,
-				frequencyType: frequency,
-				weekDays: frequency === Frequency.WEEKLY ? weekDays : undefined,
-				monthDay: frequency === Frequency.MONTHLY ? monthDay : undefined,
-			};
-
-			return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"].POST({ groupId, taskListId }, payload);
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: tasksKey.all });
-		},
-	});
+	const createTodoMutation = useCreateTodoMutation(groupId, taskListId, startDate, formattedDate + formattedTime, frequency, weekDays, monthDay);
 
 	const handleCreateTodo = async (ctx: FormContext) => {
-		createTodoMutation.mutate(ctx);
+		createTodoMutation.mutate({ name: ctx.values.name as string, description: ctx.values.description as string });
 	};
 
 	return (
