@@ -150,14 +150,15 @@ function ResetPasswordForm() {
 	// 비 로그인 상태에서 비밀번호 재설정 링크 전송 페이지
 	if (!isUser && !passwordToken) {
 		return (
-			<main className="h-dvh w-full bg-background-primary">
-				<section className="flex size-full flex-col items-center gap-20 pt-36">
-					<div className="flex flex-col gap-3">
-						<h1 className="text-center text-[40px] font-medium leading-[48px] text-white">비밀번호 재설정</h1>
-						<p className="text-center text-xl text-text-primary">비밀번호 재설정 링크를 보내드립니다.</p>
-					</div>
+			<div className="flex size-full min-w-[340px] flex-col items-center gap-20">
+				<div className="flex flex-col gap-3">
+					<h1 className="text-center text-[40px] font-medium leading-[48px] text-white">비밀번호 재설정</h1>
+					<p className="text-center text-xl text-text-primary">비밀번호 재설정 링크를 보내드립니다.</p>
+				</div>
+
+				<div className="w-full max-w-[460px]">
 					<Form onSubmit={handleSendEmail}>
-						<div className="flex w-[460px] flex-col gap-[12px]">
+						<div className="flex flex-col gap-[12px]">
 							<label htmlFor="email" className="text-white">
 								이메일
 							</label>
@@ -184,19 +185,19 @@ function ResetPasswordForm() {
 							<div className="h-12">{sendEmailMutation.isPending ? <Button disabled>전송 중...</Button> : <Form.Submit>전송</Form.Submit>}</div>
 						</div>
 					</Form>
-				</section>
-			</main>
+				</div>
+			</div>
 		);
 	}
 
 	// 비밀번호 재설정 페이지
 	return (
-		<main className="h-dvh w-full bg-background-primary">
-			<section className="flex size-full flex-col items-center gap-20 pt-36">
-				<h1 className="text-[40px] font-medium leading-[48px] text-white">비밀번호 재설정</h1>
+		<div className="flex size-full min-w-[340px] flex-col items-center gap-20">
+			<h1 className="text-[40px] font-medium leading-[48px] text-white">비밀번호 재설정</h1>
 
+			<div className="w-full max-w-[460px]">
 				<Form onSubmit={handleSubmit}>
-					<div className="flex w-[460px] flex-col gap-[12px]">
+					<div className="flex flex-col gap-[12px]">
 						<label htmlFor="password" className="text-white">
 							새 비밀번호
 						</label>
@@ -262,8 +263,8 @@ function ResetPasswordForm() {
 						<div className="h-12">{passwordResetMutation.isPending ? <Button disabled>비밀번호 재설정 중...</Button> : <Form.Submit>재설정</Form.Submit>}</div>
 					</div>
 				</Form>
-			</section>
-		</main>
+			</div>
+		</div>
 	);
 }
 
