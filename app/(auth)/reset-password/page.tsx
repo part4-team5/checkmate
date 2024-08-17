@@ -9,7 +9,7 @@ import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import useCookie from "@/app/_hooks/useCookie";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useMutation } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
@@ -19,6 +19,8 @@ function ResetPasswordForm() {
 	const [isUser] = useCookie("accessToken");
 
 	const overlay = useOverlay();
+
+	const router = useRouter();
 
 	// 비밀번호 재설정 토큰
 	const [passwordToken] = useState<string | null>(useSearchParams().get("token"));
@@ -34,15 +36,7 @@ function ResetPasswordForm() {
 								{message} 로 <br /> 비밀번호 재설정 주소를 전송했습니다.
 							</p>
 						)}
-
 						<div className="flex gap-2">
-							{isSuccess && passwordToken && (
-								<div className="h-12 w-full">
-									<Button variant="primary" onClick={() => window.history.pushState(null, "", "/login")}>
-										로그인
-									</Button>
-								</div>
-							)}
 							<div className="h-12 w-full">
 								<Button variant="secondary" onClick={close}>
 									닫기
@@ -53,7 +47,7 @@ function ResetPasswordForm() {
 				</ModalWrapper>
 			));
 		},
-		[overlay, passwordToken],
+		[overlay],
 	);
 
 	useEffect(() => {
@@ -126,7 +120,9 @@ function ResetPasswordForm() {
 			return response;
 		},
 		onSuccess: (data) => {
-			openModal({ title: "비밀번호 재설정 성공", message: data.message, isEmail: false });
+			// TODO: 토스트 메시지로 변경
+			if (isUser) openModal({ title: "비밀번호 재설정 성공", message: data.message, isEmail: false });
+			else router.push("/login");
 		},
 		onError: (error) => {
 			openModal({ title: "비밀번호 재설정 실패", message: error.message, isEmail: false });
@@ -263,9 +259,7 @@ function ResetPasswordForm() {
 
 						<div className="pt-6" />
 
-						<div className="h-12">
-							<Form.Submit>재설정</Form.Submit>
-						</div>
+						<div className="h-12">{passwordResetMutation.isPending ? <Button disabled>비밀번호 재설정 중...</Button> : <Form.Submit>재설정</Form.Submit>}</div>
 					</div>
 				</Form>
 			</section>
