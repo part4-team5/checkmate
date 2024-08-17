@@ -183,12 +183,7 @@ type MutationVariables = {
 	displayIndex: number;
 };
 
-export const useTodoOrderMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
-	const queryClient = useQueryClient();
-	return useMutation({
+export const useTodoOrderMutation = () =>
+	useMutation({
 		mutationFn: ({ todoId, displayIndex }: MutationVariables) => patchTodoOrder(todoId, displayIndex),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
-		},
 	});
-};

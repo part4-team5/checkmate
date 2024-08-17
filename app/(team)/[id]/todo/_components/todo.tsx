@@ -42,7 +42,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const { data: groupList } = useGetGroupList(groupId);
 	const { data: todoItems, isLoading: isTodoItemsLoading } = useGetTodoItems(groupId, currentTaskId, currentDate);
 	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
-	const todoOrderMutation = useTodoOrderMutation(groupId, currentTaskId, currentDate);
+	const todoOrderMutation = useTodoOrderMutation();
 
 	const tasks = groupList?.taskLists;
 
