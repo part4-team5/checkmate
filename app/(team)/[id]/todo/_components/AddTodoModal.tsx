@@ -47,9 +47,9 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 
 	return (
 		<ModalWrapper close={handleModalClose}>
-			<div className="size-full max-h-dvh max-w-full overflow-y-auto px-10 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary tablet:max-h-[90dvh]">
+			<div className="size-full max-h-[90dvh] overflow-y-auto px-2 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
 				<div className="relative flex size-full flex-col items-center justify-center gap-4 pt-4">
-					<button type="button" onClick={handleModalClose} className="absolute -right-6 top-0" aria-label="close">
+					<button type="button" onClick={handleModalClose} className="absolute right-0 top-0" aria-label="close">
 						<Icon.Close width={24} height={24} />
 					</button>
 
@@ -65,7 +65,7 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 						handleModalClose();
 					}}
 				>
-					<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
+					<div className="mx-auto flex w-full max-w-80 flex-col tablet:min-w-80">
 						<div className="pt-6" />
 
 						<label htmlFor="name" className="w-full pb-3 text-start text-text-primary">
@@ -114,12 +114,10 @@ export default function Modal({ close, handleCreateTodo, onClose }: ModalProps) 
 							</div>
 						</div>
 
-						<div className={`pt-2 ${!isOpenedCalendar ? "hidden" : "flex"}`}>
+						<div className={`size-full pt-2 ${!isOpenedCalendar ? "hidden" : "flex"}`}>
 							<Calendar onChange={(date) => setStartDate(date)}>
-								<div className="relative items-center">
-									<div className="rounded-xl border border-border-primary shadow-lg">
-										<Calendar.Picker />
-									</div>
+								<div className="flex size-full items-center justify-center rounded-xl border border-border-primary shadow-lg">
+									<Calendar.Picker />
 								</div>
 							</Calendar>
 						</div>
