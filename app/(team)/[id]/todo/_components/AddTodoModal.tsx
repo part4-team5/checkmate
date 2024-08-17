@@ -103,7 +103,10 @@ export default function Modal({ close }: { close: () => void }) {
 						/>
 
 						<div className="pt-2" />
+
 						<Form.Error htmlFor="name" />
+
+						<div className="pt-3" />
 
 						<label htmlFor="date" className="w-full pb-3 text-start text-text-primary">
 							<span className="text-text-emerald"> * </span> 시작 날짜 및 시간
@@ -116,7 +119,7 @@ export default function Modal({ close }: { close: () => void }) {
 									type="button"
 									className="flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
 									onClick={() => {
-										setIsOpenedCalendar(!isOpenedCalendar);
+										setIsOpenedCalendar((prev) => !prev);
 										setIsOpenedTime(false);
 									}}
 								>
@@ -129,7 +132,7 @@ export default function Modal({ close }: { close: () => void }) {
 									type="button"
 									className="flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
 									onClick={() => {
-										setIsOpenedTime(!isOpenedTime);
+										setIsOpenedTime((prev) => !prev);
 										setIsOpenedCalendar(false);
 									}}
 								>
@@ -139,7 +142,13 @@ export default function Modal({ close }: { close: () => void }) {
 						</div>
 
 						<div className={`size-full pt-2 ${!isOpenedCalendar ? "hidden" : "flex"}`}>
-							<Calendar onChange={(date) => setStartDate(date)}>
+							<Calendar
+								onChange={(date) => {
+									setStartDate(date);
+									// TODO: 날짜 선택 후 닫히도록 수정
+									// setIsOpenedCalendar(false);
+								}}
+							>
 								<div className="flex size-full items-center justify-center rounded-xl border border-border-primary shadow-lg">
 									<Calendar.Picker />
 								</div>
@@ -147,7 +156,13 @@ export default function Modal({ close }: { close: () => void }) {
 						</div>
 
 						<div className={`pt-2 ${!isOpenedTime ? "hidden" : "flex"}`}>
-							<TimePicker onChange={(time, isAm) => setStartTime(convertTo24HourFormat(time, isAm))} />
+							<TimePicker
+								onChange={(time, isAm) => {
+									setStartTime(convertTo24HourFormat(time, isAm));
+									// TODO: 시간 선택 후 닫히도록 수정
+									// setIsOpenedTime(false);
+								}}
+							/>
 						</div>
 
 						<div className="pt-2" />
@@ -160,6 +175,8 @@ export default function Modal({ close }: { close: () => void }) {
 								<Form.Error htmlFor="time" />
 							</div>
 						</div>
+
+						<div className="pt-3" />
 
 						<label htmlFor="frequencyType" className="w-full pb-3 text-start text-text-primary">
 							반복 설정
@@ -248,6 +265,8 @@ export default function Modal({ close }: { close: () => void }) {
 								</div>
 							)}
 						</div>
+
+						<div className="pt-3" />
 
 						<label htmlFor="description" className="w-full pb-3 text-start text-text-primary">
 							할 일 메모
