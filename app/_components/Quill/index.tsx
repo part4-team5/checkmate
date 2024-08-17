@@ -8,9 +8,9 @@ import Icon from "@/app/_icons";
 
 import Switch from "@/app/_components/Switch";
 
-import { Markdown, Preset } from "./ignore";
+import { Markdown, Presets } from "@sombian/markdown";
 
-const [CORE, FILE_SIZE, FILE_NAME] = [new Markdown(...Preset.ARUM), 1024 * 10000, /^[a-zA-Z0-9._\-\s]+\.(?:gif|png|jpe?g|webp)$/];
+const [CORE, FILE_SIZE, FILE_NAME] = [new Markdown(...Presets.NekoNote), 1024 * 10000, /^[a-zA-Z0-9._\-\s]+\.(?:gif|png|jpe?g|webp)$/];
 
 interface EditorProps {
 	init?: string;
