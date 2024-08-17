@@ -92,15 +92,15 @@ export default function Header() {
 
 	return (
 		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
-			<div className="mx-auto flex size-full max-w-screen-desktop items-center gap-4 px-4 tablet:gap-10 tablet:px-6">
-				<div className="z-50">
-					<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="block tablet:hidden">
+			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
+				<div className="z-50 block pl-4 tablet:hidden">
+					<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="flex size-full items-center justify-center">
 						<Icon.Hamburger width={24} height={24} />
 					</button>
 
 					{/* 사이드바 */}
 					<div className={`fixed inset-0 left-0 top-[60px] z-30 bg-black/50 ${isOpen ? "block" : "hidden"} cursor-default`} onClick={() => setIsOpen(false)}>
-						<div className="z-40 h-full w-fit min-w-[220px] max-w-[50%] bg-background-secondary py-5 pl-6 pr-5" onClick={(event) => event.stopPropagation()}>
+						<div className="z-40 h-full w-fit min-w-[220px] max-w-[50%] bg-background-secondary py-5 pr-5" onClick={(event) => event.stopPropagation()}>
 							<div className="flex w-full justify-end">
 								<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Close">
 									<Icon.Close width={24} height={24} />
@@ -179,24 +179,30 @@ export default function Header() {
 					</div>
 				</div>
 
+				<div className="pr-4 tablet:pr-8 desktop:hidden" />
+
 				<Link href="/">
 					<div className="h-5 w-[102px] desktop:h-8 desktop:w-[158px]">
 						<Icon.LogoTypo width="100%" height="100%" />
 					</div>
 				</Link>
 
+				<div className="pr-4 tablet:pr-10" />
+
 				{!!accessToken && (
 					<div className="z-50 flex w-full items-center justify-end tablet:justify-between">
 						<nav className="hidden tablet:flex">
 							<ul className="flex items-center gap-10">
-								<li>
-									<DropDown options={teamDropdown} gapX={10} align="RR">
-										<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
-											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
-											<Icon.ArrowDown width={16} height={16} />
-										</button>
-									</DropDown>
-								</li>
+								{teamDropdown.length > 0 && (
+									<li>
+										<DropDown options={teamDropdown} gapY={10} align="LL">
+											<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
+												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
+												<Icon.ArrowDown width={16} height={16} />
+											</button>
+										</DropDown>
+									</li>
+								)}
 								<li>
 									<Link href="/boards" className="text-lg font-medium">
 										자유게시판
@@ -205,7 +211,7 @@ export default function Header() {
 							</ul>
 						</nav>
 
-						<DropDown options={userDropdown} gapX={10} align="RR">
+						<DropDown options={userDropdown} gapY={10} align="RR">
 							<button type="button" className="flex gap-2">
 								<div className="size-4 tablet:size-6">
 									<Icon.User width="100%" height="100%" />
@@ -222,6 +228,8 @@ export default function Header() {
 						로그인
 					</Link>
 				</nav>
+
+				<div className="pr-4 tablet:pr-10 desktop:p-0" />
 			</div>
 		</header>
 	);

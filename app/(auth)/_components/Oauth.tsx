@@ -5,43 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function Oauth({ type = "signin" }: { type?: "signin" | "signup" }) {
-	let sign = "signin";
-	switch (type) {
-		case "signin":
-			sign = "간편 로그인하기";
-			break;
-		case "signup":
-			sign = "간편 회원가입하기";
-			break;
-		default:
-			sign = "간편 로그인하기";
-			break;
-	}
-
-	return (
-		<div className="flex flex-col pt-6 text-lg text-text-primary">
-			<div className="flex items-center justify-center">
-				<div className="w-full border-b border-border-primary/50" />
-				<p className="px-5 font-normal">OR</p>
-				<div className="w-full border-b border-border-primary/50" />
-			</div>
-
-			<div className="pt-4" />
-
-			<div className="flex items-center justify-between">
-				<div className="font-medium">{sign}</div>
-
-				<div className="flex gap-4">
-					<Oauth.Kakao />
-					<Oauth.Google />
-				</div>
-			</div>
-		</div>
-	);
-}
-
-Oauth.Kakao = function Kakao() {
+function Kakao() {
 	const router = useRouter();
 
 	// 카카오 앱 등록 Mutation
@@ -71,9 +35,9 @@ Oauth.Kakao = function Kakao() {
 			<Image src="/icons/kakaotalk.svg" alt="kakao" width={42} height={42} />
 		</button>
 	);
-};
+}
 
-Oauth.Google = function Google() {
+function Google() {
 	const router = useRouter();
 
 	// 구글 앱 등록 Mutation
@@ -103,4 +67,26 @@ Oauth.Google = function Google() {
 			<Image src="/icons/google.svg" alt="google" width={42} height={42} />
 		</button>
 	);
-};
+}
+export default function Oauth({ type = "signin" }: { type?: "signin" | "signup" }) {
+	return (
+		<div className="flex flex-col pt-6 text-lg text-text-primary">
+			<div className="flex items-center justify-center">
+				<div className="w-full border-b border-border-primary/50" />
+				<p className="px-5 font-normal">OR</p>
+				<div className="w-full border-b border-border-primary/50" />
+			</div>
+
+			<div className="pt-4" />
+
+			<div className="flex items-center justify-between">
+				<div className="font-medium">{type === "signin" ? "간편 로그인하기" : "간편 회원가입하기"}</div>
+
+				<div className="flex gap-4">
+					<Kakao />
+					<Google />
+				</div>
+			</div>
+		</div>
+	);
+}
