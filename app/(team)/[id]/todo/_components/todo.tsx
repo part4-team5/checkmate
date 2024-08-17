@@ -93,14 +93,13 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), ReorderItems);
 	};
 
-	const handleDragEnd = () => {
+	const handleDragEnd = (todoItem: TaskListType[number]) => {
 		if (!todoItems) return;
-		// index 와 displayIndex 가 다른 경우만 api 호출
+		// 변경한 순서를 순회
 		todoItems.forEach((item, index) => {
-			if (index !== item.displayIndex) {
-				setTimeout(() => {
-					todoOrderMutation.mutate({ todoId: item.id, displayIndex: index });
-				}, index * 500);
+			// 잡은 요소와 일치하는지
+			if (todoItem.id === item.id) {
+				todoOrderMutation.mutate({ todoId: item.id, displayIndex: index });
 			}
 		});
 	};
@@ -173,7 +172,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			{todoItems && (
 				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)}>
 					{todoItems.map((todoItem) => (
-						<Reorder.Item value={todoItem} key={todoItem.id} onDragEnd={handleDragEnd}>
+						<Reorder.Item value={todoItem} key={todoItem.id} onDragEnd={() => handleDragEnd(todoItem)}>
 							<div className="mt-4 flex flex-col gap-4">
 								<TodoItem
 									key={todoItem.id}

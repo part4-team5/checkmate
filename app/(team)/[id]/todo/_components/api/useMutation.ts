@@ -187,23 +187,8 @@ export const useTodoOrderMutation = (groupId: number, currentTaskId: number, cur
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: ({ todoId, displayIndex }: MutationVariables) => patchTodoOrder(todoId, displayIndex),
-		onMutate: async () => {
-			await queryClient.cancelQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
-			const oldData = queryClient.getQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")));
-			const newData = oldData?.map((todo, index) => {
-				// index 와 displayIndex 가 다른 경우만 쿼리 업데이트
-				if (todo.displayIndex !== index) {
-					return { ...todo, displayIndex: index };
-				}
-				return todo;
-			});
-			queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), newData);
-			return { oldData };
-		},
-		onError: (error, variables, context) => {
-			if (context?.oldData) {
-				queryClient.setQueryData(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), context.oldData);
-			}
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 		},
 	});
 };
