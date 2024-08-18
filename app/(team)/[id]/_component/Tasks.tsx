@@ -36,7 +36,7 @@ function getColorClass(index: number) {
 function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { onEditTask: (name: string, id: number) => void }) {
 	const totalTasks = taskList.tasks?.length ?? 0;
 	const completedTasks = taskList.tasks?.filter((task) => task.doneAt !== null).length ?? 0;
-const completionRate = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100
+	const completionRate = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
 	const overlay = useOverlay();
 	const queryClient = useQueryClient();
 	const [showToast, setShowToast] = useState(false);
@@ -199,7 +199,7 @@ export default function Tasks({ id }: ReportProps) {
 						<p>아직 할 일 목록이 없습니다.</p>
 					</div>
 				) : (
-						<div
+					<div
 						className="flex flex-col gap-[16px] overflow-hidden overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary"
 						style={{
 							maxHeight: isListExpanded ? "none" : "208px", // isListExpanded 상태에 따라 높이 설정
