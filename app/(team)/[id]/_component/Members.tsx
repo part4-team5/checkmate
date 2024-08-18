@@ -41,10 +41,7 @@ function Members({ id }: ReportProps) {
 	// 사용자 정보 가져오기
 	const { data: user } = useQuery({
 		queryKey: ["user"],
-		queryFn: async () => {
-			const response = await API["{teamId}/user"].GET({});
-			return response;
-		},
+		queryFn: async () => API["{teamId}/user"].GET({}),
 	});
 
 	const handleProfileModal = useCallback(

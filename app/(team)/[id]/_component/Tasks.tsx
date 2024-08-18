@@ -17,19 +17,13 @@ import ToastPopup from "@/app/(team)/[id]/_component/ToastPopup"; // ToastPopup 
 import { ReportProps } from "./Report";
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
-
-type TaskList = {
-	id: number;
-	name: string;
-	tasks: { doneAt: string | null }[];
-};
+type TaskListType = Team["taskLists"][number];
 
 type TaskItemProps = {
-	taskList: TaskList;
+	taskList: TaskListType;
 	index: number;
 	groupId: number;
 };
-
 // 색상 클래스 반환 함수
 function getColorClass(index: number) {
 	// 사용할 색상 배열
@@ -40,9 +34,9 @@ function getColorClass(index: number) {
 
 // TasksItem 컴포넌트
 function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { onEditTask: (name: string, id: number) => void }) {
-	const totalTasks = taskList.tasks?.length || 0;
-	const completedTasks = taskList.tasks ? taskList.tasks.filter((task) => task.doneAt !== null).length : 0;
-	const completionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+	const totalTasks = taskList.tasks?.length ?? 0;
+	const completedTasks = taskList.tasks?.filter((task) => task.doneAt !== null).length ?? 0;
+const completionRate = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100
 	const overlay = useOverlay();
 	const queryClient = useQueryClient();
 	const [showToast, setShowToast] = useState(false);
@@ -59,7 +53,7 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { on
 				exact: true,
 			});
 
-			const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", groupId]);
+			const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskListType[] }>(["groupInfo", groupId]);
 
 			// 해당 taskList를 UI에서 제거
 			queryClient.setQueryData(["groupInfo", groupId], (oldData: any) => {
@@ -155,9 +149,7 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { on
 
 // Tasks 컴포넌트
 export default function Tasks({ id }: ReportProps) {
-	const [maxHeight, setMaxHeight] = useState(208);
-	const [isExpanded, setIsExpanded] = useState(false); // 높이 확장 여부
-	const itemHeight = 208; // 각 아이템의 높이
+	const [isListExpanded, setIsListExpanded] = useState(false);
 
 	const overlay = useOverlay();
 
@@ -177,18 +169,9 @@ export default function Tasks({ id }: ReportProps) {
 
 	const taskLists = data?.taskLists || [];
 
-	const totalHeight = taskLists.length * itemHeight;
-
 	// 버튼 클릭 시 높이를 증가/감소시키는 함수
 	const handleToggleHeight = () => {
-		if (isExpanded) {
-			// 확장된 상태에서 버튼을 누르면 원래 크기로 줄어듦
-			setMaxHeight(208);
-		} else {
-			// 축소된 상태에서 버튼을 누르면 전체 리스트를 표시하도록 확장
-			setMaxHeight(totalHeight);
-		}
-		setIsExpanded(!isExpanded); // 확장 상태 반전
+		setIsListExpanded((prevState) => !prevState); // 확장 상태 반전
 	};
 
 	const handlePostTasksClick = (taskId: number | null = null) => {
@@ -216,9 +199,12 @@ export default function Tasks({ id }: ReportProps) {
 						<p>아직 할 일 목록이 없습니다.</p>
 					</div>
 				) : (
-					<div
+						<div
 						className="flex flex-col gap-[16px] overflow-hidden overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary"
-						style={{ maxHeight: `${maxHeight}px`, transition: "max-height 0.3s ease" }}
+						style={{
+							maxHeight: isListExpanded ? "none" : "208px", // isListExpanded 상태에 따라 높이 설정
+							transition: "max-height 0.3s ease",
+						}}
 					>
 						{taskLists.map((taskList, index) => (
 							<TaskItem key={taskList.id} taskList={taskList} index={index} groupId={id} onEditTask={handleEditTasksClick} />
@@ -231,9 +217,9 @@ export default function Tasks({ id }: ReportProps) {
 				<button
 					type="button"
 					onClick={handleToggleHeight}
-					aria-label={isExpanded ? "Collapse" : "Expand"}
+					aria-label={isListExpanded ? "Collapse" : "Expand"}
 					className={`mx-auto mt-[10px] flex w-[70px] transform items-center justify-center rounded-[4px] bg-background-secondary transition-transform duration-300 ${
-						isExpanded ? "rotate-180" : "rotate-0"
+						isListExpanded ? "rotate-180" : "rotate-0"
 					}`}
 				>
 					<Icon.ArrowDown width={20} height={20} />

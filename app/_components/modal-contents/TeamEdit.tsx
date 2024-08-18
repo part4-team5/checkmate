@@ -24,36 +24,22 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 
 	const { data: teamInfo } = useQuery({
 		queryKey: ["groupInfo", { id }],
-		queryFn: useCallback(async () => {
-			const response = await API["{teamId}/groups/{id}"].GET({ id });
-			return response;
-		}, [id]),
+		queryFn: () => API["{teamId}/groups/{id}"].GET({ id }),
 	});
 
-	const imageUpload = useCallback(async (file: File): Promise<{ url: string | undefined }> => {
-		if (typeof file === "string") return { url: undefined };
-
-		const response = await API["{teamId}/images/upload"].POST({}, file);
-		return response;
-	}, []);
-
-	const teamEditMutation = useMutation<{}, Error, FormContext>({
+	const teamEditMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
+			const file = ctx.values.profileImage as File;
+			const teamName = ctx.values.teamName as string;
+
+			let url: string | undefined;
+			if (file) {
+				const response = await API["{teamId}/images/upload"].POST({}, file);
+				url = response.url;
 			}
 
-			const file = formData.get("profileImage") as File;
-			const teamName = formData.get("teamName") as string;
-
-			const { url } = await imageUpload(file);
-
-			const payload: Parameters<(typeof API)["{teamId}/groups/{id}"]["PATCH"]>[1] = { image: url, name: teamName };
-
-			const response = await API["{teamId}/groups/{id}"].PATCH({ id }, payload);
-
-			return response;
+			const payload = { image: url, name: teamName };
+			return API["{teamId}/groups/{id}"].PATCH({ id }, payload);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -70,7 +56,6 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 	const handleTeamManagement = useCallback(
 		(ctx: FormContext) => {
 			if (teamEditMutation.status === "pending") return;
-
 			teamEditMutation.mutate(ctx);
 		},
 		[teamEditMutation],
@@ -99,7 +84,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 								<div className="pb-3" />
 								<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
 									{(file) =>
-										file || teamInfo?.image ? (
+										(file ?? teamInfo?.image) ? (
 											<div className="relative flex size-16 cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10">
 												<Image
 													src={(file as string) ?? teamInfo?.image ?? ""}
