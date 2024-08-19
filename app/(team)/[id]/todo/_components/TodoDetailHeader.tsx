@@ -66,6 +66,11 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 	const { date, time } = convertIsoToDateAndTime(todoContent?.date);
 	return (
 		<div>
+			{!todoContent && (
+				<div className="flex h-80 w-full items-center justify-center">
+					<Image src="/icons/spinner.svg" alt="spinner" width={30} height={30} className="animate-spin" />
+				</div>
+			)}
 			{todoContent && (
 				<div className="mb-48">
 					{isCheck && (

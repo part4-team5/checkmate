@@ -866,13 +866,12 @@ export default abstract class API {
 		 * 댓글 삭제
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {number} taskId - 할일 ID
 		 * @param {number} commentId - 댓글 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override DELETE({ teamId = "6-5", taskId, commentId, ...query }: { teamId?: string; taskId: number; commentId: number }) {
-			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/${taskId}/comments/${commentId}`, query);
+		public override DELETE({ teamId = "6-5", commentId, ...query }: { teamId?: string; commentId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/{taskId}/comments/${commentId}`, query);
 		}
 	})();
 

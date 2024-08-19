@@ -69,6 +69,11 @@ const deleteTodo = async (todoId: number) =>
 		taskId: todoId,
 	});
 
+const deleteTodoComment = async (commentId: number) =>
+	API["{teamId}/tasks/{taskId}/comments/{commentId}"].DELETE({
+		commentId,
+	});
+
 type TaskListType = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"]["GET"]>>;
 export const useToggleTodoStatusMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
 	const queryClient = useQueryClient();
@@ -290,6 +295,26 @@ export const usePatchTodoCommentEditMutation = (setter: Dispatch<SetStateAction<
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["todo", { todoId, comments: true }] });
+		},
+	});
+};
+
+export const useDeleteTodoCommentMutation = (todoId: number, groupId: number, currentTaskId: number, currentDate: Date) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (commentId: number) => deleteTodoComment(commentId),
+		onMutate: async (commentId) => {
+			await queryClient.cancelQueries({ queryKey: ["todo", { todoId, comments: true }] });
+			const oldData = queryClient.getQueryData<CommentType[]>(["todo", { todoId, comments: true }]);
+			const newData = oldData?.filter((comment) => comment.id !== commentId);
+			queryClient.setQueryData<CommentType[]>(["todo", { todoId, comments: true }], newData);
+			return { oldData };
+		},
+		onError: (error) => {
+			alert(`오류: ${error.message} - 댓글 삭제에 실패했습니다.`);
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 		},
 	});
 };

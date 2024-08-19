@@ -56,7 +56,17 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 				<TodoDetailInput groupId={groupId} currentTaskId={currentTaskId} currentDate={currentDate} todoId={todoId} user={user} />
 
 				<div className="flex flex-col gap-4 scrollbar-thumb:bg-background-tertiary">
-					{comments && comments.map((comment) => <TodoDetailCommentList key={comment.id} comment={comment} todoId={todoId} />)}
+					{comments &&
+						comments.map((comment) => (
+							<TodoDetailCommentList
+								key={comment.id}
+								comment={comment}
+								todoId={todoId}
+								groupId={groupId}
+								currentTaskId={currentTaskId}
+								currentDate={currentDate}
+							/>
+						))}
 				</div>
 			</div>
 

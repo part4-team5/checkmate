@@ -6,7 +6,7 @@ import { useState } from "react";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import Button from "@/app/_components/Button";
 import API from "@/app/_api";
-import { usePatchTodoCommentEditMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import { useDeleteTodoCommentMutation, usePatchTodoCommentEditMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 
 type CommnetListType = Awaited<ReturnType<(typeof API)["{teamId}/tasks/{taskId}/comments"]["GET"]>>;
 type CommentType = CommnetListType[number];
@@ -14,12 +14,16 @@ type CommentType = CommnetListType[number];
 type TodoDetailCommentListProps = {
 	comment: CommentType;
 	todoId: number;
+	groupId: number;
+	currentTaskId: number;
+	currentDate: Date;
 };
 
-export default function TodoDetailCommentList({ comment, todoId }: TodoDetailCommentListProps) {
+export default function TodoDetailCommentList({ comment, todoId, groupId, currentDate, currentTaskId }: TodoDetailCommentListProps) {
 	const [isCommentEdit, setIsCommentEdit] = useState(false);
 	const [editedComment, setEditedComment] = useState("");
 	const patchTodoCommentEditMutation = usePatchTodoCommentEditMutation(setIsCommentEdit, todoId);
+	const deleteTodoCommentMutation = useDeleteTodoCommentMutation(todoId, groupId, currentTaskId, currentDate);
 
 	const currentTime = new Date();
 	const options = [
@@ -32,7 +36,7 @@ export default function TodoDetailCommentList({ comment, todoId }: TodoDetailCom
 		{
 			text: "삭제",
 			onClick: () => {
-				alert("삭제");
+				deleteTodoCommentMutation.mutate(comment.id);
 			},
 		},
 	];
@@ -60,7 +64,7 @@ export default function TodoDetailCommentList({ comment, todoId }: TodoDetailCom
 								onKeyDown={(e) => {
 									if (e.key === "Enter") {
 										e.preventDefault();
-										handleEditCommentChange({ target: { value: `${editedComment + "\n"}` } } as React.ChangeEvent<HTMLTextAreaElement>);
+										handleEditCommentChange({ target: { value: `${`${editedComment}\n`}` } } as React.ChangeEvent<HTMLTextAreaElement>);
 									}
 								}}
 							/>
