@@ -13,12 +13,13 @@ type CommentType = CommnetListType[number];
 
 type TodoDetailCommentListProps = {
 	comment: CommentType;
+	todoId: number;
 };
 
-export default function TodoDetailCommentList({ comment }: TodoDetailCommentListProps) {
+export default function TodoDetailCommentList({ comment, todoId }: TodoDetailCommentListProps) {
 	const [isCommentEdit, setIsCommentEdit] = useState(false);
 	const [editedComment, setEditedComment] = useState("");
-	const patchTodoCommentEditMutation = usePatchTodoCommentEditMutation();
+	const patchTodoCommentEditMutation = usePatchTodoCommentEditMutation(setIsCommentEdit, todoId);
 
 	const currentTime = new Date();
 	const options = [
@@ -42,7 +43,6 @@ export default function TodoDetailCommentList({ comment }: TodoDetailCommentList
 
 	const handleTodoCommentEditSubmit = (e: React.FormEvent<HTMLFormElement>, commentId: number) => {
 		e.preventDefault();
-		console.log("commentId", commentId);
 		patchTodoCommentEditMutation.mutate({ commentId, content: editedComment });
 	};
 
@@ -50,16 +50,23 @@ export default function TodoDetailCommentList({ comment }: TodoDetailCommentList
 	return (
 		<div>
 			{comment && (
-				<form onSubmit={(e) => handleTodoCommentEditSubmit(e, comment.id)}>
+				<form onSubmit={(e) => handleTodoCommentEditSubmit(e, comment.id)} id="test">
 					<div className="flex justify-between">
 						{isCommentEdit ? (
 							<textarea
 								className="w-full rounded-lg bg-background-secondary p-2 shadow-sm shadow-brand-secondary focus:outline-none"
 								onChange={handleEditCommentChange}
+								value={editedComment}
+								onKeyDown={(e) => {
+									if (e.key === "Enter") {
+										e.preventDefault();
+										handleEditCommentChange({ target: { value: `${editedComment + "\n"}` } } as React.ChangeEvent<HTMLTextAreaElement>);
+									}
+								}}
 							/>
 						) : (
 							<div className="flex w-full justify-between">
-								<div className="text-md font-normal">{comment.content}</div>
+								<div className="whitespace-pre-line text-md font-normal">{comment.content}</div>
 								<DropDown options={options}>
 									<button type="button" aria-label="dropdown">
 										<KebabIcon />

@@ -119,10 +119,15 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 								<textarea
 									onChange={handleEditDescriptionChange}
 									value={editedDescription}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											handleEditDescriptionChange({ target: { value: `${editedDescription}\n` } } as React.ChangeEvent<HTMLTextAreaElement>);
+										}
+									}}
 									className="w-full rounded-lg bg-background-secondary p-2 shadow-sm shadow-brand-secondary focus:outline-none"
 								/>
 							) : (
-								<div className="break-words">{todoContent.description}</div>
+								<div className="whitespace-pre-line break-words">{todoContent.description}</div>
 							)}
 						</div>
 					</form>

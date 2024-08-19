@@ -1,6 +1,7 @@
 import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import API from "@/app/_api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Dispatch, SetStateAction } from "react";
 
 const patchToggleTodoStatus = async (id: number, done: boolean) => {
 	const body = {
@@ -265,7 +266,30 @@ export const useDeleteTodoMutation = () =>
 		},
 	});
 
-export const usePatchTodoCommentEditMutation = () =>
-	useMutation({
-		mutationFn: ({ commentId, content }: { commentId: number; content: string }) => patchTodoCommentEdit(commentId, content),
+export const usePatchTodoCommentEditMutation = (setter: Dispatch<SetStateAction<boolean>>, todoId: number) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ commentId, content }: { commentId: number; content: string }) => {
+			setter(false);
+			return patchTodoCommentEdit(commentId, content);
+		},
+		onMutate: async ({ commentId, content }) => {
+			await queryClient.cancelQueries({ queryKey: ["todo", { todoId, comments: true }] });
+			const oldData = queryClient.getQueryData<CommentType[]>(["todo", { todoId, comments: true }]);
+			const newData = oldData?.map((comment) => {
+				if (comment.id === commentId) {
+					return { ...comment, content } as CommentType;
+				}
+				return comment;
+			});
+			queryClient.setQueryData<CommentType[]>(["todo", { todoId, comments: true }], newData);
+			return { oldData };
+		},
+		onError: (error) => {
+			alert(`오류: ${error.message} - 댓글 수정에 실패했습니다.`);
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["todo", { todoId, comments: true }] });
+		},
 	});
+};
