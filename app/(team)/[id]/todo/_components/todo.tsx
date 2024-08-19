@@ -109,7 +109,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			<div className="my-6 flex justify-between">
 				<Calendar onChange={(date) => handleCurrentDate(date)}>
 					<div className="flex gap-3">
-						<div className="flex min-w-24 items-center text-lg font-medium text-text-primary">
+						<div className="flex min-w-[98px] items-center text-lg font-medium text-text-primary">
 							<Calendar.Date>{(date) => convertIsoToDateToKorean(date)}</Calendar.Date>
 						</div>
 						<div className="flex gap-1">
