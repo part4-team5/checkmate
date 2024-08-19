@@ -47,7 +47,6 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { on
 				id: taskList.id,
 			}),
 		onMutate: async () => {
-			// 캐시 쿼리 취소 (낙관적 업데이트시 최신 데이터 반영 목적)
 			await queryClient.cancelQueries({
 				queryKey: ["groupInfo", groupId],
 				exact: true,
@@ -55,7 +54,6 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { on
 
 			const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskListType[] }>(["groupInfo", groupId]);
 
-			// 해당 taskList를 UI에서 제거
 			queryClient.setQueryData(["groupInfo", groupId], (oldData: any) => {
 				if (!oldData?.taskLists) return oldData;
 
@@ -70,14 +68,12 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { on
 			return { previousGroupInfo };
 		},
 		onError: (err, variables, context) => {
-			// 에러 발생 시 이전 상태로 롤백
 			if (context?.previousGroupInfo) {
 				queryClient.setQueryData(["groupInfo", groupId], context.previousGroupInfo);
 			}
 			setShowToast(true);
 		},
 		onSettled: () => {
-			// 성공 여부에 관계없이 데이터를 다시 가져옴
 			queryClient.invalidateQueries({
 				queryKey: ["groupInfo", groupId],
 				exact: true,
@@ -114,9 +110,13 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { on
 			{showToast && <ToastPopup message="삭제에 실패했습니다. 다시 한 번 시도해주세요." position="bottom" />}
 			<Link href={`/${groupId}/todo?taskId=${taskList.id}`} passHref>
 				<main className="flex w-full cursor-pointer rounded-[12px] bg-background-secondary">
-					<div className={`${getColorClass(index)} w-2 rounded-l-lg`} />
+					{/* 너비 고정 및 색상 부분 */}
+					<div className={`${getColorClass(index)} w-2 flex-shrink-0 rounded-l-lg`} />
 					<section className="flex h-[40px] w-full items-center justify-between">
-						<div className="pl-2 text-white">{taskList.name}</div>
+						{/* 말 줄임표 적용 */}
+						<div className="max-w-[500px] truncate pl-2 text-white" style={{ textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden" }}>
+							{taskList.name}
+						</div>
 						<div className="flex w-[78px] items-center justify-center gap-[4px]">
 							<div className="flex h-[25px] w-[58px] items-center justify-center gap-[4px] rounded-[12px] bg-[#0F172A]">
 								{completedTasks === totalTasks && totalTasks !== 0 ? (
@@ -133,7 +133,7 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps & { on
 									e.stopPropagation();
 									e.preventDefault();
 								}}
-								className="mr-[8px]"
+								className="mr-[8px] rounded-[4px] hover:bg-[#3F4752]"
 							>
 								<DropDown options={editDropdown} gapY={-20} gapX={19} align="RR">
 									<Icon.Kebab color="#64748B" width={16} height={16} />
@@ -200,7 +200,7 @@ export default function Tasks({ id }: ReportProps) {
 					</div>
 				) : (
 					<div
-						className="flex flex-col gap-[16px] overflow-hidden overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary"
+						className="flex min-h-[208px] flex-col gap-[16px] overflow-hidden overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary"
 						style={{
 							maxHeight: isListExpanded ? "none" : "208px", // isListExpanded 상태에 따라 높이 설정
 							transition: "max-height 0.3s ease",

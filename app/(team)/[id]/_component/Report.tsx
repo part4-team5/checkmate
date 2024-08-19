@@ -56,7 +56,7 @@ function Report({ id }: ReportProps) {
 	const percent = totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
 
 	return (
-		<main className="flex min-w-[375px] items-center justify-between rounded-[12px] bg-background-secondary p-[12px] text-[#F8FAFC] tablet:p-[24px]">
+		<main className="flex items-center justify-between rounded-[12px] bg-background-secondary p-[12px] text-[#F8FAFC] tablet:p-[24px]">
 			<section className="flex items-center justify-center gap-[45px]">
 				<div className="relative">
 					<CircularProgressBar useGradient percent={percent} />

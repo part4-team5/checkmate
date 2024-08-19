@@ -111,24 +111,30 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 									}
 								</Form.ImageInput>
 							</div>
-							<Form.Error htmlFor="team-image" />
+							<div className="mt-[10px]" />
+
+							<Form.Error htmlFor="profileImage" />
 
 							<div className="pt-6" />
 
 							<label htmlFor="team-name" className="w-full pb-3 text-start text-text-primary">
 								팀 이름
 							</label>
-							<div className="">
+							<div>
 								<Form.Input
 									id="teamName"
 									type="text"
 									placeholder="팀 이름을 입력하세요"
 									init={initialTeamName}
-									tests={[{ type: "require", data: true, error: "팀 이름은 필수입니다" }]}
+									tests={[
+										{ type: "require", data: true, error: "팀 이름은 필수입니다" },
+										{ type: "maxlength", data: 30, error: "팀 이름은 30자 이하로 생성해주세요" },
+									]}
 								/>
 							</div>
+							<div className="pt-[10px]" />
 
-							<Form.Error htmlFor="team-name" />
+							<Form.Error htmlFor="teamName" />
 
 							<div className="pt-10" />
 
