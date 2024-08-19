@@ -2,6 +2,7 @@ import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFreque
 import API from "@/app/_api";
 import { convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
+import { useRef } from "react";
 
 type FrequencyType = "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
 const frequency: Record<FrequencyType, string> = {
@@ -28,14 +29,14 @@ type TodoItemProps = {
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
 export default function TodoItem({ taskId, todoItem, groupId, currentDate, onToggleTodo, onClick }: TodoItemProps) {
-	let isLongPress = false;
-	let timerId: NodeJS.Timeout;
+	const isLongPress = useRef(false);
+	const timerId = useRef<NodeJS.Timeout>();
 
 	// 타이머 시작
 	const handleMouseDown = () => {
-		isLongPress = false;
-		timerId = setTimeout(() => {
-			isLongPress = true;
+		isLongPress.current = false;
+		timerId.current = setTimeout(() => {
+			isLongPress.current = true;
 		}, 300); // 300ms 이상 눌리면 long press로 간주
 	};
 
@@ -46,12 +47,12 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 			key={todoItem.id}
 			onClick={(e) => {
 				e.stopPropagation();
-				if (isLongPress) return;
+				if (isLongPress.current) return;
 				onClick(groupId, taskId, todoItem.id, currentDate, todoItem.doneAt);
 			}}
 			onMouseDown={handleMouseDown}
 			onMouseUp={() => {
-				clearTimeout(timerId);
+				clearTimeout(timerId.current);
 			}}
 		>
 			<div className="flex items-center justify-between">
