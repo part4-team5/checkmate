@@ -19,7 +19,7 @@ export default function SideBarWrapper({ close, children }: SideBarProps) {
 		<AnimatePresence>
 			<div className="fixed inset-0 z-50" onClick={handleButtonClick}>
 				<motion.div
-					className="fixed bottom-0 h-[calc(100vh-60px)] w-full overflow-hidden bg-background-secondary tablet:right-0 tablet:w-[55%] desktop:w-[45%]"
+					className="fixed bottom-0 h-[calc(100vh-60px)] w-full overflow-y-auto bg-background-secondary pb-72 scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary tablet:right-0 tablet:w-[55%] desktop:w-[45%]"
 					onClick={(e) => e.stopPropagation()}
 					initial={{ y: isAboveMobile ? "0%" : "100%", x: isAboveMobile ? "100%" : "0%" }}
 					animate={{ y: "0%", x: "0%" }}

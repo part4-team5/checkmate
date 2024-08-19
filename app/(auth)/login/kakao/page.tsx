@@ -5,11 +5,11 @@ import useCookie from "@/app/_hooks/useCookie";
 import useAuthStore from "@/app/_store/useAuthStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function KakaoLogin() {
 	const [token] = useState<string>(useSearchParams().get("code") ?? "");
-	const isMounted = useRef(true);
+	const [isMounted, setIsMounted] = useState(false);
 	const router = useRouter();
 
 	const [, setAccessToken] = useCookie<string>("accessToken");
@@ -22,7 +22,7 @@ export default function KakaoLogin() {
 	const kakaoLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({
 		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
 			const payload: Parameters<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>[1] = {
-				redirectUri: process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ?? "",
+				redirectUri: process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI as string,
 				token,
 			};
 
@@ -32,7 +32,7 @@ export default function KakaoLogin() {
 			// 전역 상태에 유저 정보 저장
 			setUser({
 				id: data.user.id,
-				email: data.user.email || "",
+				email: data.user.email ?? "",
 				nickname: data.user.nickname,
 				image: data.user.image ? data.user.image : null,
 			});
@@ -52,10 +52,10 @@ export default function KakaoLogin() {
 
 	useEffect(() => {
 		// token이 존재하고, 컴포넌트가 마운트 되었을 때
-		if (isMounted.current && token) {
-			isMounted.current = false;
+		if (!isMounted && token) {
+			setIsMounted(true);
 
 			kakaoLoginMutation.mutate();
 		}
-	}, [kakaoLoginMutation, token]);
+	}, [isMounted, kakaoLoginMutation, token]);
 }

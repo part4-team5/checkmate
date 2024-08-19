@@ -2,6 +2,7 @@ import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFreque
 import API from "@/app/_api";
 import { convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
+import { useRef } from "react";
 
 type FrequencyType = "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
 const frequency: Record<FrequencyType, string> = {
@@ -28,16 +29,36 @@ type TodoItemProps = {
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
 export default function TodoItem({ taskId, todoItem, groupId, currentDate, onToggleTodo, onClick }: TodoItemProps) {
+	const isLongPress = useRef(false);
+	const timerId = useRef<NodeJS.Timeout>();
+
+	// 타이머 시작
+	const handleMouseDown = () => {
+		isLongPress.current = false;
+		timerId.current = setTimeout(() => {
+			isLongPress.current = true;
+		}, 300); // 300ms 이상 눌리면 long press로 간주
+	};
+
 	const { date, time } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
 	return (
 		<div
-			className="flex w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
+			className="flex w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:cursor-pointer hover:bg-background-tertiary"
 			key={todoItem.id}
-			onClick={() => onClick(groupId, taskId, todoItem.id, currentDate, todoItem.doneAt)}
+			onClick={(e) => {
+				e.stopPropagation();
+				if (isLongPress.current) return;
+				onClick(groupId, taskId, todoItem.id, currentDate, todoItem.doneAt);
+			}}
+			onMouseDown={handleMouseDown}
+			onMouseUp={() => {
+				clearTimeout(timerId.current);
+			}}
 		>
 			<div className="flex items-center justify-between">
 				<div className="flex gap-3">
 					<button
+						className="group relative"
 						type="button"
 						aria-label="todo-done"
 						onClick={(event) => {
@@ -45,13 +66,24 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 							onToggleTodo(todoItem.id, todoItem.doneAt);
 						}}
 					>
-						{todoItem.doneAt ? (
-							<Image src="/icons/checkBox.svg" alt="done" width={24} height={24} />
-						) : (
-							<Image src="/icons/uncheckBox.svg" alt="not done" width={24} height={24} />
-						)}
+						<Image src={todoItem.doneAt ? "/icons/checkBox.svg" : "/icons/uncheckBox.svg"} alt="Todo status" width={24} height={24} />
+
+						{/* 호버 시 나타나는 오버레이 */}
+						<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-90">
+							<Image src="/icons/checkBox.svg" alt="Preview" width={24} height={24} className="opacity-100" />
+						</div>
 					</button>
-					<div className={`${todoItem.doneAt ? "line-through" : ""} text-text-primary`}>{todoItem.name}</div>
+					<div className="group relative inline-block">
+						<button type="button" className={`${todoItem.doneAt ? "line-through" : ""} text-text-primary`}>
+							{todoItem.name}
+						</button>
+
+						{/* 툴팁 */}
+						<div className="pointer-events-none absolute bottom-3/4 left-10 mb-2 w-max -translate-x-1/2 transform rounded bg-background-secondary p-2 text-sm text-white opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-100">
+							할일 상세 보기
+						</div>
+					</div>
+
 					<div className="flex items-center justify-center gap-1 text-xs font-normal text-text-default">
 						<Image src="/icons/comment.svg" alt="comment" width={16} height={16} />
 						{todoItem.commentCount}

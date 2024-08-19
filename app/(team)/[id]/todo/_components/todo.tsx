@@ -2,10 +2,9 @@
 
 import API from "@/app/_api";
 import Calendar from "@/app/_components/Calendar";
-import Button from "@/app/_components/Button";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import SideBarWrapper from "@/app/_components/sidebar";
 import { convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
@@ -16,7 +15,9 @@ import TodoItem from "@/app/(team)/[id]/todo/_components/TodoItem";
 import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_components/api/useQuery";
 import AddTaskModal from "@/app/(team)/[id]/todo/_components/AddTask";
 import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
-import { useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import { useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import { Reorder } from "framer-motion";
+import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -31,35 +32,39 @@ function CalendarPopoverContent() {
 	);
 }
 
+type TaskListType = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"]["GET"]>>;
 export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [currentTaskId, setCurrentTaskId] = useState<number>(taskListId);
 	const queryClient = useQueryClient();
 	const pathname = usePathname();
 	const overlay = useOverlay();
-
 	const { data: groupList } = useGetGroupList(groupId);
-	const { data: todoItems } = useGetTodoItems(groupId, currentTaskId, currentDate);
+	const { data: todoItems, isLoading: isTodoItemsLoading } = useGetTodoItems(groupId, currentTaskId, currentDate);
 	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
+	const todoOrderMutation = useTodoOrderMutation();
+
+	const containerRef = useRef(null);
 
 	const tasks = groupList?.taskLists;
-	/* eslint-disable no-restricted-syntax */
-	const prefetchTasks = () => {
-		if (!tasks) return;
-		for (const task of tasks) {
-			queryClient.prefetchQuery({
-				queryKey: tasksKey.detail(groupId, task.id, currentDate.toLocaleDateString("ko-KR")),
-				queryFn: async () => {
-					const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].GET({
-						groupId,
-						taskListId: task.id,
-						date: currentDate.toLocaleDateString("ko-KR"),
-					});
-					return response;
-				},
-			});
-		}
-	};
+
+	// /* eslint-disable no-restricted-syntax */
+	// const prefetchTasks = () => {
+	// 	if (!tasks) return;
+	// 	for (const task of tasks) {
+	// 		queryClient.prefetchQuery({
+	// 			queryKey: tasksKey.detail(groupId, task.id, currentDate.toLocaleDateString("ko-KR")),
+	// 			queryFn: async () => {
+	// 				const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].GET({
+	// 					groupId,
+	// 					taskListId: task.id,
+	// 					date: currentDate.toLocaleDateString("ko-KR"),
+	// 				});
+	// 				return response;
+	// 			},
+	// 		});
+	// 	}
+	// };
 
 	const updateSearchParams = (value: number) => {
 		setCurrentTaskId(value);
@@ -86,12 +91,28 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		));
 	};
 
+	const handleReorder = (ReorderItems: TaskListType) => {
+		queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), ReorderItems);
+	};
+
+	const handleDragEnd = (todoItem: TaskListType[number]) => {
+		if (!todoItems) return;
+		// 변경한 순서를 순회
+		for (let index = 0; index < todoItems.length; index += 1) {
+			const item = todoItems[index];
+			// 잡은 요소와 일치하는지
+			if (todoItem.id === item.id) {
+				todoOrderMutation.mutate({ todoId: item.id, displayIndex: index });
+				break; // 일치하는 항목을 찾으면 순회를 종료
+			}
+		}
+	};
 	return (
 		<>
-			<div className="my-6 flex justify-between">
+			<div className="my-6 flex justify-between" ref={containerRef}>
 				<Calendar onChange={(date) => handleCurrentDate(date)}>
 					<div className="flex gap-3">
-						<div className="flex min-w-24 items-center text-lg font-medium text-text-primary">
+						<div className="flex min-w-[98px] items-center text-lg font-medium text-text-primary">
 							<Calendar.Date>{(date) => convertIsoToDateToKorean(date)}</Calendar.Date>
 						</div>
 						<div className="flex gap-1">
@@ -123,41 +144,64 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					+새로운 목록 추가하기
 				</button>
 			</div>
-			<div className="flex gap-3 text-lg font-medium">
+			<div className="flex flex-wrap gap-3 text-lg font-medium">
 				{tasks &&
 					tasks.map((task) => (
 						<button
-							className={`${task.id === currentTaskId ? "text-text-primary underline" : "text-text-default"}`}
+							className={`${task.id === currentTaskId ? "text-text-primary underline underline-offset-4" : "text-text-default"}`}
 							type="button"
 							key={task.id}
-							onMouseEnter={prefetchTasks}
+							// onMouseEnter={prefetchTasks}
 							onClick={() => updateSearchParams(task.id)}
 						>
 							{task.name}
 						</button>
 					))}
 			</div>
-			<div className="mt-4 flex flex-col gap-4">
-				{todoItems &&
-					todoItems.map((todoItem) => (
-						<TodoItem
-							key={todoItem.id}
-							todoItem={todoItem}
-							onToggleTodo={handleToggleTodoStatus}
-							onClick={handleTodoClick}
-							groupId={groupId}
-							taskId={currentTaskId}
-							currentDate={currentDate}
-						/>
+			{isTodoItemsLoading && (
+				<div>
+					{Array.from({ length: 5 }).map((_, i) => (
+						/* eslint-disable react/no-array-index-key */
+						<div
+							key={i}
+							className="mt-4 flex h-[75px] w-full flex-col items-center justify-center gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
+						>
+							<Image src="/icons/spinner.svg" alt="spinner" width={30} height={30} className="animate-spin" />
+						</div>
 					))}
-			</div>
-			<div>
-				<div className="fixed bottom-12 flex w-full max-w-[1233px] justify-end">
-					<div className="h-[48px] w-[125px]">
-						<Button rounded="full">+할 일 추가</Button>
+				</div>
+			)}
+
+			{todoItems && (
+				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)}>
+					{todoItems.map((todoItem) => (
+						<Reorder.Item value={todoItem} key={todoItem.id} onDragEnd={() => handleDragEnd(todoItem)}>
+							<div className="mt-4 flex flex-col gap-4">
+								<TodoItem
+									key={todoItem.id}
+									todoItem={todoItem}
+									onToggleTodo={handleToggleTodoStatus}
+									onClick={handleTodoClick}
+									groupId={groupId}
+									taskId={currentTaskId}
+									currentDate={currentDate}
+								/>
+							</div>
+						</Reorder.Item>
+					))}
+				</Reorder.Group>
+			)}
+			{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
+				<div className="h-vh mt-60 flex items-center justify-center text-text-default">
+					<div className="text-center">
+						아직 할 일이 없습니다.
+						<br />
+						새로운 할일을 추가해주세요.
 					</div>
 				</div>
-			</div>
+			)}
+
+			<AddTodo containerRef={containerRef} />
 		</>
 	);
 }

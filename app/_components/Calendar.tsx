@@ -16,11 +16,15 @@ interface CalendarContext {
 const CTX = createContext<CalendarContext>({ date: new Date(), setDate() {} });
 
 export default function Calendar({ children, onChange }: Readonly<CalendarProps>) {
-	const [date, setDate] = useState(new Date());
+	const [date, DO_NOT_USE_THIS] = useState(new Date());
 
-	useEffect(() => {
-		onChange?.(date);
-	}, [date, onChange]);
+	const setDate = useCallback(
+		(_: typeof date) => {
+			DO_NOT_USE_THIS(_);
+			onChange?.(_);
+		},
+		[onChange],
+	);
 
 	const ctx = useMemo<CalendarContext>(
 		() => ({
@@ -31,7 +35,7 @@ export default function Calendar({ children, onChange }: Readonly<CalendarProps>
 				}
 			},
 		}),
-		[date],
+		[date, setDate],
 	);
 
 	return <CTX.Provider value={ctx}>{children}</CTX.Provider>;

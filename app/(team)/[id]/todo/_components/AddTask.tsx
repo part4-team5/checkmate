@@ -44,7 +44,7 @@ export default function AddTaskModal({ close, groupId }: AddTaskModalProps): JSX
 
 	return (
 		<ModalWrapper close={close}>
-			<div className="mx-9 mt-8 max-w-[280px]">
+			<div className="min-mx-9 mx-auto mt-8 max-w-[280px]">
 				<div className="mb-4 font-medium">
 					<h1 className="text-center text-lg">새로운 목록 추가</h1>
 					<p className="mt-2 text-center text-md text-text-secondary">
