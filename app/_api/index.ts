@@ -1228,8 +1228,8 @@ interface User {
 	email?: string;
 }
 interface Todo extends TodoBase {
-	doneBy: User;
-	writer: User;
+	doneBy: { id: number; nickname: string; image?: string };
+	writer: { id: number; nickname: string; image?: string };
 	recurring: Recurring;
 }
 interface TodoBase {
