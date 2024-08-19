@@ -153,7 +153,52 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 			}
 			outline.current?.style.setProperty("border-color", null);
 		},
-		[data],
+		[data, setData],
+	);
+
+	const inline = useCallback(
+		(syntax: string) => {
+			if (editor.current) {
+				// cache
+				const [html, region] = [editor.current, window.getSelection()];
+
+				if (region === null) return;
+
+				const { startOffset: start, endOffset: end } = region.getRangeAt(0);
+
+				const insert = (() => {
+					// eslint-disable-next-line no-plusplus
+					for (let i = 0; i < syntax.length; ++i) {
+						if (syntax[i] !== data[start - i - 1]) {
+							return true;
+						}
+						if (syntax[i] !== data[end + i]) {
+							return true;
+						}
+					}
+					return false;
+				})();
+
+				const range = document.createRange();
+
+				if (insert) {
+					html.innerHTML = (data.slice(0, start) + syntax + data.slice(start, end) + syntax + data.slice(end)).replace(/\n/g, "<br>");
+					range.setStart(html.firstChild!!, start + syntax.length);
+					range.setEnd(html.firstChild!!, end + syntax.length);
+				} else {
+					html.innerHTML = (data.slice(0, start - syntax.length) + data.slice(start, end) + data.slice(end + syntax.length)).replace(/\n/g, "<br>");
+					range.setStart(html.firstChild!!, start - syntax.length);
+					range.setEnd(html.firstChild!!, end - syntax.length);
+				}
+				// don't know whats going on? that's ok
+				region.removeAllRanges();
+				region.addRange(range);
+				html.focus();
+				// reflect
+				setData(unescape(html));
+			}
+		},
+		[data, setData],
 	);
 
 	return (
@@ -200,26 +245,17 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 									style={style}
 									className="absolute flex h-[40px] items-center justify-center overflow-hidden rounded-[7.5px] border border-white/15 bg-background-tertiary px-[3px] drop-shadow-lg [&>button:hover]:bg-white/15 [&>button]:flex [&>button]:aspect-square [&>button]:items-center [&>button]:rounded-[5px] [&>button]:px-[1.5px] [&>button]:py-[1.5px]"
 								>
-									<button type="button" aria-label="bold">
+									<button type="button" aria-label="bold" onClick={() => inline("**")}>
 										<Icon.Bold width={25} height={25} color="#64748b" />
 									</button>
-									<button type="button" aria-label="italic">
+									<button type="button" aria-label="italic" onClick={() => inline("*")}>
 										<Icon.Italic width={25} height={25} color="#64748b" />
 									</button>
-									<button type="button" aria-label="underline">
+									<button type="button" aria-label="underline" onClick={() => inline("__")}>
 										<Icon.Underline width={25} height={25} color="#64748b" />
 									</button>
-									<button type="button" aria-label="strikethrough">
+									<button type="button" aria-label="strikethrough" onClick={() => inline("~~")}>
 										<Icon.StrikeThrough width={25} height={25} color="#64748b" />
-									</button>
-									<button type="button" aria-label="ol">
-										<Icon.OrderedList width={25} height={25} color="#64748b" />
-									</button>
-									<button type="button" aria-label="ul">
-										<Icon.UnorderedList width={25} height={25} color="#64748b" />
-									</button>
-									<button type="button" aria-label="photo">
-										<Icon.Photo width={25} height={25} color="#64748b" />
 									</button>
 								</div>
 								{/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
