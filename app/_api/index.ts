@@ -517,19 +517,8 @@ export default abstract class API {
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override DELETE({
-			teamId = "6-5",
-			groupId,
-			taskListId,
-			taskId,
-			...query
-		}: {
-			teamId?: string;
-			groupId?: number;
-			taskListId: number;
-			taskId: number;
-		}) {
-			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query);
+		public override DELETE({ teamId = "6-5", taskId, ...query }: { teamId?: string; taskId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/${taskId}`, query);
 		}
 	})();
 
@@ -869,8 +858,8 @@ export default abstract class API {
 		 * @param {Object} body - 수정할 댓글 내용
 		 * @returns {Promise<Object>} - 수정된 댓글
 		 */
-		public override PATCH({ teamId = "6-5", taskId, commentId, ...query }: { teamId?: string; taskId: number; commentId: number }, body: { content: string }) {
-			return API.PATCH<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/${taskId}/comments/${commentId}`, query, body);
+		public override PATCH({ teamId = "6-5", commentId, ...query }: { teamId?: string; commentId: number }, body: { content: string }) {
+			return API.PATCH<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/{taskId}/comments/${commentId}`, query, body);
 		}
 
 		/**

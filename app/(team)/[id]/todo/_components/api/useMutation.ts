@@ -6,25 +6,23 @@ const patchToggleTodoStatus = async (id: number, done: boolean) => {
 	const body = {
 		done,
 	};
-	const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].PATCH(
+	return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].PATCH(
 		{
 			taskId: id,
 		},
 		body,
 	);
-	return response;
 };
 
 const postAddComment = async (newComment: string, todoId: number) => {
 	const body = { content: newComment };
 	// API 호출
-	const response = await API["{teamId}/tasks/{taskId}/comments"].POST(
+	return API["{teamId}/tasks/{taskId}/comments"].POST(
 		{
 			taskId: todoId,
 		},
 		body,
 	);
-	return response;
 };
 
 const patchTodoEdit = async (todoId: number, name: string, description: string, doneAt: string | null) => {
@@ -33,27 +31,42 @@ const patchTodoEdit = async (todoId: number, name: string, description: string, 
 		description,
 		done: !!doneAt,
 	};
-	const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].PATCH(
+	return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].PATCH(
 		{
 			taskId: todoId,
 		},
 		body,
 	);
-	return response;
 };
 
 const patchTodoOrder = async (todoId: number, displayIndex: number) => {
 	const body = {
 		displayIndex,
 	};
-	const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{id}/order"].PATCH(
+	return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{id}/order"].PATCH(
 		{
 			id: todoId,
 		},
 		body,
 	);
-	return response;
 };
+
+const patchTodoCommentEdit = async (commentId: number, content: string) => {
+	const body = {
+		content,
+	};
+	return API["{teamId}/tasks/{taskId}/comments/{commentId}"].PATCH(
+		{
+			commentId,
+		},
+		body,
+	);
+};
+
+const deleteTodo = async (todoId: number) =>
+	API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}"].DELETE({
+		taskId: todoId,
+	});
 
 type TaskListType = Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"]["GET"]>>;
 export const useToggleTodoStatusMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
@@ -243,3 +256,16 @@ export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
 		},
 	});
 };
+
+export const useDeleteTodoMutation = () =>
+	useMutation({
+		mutationFn: (todoId: number) => deleteTodo(todoId),
+		onError: (error) => {
+			alert(`오류: ${error.message} - 할 일 삭제에 실패했습니다.`);
+		},
+	});
+
+export const usePatchTodoCommentEditMutation = () =>
+	useMutation({
+		mutationFn: ({ commentId, content }: { commentId: number; content: string }) => patchTodoCommentEdit(commentId, content),
+	});
