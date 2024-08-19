@@ -29,14 +29,14 @@ type TodoItemProps = {
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
 export default function TodoItem({ taskId, todoItem, groupId, currentDate, onToggleTodo, onClick }: TodoItemProps) {
-	const [longPress, setLongPress] = useState(false);
+	let isLongPress = false;
 	let timerId: NodeJS.Timeout;
 
 	// 타이머 시작
 	const handleMouseDown = () => {
-		setLongPress(false);
+		isLongPress = false;
 		timerId = setTimeout(() => {
-			setLongPress(true);
+			isLongPress = true;
 		}, 300); // 300ms 이상 눌리면 long press로 간주
 	};
 
@@ -47,7 +47,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 			key={todoItem.id}
 			onClick={(e) => {
 				e.stopPropagation();
-				if (longPress) return;
+				if (isLongPress) return;
 				onClick(groupId, taskId, todoItem.id, currentDate, todoItem.doneAt);
 			}}
 			onMouseDown={handleMouseDown}
