@@ -19,19 +19,13 @@ export default function CreateTeamPage() {
 	const imageUpload = async (file: File) => {
 		if (typeof file === "string") return { url: undefined };
 
-		const response = await API["{teamId}/images/upload"].POST({}, file);
-		return response;
+		return API["{teamId}/images/upload"].POST({}, file);
 	};
 
 	const teamManagementMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/groups"]["POST"]>>, Error, FormContext>({
 		mutationFn: async (ctx: FormContext): Promise<Awaited<ReturnType<(typeof API)["{teamId}/groups"]["POST"]>>> => {
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
-			}
-
-			const file = formData.get("profileImage") as File;
-			const teamName = formData.get("teamName") as string;
+			const file = ctx.values.profileImage as File;
+			const teamName = ctx.values.teamName as string;
 
 			const { url } = await imageUpload(file);
 
@@ -40,13 +34,12 @@ export default function CreateTeamPage() {
 				name: teamName,
 			};
 
-			const response = await API["{teamId}/groups"].POST({}, payload);
-
-			return response;
+			return API["{teamId}/groups"].POST({}, payload);
 		},
 		onSuccess: (data) => {
 			// 쿼리 무효화
 			queryClient.invalidateQueries({ queryKey: ["team"] });
+			queryClient.invalidateQueries({ queryKey: ["user"] });
 
 			router.push(`/${data.id}`);
 		},
