@@ -1,11 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import Button from "@/app/_components/Button";
 import Calendar from "@/app/_components/Calendar";
-import { convertTo12HourFormat, convertTo24HourFormat } from "@/app/_utils/ConvertTimeFormat";
 import DropDown from "@/app/_components/Dropdown";
 import Form from "@/app/_components/Form";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
-import TimePicker from "@/app/_components/TimePicker";
 import Icon from "@/app/_icons";
 import { useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
@@ -26,15 +24,12 @@ export default function Modal({ close }: { close: () => void }) {
 	const [monthDay, setMonthDay] = useState<number>(1);
 	const [startDate, setStartDate] = useState<Date>(() => new Date());
 	const [isCalendarOpened, setIsCalendarOpened] = useState(false);
-	const [startTime, setStartTime] = useState<string>();
-	const [isTimeOpened, setIsTimeOpened] = useState(false);
 
 	const startYear = startDate.getFullYear();
 	const startMonth = `0${startDate.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 +1 필요
 	const startDay = `0${startDate.getDate()}`.slice(-2);
 
 	const formattedDate = `${startYear}-${startMonth}-${startDay}`;
-	const formattedTime = `${startTime ? `T${startTime}:00` : "00:00:00"}Z`;
 
 	const groupId = Number(useParams().id);
 	const taskListId = Number(useSearchParams().get("taskId"));
@@ -54,7 +49,7 @@ export default function Modal({ close }: { close: () => void }) {
 		createTodoMutation.mutate({
 			name: ctx.values.name as string,
 			description: ctx.values.description as string,
-			startDate: formattedDate + formattedTime,
+			startDate: `${formattedDate}T00:00:00Z`,
 			frequencyType: frequency,
 			weekDays,
 			monthDay,
@@ -110,31 +105,17 @@ export default function Modal({ close }: { close: () => void }) {
 							<span className="text-text-emerald"> * </span> 시작 날짜 및 시간
 						</label>
 
-						<div className="flex gap-2">
-							<div className="w-[150px] grow">
+						<div className="flex">
+							<div className="grow">
 								{/* <Form.Input id="date" type="date" tests={[{ type: "require", data: true, error: "시작 날짜는 필수입니다" }]} /> */}
 								<button
 									type="button"
 									className="flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
 									onClick={() => {
 										setIsCalendarOpened((prev) => !prev);
-										setIsTimeOpened(false);
 									}}
 								>
 									{startDate.toLocaleDateString("ko-KR")}
-								</button>
-							</div>
-							<div className="grow">
-								{/* <Form.Input id="time" type="time" /> */}
-								<button
-									type="button"
-									className="flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
-									onClick={() => {
-										setIsTimeOpened((prev) => !prev);
-										setIsCalendarOpened(false);
-									}}
-								>
-									{convertTo12HourFormat(startTime || "00:00")}
 								</button>
 							</div>
 						</div>
@@ -151,16 +132,6 @@ export default function Modal({ close }: { close: () => void }) {
 									<Calendar.Picker />
 								</div>
 							</Calendar>
-						</div>
-
-						<div className={`pt-2 ${!isTimeOpened ? "hidden" : "flex"}`}>
-							<TimePicker
-								onChange={(time, isAm) => {
-									setStartTime(convertTo24HourFormat(time, isAm));
-									// TODO: 시간 선택 후 닫히도록 수정
-									// setIsOpenedTime(false);
-								}}
-							/>
 						</div>
 
 						<div className="pt-2" />
