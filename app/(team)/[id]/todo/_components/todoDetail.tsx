@@ -1,6 +1,6 @@
 import CloseIcon from "@/public/icons/ic_close";
 import Icon from "@/app/_icons/index";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Button from "@/app/_components/Button";
 import useAuthStore from "@/app/_store/useAuthStore";
 import { useGetComments, useGetTodoContent } from "@/app/(team)/[id]/todo/_components/api/useQuery";
@@ -8,7 +8,7 @@ import TodoDetailCommentList from "@/app/(team)/[id]/todo/_components/TodoDetail
 import { useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import TodoDetailHeader from "@/app/(team)/[id]/todo/_components/TodoDetailHeader";
 import TodoDetailInput from "@/app/(team)/[id]/todo/_components/TodoDetailInput";
-
+import { motion } from "framer-motion";
 type TodoDetailProps = {
 	todoId: number;
 	groupId: number;
@@ -31,6 +31,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 	const { data: todoContent } = useGetTodoContent(todoId);
 	const { data: comments } = useGetComments(todoId);
 	const todoPatchToggleStatusMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
+	const containerRef = useRef(null);
 
 	const handleCheckButtonClick = () => {
 		setIsCheck((prev) => !prev);
@@ -38,7 +39,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 	};
 
 	return (
-		<div className="px-6 text-text-primary">
+		<div className="px-6 text-text-primary" ref={containerRef}>
 			<div className="sticky top-0 flex bg-background-secondary pb-5 pt-6">
 				<button type="button" onClick={close} aria-label="버튼" className="">
 					<CloseIcon width={24} height={24} />
@@ -70,7 +71,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 				</div>
 			</div>
 
-			<div className="fixed bottom-10 right-10">
+			<motion.div drag="x" className="fixed bottom-10 right-10" dragConstraints={containerRef}>
 				<div className="h-[48px] w-[125px]">
 					{isCheck ? (
 						<Button variant="secondary" rounded="full" onClick={handleCheckButtonClick}>
@@ -88,7 +89,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 						</Button>
 					)}
 				</div>
-			</div>
+			</motion.div>
 		</div>
 	);
 }
