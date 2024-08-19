@@ -51,7 +51,6 @@ export default function CreateTeamPage() {
 			router.push(`/${data.id}`);
 		},
 		onError: (error, ctx) => {
-			// TODO: 팀 생성 실패 시 에러 메시지 표시
 			ctx.setError("teamName", "팀 생성에 실패했습니다.");
 		},
 	});
@@ -75,11 +74,11 @@ export default function CreateTeamPage() {
 				<Form onSubmit={handleTeamManagement}>
 					<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
 						<div className="w-fit">
-							<label htmlFor="team-image" className="w-full pb-3 text-start text-text-primary">
+							<label htmlFor="profileImage" className="w-full pb-3 text-start text-text-primary">
 								팀 프로필
 							</label>
 							<div className="pb-3" />
-							<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
+							<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 4 * 1048576, error: "이미지 파일 크기는 4MB 이하여야 합니다" }]}>
 								{(file) => (
 									// eslint-disable-next-line react/jsx-no-useless-fragment
 									<>
@@ -103,15 +102,16 @@ export default function CreateTeamPage() {
 								)}
 							</Form.ImageInput>
 						</div>
-						<Form.Error htmlFor="team-image" />
+						<div className="pt-3" />
+						<Form.Error htmlFor="profileImage" />
 
 						<div className="pt-6" />
 
-						<label htmlFor="team-name" className="w-full pb-3 text-start text-text-primary">
+						<label htmlFor="teamName" className="w-full pb-3 text-start text-text-primary">
 							팀 이름
 						</label>
 						<Form.Input id="teamName" type="text" placeholder="팀 이름을 입력하세요" tests={[{ type: "require", data: true, error: "팀 이름은 필수입니다" }]} />
-						<Form.Error htmlFor="team-name" />
+						<Form.Error htmlFor="teamName" />
 
 						<div className="pt-10" />
 
