@@ -19,11 +19,15 @@ interface EditorProps {
 }
 
 export default function Quill({ init, placeholder, onChange }: EditorProps) {
-	const [data, setData] = useState(init ?? "");
+	const [data, DO_NOT_USE_THIS] = useState(init ?? "");
 
-	useEffect(() => {
-		onChange?.(data);
-	}, [data, onChange]);
+	const setData = useCallback(
+		(_: typeof data) => {
+			DO_NOT_USE_THIS(_);
+			onChange?.(_);
+		},
+		[onChange],
+	);
 
 	const helper = useRef<HTMLDivElement>(null);
 	const editor = useRef<HTMLDivElement>(null);
@@ -276,7 +280,7 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 							<div
 								className="h-full min-h-[130px] w-full rounded-[10px] border border-transparent px-[10px] py-[10px] text-lg font-normal text-text-primary"
 								// eslint-disable-next-line react/no-danger
-								dangerouslySetInnerHTML={{ __html: CORE.run(data) }}
+								dangerouslySetInnerHTML={{ __html: `<article class="md">${CORE.run(data)}</article>` }}
 							/>
 						</Switch.Case>
 					</div>
@@ -287,9 +291,7 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 }
 
 function unescape(html: HTMLElement) {
-	let impl = html.innerHTML;
-
-	for (const [match, char] of Object.entries({
+	return Object.entries({
 		"<br>": "\n",
 		"&nbsp;": " ",
 		"&lt;": "<",
@@ -300,8 +302,5 @@ function unescape(html: HTMLElement) {
 		"&quot;": '"',
 		"&#039;": "'",
 		"&apos;": "'",
-	})) {
-		impl = impl.replace(new RegExp(match, "g"), char);
-	}
-	return impl;
+	}).reduce((accumulate, [match, char]) => accumulate.replace(new RegExp(match, "g"), char), html.innerHTML);
 }

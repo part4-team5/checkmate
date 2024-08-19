@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 
 import API from "@/app/_api";
 
@@ -28,8 +28,6 @@ export default function Page() {
 			setImage(response.url);
 		});
 	}, []);
-
-	const [disabled, setDisabled] = useState(true);
 
 	const onDragEnter = useCallback((event: React.DragEvent) => {
 		// :3
@@ -79,17 +77,15 @@ export default function Page() {
 			event.preventDefault();
 			event.stopPropagation();
 
-			if (!disabled && title && content) {
-				API["{teamId}/articles"].POST({}, { image, title, content }).then((response) => {
+			if (1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0)) {
+				API["{teamId}/articles"].POST({}, { image, title: title!, content: content! }).then((response) => {
 					router.push(`boards/${response.id}`);
 				});
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[image, title, content, disabled],
+		[image, title, content],
 	);
-
-	useEffect(() => setDisabled(!(1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0))), [title, content]);
 
 	return (
 		<main className="flex w-full flex-col items-center tablet:px-[60px] tablet:py-[30px] desktop:pt-[60px]">
@@ -124,7 +120,7 @@ export default function Page() {
 						/>
 					</div>
 					<div className="h-full w-[75px]">
-						<Button type="submit" fontSize="md" disabled={disabled}>
+						<Button type="submit" fontSize="md" disabled={!(1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0))}>
 							작성하기
 						</Button>
 					</div>
