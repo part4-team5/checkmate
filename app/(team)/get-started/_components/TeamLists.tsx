@@ -1,37 +1,15 @@
 "use client";
 
 import API from "@/app/_api";
-import useCookie from "@/app/_hooks/useCookie";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function TeamList() {
-	const [accessToken] = useCookie("accessToken");
-
 	const { data: user, isLoading } = useQuery({
 		queryKey: ["user"],
-		queryFn: async () => {
-			if (!accessToken) return null;
-			return API["{teamId}/user"].GET({});
-		},
-		// accessToken이 있을 때만 쿼리 실행
-		enabled: !!accessToken,
+		queryFn: async () => API["{teamId}/user"].GET({}),
 	});
-
-	if (!accessToken || !user?.memberships.length) {
-		return (
-			// 팀 없으면 안내 문구 보여주기
-			<div className="flex h-fit w-full max-w-screen-desktop flex-col items-center justify-center gap-12">
-				<Image src="/images/teamEmpty.webp" alt="team-empty" priority width={810} height={255} />
-				<div className="text-center text-md font-medium tablet:text-lg">
-					아직 소속됨 팀이 없습니다.
-					<br />
-					팀을 생성하거나 팀에 참여해보세요.
-				</div>
-			</div>
-		);
-	}
 
 	// 로딩 스켈레톤
 	if (isLoading) {
@@ -49,6 +27,20 @@ export default function TeamList() {
 							</li>
 						))}
 					</ul>
+				</div>
+			</div>
+		);
+	}
+
+	if (!user?.memberships.length) {
+		return (
+			// 팀 없으면 안내 문구 보여주기
+			<div className="flex h-fit w-full max-w-screen-desktop flex-col items-center justify-center gap-12">
+				<Image src="/images/teamEmpty.webp" alt="team-empty" priority width={810} height={255} />
+				<div className="text-center text-md font-medium tablet:text-lg">
+					아직 소속됨 팀이 없습니다.
+					<br />
+					팀을 생성하거나 팀에 참여해보세요.
 				</div>
 			</div>
 		);
