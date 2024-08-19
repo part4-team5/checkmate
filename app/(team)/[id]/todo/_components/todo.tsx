@@ -2,10 +2,9 @@
 
 import API from "@/app/_api";
 import Calendar from "@/app/_components/Calendar";
-import Button from "@/app/_components/Button";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import SideBarWrapper from "@/app/_components/sidebar";
 import { convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
@@ -17,6 +16,7 @@ import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_compon
 import AddTaskModal from "@/app/(team)/[id]/todo/_components/AddTask";
 import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
 import { useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -41,6 +41,8 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const { data: groupList } = useGetGroupList(groupId);
 	const { data: todoItems } = useGetTodoItems(groupId, currentTaskId, currentDate);
 	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
+
+	const containerRef = useRef(null);
 
 	const tasks = groupList?.taskLists;
 	/* eslint-disable no-restricted-syntax */
@@ -88,7 +90,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 
 	return (
 		<>
-			<div className="my-6 flex justify-between">
+			<div className="my-6 flex justify-between" ref={containerRef}>
 				<Calendar onChange={(date) => handleCurrentDate(date)}>
 					<div className="flex gap-3">
 						<div className="flex min-w-24 items-center text-lg font-medium text-text-primary">
@@ -151,13 +153,8 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						/>
 					))}
 			</div>
-			<div>
-				<div className="fixed bottom-12 flex w-full max-w-[1233px] justify-end">
-					<div className="h-[48px] w-[125px]">
-						<Button rounded="full">+할 일 추가</Button>
-					</div>
-				</div>
-			</div>
+
+			<AddTodo containerRef={containerRef} />
 		</>
 	);
 }
