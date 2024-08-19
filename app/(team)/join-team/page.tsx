@@ -8,7 +8,7 @@ import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -23,7 +23,7 @@ function JoinTeamForm() {
 	const router = useRouter();
 	const overlay = useOverlay();
 
-	const hasExecutedRef = useRef(false);
+	const [isMounted, setIsMounted] = useState(false);
 
 	// Modal을 띄우는 함수
 	const openModal = useCallback(
@@ -82,9 +82,7 @@ function JoinTeamForm() {
 			[userEmail],
 		),
 		onSuccess: () => {
-			openModal(() => {
-				router.push(`/${groupId}`);
-			});
+			openModal(() => {});
 		},
 		onError: (error, ctx) => {
 			openModal(() => {}, error.message);
@@ -114,11 +112,12 @@ function JoinTeamForm() {
 	// token이 있을 경우 바로 팀 참여 요청을 보냅니다.
 	useEffect(() => {
 		// 한 번만 실행되도록 합니다.
-		if (token && !hasExecutedRef.current) {
-			hasExecutedRef.current = true;
+		if (token && !isMounted) {
+			setIsMounted(true);
+
 			joinTeamMutation.mutate({ token });
 		}
-	}, [token, joinTeamMutation]);
+	}, [token, joinTeamMutation, isMounted]);
 
 	if (token) {
 		return <section className="flex size-full flex-col items-center justify-center text-3xl font-bold">팀 참여 중...</section>;
