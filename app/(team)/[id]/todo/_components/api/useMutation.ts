@@ -43,7 +43,6 @@ const patchTodoEdit = async (todoId: number, name: string, description: string, 
 };
 
 const patchTodoOrder = async (todoId: number, displayIndex: number) => {
-	console.log(todoId, displayIndex);
 	const body = {
 		displayIndex,
 	};

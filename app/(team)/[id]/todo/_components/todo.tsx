@@ -96,14 +96,15 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const handleDragEnd = (todoItem: TaskListType[number]) => {
 		if (!todoItems) return;
 		// 변경한 순서를 순회
-		todoItems.forEach((item, index) => {
+		for (let index = 0; index < todoItems.length; index += 1) {
+			const item = todoItems[index];
 			// 잡은 요소와 일치하는지
 			if (todoItem.id === item.id) {
 				todoOrderMutation.mutate({ todoId: item.id, displayIndex: index });
+				break; // 일치하는 항목을 찾으면 순회를 종료
 			}
-		});
+		}
 	};
-
 	return (
 		<>
 			<div className="my-6 flex justify-between">
