@@ -566,6 +566,22 @@ export default abstract class API {
 		}
 	})();
 
+	/**
+	 * Todo 순서 변경 API (Drag & Drop)
+	 */
+	public static readonly ["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{id}/order"] = new (class extends API {
+		/**
+		 * Task order 변경
+		 * @param {Object} param - 파라미터 객체
+		 * @param {string} [param.teamId="6-5"] - 팀 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @param {Object} body - 추가할 Task 정보
+		 * @returns {Promise<Object>} - 응답 객체
+		 */
+		public override PATCH({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }, body: { displayIndex: number }) {
+			return API.PATCH<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/${id}/order`, query, body);
+		}
+	})();
 	// * [ Recurring API ]
 
 	/**
@@ -1216,12 +1232,11 @@ interface User {
 	encryptedPassword?: string;
 	email?: string;
 }
-
 interface Todo extends TodoBase {
-	user: User;
+	doneBy: { id: number; nickname: string; image?: string };
+	writer: { id: number; nickname: string; image?: string };
 	recurring: Recurring;
 }
-
 interface TodoBase {
 	deletedAt: string;
 	userId: number;
