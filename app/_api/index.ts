@@ -1227,12 +1227,11 @@ interface User {
 	encryptedPassword?: string;
 	email?: string;
 }
-
 interface Todo extends TodoBase {
-	user: User;
+	doneBy: User;
+	writer: User;
 	recurring: Recurring;
 }
-
 interface TodoBase {
 	deletedAt: string;
 	userId: number;

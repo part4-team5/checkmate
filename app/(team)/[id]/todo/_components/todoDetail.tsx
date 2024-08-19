@@ -12,6 +12,7 @@ import useAuthStore from "@/app/_store/useAuthStore";
 import { useAddCommentMutation, useEditTodoMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFrequency";
 import { useGetComments, useGetTodoContent } from "@/app/(team)/[id]/todo/_components/api/useQuery";
+import DropDown from "@/app/_components/Dropdown";
 
 type TodoDetailProps = {
 	todoId: number;
@@ -36,6 +37,21 @@ type User = {
 	nickname: string;
 	image: string | null;
 };
+
+const options = [
+	{
+		text: "수정",
+		onClick: () => {
+			alert("수정");
+		},
+	},
+	{
+		text: "삭제",
+		onClick: () => {
+			alert("삭제");
+		},
+	},
+];
 
 export default function TodoDetail({ todoId, close, groupId, currentTaskId, currentDate, doneAt }: TodoDetailProps) {
 	const user = useAuthStore((state) => state.user) as User;
@@ -99,6 +115,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 	};
 
 	const { date, time } = convertIsoToDateAndTime(todoContent?.date);
+
 	return (
 		<div className="px-6 text-text-primary">
 			<div className="sticky top-0 flex bg-background-secondary pb-5 pt-6">
@@ -145,7 +162,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 							<div className="my-4 flex justify-between">
 								<div className="flex items-center gap-3">
 									<Image src={defaultImage} alt={todoContent.name} width={32} height={32} />
-									<div className="text-md font-medium">{todoContent.user?.nickname}</div>
+									<div className="text-md font-medium">{todoContent.writer.nickname}</div>
 								</div>
 								{/**
 								 * 어떤 날짜를 사용할지 나중에 수정
@@ -206,14 +223,16 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 									<div key={comment.id}>
 										<div className="flex justify-between">
 											<div className="text-md font-normal">{comment.content}</div>
-											<button type="button" aria-label="dropdown">
-												<KebabIcon />
-											</button>
+											<DropDown options={options}>
+												<button type="button" aria-label="dropdown">
+													<KebabIcon />
+												</button>
+											</DropDown>
 										</div>
 										<div className="my-4 flex items-center justify-between">
 											{comment.user && (
 												<div className="flex items-center gap-3">
-													<Image src={defaultImage} alt={todoContent.name} width={32} height={32} />
+													{comment.user.image ? "" : <Image src={defaultImage} alt={todoContent.name} width={32} height={32} />}
 													<div>{comment.user.nickname}</div>
 												</div>
 											)}
