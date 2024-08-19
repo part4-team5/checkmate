@@ -92,7 +92,10 @@ export default function Modal({ close }: { close: () => void }) {
 							id="name"
 							type="text"
 							placeholder="할 일 제목을 입력해주세요."
-							tests={[{ type: "require", data: true, error: "할 일 제목은 필수입니다" }]}
+							tests={[
+								{ type: "require", data: true, error: "할 일 제목은 필수입니다" },
+								{ type: "maxlength", data: 30, error: "30자 이내로 입력해주세요" },
+							]}
 						/>
 
 						<div className="pt-2" />
@@ -105,8 +108,9 @@ export default function Modal({ close }: { close: () => void }) {
 							<span className="text-text-emerald"> * </span> 시작 날짜 및 시간
 						</label>
 
+						{/* 날짜 선택 */}
 						<div className="flex">
-							<div className="grow">
+							<div className="max-w-[50%] grow">
 								{/* <Form.Input id="date" type="date" tests={[{ type: "require", data: true, error: "시작 날짜는 필수입니다" }]} /> */}
 								<button
 									type="button"
