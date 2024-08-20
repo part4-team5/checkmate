@@ -38,7 +38,6 @@ export default function CreateTeamPage() {
 		},
 		onSuccess: (data) => {
 			// 쿼리 무효화
-			queryClient.invalidateQueries({ queryKey: ["team"] });
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 
 			router.push(`/${data.id}`);

@@ -6,13 +6,14 @@ import Form from "@/app/_components/Form";
 import useAuthStore from "@/app/_store/useAuthStore";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import useOverlay from "@/app/_hooks/useOverlay";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 function JoinTeamForm() {
+	const [isMounted, setIsMounted] = useState(false);
 	const user = useAuthStore((state) => state.user);
 	const userEmail = user?.email ?? "";
 
@@ -23,7 +24,7 @@ function JoinTeamForm() {
 	const router = useRouter();
 	const overlay = useOverlay();
 
-	const [isMounted, setIsMounted] = useState(false);
+	const queryClient = useQueryClient();
 
 	// Modal을 띄우는 함수
 	const openModal = useCallback(
@@ -82,6 +83,7 @@ function JoinTeamForm() {
 			[userEmail],
 		),
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
 			openModal(() => {});
 		},
 		onError: (error, ctx) => {

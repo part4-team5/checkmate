@@ -32,12 +32,8 @@ export default function Header() {
 	// 유저 정보 받아오기
 	const { data: user } = useQuery({
 		queryKey: ["user"],
-		queryFn: useCallback(async () => {
-			if (!accessToken) return null;
-
-			const response = await API["{teamId}/user"].GET({});
-			return response;
-		}, [accessToken]),
+		queryFn: async () => API["{teamId}/user"].GET({}),
+		enabled: !!accessToken,
 	});
 
 	const userDropdown = [
