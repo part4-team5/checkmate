@@ -14,15 +14,13 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function LoginPage() {
 	const router = useRouter();
-	const queryClient = useQueryClient();
-	const [accessToken, setAccessToken] = useCookie<string>("accessToken");
-	const [refreshToken, setRefreshToken] = useCookie<string>("refreshToken");
-	const setUser = useAuthStore((state) => state.setUser);
-	const user = useAuthStore((state) => state.user);
 
-	if (accessToken && refreshToken && user) {
-		router.replace("/");
-	}
+	const queryClient = useQueryClient();
+
+	const [, setAccessToken] = useCookie<string>("accessToken");
+	const [, setRefreshToken] = useCookie<string>("refreshToken");
+
+	const setUser = useAuthStore((state) => state.setUser);
 
 	const loginMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
