@@ -64,7 +64,7 @@ export default function Page() {
 		<main className="h-full">
 			<Link
 				href="/create-post"
-				className="fixed bottom-[45px] right-[16px] flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary text-text-primary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
+				className="fixed z-40 shadow-lg bottom-[45px] right-[16px] flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary hover:bg-brand-secondary text-text-primary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
 			>
 				+ 글쓰기
 			</Link>
@@ -91,8 +91,10 @@ export default function Page() {
 							<Link
 								key={article.id}
 								href={`/boards/${article.id}`}
-								className="flex h-[220px] flex-col rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
+								className="relative flex h-[220px] flex-col overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
 							>
+								<div style={{ backgroundImage: `url("${article.image}")` }} className="absolute bottom-0 right-0 top-0 w-6/12 bg-cover" />
+								<div className="absolute bottom-0 right-0 top-0 w-6/12 bg-gradient-to-r from-background-secondary to-transparent" />
 								<div className="flex gap-[4px] text-md font-semibold text-text-primary">
 									<Image src="/images/medal.webp" alt="icon" width={16} height={16} />
 									Best
@@ -161,8 +163,10 @@ export default function Page() {
 								// @ts-ignore
 								ref={articles.pages.length - 1 === index ? (ref) => setViewport(ref) : undefined}
 								href={`/boards/${article.id}`}
-								className="flex h-[176px] flex-col rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
+								className="relative flex h-[176px] flex-col overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
 							>
+								<div style={{ backgroundImage: `url("${article.image}")` }} className="absolute bottom-0 right-0 top-0 w-6/12 bg-cover" />
+								<div className="absolute bottom-0 right-0 top-0 w-6/12 bg-gradient-to-r from-background-secondary to-transparent" />
 								<div className="text-md font-medium text-text-secondary">{article.title}</div>
 								<div className="mt-[12px] grow text-md font-medium text-text-default">{new Date(article.createdAt).toLocaleDateString()}</div>
 								<div className="mt-[14px] flex items-center justify-between">
