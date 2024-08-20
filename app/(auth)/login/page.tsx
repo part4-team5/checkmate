@@ -111,7 +111,7 @@ export default function LoginPage() {
 						]}
 					/>
 					<Form.Error htmlFor="password" />
-					<Link href="/reset-password" className="text-right text-brand-primary underline">
+					<Link href="/reset-password" className="flex justify-end text-brand-primary underline">
 						비밀번호를 잊으셨나요?
 					</Link>
 				</div>
