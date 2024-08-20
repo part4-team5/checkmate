@@ -128,7 +128,10 @@ export default function Page() {
 							type="text"
 							placeholder="이름을 입력해주세요."
 							init={user?.nickname ?? ""}
-							tests={[{ type: "maxlength", data: 30, error: "30자 이하로 입력해주세요." }]}
+							tests={[
+								{ type: "require", data: true, error: "이름을 입력해주세요." },
+								{ type: "maxlength", data: 30, error: "30자 이하로 입력해주세요." },
+							]}
 						/>
 						<Form.Error htmlFor="nickname" />
 
