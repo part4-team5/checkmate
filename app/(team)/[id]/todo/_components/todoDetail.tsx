@@ -9,6 +9,7 @@ import { useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/
 import TodoDetailHeader from "@/app/(team)/[id]/todo/_components/TodoDetailHeader";
 import TodoDetailInput from "@/app/(team)/[id]/todo/_components/TodoDetailInput";
 import { motion } from "framer-motion";
+
 type TodoDetailProps = {
 	todoId: number;
 	groupId: number;
