@@ -10,6 +10,7 @@ import useAuthStore from "@/app/_store/useAuthStore";
 import Form from "@/app/_components/Form";
 import Image from "next/image";
 import ChangePasswordModal from "@/app/_components/modal-contents/ChangePassword";
+import useCookie from "@/app/_hooks/useCookie";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -18,6 +19,9 @@ export default function Page() {
 	const overlay = useOverlay();
 	const queryClient = useQueryClient();
 	const { user, setUser } = useAuthStore();
+	const clearUser = useAuthStore((state) => state.clearUser);
+	const [, setAccessToken] = useCookie("accessToken");
+	const [, setRefreshToken] = useCookie("refreshToken");
 
 	useQuery({
 		queryKey: ["user"],
@@ -72,6 +76,9 @@ export default function Page() {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 			alert("회원 탈퇴가 완료되었습니다.");
+			setAccessToken(null);
+			setRefreshToken(null);
+			clearUser();
 			router.push("/");
 		},
 		onError: (error) => {
@@ -120,7 +127,7 @@ export default function Page() {
 							id="nickname"
 							type="text"
 							placeholder="이름을 입력해주세요."
-							init={user?.nickname || ""}
+							init={user?.nickname ?? ""}
 							tests={[
 								{ type: "require", data: true, error: "이름을 입력해주세요." },
 								{ type: "maxlength", data: 30, error: "30자 이하로 입력해주세요." },
@@ -130,7 +137,7 @@ export default function Page() {
 
 						<p className="mt-[12px]">이메일</p>
 						<div className="flex h-[48px] w-full items-center rounded-[12px] border border-border-primary bg-background-tertiary px-[16px] text-lg font-normal text-text-disabled">
-							{user?.email || ""}
+							{user?.email ?? ""}
 						</div>
 
 						<div className="mt-[24px] h-12">
