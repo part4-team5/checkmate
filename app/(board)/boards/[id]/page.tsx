@@ -182,7 +182,9 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 				<div>
 					<div className="mb-[24px] text-xl font-bold">댓글달기</div>
 					<Form onSubmit={handleAddComment}>
-						<Form.TextArea id="commentText" init={commentText} placeholder="댓글을 입력해주세요." />
+						<div className="w-full">
+							<Form.TextArea id="commentText" init={commentText} placeholder="댓글을 입력해주세요." />
+						</div>
 						<Form.Submit>등록</Form.Submit>
 					</Form>
 				</div>

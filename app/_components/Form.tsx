@@ -354,7 +354,7 @@ Form.TextArea = function TextArea({ id, init, tests, placeholder }: Readonly<{ i
 			onChange={onChange}
 			placeholder={placeholder}
 			defaultValue={init}
-			className="h-auto grow resize-none overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
+			className="h-auto w-full grow resize-none overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
 		/>
 	);
 };
