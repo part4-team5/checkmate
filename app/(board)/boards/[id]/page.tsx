@@ -6,7 +6,7 @@ import Image from "next/image";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import KebabIcon from "@/public/icons/KebabIcon";
 import Message from "@/app/_components/Message";
-import Form from "@/app/_components/Form";
+// import Form from "@/app/_components/Form";
 import DropDown from "@/app/_components/Dropdown";
 import API from "@/app/_api";
 import { calculateTimeDifference } from "@/app/_utils/IsoToFriendlyDate";
@@ -133,6 +133,10 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 		userName: article?.writer.nickname,
 	};
 
+	const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		setCommentText(e.target.value);
+	};
+
 	if (isArticleLoading) return <div>Loading...</div>;
 	if (articleError) return <div>Error loading article</div>;
 
@@ -181,12 +185,19 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 				{/* 댓글 작성 폼 */}
 				<div>
 					<div className="mb-[24px] text-xl font-bold">댓글달기</div>
-					<Form onSubmit={handleAddComment}>
+					<form onSubmit={handleAddComment}>
 						<div className="w-full">
-							<Form.TextArea id="commentText" init={commentText} placeholder="댓글을 입력해주세요." />
+							<textarea
+								name=""
+								id="commentText"
+								onChange={handleCommentChange}
+								className="h-[50px] w-full bg-background-secondary focus:outline-none"
+								value={commentText}
+								placeholder="댓글을 입력해주세요"
+							/>
 						</div>
-						<Form.Submit>등록</Form.Submit>
-					</Form>
+						<button type="submit">등록</button>
+					</form>
 				</div>
 				{/* 댓글 목록 표시 */}
 				<div className="flex flex-col gap-4 scrollbar-thumb:bg-background-tertiary">
