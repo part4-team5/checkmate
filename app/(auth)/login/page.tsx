@@ -4,7 +4,7 @@ import Form from "@/app/_components/Form";
 import useCookie from "@/app/_hooks/useCookie";
 import API from "@/app/_api/index";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useCallback } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
@@ -14,9 +14,13 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function LoginPage() {
 	const router = useRouter();
-	const [, setAccessToken] = useCookie<string>("accessToken");
+  
+	const queryClient = useQueryClient();
+	
+  const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
-	const setUser = useAuthStore((state) => state.setUser);
+	
+  const setUser = useAuthStore((state) => state.setUser);
 
 	const loginMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
@@ -37,12 +41,14 @@ export default function LoginPage() {
 
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);
+
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			router.replace("/");
 		},
 		onError: (error) => {
-			// 로그인 실패 시
-			alert("로그인 실패");
-			console.log(error.message);
+			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			console.error(error);
 		},
 	});
 
