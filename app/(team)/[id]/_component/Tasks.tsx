@@ -6,7 +6,8 @@
 import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
 import Icon from "@/app/_icons";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import API from "@/app/_api";
 import useOverlay from "@/app/_hooks/useOverlay";
 import PostEditTasks from "@/app/_components/modal-contents/PostEditTasks";
@@ -39,6 +40,9 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps) {
 	const overlay = useOverlay();
 	const queryClient = useQueryClient();
 	const [showToast, setShowToast] = useState(false);
+	const router = useRouter();
+	const isLongPress = useRef(false);
+	const timerId = useRef<NodeJS.Timeout>();
 
 	// 할 일 목록 삭제
 	const deleteMutation = useMutation({
@@ -105,15 +109,24 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps) {
 		},
 	];
 
-	// 할 일 항목 클릭 시 이동 처리
-	const handleItemClick = () => {
-		//	`/${groupId}/todo?taskId=${taskList.id}`로 이동
+	const handleMouseDown = () => {
+		isLongPress.current = false;
+		timerId.current = setTimeout(() => {
+			isLongPress.current = true;
+		}, 300);
+	};
+
+	const handleMouseUp = () => {
+		clearTimeout(timerId.current);
+		if (!isLongPress.current) {
+			router.push(`/${groupId}/todo?taskId=${taskList.id}`);
+		}
 	};
 
 	return (
 		<>
 			{showToast && <ToastPopup message="삭제에 실패했습니다. 다시 한 번 시도해주세요." position="bottom" />}
-			<main onClick={handleItemClick} className="flex w-full cursor-pointer rounded-[12px] bg-background-secondary">
+			<main className="flex w-full cursor-pointer rounded-[12px] bg-background-secondary" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>
 				<div className={`${getColorClass(index)} w-2 flex-shrink-0 rounded-l-lg`} />
 				<section className="flex h-[40px] w-full items-center justify-between">
 					<div className="max-w-[500px] truncate pl-2 text-white">{taskList.name}</div>
