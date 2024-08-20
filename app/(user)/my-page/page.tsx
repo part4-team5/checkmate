@@ -1,7 +1,7 @@
 "use client";
 
 import API from "@/app/_api/index";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
@@ -16,10 +16,11 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 export default function Page() {
 	const router = useRouter();
 	const overlay = useOverlay();
+	const queryClient = useQueryClient();
 	const { user, setUser } = useAuthStore();
 
 	useQuery({
-		queryKey: ["userData"],
+		queryKey: ["user"],
 		queryFn: async () => {
 			const data = await API["{teamId}/user"].GET({});
 			setUser(data);
@@ -47,6 +48,7 @@ export default function Page() {
 			return API["{teamId}/user"].PATCH({}, payload);
 		},
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
 			router.replace(window.location.pathname);
 		},
 		onError: (error) => {
@@ -69,6 +71,7 @@ export default function Page() {
 			await API["{teamId}/user"].DELETE({});
 		},
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
 			alert("회원 탈퇴가 완료되었습니다.");
 			router.push("/"); // 탈퇴 후 메인 페이지로 이동
 		},
