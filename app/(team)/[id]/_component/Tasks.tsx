@@ -113,7 +113,7 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps) {
 		isLongPress.current = false;
 		timerId.current = setTimeout(() => {
 			isLongPress.current = true;
-		}, 300);
+		}, 100);
 	};
 
 	const handleMouseUp = () => {
