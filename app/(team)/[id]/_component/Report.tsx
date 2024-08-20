@@ -43,11 +43,14 @@ function Report({ id }: ReportProps) {
 		let total = 0;
 		let done = 0;
 
-		if (data) {
+		if (data && Array.isArray(data.taskLists)) {
 			data.taskLists.forEach((taskList) => {
-				total += taskList.tasks.length;
-				done += taskList.tasks.filter((task) => task.doneAt !== null).length;
+				const tasks = taskList.tasks || [];
+				total += tasks.length;
+				done += tasks.filter((task) => task.doneAt !== null).length;
 			});
+		} else {
+			console.warn("Unexpected data structure:", data);
 		}
 
 		return { totalTasks: total, doneTasks: done };
@@ -56,10 +59,10 @@ function Report({ id }: ReportProps) {
 	const percent = totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
 
 	return (
-		<main className="flex min-w-[375px] items-center justify-between rounded-[12px] bg-background-secondary p-[12px] text-[#F8FAFC] tablet:p-[24px]">
+		<main className="flex items-center justify-between rounded-[12px] bg-background-secondary p-[12px] text-[#F8FAFC] tablet:p-[24px]">
 			<section className="flex items-center justify-center gap-[45px]">
 				<div className="relative">
-					<CircularProgressBar percent={percent} />
+					<CircularProgressBar useGradient percent={percent} />
 					<div className="absolute inset-0 flex flex-col items-center justify-center tablet:hidden">
 						<p className="text-[12px] font-medium">오늘</p>
 						<p className="bg-gradient-to-r from-text-emerald to-text-lime bg-clip-text text-[20px] font-bold text-transparent">{percent.toFixed(0)}%</p>
