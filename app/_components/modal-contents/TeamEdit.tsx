@@ -23,7 +23,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 	const router = useRouter();
 
 	const { data: teamInfo } = useQuery({
-		queryKey: ["groupInfo", { id }],
+		queryKey: ["groupInfo", id],
 		queryFn: () => API["{teamId}/groups/{id}"].GET({ id }),
 	});
 
@@ -127,8 +127,8 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 									placeholder="팀 이름을 입력하세요"
 									init={initialTeamName}
 									tests={[
-										{ type: "require", data: true, error: "팀 이름은 필수입니다" },
 										{ type: "maxlength", data: 30, error: "팀 이름은 30자 이하로 생성해주세요" },
+										{ type: "minlength", data: 1, error: "팀 이름은 1자 이상으로 생성해주세요" },
 									]}
 								/>
 							</div>
