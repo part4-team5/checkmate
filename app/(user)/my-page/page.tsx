@@ -1,39 +1,31 @@
 "use client";
 
 import API from "@/app/_api/index";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
-import AccountDeletion from "@/app/_components/modal-contents/AccountDeletion";
+import AccountDeletionModal from "@/app/_components/modal-contents/AccountDeletion";
 import useAuthStore from "@/app/_store/useAuthStore";
-import ModalWrapper from "@/app/_components/modal-contents/Modal";
-import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
 import Image from "next/image";
+import ChangePasswordModal from "@/app/_components/modal-contents/ChangePassword";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function Page() {
 	const router = useRouter();
 	const overlay = useOverlay();
-	const [isAccountDeletionOpen, setAccountDeletionOpen] = useState(false);
 	const { user, setUser } = useAuthStore();
 
-	useEffect(() => {
-		const fetchUserData = async () => {
-			try {
-				const data = await API["{teamId}/user"].GET({});
-				setUser(data);
-			} catch (error) {
-				console.error("유저정보 불러오기 실패", error);
-			}
-		};
-
-		if (!user) {
-			fetchUserData();
-		}
-	}, [user, setUser]);
+	useQuery({
+		queryKey: ["userData"],
+		queryFn: async () => {
+			const data = await API["{teamId}/user"].GET({});
+			setUser(data);
+			return data;
+		},
+	});
 
 	// 이미지 업로드
 	const imageUpload = useCallback(async (file: File): Promise<{ url: string | undefined }> => {
@@ -46,25 +38,19 @@ export default function Page() {
 	// 프로필 수정
 	const updateProfileMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
-			const formData = new FormData();
-			for (const [key, value] of Object.entries(ctx.values)) {
-				formData.append(key, value as string);
-			}
-
-			const file = formData.get("profileImage") as File;
-			const nickname = formData.get("nickname") as string;
-
+			const { file, nickname } = ctx.values as {
+				file: File;
+				nickname: string;
+			};
 			const { url } = await imageUpload(file);
-
 			const payload: Parameters<(typeof API)["{teamId}/user"]["PATCH"]>[1] = { image: url ?? "", nickname };
-
 			return API["{teamId}/user"].PATCH({}, payload);
 		},
 		onSuccess: () => {
 			router.replace(window.location.pathname);
 		},
 		onError: (error) => {
-			alert(`${error.message || "알 수 없는 오류 발생"}`);
+			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -87,86 +73,19 @@ export default function Page() {
 			router.push("/"); // 탈퇴 후 메인 페이지로 이동
 		},
 		onError: (error) => {
-			alert(`${error.message || "알 수 없는 오류 발생"}`);
+			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
 
-	const openAccountDeletionModal = () => setAccountDeletionOpen(true);
-	const closeAccountDeletionModal = () => setAccountDeletionOpen(false);
-
-	// 비밀번호 변경 처리
-	const changePasswordMutation = useMutation({
-		mutationFn: async (ctx: FormContext) => {
-			const { password, passwordConfirmation } = ctx.values as {
-				password: string;
-				passwordConfirmation: string;
-			};
-			return API["{teamId}/user/password"].PATCH({}, { password, passwordConfirmation });
-		},
-		onSuccess: () => {
-			alert("비밀번호가 성공적으로 변경되었습니다.");
-			router.push("/");
-		},
-		onError: (error) => {
-			alert(`${error.message || "알 수 없는 오류 발생"}`);
-			console.error(error);
-		},
-	});
-
-	const handleChangePassword = useCallback(
-		(ctx: FormContext) => {
-			changePasswordMutation.mutate(ctx);
-		},
-		[changePasswordMutation],
-	);
-
-	// 비밀번호 변경 모달
+	// 비밀번호 변경 모달 열기
 	const openChangePasswordModal = useCallback(() => {
-		overlay.open(({ close }) => (
-			<ModalWrapper close={close}>
-				<div className="w-[280px] pt-[20px] text-text-primary">
-					<p className="mb-[16px] text-center font-medium">비밀번호 변경하기</p>
-					<Form onSubmit={handleChangePassword}>
-						<div className="flex flex-col gap-[8px]">
-							<label htmlFor="password">새 비밀번호</label>
-							<Form.Input
-								id="password"
-								type="password"
-								placeholder="새 비밀번호를 입력해주세요."
-								tests={[
-									{ type: "require", data: true, error: "비밀번호를 입력해주세요." },
-									{ type: "minlength", data: 8, error: "비밀번호는 최소 8자입니다." },
-									{ type: "maxlength", data: 20, error: "비밀번호는 최대 20자입니다." },
-									{ type: "match", data: /^[a-zA-Z0-9!@#%^&*]*$/, error: "비밀번호는 숫자, 영문, 특수문자만 가능합니다." },
-								]}
-							/>
-							<Form.Error htmlFor="password" />
+		overlay.open(({ close }) => <ChangePasswordModal close={close} />);
+	}, [overlay]);
 
-							<label htmlFor="passwordConfirmation">새 비밀번호 확인</label>
-							<Form.Input
-								id="passwordConfirmation"
-								type="password"
-								placeholder="새 비밀번호를 다시 입력해주세요."
-								tests={[
-									{ type: "sync", data: "password", error: "비밀번호가 일치하지 않습니다." },
-									{ type: "require", data: true, error: "비밀번호 확인을 입력해주세요." },
-								]}
-							/>
-							<Form.Error htmlFor="passwordConfirmation" />
-						</div>
-						<div className="mt-6 flex h-[47px] gap-2">
-							<Button variant="secondary" onClick={close}>
-								닫기
-							</Button>
-							<Button variant="primary" type="submit">
-								변경하기
-							</Button>
-						</div>
-					</Form>
-				</div>
-			</ModalWrapper>
-		));
+	// 회원 탈퇴 모달 열기
+	const openAccountDeletionModal = useCallback(() => {
+		overlay.open(({ close }) => <AccountDeletionModal onClick={() => deleteAccountMutation.mutate()} close={close} />);
 	}, [overlay]);
 
 	return (
@@ -228,9 +147,6 @@ export default function Page() {
 					</button>
 				</div>
 			</section>
-
-			{/* 회원 탈퇴 팝업 */}
-			{isAccountDeletionOpen && <AccountDeletion onClick={() => deleteAccountMutation.mutate()} close={closeAccountDeletionModal} />}
 		</main>
 	);
 }

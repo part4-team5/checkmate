@@ -6,7 +6,7 @@ import API from "@/app/_api/index";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
@@ -16,11 +16,10 @@ export default function LoginPage() {
 	const [accessToken, setAccessToken] = useCookie<string>("accessToken");
 	const [refreshToken, setRefreshToken] = useCookie<string>("refreshToken");
 	const setUser = useAuthStore((state) => state.setUser);
-	const user = useAuthStore((state) => state.user);
-
-	if (accessToken && refreshToken && user) {
-		router.replace("/");
-	}
+	const { user, clearUser } = useAuthStore((state) => ({
+		user: state.user,
+		clearUser: state.clearUser,
+	}));
 
 	const loginMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
@@ -44,9 +43,8 @@ export default function LoginPage() {
 			router.replace("/");
 		},
 		onError: (error) => {
-			// 로그인 실패 시
-			alert("로그인 실패");
-			console.log(error.message);
+			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			console.error(error);
 		},
 	});
 
@@ -57,6 +55,22 @@ export default function LoginPage() {
 		},
 		[loginMutation],
 	);
+
+	// 기존 로그인 상태 무효화
+	useEffect(() => {
+		if (accessToken || refreshToken || user) {
+			setAccessToken("");
+			setRefreshToken("");
+			clearUser();
+		}
+	}, [accessToken, refreshToken, user, setAccessToken, setRefreshToken, clearUser]);
+
+	// 이미 로그인된 상태라면 리다이렉트
+	useEffect(() => {
+		if (accessToken && refreshToken && user) {
+			router.replace("/");
+		}
+	}, [accessToken, refreshToken, user, router]);
 
 	return (
 		<>
