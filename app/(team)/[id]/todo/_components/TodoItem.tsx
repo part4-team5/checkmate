@@ -39,7 +39,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 		isLongPress.current = false;
 		timerId.current = setTimeout(() => {
 			isLongPress.current = true;
-		}, 300); // 300ms 이상 눌리면 long press로 간주
+		}, 100); // 100ms 이상 눌리면 long press로 간주
 	};
 
 	const { date, time } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
