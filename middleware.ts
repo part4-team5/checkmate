@@ -1,4 +1,3 @@
-import API from "@/app/_api";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -14,31 +13,10 @@ const guestMap = new Map<RegExp, string>([
 	[/^\/create-post/, "/login"], // board 관련 경로
 ]);
 
-export const middleware = async (request: NextRequest) => {
+export const middleware = (request: NextRequest) => {
 	const { pathname } = request.nextUrl;
 	const accessToken = request.cookies.get("accessToken");
 	const map = accessToken ? authMap : guestMap;
-
-	// /[id] 경로에 대한 처리
-	if ((/^\/\d+$/.test(pathname) || /^\/\d+\/todo$/.test(pathname)) && accessToken) {
-		try {
-			const user = await API["{teamId}/user"].GET({});
-
-			// URL에서 [id] 추출
-			const pathMatch = pathname.match(/^\/(\d+)/);
-			const pathId = pathMatch ? pathMatch[1] : null;
-
-			// memberships에 pathId에 해당하는 groupId가 있는지 확인
-			const hasAccess = user.memberships.some((membership) => membership.groupId === Number(pathId));
-
-			if (!hasAccess) {
-				// [id]가 groupId와 일치하지 않으면 "/"로 리다이렉트
-				return NextResponse.redirect(new URL("/", request.url));
-			}
-		} catch (error) {
-			console.error("API 요청 실패:", error);
-		}
-	}
 
 	for (const [regex, redirectUrl] of map.entries()) {
 		if (regex.test(pathname)) {
