@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function Header() {
 	const router = useRouter();
@@ -35,48 +35,6 @@ export default function Header() {
 		queryFn: async () => API["{teamId}/user"].GET({}),
 		enabled: !!accessToken,
 	});
-
-	const userDropdown = [
-		{
-			text: "마이 히스토리",
-			onClick: () => {
-				router.push("/my-history");
-				sideBarClose();
-			},
-		},
-		{
-			text: "계정 설정",
-			onClick: () => {
-				router.push("/my-page");
-				sideBarClose();
-			},
-		},
-		{
-			text: "팀 참여",
-			onClick: () => {
-				router.push("/join-team");
-				sideBarClose();
-			},
-		},
-		{
-			text: "로그아웃",
-			onClick: () => {
-				overlay.open(({ close }) => (
-					<Logout
-						onClick={() => {
-							setRefreshToken(null);
-							setAccessToken(null);
-							sideBarClose();
-							useAuthStore.persist.clearStorage();
-							router.push("/");
-							close();
-						}}
-						close={close}
-					/>
-				));
-			},
-		},
-	];
 
 	const teamDropdown = [
 		...(user?.memberships.map((membership) => ({
@@ -105,6 +63,51 @@ export default function Header() {
 		return () => window.removeEventListener("resize", handleResize);
 	}, [isSidebarOpened, sideBarClose]);
 
+	const userDropdown = useMemo(
+		() => [
+			{
+				text: "마이 히스토리",
+				onClick: () => {
+					router.push("/my-history");
+					sideBarClose();
+				},
+			},
+			{
+				text: "계정 설정",
+				onClick: () => {
+					router.push("/my-page");
+					sideBarClose();
+				},
+			},
+			{
+				text: "팀 참여",
+				onClick: () => {
+					router.push("/join-team");
+					sideBarClose();
+				},
+			},
+			{
+				text: "로그아웃",
+				onClick: () => {
+					overlay.open(({ close }) => (
+						<Logout
+							onClick={() => {
+								setRefreshToken(null);
+								setAccessToken(null);
+								sideBarClose();
+								useAuthStore.persist.clearStorage();
+								router.push("/");
+								close();
+							}}
+							close={close}
+						/>
+					));
+				},
+			},
+		],
+		[overlay, router, setAccessToken, setRefreshToken, sideBarClose],
+	);
+
 	return (
 		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
@@ -121,7 +124,7 @@ export default function Header() {
 
 				<div className="pr-4 tablet:pr-8 desktop:hidden" />
 
-				<Link href="/" onClick={() => sideBarClose()}>
+				<Link href="/" onClick={sideBarClose}>
 					<div className="h-5 w-[102px] desktop:h-8 desktop:w-[158px]">
 						<Icon.LogoTypo width="100%" height="100%" />
 					</div>
