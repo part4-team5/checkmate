@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
+import Oauth from "@/app/(auth)/_components/Oauth";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -146,6 +147,8 @@ export default function SignupPage() {
 					<Form.Submit>회원가입</Form.Submit>
 				</div>
 			</Form>
+
+			<Oauth type="signup" />
 		</>
 	);
 }

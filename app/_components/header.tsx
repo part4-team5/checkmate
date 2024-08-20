@@ -9,6 +9,7 @@ import Logout from "@/app/_components/modal-contents/Logout";
 import useCookie from "@/app/_hooks/useCookie";
 import useOverlay from "@/app/_hooks/useOverlay";
 import Icon from "@/app/_icons";
+import useAuthStore from "@/app/_store/useAuthStore";
 import debounce from "@/app/_utils/debounce";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -28,17 +29,15 @@ export default function Header() {
 
 	const overlay = useOverlay();
 
-	const [isUser, setIsUser] = useState(!!accessToken);
-
 	// 유저 정보 받아오기
 	const { data: user } = useQuery({
 		queryKey: ["user"],
 		queryFn: useCallback(async () => {
-			if (!isUser) return null;
+			if (!accessToken) return null;
 
 			const response = await API["{teamId}/user"].GET({});
 			return response;
-		}, [isUser]),
+		}, [accessToken]),
 	});
 
 	const userDropdown = [
@@ -53,7 +52,7 @@ export default function Header() {
 						onClick={() => {
 							setRefreshToken(null);
 							setAccessToken(null);
-							setIsUser(false);
+							useAuthStore.persist.clearStorage();
 							router.push("/");
 							close();
 						}}
@@ -93,15 +92,15 @@ export default function Header() {
 
 	return (
 		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
-			<div className="mx-auto flex size-full max-w-screen-desktop items-center gap-4 px-4 tablet:gap-10 tablet:px-6">
-				<div className="z-50">
-					<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="block tablet:hidden">
+			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
+				<div className="z-50 block pl-4 tablet:hidden">
+					<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="flex size-full items-center justify-center">
 						<Icon.Hamburger width={24} height={24} />
 					</button>
 
 					{/* 사이드바 */}
 					<div className={`fixed inset-0 left-0 top-[60px] z-30 bg-black/50 ${isOpen ? "block" : "hidden"} cursor-default`} onClick={() => setIsOpen(false)}>
-						<div className="z-40 h-full w-fit min-w-[220px] max-w-[50%] bg-background-secondary py-5 pl-6 pr-5" onClick={(event) => event.stopPropagation()}>
+						<div className="z-40 h-full w-fit min-w-[220px] max-w-[50%] bg-background-secondary py-5 pr-5" onClick={(event) => event.stopPropagation()}>
 							<div className="flex w-full justify-end">
 								<button type="button" onClick={() => setIsOpen(!isOpen)} aria-label="Close">
 									<Icon.Close width={24} height={24} />
@@ -113,7 +112,7 @@ export default function Header() {
 							<button
 								type="button"
 								onClick={() => setIsTeamOpen(!isTeamOpen)}
-								className={`w-full items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${isUser ? "flex" : "hidden"}`}
+								className={`w-full items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 							>
 								<Image src="/icons/landingFolder.svg" alt="selectArrow" width={42} height={42} />
 								{/* <div className="size-2 rounded-full bg-background-inverse" /> */}팀 목록
@@ -141,7 +140,7 @@ export default function Header() {
 
 							<Link
 								href="/create-team"
-								className={`mt-1 items-center gap-2 text-lg font-medium ${isUser ? "flex" : "hidden"} rounded-md hover:bg-background-tertiary`}
+								className={`mt-1 items-center gap-2 text-lg font-medium ${accessToken ? "flex" : "hidden"} rounded-md hover:bg-background-tertiary`}
 								onClick={sideBarClose}
 							>
 								<Image src="/icons/landingMail.svg" alt="selectArrow" width={42} height={42} />
@@ -163,14 +162,14 @@ export default function Header() {
 
 								<Link
 									href="/login"
-									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${isUser ? "hidden" : "flex"}`}
+									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "hidden" : "flex"}`}
 								>
 									<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
 									로그인
 								</Link>
 								<Link
 									href="/signup"
-									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${isUser ? "hidden" : "flex"}`}
+									className={`mt-1 items-center gap-2 rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "hidden" : "flex"}`}
 								>
 									<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
 									회원가입
@@ -180,24 +179,30 @@ export default function Header() {
 					</div>
 				</div>
 
+				<div className="pr-4 tablet:pr-8 desktop:hidden" />
+
 				<Link href="/">
 					<div className="h-5 w-[102px] desktop:h-8 desktop:w-[158px]">
 						<Icon.LogoTypo width="100%" height="100%" />
 					</div>
 				</Link>
 
-				{isUser && (
+				<div className="pr-4 tablet:pr-10" />
+
+				{!!accessToken && (
 					<div className="z-50 flex w-full items-center justify-end tablet:justify-between">
 						<nav className="hidden tablet:flex">
 							<ul className="flex items-center gap-10">
-								<li>
-									<DropDown options={teamDropdown} gapX={10} align="RR">
-										<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
-											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
-											<Icon.ArrowDown width={16} height={16} />
-										</button>
-									</DropDown>
-								</li>
+								{teamDropdown.length > 0 && (
+									<li>
+										<DropDown options={teamDropdown} gapY={10} align="LL">
+											<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
+												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
+												<Icon.ArrowDown width={16} height={16} />
+											</button>
+										</DropDown>
+									</li>
+								)}
 								<li>
 									<Link href="/boards" className="text-lg font-medium">
 										자유게시판
@@ -206,7 +211,7 @@ export default function Header() {
 							</ul>
 						</nav>
 
-						<DropDown options={userDropdown} gapX={10} align="RR">
+						<DropDown options={userDropdown} gapY={10} align="RR">
 							<button type="button" className="flex gap-2">
 								<div className="size-4 tablet:size-6">
 									<Icon.User width="100%" height="100%" />
@@ -217,12 +222,14 @@ export default function Header() {
 					</div>
 				)}
 
-				<nav className={`flex size-full items-center justify-end ${isUser ? "hidden" : "flex"}`}>
+				<nav className={`flex size-full items-center justify-end ${accessToken ? "hidden" : "flex"}`}>
 					<Link href="/login" className="flex items-center gap-2 px-4 text-lg font-medium">
 						<Image src="/icons/landingChecked.svg" alt="selectArrow" width={42} height={42} />
 						로그인
 					</Link>
 				</nav>
+
+				<div className="pr-4 tablet:pr-10 desktop:p-0" />
 			</div>
 		</header>
 	);

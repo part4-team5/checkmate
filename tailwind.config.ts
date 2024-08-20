@@ -1,5 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 /** @type {import("tailwindcss").Config} */
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import plugin from "tailwindcss/plugin";
 
