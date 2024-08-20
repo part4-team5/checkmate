@@ -57,64 +57,71 @@ export default function CreateTeamPage() {
 	);
 
 	return (
-		<section className="flex size-full flex-col items-center justify-center">
-			<div className="pb-20">
-				<h1 className="text-[40px] font-medium leading-[48px] text-white">팀 생성하기</h1>
-			</div>
+		<main className="size-full min-w-[320px] pt-20">
+			<section className="flex size-full flex-col items-center justify-center">
+				<div className="pb-20">
+					<h1 className="text-[40px] font-medium leading-[48px] text-white">팀 생성하기</h1>
+				</div>
 
-			<div className="w-full">
-				<Form onSubmit={handleTeamManagement}>
-					<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
-						<div className="w-fit">
-							<label htmlFor="profileImage" className="w-full pb-3 text-start text-text-primary">
-								팀 프로필
-							</label>
-							<div className="pb-3" />
-							<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 4 * 1048576, error: "이미지 파일 크기는 4MB 이하여야 합니다" }]}>
-								{(file) => (
-									// eslint-disable-next-line react/jsx-no-useless-fragment
-									<>
-										{file ? (
-											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
-												<Image src={file as string} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
-												<div className="relative size-full">
+				<div className="w-full">
+					<Form onSubmit={handleTeamManagement}>
+						<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
+							<div className="w-fit">
+								<label htmlFor="profileImage" className="w-full pb-3 text-start text-text-primary">
+									팀 프로필
+								</label>
+								<div className="pb-3" />
+								<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 4 * 1048576, error: "이미지 파일 크기는 4MB 이하여야 합니다" }]}>
+									{(file) => (
+										// eslint-disable-next-line react/jsx-no-useless-fragment
+										<>
+											{file ? (
+												<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
+													<Image src={file as string} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
+													<div className="relative size-full">
+														<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
+													</div>
+												</div>
+											) : (
+												<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
+													<div className="relative size-5">
+														<Image src="/icons/emptyImage.svg" alt="Profile Preview" fill />
+													</div>
+
 													<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
 												</div>
-											</div>
-										) : (
-											<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
-												<div className="relative size-5">
-													<Image src="/icons/emptyImage.svg" alt="Profile Preview" fill />
-												</div>
+											)}
+										</>
+									)}
+								</Form.ImageInput>
+							</div>
+							<div className="pt-3" />
+							<Form.Error htmlFor="profileImage" />
 
-												<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
-											</div>
-										)}
-									</>
-								)}
-							</Form.ImageInput>
+							<div className="pt-6" />
+
+							<label htmlFor="teamName" className="w-full pb-3 text-start text-text-primary">
+								팀 이름
+							</label>
+							<Form.Input
+								id="teamName"
+								type="text"
+								placeholder="팀 이름을 입력하세요"
+								tests={[{ type: "require", data: true, error: "팀 이름은 필수입니다" }]}
+							/>
+							<Form.Error htmlFor="teamName" />
+
+							<div className="pt-10" />
+
+							<div className="h-12">{teamManagementMutation.isPending ? <Button disabled>팀 생성 중</Button> : <Form.Submit>생성하기</Form.Submit>}</div>
 						</div>
-						<div className="pt-3" />
-						<Form.Error htmlFor="profileImage" />
+					</Form>
+				</div>
 
-						<div className="pt-6" />
-
-						<label htmlFor="teamName" className="w-full pb-3 text-start text-text-primary">
-							팀 이름
-						</label>
-						<Form.Input id="teamName" type="text" placeholder="팀 이름을 입력하세요" tests={[{ type: "require", data: true, error: "팀 이름은 필수입니다" }]} />
-						<Form.Error htmlFor="teamName" />
-
-						<div className="pt-10" />
-
-						<div className="h-12">{teamManagementMutation.isPending ? <Button disabled>팀 생성 중</Button> : <Form.Submit>생성하기</Form.Submit>}</div>
-					</div>
-				</Form>
-			</div>
-
-			<div className="max-w-[340px] pt-6 tablet:max-w-[460px]">
-				<p className="text-md font-normal text-text-primary tablet:text-lg">팀 이름은 회사명이나 모임 이름 등으로 설정하면 좋아요.</p>
-			</div>
-		</section>
+				<div className="max-w-[340px] pt-6 tablet:max-w-[460px]">
+					<p className="text-md font-normal text-text-primary tablet:text-lg">팀 이름은 회사명이나 모임 이름 등으로 설정하면 좋아요.</p>
+				</div>
+			</section>
+		</main>
 	);
 }
