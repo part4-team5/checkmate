@@ -2,38 +2,33 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export const middleware = (request: NextRequest) => {
-	// 요청된 경로
 	const { pathname } = request.nextUrl;
 	const accessToken = request.cookies.get("accessToken");
 
-	// 로그인이 되어있는 상태에서 로그인 페이지나 회원가입 페이지로 이동하려고 할 때
-	if (accessToken && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) {
-		return NextResponse.redirect(new URL("/", request.url));
-	}
+	// 로그인 상태일 때 리디렉션 맵
+	const authMap = new Map<RegExp, string>([[/^\/(login|signup)/, "/"]]);
 
-	// 로그인되지 않은 상태에서 특정 경로로 이동하려고 할 때
-	if (!accessToken) {
-		// /[id] 형식의 경로로 이동하려고 할 때
-		if (pathname.startsWith("/") && pathname.match(/^\/\d+$/)) {
-			return NextResponse.redirect(new URL("/login", request.url));
+	// 비로그인 상태일 때 리디렉션 맵
+	const guestMap = new Map<RegExp, string>([
+		[/^\/\d+$/, "/login"], // /[id] 형식의 경로
+		[/^\/(get-started|create-team|join-team)/, "/login"], // team 관련 경로
+		[/^\/(my-page|my-history)/, "/login"], // user 관련 경로
+		[/^\/create-post/, "/login"], // board 관련 경로
+	]);
+
+	if (accessToken) {
+		// 로그인 상태일 때
+		for (const [regex, redirectUrl] of authMap.entries()) {
+			if (regex.test(pathname)) {
+				return NextResponse.redirect(new URL(redirectUrl, request.url));
+			}
 		}
-
-		// * (team)
-		// /get-started, /create - team, /join-team 경로로 이동하려고 할 때
-		if (pathname.startsWith("/get-started") || pathname.startsWith("/create-team") || pathname.startsWith("/join-team")) {
-			return NextResponse.redirect(new URL("/login", request.url));
-		}
-
-		// * (user)
-		// /my-page, /my-history 경로로 이동하려고 할 때
-		if (pathname.startsWith("/my-page") || pathname.startsWith("/my-history")) {
-			return NextResponse.redirect(new URL("/login", request.url));
-		}
-
-		//* (board)
-		// /create-post 경로로 이동하려고 할 때
-		if (pathname.startsWith("/create-post")) {
-			return NextResponse.redirect(new URL("/login", request.url));
+	} else {
+		// 비로그인 상태일 때
+		for (const [regex, redirectUrl] of guestMap.entries()) {
+			if (regex.test(pathname)) {
+				return NextResponse.redirect(new URL(redirectUrl, request.url));
+			}
 		}
 	}
 
