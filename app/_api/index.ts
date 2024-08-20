@@ -423,8 +423,8 @@ export default abstract class API {
 		 * @param {Object} body - 순서 변경 정보
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override POST({ teamId = "6-5", groupId, id, ...query }: { teamId?: string; groupId: number; id: number }, body: { displayIndex: string }) {
-			return API.POST<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${id}/order`, query, body);
+		public override PATCH({ teamId = "6-5", groupId, id, ...query }: { teamId?: string; groupId: number; id: number }, body: { displayIndex: string }) {
+			return API.PATCH<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${id}/order`, query, body);
 		}
 	})();
 
@@ -444,7 +444,7 @@ export default abstract class API {
 		 * @param {Object} body - 추가할 Task 정보
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override POST(
+		public override PATCH(
 			{ teamId = "6-5", groupId, taskListId, ...query }: { teamId?: string; groupId: number; taskListId: number },
 			body: RecurringCreateBody,
 		) {
@@ -642,7 +642,7 @@ export default abstract class API {
 			const data = new FormData();
 
 			data.append("image", body);
-      
+
 			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images/upload`, query, data);
 		}
 	})();

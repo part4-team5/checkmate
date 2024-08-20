@@ -43,13 +43,16 @@ function Report({ id }: ReportProps) {
 		let total = 0;
 		let done = 0;
 
-		if (data) {
+		if (data && Array.isArray(data.taskLists)) {
 			data.taskLists.forEach((taskList) => {
 				const tasks = taskList.tasks || [];
 				total += tasks.length;
 				done += tasks.filter((task) => task.doneAt !== null).length;
 			});
+		} else {
+			console.warn("Unexpected data structure:", data);
 		}
+
 		return { totalTasks: total, doneTasks: done };
 	})();
 
