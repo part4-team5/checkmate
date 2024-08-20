@@ -46,8 +46,8 @@ export default function SignupPage() {
 			router.replace("/login");
 		},
 		onError: (error) => {
-			alert("회원가입 실패");
-			console.error(error.message);
+			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			console.error(error);
 		},
 	});
 
