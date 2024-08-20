@@ -3,7 +3,7 @@ import Button from "@/app/_components/Button";
 
 export default function GetStartedPage() {
 	return (
-		<main className="size-full">
+		<main className="size-full min-w-[320px] pt-20">
 			<section className="flex h-full flex-col items-center justify-center px-[30px]">
 				{/* 팀 있으면 목록 보여주기 ? */}
 				<TeamList />
