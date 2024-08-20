@@ -6,8 +6,8 @@ import QueryProvider from "@/app/_components/QueryProvider";
 
 export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
 	return (
-		<html lang="ko">
-			<body className="h-dvh bg-background-primary pt-[60px]">
+		<html lang="ko" className="scrollbar-hide">
+			<body className="size-full min-h-dvh bg-background-primary pt-[60px]">
 				<QueryProvider>
 					<Header />
 					{children}
