@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 
 type ModalProps = {
-	close: () => void;
+	close?: () => void;
 	children: React.ReactNode;
 };
 export default function ModalWrapper({ close, children }: ModalProps) {
