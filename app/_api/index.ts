@@ -1194,6 +1194,7 @@ interface Comment {
 	taskId: number;
 	userId: number;
 	user?: User;
+	writer?: ArticleWriter;
 }
 
 interface Recurring {
@@ -1302,7 +1303,7 @@ interface Article {
 	image?: string;
 	title: string;
 	id: number;
-
+	commentCount?: number;
 	isLiked?: boolean;
 	content?: string;
 }
