@@ -6,6 +6,7 @@ import Button from "@/app/_components/Button";
 import { useCallback } from "react";
 import API from "@/app/_api";
 import useAuthStore from "@/app/_store/useAuthStore";
+import useCookie from "@/app/_hooks/useCookie";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -16,6 +17,8 @@ interface ChangePasswordModalProps {
 export default function ChangePassword({ close }: ChangePasswordModalProps) {
 	const router = useRouter();
 	const clearUser = useAuthStore((state) => state.clearUser);
+	const [, setAccessToken] = useCookie("accessToken");
+	const [, setRefreshToken] = useCookie("refreshToken");
 
 	const changePasswordMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
@@ -27,6 +30,8 @@ export default function ChangePassword({ close }: ChangePasswordModalProps) {
 		},
 		onSuccess: () => {
 			alert("비밀번호가 변경되었습니다. 로그인을 다시 시도해주세요.");
+			setAccessToken(null);
+			setRefreshToken(null);
 			clearUser();
 			router.push("/login");
 		},
@@ -50,7 +55,7 @@ export default function ChangePassword({ close }: ChangePasswordModalProps) {
 				<Form
 					onSubmit={(ctx: FormContext) => {
 						handleChangePassword(ctx);
-						close(); // 비밀번호 변경 성공 후 모달 닫기
+						close();
 					}}
 				>
 					<div className="flex flex-col gap-[8px]">

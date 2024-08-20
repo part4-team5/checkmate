@@ -67,13 +67,12 @@ export default function Page() {
 	// 회원 탈퇴
 	const deleteAccountMutation = useMutation({
 		mutationFn: async () => {
-			// 실제 회원 탈퇴 API 호출
 			await API["{teamId}/user"].DELETE({});
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 			alert("회원 탈퇴가 완료되었습니다.");
-			router.push("/"); // 탈퇴 후 메인 페이지로 이동
+			router.push("/");
 		},
 		onError: (error) => {
 			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
