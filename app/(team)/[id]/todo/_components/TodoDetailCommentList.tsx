@@ -21,7 +21,7 @@ type TodoDetailCommentListProps = {
 
 export default function TodoDetailCommentList({ comment, todoId, groupId, currentDate, currentTaskId }: TodoDetailCommentListProps) {
 	const [isCommentEdit, setIsCommentEdit] = useState(false);
-	const [editedComment, setEditedComment] = useState("");
+	const [editedComment, setEditedComment] = useState(comment.content);
 	const patchTodoCommentEditMutation = usePatchTodoCommentEditMutation(setIsCommentEdit, todoId);
 	const deleteTodoCommentMutation = useDeleteTodoCommentMutation(todoId, groupId, currentTaskId, currentDate);
 
