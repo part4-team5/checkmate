@@ -113,8 +113,11 @@ export default function Page() {
 						)) ??
 							// eslint-disable-next-line no-nested-ternary
 							new Array(isMobile ? 1 : isTablet ? 2 : 3).fill(null).map((_, index) => (
-								// eslint-disable-next-line react/no-array-index-key
-								<div key={index} className="flex h-[220px] flex-col gap-[12px] rounded-[12px] border border-border-primary bg-background-secondary/75 px-[16px] py-[16px]">
+								<div
+									// eslint-disable-next-line react/no-array-index-key
+									key={index}
+									className="flex h-[220px] flex-col gap-[12px] rounded-[12px] border border-border-primary bg-background-secondary/75 px-[16px] py-[16px]"
+								>
 									<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
 									<div className="h-[16px] w-5/12 animate-pulse rounded-md bg-border-primary/25" />
 									<div className="h-[16px] w-3/12 animate-pulse rounded-md bg-border-primary/25" />
@@ -176,8 +179,11 @@ export default function Page() {
 						))}
 						{/* eslint-disable-next-line no-nested-ternary */}
 						{new Array(isFetching ? (articles ? Math.min(articles.totalCount - articles.pages.length, 10) : 3) : 0).fill(null).map((_, index) => (
-							// eslint-disable-next-line react/no-array-index-key
-							<div key={index} className="flex h-[176px] flex-col gap-[12px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]">
+							<div
+								// eslint-disable-next-line react/no-array-index-key
+								key={index}
+								className="flex h-[176px] flex-col gap-[12px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
+							>
 								<div className="h-[16px] w-8/12 animate-pulse rounded-md bg-border-primary/25" />
 								<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
 								<div className="h-[16px] w-7/12 animate-pulse rounded-md bg-border-primary/25" />
