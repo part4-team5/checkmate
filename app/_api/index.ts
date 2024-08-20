@@ -511,19 +511,8 @@ export default abstract class API {
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override DELETE({
-			teamId = "6-5",
-			groupId,
-			taskListId,
-			taskId,
-			...query
-		}: {
-			teamId?: string;
-			groupId?: number;
-			taskListId: number;
-			taskId: number;
-		}) {
-			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`, query);
+		public override DELETE({ teamId = "6-5", taskId, ...query }: { teamId?: string; taskId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/${taskId}`, query);
 		}
 	})();
 
@@ -864,21 +853,20 @@ export default abstract class API {
 		 * @param {Object} body - 수정할 댓글 내용
 		 * @returns {Promise<Object>} - 수정된 댓글
 		 */
-		public override PATCH({ teamId = "6-5", taskId, commentId, ...query }: { teamId?: string; taskId: number; commentId: number }, body: { content: string }) {
-			return API.PATCH<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/${taskId}/comments/${commentId}`, query, body);
+		public override PATCH({ teamId = "6-5", commentId, ...query }: { teamId?: string; commentId: number }, body: { content: string }) {
+			return API.PATCH<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/{taskId}/comments/${commentId}`, query, body);
 		}
 
 		/**
 		 * 댓글 삭제
 		 * @param {Object} param - 파라미터 객체
 		 * @param {string} [param.teamId="6-5"] - 팀 ID
-		 * @param {number} taskId - 할일 ID
 		 * @param {number} commentId - 댓글 ID
 		 * @param {Object} query - 쿼리 파라미터
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override DELETE({ teamId = "6-5", taskId, commentId, ...query }: { teamId?: string; taskId: number; commentId: number }) {
-			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/${taskId}/comments/${commentId}`, query);
+		public override DELETE({ teamId = "6-5", commentId, ...query }: { teamId?: string; commentId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${BASE_URL}/${teamId}/tasks/{taskId}/comments/${commentId}`, query);
 		}
 	})();
 
