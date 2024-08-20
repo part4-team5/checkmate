@@ -8,29 +8,34 @@
 	font-family: Pretendard;
 }
 
+input:-webkit-autofill {
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: white;
+}
+
 @layer utilities {
 	.md h1 {
-		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
 	}
 
 	.md h2 {
-		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
 	}
 
 	.md h3 {
-		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
 	}
 
 	.md h4 {
-		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
 	}
 
 	.md h5 {
-		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
 	}
 
 	.md h6 {
-		@apply border-brand-primary border-b pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
 	}
 
 	.md hr {
@@ -38,7 +43,7 @@
 	}
 
 	.md blockquote {
-		@apply border-brand-primary border-l-[5px] pl-[20px];
+		@apply border-l-[5px] border-brand-primary pl-[20px];
 	}
 
 	.md img {
