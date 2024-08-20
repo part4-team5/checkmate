@@ -1,10 +1,7 @@
-import Cookie from "@/app/_utils/Cookie";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Page() {
-	const user = Cookie.get("accessToken");
-
 	return (
 		<main className="h-full min-w-[320px] bg-background-primary">
 			<section className="flex h-[640px] flex-col items-center justify-between tablet:h-[940px] desktop:h-[1080px]">
@@ -26,21 +23,12 @@ export default function Page() {
 				</div>
 
 				<div className="z-10 flex items-center justify-center pb-[180px]">
-					{user ? (
-						<Link
-							href="/get-started"
-							className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
-						>
-							지금 시작하기
-						</Link>
-					) : (
-						<Link
-							href="/login"
-							className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
-						>
-							지금 시작하기
-						</Link>
-					)}
+					<Link
+						href="/get-started"
+						className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
+					>
+						지금 시작하기
+					</Link>
 				</div>
 			</section>
 

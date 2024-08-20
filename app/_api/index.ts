@@ -258,24 +258,20 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 투두 히스토리
 		 */
 		public override GET({ teamId = "6-5", ...query }: { teamId?: string }) {
-			return API.GET<
-				[
-					{
-						tasksDone: {
-							deletedAt: string;
-							userId: number;
-							recurringId: number;
-							frequency: Frequency;
-							date: string;
-							doneAt: string;
-							description: string;
-							name: string;
-							updatedAt: string;
-							id: number;
-						}[];
-					},
-				]
-			>(MIME.JSON, `${BASE_URL}/${teamId}/user/history`, query);
+			return API.GET<{
+				tasksDone: {
+					deletedAt: string;
+					userId: number;
+					recurringId: number;
+					frequency: Frequency;
+					date: string;
+					doneAt: string;
+					description: string;
+					name: string;
+					updatedAt: string;
+					id: number;
+				}[];
+			}>(MIME.JSON, `${BASE_URL}/${teamId}/user/history`, query);
 		}
 	})();
 
@@ -637,6 +633,7 @@ export default abstract class API {
 			const data = new FormData();
 
 			data.append("image", body);
+      
 			return API.POST<{ url: string }>(MIME.FORM_DATA, `${BASE_URL}/${teamId}/images/upload`, query, data);
 		}
 	})();

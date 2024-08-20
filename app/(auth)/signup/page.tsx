@@ -13,14 +13,9 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function SignupPage() {
 	const router = useRouter();
-	const [accessToken, setAccessToken] = useCookie<string>("accessToken");
-	const [refreshToken, setRefreshToken] = useCookie<string>("refreshToken");
+	const [, setAccessToken] = useCookie<string>("accessToken");
+	const [, setRefreshToken] = useCookie<string>("refreshToken");
 	const setUser = useAuthStore((state) => state.setUser);
-	const user = useAuthStore((state) => state.user);
-
-	if (accessToken && refreshToken && user) {
-		router.replace("/");
-	}
 
 	const signupMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
@@ -46,8 +41,8 @@ export default function SignupPage() {
 			router.replace("/login");
 		},
 		onError: (error) => {
-			alert("회원가입 실패");
-			console.error(error.message);
+			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			console.error(error);
 		},
 	});
 

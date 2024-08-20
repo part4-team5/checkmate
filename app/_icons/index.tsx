@@ -172,6 +172,38 @@ Icon.Kebab = function Kebab({ width, height, color }: IconProps) {
 	);
 };
 
+Icon.Bold = function Bold({ width, height, color }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M272-200v-560h221q65 0 120 40t55 111q0 51-23 78.5T602-491q25 11 55.5 41t30.5 90q0 89-65 124.5T501-200H272Zm121-112h104q48 0 58.5-24.5T566-372q0-11-10.5-35.5T494-432H393v120Zm0-228h93q33 0 48-17t15-38q0-24-17-39t-44-15h-95v109Z" />
+		</svg>
+	);
+};
+
+Icon.Italic = function Italic({ width, height, color }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M200-200v-100h160l120-360H320v-100h400v100H580L460-300h140v100H200Z" />
+		</svg>
+	);
+};
+
+Icon.Underline = function Underline({ width, height, color }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M200-120v-80h560v80H200Zm280-160q-101 0-157-63t-56-167v-330h103v336q0 56 28 91t82 35q54 0 82-35t28-91v-336h103v330q0 104-56 167t-157 63Z" />
+		</svg>
+	);
+};
+
+Icon.StrikeThrough = function StrikeThrough({ width, height, color }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M80-400v-80h800v80H80Zm340-160v-120H200v-120h560v120H540v120H420Zm0 400v-160h120v160H420Z" />
+		</svg>
+	);
+};
+
 Icon.TodoCheck = function TodoCheck({ width = 16, height = 16, color = "none" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 16 16" fill={color} xmlns="http://www.w3.org/2000/svg">
