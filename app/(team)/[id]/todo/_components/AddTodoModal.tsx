@@ -5,7 +5,7 @@ import DropDown from "@/app/_components/Dropdown";
 import Form from "@/app/_components/Form";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import Icon from "@/app/_icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCreateTodoMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 
@@ -53,14 +53,14 @@ export default function Modal({ close }: { close: () => void }) {
 			frequencyType: frequency,
 			weekDays,
 			monthDay,
-			writerId: 0,
-			groupId,
-			taskListId,
-			updatedAt: "",
-			createdAt: "",
-			id: 1,
 		});
 	};
+
+	useEffect(() => {
+		if (createTodoMutation.isSuccess) {
+			close();
+		}
+	}, [close, createTodoMutation.isSuccess]);
 
 	return (
 		<ModalWrapper close={close}>
@@ -79,7 +79,6 @@ export default function Modal({ close }: { close: () => void }) {
 				<Form
 					onSubmit={(ctx) => {
 						handleCreateTodo(ctx);
-						close();
 					}}
 				>
 					<div className="mx-auto flex w-full max-w-80 flex-col tablet:min-w-80">
@@ -253,7 +252,15 @@ export default function Modal({ close }: { close: () => void }) {
 						<div className="pt-6" />
 
 						<div className="h-12">
-							{frequency === Frequency.WEEKLY && weekDays.length === 0 ? <Button disabled>만들기</Button> : <Form.Submit>만들기</Form.Submit>}
+							{createTodoMutation.isPending ? (
+								<Button type="submit" disabled>
+									생성 중...
+								</Button>
+							) : frequency === Frequency.WEEKLY && weekDays.length === 0 ? (
+								<Button disabled>만들기</Button>
+							) : (
+								<Form.Submit>만들기</Form.Submit>
+							)}
 						</div>
 					</div>
 				</Form>

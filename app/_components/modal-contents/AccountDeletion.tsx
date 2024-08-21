@@ -23,7 +23,13 @@ export default function AccountDeletion({ onClick, close }: AccountDeletionProps
 						<Button variant="white" onClick={close}>
 							닫기
 						</Button>
-						<Button variant="danger" onClick={onClick}>
+						<Button
+							variant="danger"
+							onClick={() => {
+								onClick();
+								close();
+							}}
+						>
 							회원 탈퇴
 						</Button>
 					</div>
