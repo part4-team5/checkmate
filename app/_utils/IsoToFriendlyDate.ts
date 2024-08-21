@@ -9,25 +9,11 @@ export const convertIsoToDateAndTime = (isoString?: string) => {
 	const year = date.getFullYear();
 	const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
 	const day = date.getDate();
-	let hours = date.getHours();
-	const minutes = date.getMinutes();
-
-	// 오전/오후 구분 및 시간 포맷 설정
-	const period = hours < 12 ? "오전" : "오후";
-	if (hours > 12) {
-		hours -= 12; // 12시간제로 변환
-	} else if (hours === 0) {
-		hours = 12; // 오전 0시는 오전 12시로 변환
-	}
-
-	// 분 단위를 항상 두 자리로 포맷
-	const formattedMinutes = minutes.toString().padStart(2, "0");
 
 	// 포맷된 문자열 생성
 	const formattedDate = `${year}년 ${month}월 ${day}일`;
-	const formattedTime = `${period} ${hours}:${formattedMinutes}`;
 
-	return { date: formattedDate, time: formattedTime };
+	return { date: formattedDate };
 };
 
 export const convertIsoToDateToKorean = (date: Date): string => {

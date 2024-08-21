@@ -49,7 +49,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 		overlay.open(({ close }) => <DeleteModal onClick={() => onTodoDelete(todoId)} close={close} modalContent={`${name}을 삭제하시겠습니까?`} />);
 	};
 
-	const { date, time } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
+	const { date } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
 	return (
 		<div
 			className="lg:hover:bg-background-tertiary flex w-full justify-between rounded-lg bg-background-secondary px-[14px] py-3 hover:cursor-pointer"
@@ -100,7 +100,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 						</div>
 					</div>
 				</div>
-				<DateTimeFrequency date={date} time={time} frequency={frequency[todoItem.frequency]} />
+				<DateTimeFrequency date={date} frequency={frequency[todoItem.frequency]} />
 			</div>
 			<button
 				aria-label="할 일 삭제"
