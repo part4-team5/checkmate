@@ -1,20 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/app/_utils/dbConnect";
 import InviteModel from "@/app/_utils/_models/Invite.model";
+import UserModel from "@/app/_utils/_models/Users.model";
 
 export async function DELETE(req: NextRequest) {
 	await dbConnect();
 
-	const url = req.nextUrl;
-	const id = url.pathname.split("/").pop();
-	const teamId = url.searchParams.get("teamId");
+	const { pathname } = req.nextUrl;
+	const parts = pathname.split("/");
+
+	const id = parts[parts.indexOf("invite") + 1]; // 경로에서 [id] 추출
+	const groupId = parts[parts.indexOf("groupId") + 1]; // 경로에서 [groupId] 추출
+
+	console.log({ id, groupId });
 
 	if (!id) {
 		return NextResponse.json({ error: "Invite ID is required" }, { status: 400 });
 	}
 
 	try {
-		const invite = await InviteModel.findOneAndDelete({ id, teamId });
+		const user = await UserModel.findOne({ id });
+
+		if (!user) {
+			return NextResponse.json({ error: "User not found" }, { status: 404 });
+		}
+
+		const invite = await InviteModel.findOneAndDelete({ email: user.email, groupId });
 
 		if (!invite) {
 			return NextResponse.json({ error: "Invite not found" }, { status: 404 });

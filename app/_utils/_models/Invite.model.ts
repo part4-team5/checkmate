@@ -1,22 +1,30 @@
 import mongoose, { Schema, Model, Document } from "mongoose";
 
 interface IInvite extends Document {
-	userId: number;
-	teamId: Number;
+	email: string;
+	groupName: string;
+	groupImage: string;
+	groupId: number;
 	token: string;
 }
 
 const InviteSchema: Schema<IInvite> = new Schema(
 	{
-		userId: {
-			type: Number,
+		email: {
+			type: String,
 			required: true,
 			unique: true,
 		},
-		teamId: {
+		groupId: {
 			type: Number,
 			required: true,
-			unique: true,
+		},
+		groupName: {
+			type: String,
+			required: true,
+		},
+		groupImage: {
+			type: String,
 		},
 		token: {
 			type: String,

@@ -11,7 +11,7 @@ export async function GET() {
 		const Invites = await InviteModel.find();
 
 		const usersWithInvites = users.map((user) => {
-			const userInvites = Invites.filter((invite) => invite.userId === user.id);
+			const userInvites = Invites.filter((invite) => invite.email === user.email);
 
 			// 유저 객체에 `invite` 필드를 추가
 			return {
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 		const body = await req.json();
 
 		if (await UserModel.findOne({ email: body.email })) {
-			return console.log("User already exists");
+			return NextResponse.json({ message: "User already exists" }, { status: 202 });
 		}
 
 		const createUser = await UserModel.create(body);

@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 			return NextResponse.json({ error: "User not found" }, { status: 404 });
 		}
 
-		const invite = await InviteModel.find({ userId: user.id });
+		const invite = await InviteModel.find({ email: user.email });
 
 		if (!invite) {
 			return NextResponse.json({ error: "Invite not found" }, { status: 404 });
@@ -28,24 +28,11 @@ export async function GET(req: NextRequest) {
 	}
 }
 
-export async function POST(req: NextRequest) {
-	await dbConnect();
-
-	try {
-		const body = await req.json();
-		const invite = await InviteModel.create(body);
-
-		return NextResponse.json(invite, { status: 201 });
-	} catch (error) {
-		return NextResponse.json({ error: "Failed to create invite", message: error }, { status: 400 });
-	}
-}
-
 export function OPTIONS() {
 	return new Response(null, {
 		status: 200,
 		headers: {
-			Allow: "GET, POST, OPTIONS",
+			Allow: "GET, OPTIONS",
 		},
 	});
 }

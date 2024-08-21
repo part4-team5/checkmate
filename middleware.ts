@@ -17,10 +17,17 @@ export const middleware = (request: NextRequest) => {
 	const accessToken = request.cookies.get("accessToken");
 	const map = accessToken ? authMap : guestMap;
 
+	const acceptHeader = request.headers.get("accept") || "";
+
 	for (const [regex, redirectUrl] of map.entries()) {
 		if (regex.test(pathname)) {
 			return NextResponse.redirect(new URL(redirectUrl, request.url));
 		}
+	}
+
+	// api 경로 접근 금지
+	if (pathname.startsWith("/api") && !acceptHeader.includes("application/json")) {
+		return NextResponse.redirect(new URL("/", request.url));
 	}
 
 	return NextResponse.next();
@@ -28,5 +35,5 @@ export const middleware = (request: NextRequest) => {
 
 export const config = {
 	// 다음과 같은 경로를 제외하고 모든 경로에 미들웨어를 적용합니다.
-	matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images|icons).*)"],
+	matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images|icons).*)", "/api/:path*"],
 };

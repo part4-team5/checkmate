@@ -15,6 +15,7 @@ export default function TeamList() {
 	if (isLoading) {
 		return (
 			<div className="size-full max-w-screen-tablet rounded-lg bg-background-secondary px-2 py-3">
+				<p className="rounded-lg bg-background-tertiary px-6 py-2 text-xl font-semibold text-text-primary">내 팀</p>
 				<ul className="size-full max-h-[60dvh] min-h-28 max-w-screen-tablet overflow-y-auto px-3 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
 					{Array.from({ length: 5 }).map((_, i) => (
 						// eslint-disable-next-line react/no-array-index-key
@@ -34,6 +35,7 @@ export default function TeamList() {
 		return (
 			// 팀 있으면 목록 보여주기
 			<div className="size-full max-w-screen-tablet rounded-lg bg-background-secondary px-2 py-3">
+				<p className="rounded-lg bg-background-tertiary px-6 py-2 text-xl font-semibold text-text-primary">내 팀</p>
 				<ul className="size-full max-h-[60dvh] min-h-28 max-w-screen-tablet overflow-y-auto px-3 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
 					{user?.memberships.map((team) => (
 						<li key={team.groupId} className="mb-2 w-full">
@@ -41,7 +43,13 @@ export default function TeamList() {
 								href={`/${team.groupId}`}
 								className="flex items-center gap-3 whitespace-nowrap rounded-md p-2 text-lg font-medium text-text-primary hover:bg-background-tertiary"
 							>
-								<Image src={team.group.image ?? "/icons/emptyImage.svg"} alt={team.group.name} width={32} height={32} className="size-8" />
+								<Image
+									src={team.group.image ?? "/icons/emptyImage.svg"}
+									alt={team.group.name}
+									width={32}
+									height={32}
+									className="size-8 rounded-lg object-cover"
+								/>
 								<p className="w-fit overflow-x-hidden text-ellipsis">{team.group.name}</p>
 							</Link>
 						</li>

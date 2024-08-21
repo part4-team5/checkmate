@@ -14,20 +14,11 @@ import MemberProfile from "@/app/_components/modal-contents/MemberProfile";
 import { ReportProps } from "./Report";
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
-type Token = string;
 
 function Members({ id }: ReportProps) {
 	const overlay = useOverlay();
 
 	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id }), [id]);
-
-	const getInvitationLink = useCallback((): Promise<Token> => API["{teamId}/groups/{id}/invitation"].GET({ id }), [id]);
-
-	const { refetch } = useQuery<Token>({
-		queryKey: ["invitationLink", id],
-		queryFn: getInvitationLink,
-		enabled: false,
-	});
 
 	const { data, isLoading, error } = useQuery<Team>({
 		queryKey: ["groupInfo", id],
@@ -51,21 +42,8 @@ function Members({ id }: ReportProps) {
 		[overlay],
 	);
 
-	const handleLinkCopy = async () => {
-		const { data: invitationToken } = await refetch();
-		if (invitationToken) {
-			const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL ?? "";
-			const params = new URLSearchParams({
-				groupId: String(id),
-				token: invitationToken,
-			});
-			const invitationUrl = `${redirectUrl}/join-team?${params.toString()}`;
-			navigator.clipboard.writeText(invitationUrl);
-		}
-	};
-
 	const handleInviteClick = () => {
-		overlay.open(({ close }) => <MemberInvite onClick={handleLinkCopy} close={close} />);
+		overlay.open(({ close }) => <MemberInvite close={close} groupId={id} />);
 	};
 
 	if (isLoading) return <div>Loading...</div>;
