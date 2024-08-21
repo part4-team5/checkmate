@@ -145,16 +145,13 @@ Calendar.Picker = function Picker() {
 
 			if (value.getMonth() !== date.getMonth()) {
 				impl.color = "#64748B";
-			} else {
-				const today = new Date();
-
-				if (value.getFullYear() === today.getFullYear() && value.getMonth() === today.getMonth() && value.getDate() === today.getDate()) {
-					impl.color = "#10B981";
-				}
+			} else if (value.getFullYear() === ctx.date.getFullYear() && value.getMonth() === ctx.date.getMonth() && value.getDate() === ctx.date.getDate()) {
+				impl.color = "#1e293b";
+				impl.background = "#10B981";
 			}
 			return impl;
 		},
-		[date],
+		[date, ctx.date],
 	);
 
 	return (
@@ -195,12 +192,12 @@ Calendar.Picker = function Picker() {
 
 									return (
 										// eslint-disable-next-line react/no-array-index-key
-										<td key={y} className="rounded-[12px] px-0 py-0 hover:bg-brand-primary">
+										<td key={y} className="overflow-hidden rounded-[12px] px-0 py-0">
 											<button
 												type="button"
 												style={style(cell)}
 												onClick={() => ctx.setDate(cell)}
-												className="h-[32px] w-[32px] text-md font-medium hover:text-background-secondary"
+												className="h-[32px] w-[32px] text-md font-medium hover:text-brand-primary"
 											>
 												{cell.getDate()}
 											</button>

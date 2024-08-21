@@ -64,7 +64,7 @@ export default function Page() {
 		<main className="h-full">
 			<Link
 				href="/create-post"
-				className="fixed z-40 shadow-lg bottom-[45px] right-[16px] flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary hover:bg-brand-secondary text-text-primary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
+				className="fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary text-text-primary shadow-lg hover:bg-brand-secondary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
 			>
 				+ 글쓰기
 			</Link>
@@ -91,26 +91,29 @@ export default function Page() {
 							<Link
 								key={article.id}
 								href={`/boards/${article.id}`}
-								className="relative flex h-[220px] flex-col overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
+								className="relative flex h-[176px] justify-between gap-[24px] overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
 							>
-								<div style={{ backgroundImage: `url("${article.image}")` }} className="absolute bottom-0 right-0 top-0 w-6/12 bg-cover" />
-								<div className="absolute bottom-0 right-0 top-0 w-6/12 bg-gradient-to-r from-background-secondary to-transparent" />
-								<div className="flex gap-[4px] text-md font-semibold text-text-primary">
-									<Image src="/images/medal.webp" alt="icon" width={16} height={16} />
-									Best
-								</div>
-								<div className="mt-[14px] text-md font-medium text-text-secondary">{article.title}</div>
-								<div className="mt-[12px] grow text-md font-medium text-text-default">{new Date(article.createdAt).toLocaleDateString()}</div>
-								<div className="mt-[14px] flex items-center justify-between">
-									<div className="flex items-center gap-[12px]">
-										<Image src="/images/profile.png" alt="avatar" width={32} height={32} />
-										<div className="text-md font-medium text-text-primary">{article.writer.nickname}</div>
+								<div className="flex grow flex-col gap-[12px]">
+									<div className="flex gap-[4px] text-md font-semibold text-text-primary">
+										<Image src="/images/medal.webp" alt="icon" width={16} height={16} />
+										Best
 									</div>
-									<div className="flex items-center gap-[4px]">
-										<Icon.Heart width={16} height={16} color={article.isLiked ? "#EF4444" : "#64748B"} />
-										<div className="text-md font-normal text-text-default">{article.likeCount}</div>
+									<div className="text-md font-medium text-text-secondary">{article.title}</div>
+									<div className="grow text-md font-medium text-text-default">{new Date(article.createdAt).toLocaleDateString()}</div>
+									<div className="flex items-center justify-between gap-[10px]">
+										<div className="flex items-center gap-[12px]">
+											<Image src="/images/profile.png" alt="avatar" width={32} height={32} />
+											<div className="text-md font-medium text-text-primary">{article.writer.nickname}</div>
+										</div>
+										<div className="flex items-center gap-[4px]">
+											<Icon.Heart width={18} height={18} color={article.isLiked ? "#EF4444" : "#64748B"} />
+											<div className="text-2lg font-normal text-text-default">{article.likeCount}</div>
+										</div>
 									</div>
 								</div>
+								{article.image && (
+									<div className="aspect-square rounded-[12px] bg-background-tertiary bg-cover" style={{ backgroundImage: `url("${article.image}")` }} />
+								)}
 							</Link>
 						)) ??
 							// eslint-disable-next-line no-nested-ternary
@@ -163,22 +166,25 @@ export default function Page() {
 								// @ts-ignore
 								ref={articles.pages.length - 1 === index ? (ref) => setViewport(ref) : undefined}
 								href={`/boards/${article.id}`}
-								className="relative flex h-[176px] flex-col overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
+								className="relative flex h-[176px] justify-between gap-[24px] overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
 							>
-								<div style={{ backgroundImage: `url("${article.image}")` }} className="absolute bottom-0 right-0 top-0 w-6/12 bg-cover" />
-								<div className="absolute bottom-0 right-0 top-0 w-6/12 bg-gradient-to-r from-background-secondary to-transparent" />
-								<div className="text-md font-medium text-text-secondary">{article.title}</div>
-								<div className="mt-[12px] grow text-md font-medium text-text-default">{new Date(article.createdAt).toLocaleDateString()}</div>
-								<div className="mt-[14px] flex items-center justify-between">
-									<div className="flex items-center gap-[12px]">
-										<Image src="/images/profile.png" alt="avatar" width={32} height={32} />
-										<div className="text-md font-medium text-text-primary">{article.writer.nickname}</div>
-									</div>
-									<div className="flex items-center gap-[4px]">
-										<Icon.Heart width={16} height={16} color={article.isLiked ? "#EF4444" : "#64748B"} />
-										<div className="text-md font-normal text-text-default">{article.likeCount}</div>
+								<div className="flex grow flex-col gap-[12px]">
+									<div className="text-md font-medium text-text-secondary">{article.title}</div>
+									<div className="grow text-md font-medium text-text-default">{new Date(article.createdAt).toLocaleDateString()}</div>
+									<div className="flex items-center justify-between gap-[10px]">
+										<div className="flex items-center gap-[12px]">
+											<Image src="/images/profile.png" alt="avatar" width={32} height={32} />
+											<div className="text-md font-medium text-text-primary">{article.writer.nickname}</div>
+										</div>
+										<div className="flex items-center gap-[4px]">
+											<Icon.Heart width={18} height={18} color={article.isLiked ? "#EF4444" : "#64748B"} />
+											<div className="text-2lg font-normal text-text-default">{article.likeCount}</div>
+										</div>
 									</div>
 								</div>
+								{article.image && (
+									<div className="aspect-square rounded-[12px] bg-background-tertiary bg-cover" style={{ backgroundImage: `url("${article.image}")` }} />
+								)}
 							</Link>
 						))}
 						{/* eslint-disable-next-line no-nested-ternary */}
