@@ -55,6 +55,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 
 	const handleTodoCommentEditSubmit = (e: React.FormEvent<HTMLFormElement>, commentId: number) => {
 		e.preventDefault();
+		if (editedComment.length === 0) return;
 		patchTodoCommentEditMutation.mutate({ commentId, content: editedComment });
 	};
 
@@ -66,7 +67,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 					<div className="flex justify-between">
 						{isCommentEdit ? (
 							<textarea
-								className="w-full rounded-lg bg-background-secondary p-2 shadow-sm shadow-brand-secondary focus:outline-none"
+								className={`${editedComment.length > 0 ? "border-brand-primary" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-background-secondary pl-2 focus:outline-none`}
 								onChange={handleEditCommentChange}
 								value={editedComment}
 								onKeyDown={(e) => {
