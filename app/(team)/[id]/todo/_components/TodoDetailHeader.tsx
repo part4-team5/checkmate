@@ -63,7 +63,7 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 		setIsEdit(false);
 	};
 
-	const { date, time } = convertIsoToDateAndTime(todoContent?.date);
+	const { date } = convertIsoToDateAndTime(todoContent?.date);
 	return (
 		<div>
 			{!todoContent && (
@@ -119,7 +119,7 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 								{todoContent.recurring.createdAt.split("T")[0].split("-").join(".")}
 							</div>
 						</div>
-						<DateTimeFrequency date={date} time={time} frequency={frequency[todoContent.frequency as FrequencyType]} />
+						<DateTimeFrequency date={date} frequency={frequency[todoContent.frequency as FrequencyType]} />
 						<div className="mt-6">
 							{isEdit ? (
 								<textarea
