@@ -43,7 +43,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const { data: todoItems, isLoading: isTodoItemsLoading } = useGetTodoItems(groupId, currentTaskId, currentDate);
 	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
 	const todoOrderMutation = useTodoOrderMutation();
-	const todoDeleteMutation = useDeleteTodoMutation();
+	const todoDeleteMutation = useDeleteTodoMutation(groupId, currentTaskId, currentDate);
 
 	const containerRef = useRef(null);
 

@@ -1,5 +1,7 @@
 import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFrequency";
 import API from "@/app/_api";
+import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
+import useOverlay from "@/app/_hooks/useOverlay";
 import Icon from "@/app/_icons";
 import { convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
@@ -33,6 +35,7 @@ type TodoItemProps = {
 export default function TodoItem({ taskId, todoItem, groupId, currentDate, onToggleTodo, onTodoClick, onTodoDelete }: TodoItemProps) {
 	const isLongPress = useRef(false);
 	const timerId = useRef<NodeJS.Timeout>();
+	const overlay = useOverlay();
 
 	// 타이머 시작
 	const handleMouseDown = () => {
@@ -40,6 +43,10 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 		timerId.current = setTimeout(() => {
 			isLongPress.current = true;
 		}, 200); // 200ms 이상 눌리면 long press로 간주
+	};
+
+	const handleTodoDelete = (todoId: number, name: string) => {
+		overlay.open(({ close }) => <DeleteModal onClick={() => onTodoDelete(todoId)} close={close} modalContent={`${name}을 삭제하시겠습니까?`} />);
 	};
 
 	const { date, time } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
@@ -100,7 +107,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 				type="submit"
 				onClick={(event) => {
 					event.stopPropagation();
-					onTodoDelete(todoItem.id);
+					handleTodoDelete(todoItem.id, todoItem.name);
 				}}
 			>
 				<Icon.TodoDelete width={24} height={24} />

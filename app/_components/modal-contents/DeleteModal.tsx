@@ -17,7 +17,13 @@ export default function DeleteModal({ onClick, close, modalContent }: AccountDel
 						<Button variant="white" onClick={close}>
 							닫기
 						</Button>
-						<Button variant="danger" onClick={onClick}>
+						<Button
+							variant="danger"
+							onClick={() => {
+								onClick();
+								close();
+							}}
+						>
 							삭제
 						</Button>
 					</div>

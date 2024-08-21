@@ -6,12 +6,14 @@ type ModalProps = {
 	close?: () => void;
 	children: React.ReactNode;
 };
+
 export default function ModalWrapper({ close, children }: ModalProps) {
 	const handleButtonClick = () => {
 		if (close) {
 			close();
 		}
 	};
+
 	return (
 		<AnimatePresence>
 			<motion.div

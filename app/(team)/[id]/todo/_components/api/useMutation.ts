@@ -277,13 +277,29 @@ export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
 	});
 };
 
-export const useDeleteTodoMutation = () =>
-	useMutation({
+export const useDeleteTodoMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
+	const queryClient = useQueryClient();
+	return useMutation({
 		mutationFn: (todoId: number) => deleteTodo(todoId),
-		onError: (error) => {
+		onMutate: async (todoId) => {
+			await queryClient.cancelQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
+			const oldData = queryClient.getQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")));
+			console.log(oldData);
+			const newData = oldData?.filter((todo) => todo.id !== todoId);
+			queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), newData);
+			return { oldData };
+		},
+		onError: (error, variables, context) => {
+			if (context?.oldData) {
+				queryClient.setQueryData(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), context.oldData);
+			}
 			alert(`오류: ${error.message} - 할 일 삭제에 실패했습니다.`);
 		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
+		},
 	});
+};
 
 export const usePatchTodoCommentEditMutation = (setter: Dispatch<SetStateAction<boolean>>, todoId: number) => {
 	const queryClient = useQueryClient();
