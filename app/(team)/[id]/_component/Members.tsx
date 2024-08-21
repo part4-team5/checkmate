@@ -68,8 +68,6 @@ function Members({ id }: ReportProps) {
 			setTimeout(() => {
 				setShowToast(false);
 			}, 2000);
-		} else {
-			console.error("초대 토큰을 가져오는 데 실패했습니다");
 		}
 	};
 
