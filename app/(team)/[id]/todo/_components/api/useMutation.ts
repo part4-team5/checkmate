@@ -120,6 +120,7 @@ export const useToggleTodoStatusMutation = (groupId: number, currentTaskId: numb
 		},
 		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 			queryClient.invalidateQueries({ queryKey: ["tasks", { taskId: currentTaskId }] });
 		},
@@ -205,6 +206,7 @@ export const useEditTodoMutation = (groupId: number, currentTaskId: number, curr
 			alert(`오류: ${error.message} - 할 일 수정에 실패했습니다.`);
 		},
 		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 		},
 	});
@@ -272,6 +274,7 @@ export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
 		},
 		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")) });
 		},
 	});
@@ -296,6 +299,7 @@ export const useDeleteTodoMutation = (groupId: number, currentTaskId: number, cu
 			alert(`오류: ${error.message} - 할 일 삭제에 실패했습니다.`);
 		},
 		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 		},
 	});
