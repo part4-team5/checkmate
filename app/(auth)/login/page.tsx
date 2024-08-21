@@ -39,13 +39,13 @@ export default function LoginPage() {
 
 			setUser({
 				id: response.user.id,
-				email: response.user.email,
+				email: response.user.email as string,
 				nickname: response.user.nickname,
 				image: response.user.image ? response.user.image : null,
 			});
 
 			// 몽고 DB에 유저 정보 저장
-			userUpload.mutate({ id: response.user.id, email: response.user.email });
+			userUpload.mutate({ id: response.user.id, email: response.user.email as string });
 
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);

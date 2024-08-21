@@ -1309,7 +1309,7 @@ interface User {
 	updatedAt?: string;
 	createdAt?: string;
 	encryptedPassword?: string;
-	email: string;
+	email?: string;
 }
 interface Todo extends TodoBase {
 	doneBy: { id: number; nickname: string; image?: string };

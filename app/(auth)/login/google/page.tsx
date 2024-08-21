@@ -57,13 +57,13 @@ export default function GoogleLogin() {
 			// 전역 상태에 유저 정보 저장
 			setUser({
 				id: data.user.id,
-				email: data.user.email ?? "",
+				email: data.user.email as string,
 				nickname: data.user.nickname,
 				image: data.user.image ? data.user.image : null,
 			});
 
 			// 몽고 DB에 유저 정보 저장
-			userUpload.mutate({ id: data.user.id, email: data.user.email });
+			userUpload.mutate({ id: data.user.id, email: data.user.email as string });
 
 			// 쿠키에 토큰 저장
 			setAccessToken(data.accessToken);
