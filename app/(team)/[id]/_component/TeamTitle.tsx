@@ -87,8 +87,8 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 		return (
 			<div className="mt-[24px] flex h-[64px] w-full items-center justify-between rounded-[12px] bg-background-secondary px-[24px] py-[20px]">
 				<div className="flex w-full justify-between">
-					<div className="h-[24px] w-[30px] rounded-md bg-background-primary" />
-					<div className="h-[24px] w-[30px] rounded-md bg-background-primary" />
+					<div className="h-[24px] w-[150px] animate-pulse rounded-md bg-background-primary" />
+					<div className="h-[24px] w-[24px] animate-pulse rounded-md bg-background-primary" />
 				</div>
 			</div>
 		);
