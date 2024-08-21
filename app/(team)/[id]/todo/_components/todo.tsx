@@ -49,24 +49,6 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 
 	const tasks = groupList?.taskLists;
 
-	// /* eslint-disable no-restricted-syntax */
-	// const prefetchTasks = () => {
-	// 	if (!tasks) return;
-	// 	for (const task of tasks) {
-	// 		queryClient.prefetchQuery({
-	// 			queryKey: tasksKey.detail(groupId, task.id, currentDate.toLocaleDateString("ko-KR")),
-	// 			queryFn: async () => {
-	// 				const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].GET({
-	// 					groupId,
-	// 					taskListId: task.id,
-	// 					date: currentDate.toLocaleDateString("ko-KR"),
-	// 				});
-	// 				return response;
-	// 			},
-	// 		});
-	// 	}
-	// };
-
 	const updateSearchParams = (value: number) => {
 		setCurrentTaskId(value);
 		window.history.pushState(null, "", `${pathname}?taskId=${value}`);

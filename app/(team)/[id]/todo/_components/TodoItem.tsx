@@ -46,7 +46,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 	};
 
 	const handleTodoDelete = (todoId: number, name: string) => {
-		overlay.open(({ close }) => <DeleteModal onClick={() => onTodoDelete(todoId)} close={close} modalContent={`${name}을 삭제하시겠습니까?`} />);
+		overlay.open(({ close }) => <DeleteModal onClick={() => onTodoDelete(todoId)} close={close} modalName={name} modalContent="삭제하시겠습니까?" />);
 	};
 
 	const { date } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
