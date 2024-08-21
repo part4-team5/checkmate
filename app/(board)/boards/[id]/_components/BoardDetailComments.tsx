@@ -194,6 +194,11 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 										<textarea
 											id={`editComment-${comment.id}`}
 											onChange={handleEditCommentChange}
+											onKeyDown={(e) => {
+												if (e.key === "Enter" && !e.shiftKey) {
+													e.preventDefault();
+												}
+											}}
 											className="h-[100px] w-full resize-none overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[24px] py-[16px] text-lg text-text-primary placeholder:text-text-default focus:outline-none"
 											value={editingCommentText}
 										/>
