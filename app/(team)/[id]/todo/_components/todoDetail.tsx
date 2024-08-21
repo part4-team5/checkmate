@@ -67,6 +67,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 								groupId={groupId}
 								currentTaskId={currentTaskId}
 								currentDate={currentDate}
+								user={user}
 							/>
 						))}
 				</div>
