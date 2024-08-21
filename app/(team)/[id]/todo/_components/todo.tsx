@@ -112,6 +112,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			}
 		}
 	};
+
 	return (
 		<>
 			<div className="my-6 flex justify-between" ref={containerRef}>
@@ -149,6 +150,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					+새로운 목록 추가하기
 				</button>
 			</div>
+
 			<div className="flex flex-wrap gap-3 text-lg font-medium">
 				{tasks &&
 					tasks.map((task) => (
@@ -163,6 +165,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						</button>
 					))}
 			</div>
+
 			{isTodoItemsLoading && (
 				<div>
 					{Array.from({ length: 5 }).map((_, i) => (
@@ -178,7 +181,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			)}
 
 			{todoItems && (
-				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="mb-64">
+				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)}>
 					{todoItems.map((todoItem) => (
 						<Reorder.Item value={todoItem} key={todoItem.id} onDragEnd={() => handleDragEnd(todoItem)}>
 							<div className="mt-4 flex flex-col gap-4">
@@ -197,6 +200,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					))}
 				</Reorder.Group>
 			)}
+
 			{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
 				<div className="h-vh mt-60 flex items-center justify-center text-text-default">
 					<div className="text-center">

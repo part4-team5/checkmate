@@ -1,5 +1,6 @@
 import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import API from "@/app/_api";
+import Form from "@/app/_components/Form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 
@@ -12,6 +13,19 @@ const patchToggleTodoStatus = async (id: number, done: boolean) => {
 			taskId: id,
 		},
 		body,
+	);
+};
+
+type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
+const postAddTask = async (id: number, ctx: FormContext) => {
+	const name = ctx.values.task as string;
+	return API["{teamId}/groups/{groupId}/task-lists"].POST(
+		{
+			groupId: id,
+		},
+		{
+			name,
+		},
 	);
 };
 
@@ -315,6 +329,22 @@ export const useDeleteTodoCommentMutation = (todoId: number, groupId: number, cu
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
+		},
+	});
+};
+
+export const useAddTaskMutation = (groupId: number) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (ctx: FormContext) => postAddTask(groupId, ctx),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["tasks", { groupId }] });
+		},
+		onError: (error) => {
+			alert(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["tasks", { groupId }] });
 		},
 	});
 };

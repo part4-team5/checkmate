@@ -67,12 +67,13 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 	return (
 		<div>
 			{!todoContent && (
-				<div className="flex h-80 w-full items-center justify-center">
+				<div className="flex h-64 w-full items-center justify-center">
 					<Image src="/icons/spinner.svg" alt="spinner" width={30} height={30} className="animate-spin" />
 				</div>
 			)}
+
 			{todoContent && (
-				<div className="mb-48">
+				<div className="mb-36">
 					{isCheck && (
 						<div className="mb-[13px] flex items-center gap-[6px]">
 							<Icon.TodoCheck width={16} height={16} />
