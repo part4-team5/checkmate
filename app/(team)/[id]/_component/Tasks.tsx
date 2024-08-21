@@ -52,7 +52,7 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps) {
 			}),
 		onMutate: async () => {
 			await queryClient.cancelQueries({
-				queryKey: ["groupInfo", groupId],
+				queryKey: ["groupInfo", { groupId }],
 				exact: true,
 			});
 			const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskListType[] }>(["groupInfo", groupId]);
@@ -78,7 +78,7 @@ function TaskItem({ taskList, index, groupId, onEditTask }: TaskItemProps) {
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({
-				queryKey: ["groupInfo", groupId],
+				queryKey: ["groupInfo", { groupId }],
 				exact: true,
 			});
 		},
@@ -171,7 +171,7 @@ export default function Tasks({ id }: { id: number }) {
 	}, [id]);
 
 	const { data, isLoading } = useQuery<Team>({
-		queryKey: ["groupInfo", id],
+		queryKey: ["groupInfo", { groupId: id }],
 		queryFn: fetchGroupInfo,
 		enabled: !!id,
 		refetchInterval: 60000,
@@ -194,7 +194,7 @@ export default function Tasks({ id }: { id: number }) {
 		},
 		onMutate: async ({ taskListId, displayIndex }) => {
 			// 기존 쿼리 취소
-			await queryClient.cancelQueries({ queryKey: ["groupInfo", id], exact: true });
+			await queryClient.cancelQueries({ queryKey: ["groupInfo", { groupId: id }], exact: true });
 
 			// 이전 상태 저장
 			const previousTaskLists = queryClient.getQueryData<TaskListType[]>(["groupInfo", id]);

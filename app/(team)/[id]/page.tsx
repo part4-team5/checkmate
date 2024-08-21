@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 	const queryClient = getQueryClient({ staleTime: 10000 });
 
 	await queryClient.prefetchQuery({
-		queryKey: ["groupInfo", id],
+		queryKey: ["groupInfo", { groupId: id }],
 		queryFn: async () => {
 			const response = await API["{teamId}/groups/{id}"].GET({ id });
 			return response;
