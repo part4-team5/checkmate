@@ -139,20 +139,7 @@ Calendar.Picker = function Picker() {
 		setDate(new Date(date.getFullYear(), date.getMonth() + 1, 1));
 	}, [date]);
 
-	const style = useCallback(
-		(value: Date) => {
-			const impl: React.CSSProperties = {};
-
-			if (value.getMonth() !== date.getMonth()) {
-				impl.color = "#64748B";
-			} else if (value.getFullYear() === ctx.date.getFullYear() && value.getMonth() === ctx.date.getMonth() && value.getDate() === ctx.date.getDate()) {
-				impl.color = "#1e293b";
-				impl.background = "#10B981";
-			}
-			return impl;
-		},
-		[date, ctx.date],
-	);
+	const today = useMemo(() => new Date(), []);
 
 	return (
 		<div className="inline-block rounded-[24px] bg-background-secondary px-[16px] py-[16px] text-text-primary">
@@ -195,9 +182,23 @@ Calendar.Picker = function Picker() {
 										<td key={y} className="overflow-hidden rounded-[12px] px-0 py-0">
 											<button
 												type="button"
-												style={style(cell)}
 												onClick={() => ctx.setDate(cell)}
-												className="h-[32px] w-[32px] text-md font-medium hover:text-brand-primary"
+												className={`h-[32px] w-[32px] text-md font-medium ${(() => {
+													if (
+														cell.getFullYear() === ctx.date.getFullYear() &&
+														cell.getMonth() === ctx.date.getMonth() &&
+														cell.getDate() === ctx.date.getDate()
+													) {
+														return "bg-brand-primary text-text-primary";
+													}
+													if (cell.getFullYear() === today.getFullYear() && cell.getMonth() === today.getMonth() && cell.getDate() === today.getDate()) {
+														return "text-brand-primary hover:bg-brand-primary/75 hover:text-background-secondary";
+													}
+													if (date.getMonth() !== cell.getMonth()) {
+														return "text-text-default hover:bg-brand-primary/75 hover:text-background-secondary";
+													}
+													return "text-text-primary hover:bg-brand-primary/75 hover:text-background-secondary";
+												})()}`}
 											>
 												{cell.getDate()}
 											</button>
