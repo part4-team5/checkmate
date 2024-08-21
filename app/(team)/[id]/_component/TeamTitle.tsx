@@ -9,7 +9,7 @@ import useOverlay from "@/app/_hooks/useOverlay";
 import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import Icon from "@/app/_icons";
 import TeamEdit from "@/app/_components/modal-contents/TeamEdit";
-import ToastPopup from "@/app/(team)/[id]/_component/ToastPopup"; // ToastPopup 컴포넌트 임포트
+import ToastPopup from "@/app/(team)/[id]/_component/ToastPopup";
 
 type TeamTitleProps = {
 	id: number;
@@ -20,7 +20,7 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 	const router = useRouter();
 	const params = useParams();
 	const queryClient = useQueryClient();
-	const [showToast, setShowToast] = useState(false); // 토스트 팝업 상태 추가
+	const [showToast, setShowToast] = useState(false);
 
 	// 유저 정보 받아오기
 	const { data: user } = useQuery({
@@ -83,7 +83,15 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 		];
 	}, [teamName, id, overlay, mutation, isAdmin]);
 
-	if (!teamName) return <div>Loading...</div>;
+	if (!teamName)
+		return (
+			<div className="mt-[24px] flex h-[64px] w-full items-center justify-between rounded-[12px] bg-background-secondary px-[24px] py-[20px]">
+				<div className="flex w-full justify-between">
+					<div className="h-[24px] w-[30px] rounded-md bg-background-primary" />
+					<div className="h-[24px] w-[30px] rounded-md bg-background-primary" />
+				</div>
+			</div>
+		);
 
 	return (
 		<main>

@@ -10,14 +10,17 @@ type MemberInviteProps = {
 
 export default function MemberInvite({ onClick, close }: MemberInviteProps): JSX.Element {
 	const [buttonText, setButtonText] = useState("링크 복사하기");
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
 	const handleButtonClick = () => {
 		onClick();
 		setButtonText("복사됨!");
-
-		setTimeout(() => {
-			setButtonText("링크 복사하기");
-		}, 2000);
+		setIsButtonDisabled(true); // 버튼을 비활성화
+		close();
+		//		setTimeout(() => {
+		//			setButtonText("링크 복사하기");
+		//			setIsButtonDisabled(false); // 버튼을 다시 활성화
+		//		}, 4000);
 	};
 
 	return (
@@ -33,7 +36,9 @@ export default function MemberInvite({ onClick, close }: MemberInviteProps): JSX
 						<h1 className="mt-2 text-center text-lg">멤버 초대</h1>
 						<p className="mt-2 text-center text-md">그룹에 참여할 수 있는 링크를 복사합니다.</p>
 						<div className="mt-10 h-[47px]">
-							<Button onClick={handleButtonClick}>{buttonText}</Button>
+							<Button onClick={handleButtonClick} disabled={isButtonDisabled}>
+								{buttonText}
+							</Button>
 						</div>
 					</div>
 				</div>
