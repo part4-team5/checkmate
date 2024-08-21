@@ -7,6 +7,7 @@ const authMap = new Map<RegExp, string>([[/^\/(login|signup)/, "/"]]);
 // 비로그인 상태일 때 리디렉션 맵
 const guestMap = new Map<RegExp, string>([
 	[/^\/\d+$/, "/login"], // /[id] 형식의 경로
+	[/^\/\d+\/todo$/, "/login"], // /[id]/todo 형식의 경로
 	[/^\/(get-started|create-team|join-team)/, "/login"], // team 관련 경로
 	[/^\/(my-page|my-history)/, "/login"], // user 관련 경로
 	[/^\/create-post/, "/login"], // board 관련 경로

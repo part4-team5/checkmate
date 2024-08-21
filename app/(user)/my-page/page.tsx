@@ -74,7 +74,7 @@ export default function Page() {
 			await API["{teamId}/user"].DELETE({});
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["user"] });
+			queryClient.setQueriesData({ queryKey: ["user"] }, null);
 			alert("회원 탈퇴가 완료되었습니다.");
 			setAccessToken(null);
 			setRefreshToken(null);
