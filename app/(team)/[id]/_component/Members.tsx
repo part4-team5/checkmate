@@ -40,7 +40,6 @@ function Members({ id }: ReportProps) {
 		retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
 	});
 
-	// 사용자 정보 가져오기
 	const { data: user } = useQuery({
 		queryKey: ["user"],
 		queryFn: async () => API["{teamId}/user"].GET({}),
@@ -57,18 +56,17 @@ function Members({ id }: ReportProps) {
 		const { data: invitationToken } = await refetch();
 
 		if (invitationToken) {
-			const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL ?? ""; // 리디렉션 URL 설정
+			const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL ?? "";
 			const params = new URLSearchParams({
-				groupId: String(id), // 그룹 ID
-				token: invitationToken, // 초대 토큰
+				groupId: String(id),
+				token: invitationToken,
 			});
-			const invitationUrl = `${redirectUrl}/join-team?${params.toString()}`; // 초대 URL 생성
-			await navigator.clipboard.writeText(invitationUrl); // URL을 클립보드에 복사
+			const invitationUrl = `${redirectUrl}/join-team?${params.toString()}`;
+			await navigator.clipboard.writeText(invitationUrl);
 
-			// 링크가 복사된 후 토스트 표시
 			setShowToast(true);
 			setTimeout(() => {
-				setShowToast(false); // 2초 후 토스트 숨기기
+				setShowToast(false);
 			}, 2000);
 		} else {
 			console.error("초대 토큰을 가져오는 데 실패했습니다");
@@ -110,7 +108,7 @@ function Members({ id }: ReportProps) {
 							aria-label={`${member.userName}의 프로필 열기`}
 							onClick={() => handleProfileModal(member)}
 						>
-							<UserInfo userName={member.userName} userEmail={member.userEmail} userProfile={member.userImage ?? ""} isAdmin={isAdmin} />
+							<UserInfo userName={member.userName} userEmail={member.userEmail} userProfile={member.userImage ?? ""} isAdmin={member.role === "ADMIN"} />
 						</div>
 					))}
 				</div>
