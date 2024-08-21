@@ -354,13 +354,13 @@ export const useAddTaskMutation = (groupId: number) => {
 	return useMutation({
 		mutationFn: (ctx: FormContext) => postAddTask(groupId, ctx),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["tasks", { groupId }] });
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 		},
 		onError: (error) => {
 			alert(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
 		},
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ["tasks", { groupId }] });
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 		},
 	});
 };
