@@ -178,7 +178,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			)}
 
 			{todoItems && (
-				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)}>
+				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="mb-64">
 					{todoItems.map((todoItem) => (
 						<Reorder.Item value={todoItem} key={todoItem.id} onDragEnd={() => handleDragEnd(todoItem)}>
 							<div className="mt-4 flex flex-col gap-4">
