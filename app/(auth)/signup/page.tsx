@@ -3,11 +3,12 @@
 import Form from "@/app/_components/Form";
 import useCookie from "@/app/_hooks/useCookie";
 import API from "@/app/_api/index";
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
 import Oauth from "@/app/(auth)/_components/Oauth";
+import { useRouter } from "next/router";
+import UserUpload from "@/app/(auth)/_components/UserUpload";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -16,6 +17,8 @@ export default function SignupPage() {
 	const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
 	const setUser = useAuthStore((state) => state.setUser);
+
+	const queryClient = useQueryClient();
 
 	const signupMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
@@ -29,16 +32,22 @@ export default function SignupPage() {
 			return API["{teamId}/auth/signUp"].POST({}, payload);
 		},
 		onSuccess: (response) => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			setUser({
 				id: response.user.id,
-				email: response.user.email || "",
+				email: response.user.email,
 				nickname: response.user.nickname,
 				image: response.user.image ? response.user.image : null,
 			});
 
+			// 몽고 DB에 유저 정보 저장
+			UserUpload().mutate({ id: response.user.id, email: response.user.email });
+
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);
-			router.replace("/login");
+
+			router.replace("/");
 		},
 		onError: (error) => {
 			alert(`${error.message ?? "알 수 없는 오류 발생"}`);

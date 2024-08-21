@@ -1,9 +1,11 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 
+import InviteModel from "@/app/_utils/_models/Invite.model";
 import Cookie from "@/app/_utils/Cookie";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const SITE_URL = process.env.NEXT_PUBLIC_REDIRECT_URL;
 
 const enum MIME {
 	JSON = "application/json",
@@ -1112,6 +1114,95 @@ export default abstract class API {
 			return API.DELETE<Article>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}/like`, query);
 		}
 	})();
+
+	// * [ Custom API ]
+
+	/**
+	 * 몽고 DB 유저 정보 확인 API
+	 */
+	public static readonly ["api/users"] = new (class extends API {
+		/**
+		 * 몽고 DB 유저 정보 확인
+		 * @param {Object} param - 파라미터 객체
+		 * @param {number} id - 유저 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 유저 정보
+		 */
+		public override GET({ ...query }) {
+			return API.GET<{ id: number; email: string; invite: InstanceType<typeof InviteModel>[] }>(MIME.JSON, `${SITE_URL}/api/users`, query);
+		}
+
+		/**
+		 * 몽고 DB 유저 정보 추가
+		 * @param {Object}
+		 * @param {Object} query - 쿼리 파라미터
+		 * @param {Object} body - 추가할 유저 정보
+		 * @returns {Promise<Object>} - 추가된 유저 정보
+		 */
+		public override POST({ ...query }, body: { id: number; email: string }) {
+			return API.POST<{ id: number; email: string }>(MIME.JSON, `${SITE_URL}/api/users`, query, body);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 유저 정보 삭제 API
+	 */
+	public static readonly ["api/users/{id}"] = new (class extends API {
+		/**
+		 * 몽고 DB 유저 정보 삭제
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 응답 객체
+		 */
+		public override DELETE({ id, ...query }: { id: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/users/${id}`, query);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 초대 정보
+	 */
+	public static readonly ["api/invite/{id}"] = new (class extends API {
+		/**
+		 * 몽고 DB 초대 정보 확인
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 초대 정보
+		 */
+		public override GET({ id, ...query }: { id: number }) {
+			return API.GET<InstanceType<typeof InviteModel>>(MIME.JSON, `${SITE_URL}/api/invite/${id}`, query);
+		}
+
+		/**
+		 * 몽고 DB 초대 정보 추가
+		 * @param {Object}
+		 * @param {Object} query - 쿼리 파라미터
+		 * @param {Object} body - 추가할 초대 정보
+		 * @returns {Promise<Object>} - 추가된 초대 정보
+		 */
+		public override POST({ ...query }, body: { id: number; email: string }) {
+			return API.POST<InstanceType<typeof InviteModel>>(MIME.JSON, `${SITE_URL}/api/invite`, query, body);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 초대 정보 삭제 API
+	 */
+	public static readonly ["api/invite/{id}/teamId/{teamId}"] = new (class extends API {
+		/**
+		 * 몽고 DB 초대 정보 삭제
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {number} teamId - 팀 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 응답 객체
+		 */
+		public override DELETE({ id, teamId, ...query }: { id: number; teamId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/invite/${id}/teamId/${teamId}`, query);
+		}
+	})();
 }
 
 const enum Role {
@@ -1213,7 +1304,7 @@ interface User {
 	updatedAt?: string;
 	createdAt?: string;
 	encryptedPassword?: string;
-	email?: string;
+	email: string;
 }
 interface Todo extends TodoBase {
 	doneBy: { id: number; nickname: string; image?: string };

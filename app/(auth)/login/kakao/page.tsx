@@ -1,5 +1,6 @@
 "use client";
 
+import UserUpload from "@/app/(auth)/_components/UserUpload";
 import API from "@/app/_api";
 import useCookie from "@/app/_hooks/useCookie";
 import useAuthStore from "@/app/_store/useAuthStore";
@@ -29,19 +30,22 @@ export default function KakaoLogin() {
 			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "KAKAO" }, payload);
 		},
 		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			// 전역 상태에 유저 정보 저장
 			setUser({
 				id: data.user.id,
-				email: data.user.email ?? "",
+				email: data.user.email,
 				nickname: data.user.nickname,
 				image: data.user.image ? data.user.image : null,
 			});
 
+			// 몽고 DB에 유저 정보 저장
+			UserUpload().mutate({ id: data.user.id, email: data.user.email });
+
 			// 쿠키에 토큰 저장
 			setAccessToken(data.accessToken);
 			setRefreshToken(data.refreshToken);
-
-			queryClient.invalidateQueries({ queryKey: ["user"] });
 
 			router.replace("/");
 		},

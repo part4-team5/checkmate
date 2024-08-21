@@ -1,5 +1,6 @@
 "use client";
 
+import UserUpload from "@/app/(auth)/_components/UserUpload";
 import API from "@/app/_api";
 import useCookie from "@/app/_hooks/useCookie";
 import useAuthStore from "@/app/_store/useAuthStore";
@@ -17,6 +18,8 @@ export default function GoogleLogin() {
 	const setUser = useAuthStore((state) => state.setUser);
 
 	const queryClient = useQueryClient();
+
+	const userUpload = UserUpload();
 
 	const googleLoginMutation = useMutation({
 		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
@@ -49,6 +52,8 @@ export default function GoogleLogin() {
 			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "GOOGLE" }, loginPayload);
 		},
 		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			// 전역 상태에 유저 정보 저장
 			setUser({
 				id: data.user.id,
@@ -57,11 +62,12 @@ export default function GoogleLogin() {
 				image: data.user.image ? data.user.image : null,
 			});
 
+			// 몽고 DB에 유저 정보 저장
+			userUpload.mutate({ id: data.user.id, email: data.user.email });
+
 			// 쿠키에 토큰 저장
 			setAccessToken(data.accessToken);
 			setRefreshToken(data.refreshToken);
-
-			queryClient.invalidateQueries({ queryKey: ["user"] });
 
 			router.replace("/");
 		},
