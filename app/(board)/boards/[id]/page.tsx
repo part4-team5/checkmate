@@ -6,11 +6,10 @@ import Image from "next/image";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import KebabIcon from "@/public/icons/KebabIcon";
 import Message from "@/app/_components/Message";
-// import Form from "@/app/_components/Form";
 import DropDown from "@/app/_components/Dropdown";
 import API from "@/app/_api";
-import { calculateTimeDifference } from "@/app/_utils/IsoToFriendlyDate";
 import Icon from "@/app/_icons";
+import Button from "@/app/_components/Button";
 
 const options = [
 	{ text: "수정", onClick: () => alert("수정") },
@@ -21,7 +20,6 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 	const articleId = Number(params.id);
 	const [commentText, setCommentText] = useState("");
 	const queryClient = useQueryClient();
-	const currentTime = new Date();
 
 	// 게시글 상세보기
 	const {
@@ -125,11 +123,10 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 		}
 	};
 
-	const detailTimeDifference = calculateTimeDifference(article?.createdAt || "", currentTime);
 	const detailMessageData = {
 		content: article?.content,
-		date: detailTimeDifference,
-		userProfile: article?.image || defaultImage,
+		date: new Date(article?.createdAt ?? "").toLocaleDateString(),
+		userProfile: article?.image ?? defaultImage,
 		userName: article?.writer.nickname,
 	};
 
@@ -155,18 +152,20 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 					</div>
 				</div>
 				<Message data={detailMessageData}>
-					<div className="flex justify-between">
-						<div className="flex">
+					<div className="m-[16px_0_48px] flex justify-between">
+						<div className="flex items-center">
 							<Message.Author />
-							<Message.Date />
+							<div className="flex items-center text-md text-text-primary before:mx-[15px] before:inline-block before:h-[12px] before:w-[1px] before:bg-background-tertiary">
+								<Message.Date />
+							</div>
 						</div>
-						<div className="flex items-center gap-[15px]">
-							<p>
+						<div className="flex items-center gap-[15px] text-text-disabled">
+							<p className="flex items-center gap-[3px]">
 								<Image src="/icons/comment.svg" alt="댓글수" width={15} height={15} />
 								{article?.commentCount}
 							</p>
 							<button type="button" onClick={handleLike} className="flex items-center">
-								<span>
+								<span className="flex items-center gap-[3px]">
 									<Icon.Heart width={15} height={15} color={article?.isLiked ? "#FF0000" : "#64748B"} />
 									{article?.likeCount}
 								</span>
@@ -174,11 +173,6 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 						</div>
 					</div>
 					<Message.Content />
-					{/* {article?.image && (
-						<div className="relative max-w-full">
-							<Image src={article.image} alt="Article Image" fill />
-						</div>
-					)} */}
 				</Message>
 			</section>
 			<section className="mt-[80px]">
@@ -191,35 +185,45 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 								name=""
 								id="commentText"
 								onChange={handleCommentChange}
-								className="h-[50px] w-full bg-background-secondary focus:outline-none"
+								className="h-[100px] w-full resize-none overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[24px] py-[16px] text-lg text-text-primary placeholder:text-text-default focus:outline-none"
 								value={commentText}
 								placeholder="댓글을 입력해주세요"
 							/>
 						</div>
-						<button type="submit">등록</button>
+						<div className="mt-[16px] flex justify-end">
+							<div className="h-[48px] w-[185px]">
+								<Button>등록</Button>
+							</div>
+						</div>
 					</form>
 				</div>
 				{/* 댓글 목록 표시 */}
-				<div className="flex flex-col gap-4 scrollbar-thumb:bg-background-tertiary">
+				<div className="mt-[40px] flex flex-col gap-4 border-t border-solid border-t-[rgba(248,250,252,0.1)] pt-[40px]">
 					{comments?.pages.map((comment, index) => {
-						const timeDifference = calculateTimeDifference(comment.createdAt, currentTime);
-
 						const messageData = {
 							content: comment.content,
-							date: timeDifference,
+							date: new Date(comment.createdAt).toLocaleDateString(),
 							userProfile: comment.writer?.image || defaultImage,
 							userName: comment.writer?.nickname,
 						};
 
 						return (
-							<div key={comment.id} ref={comments.pages.length - 1 === index ? viewportRef : null}>
-								<Message data={messageData}>
-									<Message.Content />
-									<div className="flex justify-between">
-										<Message.Author />
-										<Message.Date />
-									</div>
-								</Message>
+							<div
+								key={comment.id}
+								ref={comments.pages.length - 1 === index ? viewportRef : null}
+								className="flex items-start justify-between rounded-[12px] bg-background-secondary px-[24px] py-[16px]"
+							>
+								<div className="flex flex-col gap-[32px]">
+									<Message data={messageData}>
+										<Message.Content />
+										<div className="flex items-center">
+											<Message.Author />
+											<div className="flex items-center text-md text-text-primary before:mx-[15px] before:inline-block before:h-[12px] before:w-[1px] before:bg-background-tertiary">
+												<Message.Date />
+											</div>
+										</div>
+									</Message>
+								</div>
 								<DropDown options={options}>
 									<button type="button" aria-label="dropdown">
 										<KebabIcon />
