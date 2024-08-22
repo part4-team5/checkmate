@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import Form from "@/app/_components/Form";
