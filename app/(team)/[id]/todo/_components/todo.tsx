@@ -154,9 +154,10 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						/* eslint-disable react/no-array-index-key */
 						<div
 							key={i}
-							className="mt-4 flex h-[75px] w-full flex-col items-center justify-center gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
+							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
 						>
-							<Image src="/icons/spinner.svg" alt="spinner" width={30} height={30} className="animate-spin" />
+							<div className="h-5 w-28 animate-pulse rounded-sm bg-background-tertiary" />
+							<div className="h-3 w-48 animate-pulse rounded-sm bg-background-tertiary" />
 						</div>
 					))}
 				</div>
