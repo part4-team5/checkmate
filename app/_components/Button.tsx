@@ -41,14 +41,14 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 			break;
 		case "secondary":
 			btnVariant =
-				"flex items-center justify-center border border-brand-primary bg-background-inverse font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive";
+				"flex items-center justify-center border-2 border-brand-primary bg-background-inverse font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive";
 			break;
 		case "white":
 			btnVariant = "flex items-center justify-center border border-text-secondary bg-background-inverse font-semibold text-text-default";
 			break;
 		case "outline":
 			btnVariant =
-				"flex items-center justify-center border border-brand-primary bg-transparent font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive";
+				"flex items-center justify-center border-2 border-brand-primary bg-transparent font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive";
 			break;
 		case "danger":
 			btnVariant = "flex items-center justify-center bg-status-danger font-semibold text-text-inverse";

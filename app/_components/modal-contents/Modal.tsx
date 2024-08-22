@@ -1,17 +1,34 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 
 type ModalProps = {
-	close: () => void;
+	close?: () => void;
 	children: React.ReactNode;
 };
+
 export default function ModalWrapper({ close, children }: ModalProps) {
+	const handlePopState = () => {
+		if (close) {
+			close();
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener("popstate", handlePopState);
+
+		return () => {
+			window.removeEventListener("popstate", handlePopState);
+		};
+	}, [close]);
+
 	const handleButtonClick = () => {
 		if (close) {
 			close();
 		}
 	};
+
 	return (
 		<AnimatePresence>
 			<motion.div

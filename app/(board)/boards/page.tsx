@@ -21,6 +21,7 @@ export default function Page() {
 
 	const {
 		data: articles,
+		isFetching,
 		hasNextPage,
 		fetchNextPage,
 	} = useInfiniteQuery({
@@ -34,7 +35,7 @@ export default function Page() {
 		},
 		select: (data) => ({
 			pages: data.pages.flatMap((_) => _.list),
-			pageParams: data.pageParams,
+			totalCount: data.pages.at(-1)?.totalCount ?? 0,
 		}),
 	});
 
@@ -63,7 +64,7 @@ export default function Page() {
 		<main className="h-full">
 			<Link
 				href="/create-post"
-				className="fixed bottom-[45px] right-[16px] flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary text-text-primary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
+				className="fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary text-text-primary shadow-lg hover:bg-brand-secondary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
 			>
 				+ 글쓰기
 			</Link>
@@ -90,26 +91,44 @@ export default function Page() {
 							<Link
 								key={article.id}
 								href={`/boards/${article.id}`}
-								className="flex h-[220px] flex-col rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
+								className="relative flex h-[176px] justify-between gap-[24px] overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
 							>
-								<div className="flex gap-[4px] text-md font-semibold text-text-primary">
-									<Image src="/images/medal.webp" alt="icon" width={16} height={16} />
-									Best
-								</div>
-								<div className="mt-[14px] text-md font-medium text-text-secondary">{article.title}</div>
-								<div className="mt-[12px] grow text-md font-medium text-text-default">{new Date(article.createdAt).toLocaleDateString()}</div>
-								<div className="mt-[14px] flex items-center justify-between">
-									<div className="flex items-center gap-[12px]">
-										<Image src="/images/profile.png" alt="avatar" width={32} height={32} />
-										<div className="text-md font-medium text-text-primary">{article.writer.nickname}</div>
+								<div className="flex grow flex-col gap-[12px]">
+									<div className="flex gap-[4px] text-md font-semibold text-text-primary">
+										<Image src="/images/medal.webp" alt="icon" width={16} height={16} />
+										Best
 									</div>
-									<div className="flex items-center gap-[4px]">
-										<Icon.Heart width={16} height={16} color={article.isLiked ? "#EF4444" : "#64748B"} />
-										<div className="text-md font-normal text-text-default">{article.likeCount}</div>
+									<div className="text-md font-medium text-text-secondary">{article.title}</div>
+									<div className="grow text-md font-medium text-text-default">{new Date(article.createdAt).toLocaleDateString()}</div>
+									<div className="flex items-center justify-between gap-[10px]">
+										<div className="flex items-center gap-[12px]">
+											<Image src="/images/profile.png" alt="avatar" width={32} height={32} />
+											<div className="text-md font-medium text-text-primary">{article.writer.nickname}</div>
+										</div>
+										<div className="flex items-center gap-[4px]">
+											<Icon.Heart width={18} height={18} color={article.isLiked ? "#EF4444" : "#64748B"} />
+											<div className="text-2lg font-normal text-text-default">{article.likeCount}</div>
+										</div>
 									</div>
 								</div>
+								{article.image && (
+									<div className="aspect-square rounded-[12px] bg-background-tertiary bg-cover" style={{ backgroundImage: `url("${article.image}")` }} />
+								)}
 							</Link>
-						))}
+						)) ??
+							// eslint-disable-next-line no-nested-ternary
+							new Array(isMobile ? 1 : isTablet ? 2 : 3).fill(null).map((_, index) => (
+								<div
+									// eslint-disable-next-line react/no-array-index-key
+									key={index}
+									className="flex h-[220px] flex-col gap-[12px] rounded-[12px] border border-border-primary bg-background-secondary/75 px-[16px] py-[16px]"
+								>
+									<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
+									<div className="h-[16px] w-5/12 animate-pulse rounded-md bg-border-primary/25" />
+									<div className="h-[16px] w-3/12 animate-pulse rounded-md bg-border-primary/25" />
+									<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
+								</div>
+							))}
 					</div>
 				</div>
 				<hr className="my-[40px] border-border-primary" />
@@ -147,21 +166,40 @@ export default function Page() {
 								// @ts-ignore
 								ref={articles.pages.length - 1 === index ? (ref) => setViewport(ref) : undefined}
 								href={`/boards/${article.id}`}
-								className="flex h-[176px] flex-col rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
+								className="relative flex h-[176px] justify-between gap-[24px] overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
 							>
-								<div className="text-md font-medium text-text-secondary">{article.title}</div>
-								<div className="mt-[12px] grow text-md font-medium text-text-default">{new Date(article.createdAt).toLocaleDateString()}</div>
-								<div className="mt-[14px] flex items-center justify-between">
-									<div className="flex items-center gap-[12px]">
-										<Image src="/images/profile.png" alt="avatar" width={32} height={32} />
-										<div className="text-md font-medium text-text-primary">{article.writer.nickname}</div>
-									</div>
-									<div className="flex items-center gap-[4px]">
-										<Icon.Heart width={16} height={16} color={article.isLiked ? "#EF4444" : "#64748B"} />
-										<div className="text-md font-normal text-text-default">{article.likeCount}</div>
+								<div className="flex grow flex-col gap-[12px]">
+									<div className="text-md font-medium text-text-secondary">{article.title}</div>
+									<div className="grow text-md font-medium text-text-default">{new Date(article.createdAt).toLocaleDateString()}</div>
+									<div className="flex items-center justify-between gap-[10px]">
+										<div className="flex items-center gap-[12px]">
+											<Image src="/images/profile.png" alt="avatar" width={32} height={32} />
+											<div className="text-md font-medium text-text-primary">{article.writer.nickname}</div>
+										</div>
+										<div className="flex items-center gap-[4px]">
+											<Icon.Heart width={18} height={18} color={article.isLiked ? "#EF4444" : "#64748B"} />
+											<div className="text-2lg font-normal text-text-default">{article.likeCount}</div>
+										</div>
 									</div>
 								</div>
+								{article.image && (
+									<div className="aspect-square rounded-[12px] bg-background-tertiary bg-cover" style={{ backgroundImage: `url("${article.image}")` }} />
+								)}
 							</Link>
+						))}
+						{/* eslint-disable-next-line no-nested-ternary */}
+						{new Array(isFetching ? (articles ? Math.min(articles.totalCount - articles.pages.length, 10) : 3) : 0).fill(null).map((_, index) => (
+							<div
+								// eslint-disable-next-line react/no-array-index-key
+								key={index}
+								className="flex h-[176px] flex-col gap-[12px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
+							>
+								<div className="h-[16px] w-8/12 animate-pulse rounded-md bg-border-primary/25" />
+								<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
+								<div className="h-[16px] w-7/12 animate-pulse rounded-md bg-border-primary/25" />
+								<div className="h-[16px] w-4/12 animate-pulse rounded-md bg-border-primary/25" />
+								<div className="h-[16px] w-5/12 animate-pulse rounded-md bg-border-primary/25" />
+							</div>
 						))}
 					</div>
 				</div>

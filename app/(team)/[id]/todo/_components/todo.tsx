@@ -15,7 +15,7 @@ import TodoItem from "@/app/(team)/[id]/todo/_components/TodoItem";
 import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_components/api/useQuery";
 import AddTaskModal from "@/app/(team)/[id]/todo/_components/AddTask";
 import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
-import { useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import { useDeleteTodoMutation, useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import { Reorder } from "framer-motion";
 import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
 
@@ -43,6 +43,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const { data: todoItems, isLoading: isTodoItemsLoading } = useGetTodoItems(groupId, currentTaskId, currentDate);
 	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
 	const todoOrderMutation = useTodoOrderMutation();
+	const todoDeleteMutation = useDeleteTodoMutation();
 
 	const containerRef = useRef(null);
 
@@ -77,6 +78,10 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 
 	const handleToggleTodoStatus = (todoId: number, doneAt: string) => {
 		todoPatchMutation.mutate({ taskId: todoId, done: !doneAt });
+	};
+
+	const handleTodoDelete = (todoId: number) => {
+		todoDeleteMutation.mutate(todoId);
 	};
 
 	const handleAddTaskClick = () => {
@@ -181,7 +186,8 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 									key={todoItem.id}
 									todoItem={todoItem}
 									onToggleTodo={handleToggleTodoStatus}
-									onClick={handleTodoClick}
+									onTodoClick={handleTodoClick}
+									onTodoDelete={handleTodoDelete}
 									groupId={groupId}
 									taskId={currentTaskId}
 									currentDate={currentDate}

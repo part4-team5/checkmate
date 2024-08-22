@@ -13,14 +13,9 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function SignupPage() {
 	const router = useRouter();
-	const [accessToken, setAccessToken] = useCookie<string>("accessToken");
-	const [refreshToken, setRefreshToken] = useCookie<string>("refreshToken");
+	const [, setAccessToken] = useCookie<string>("accessToken");
+	const [, setRefreshToken] = useCookie<string>("refreshToken");
 	const setUser = useAuthStore((state) => state.setUser);
-	const user = useAuthStore((state) => state.user);
-
-	if (accessToken && refreshToken && user) {
-		router.replace("/");
-	}
 
 	const signupMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {

@@ -6,13 +6,14 @@ import Form from "@/app/_components/Form";
 import useAuthStore from "@/app/_store/useAuthStore";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import useOverlay from "@/app/_hooks/useOverlay";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 function JoinTeamForm() {
+	const [isMounted, setIsMounted] = useState(false);
 	const user = useAuthStore((state) => state.user);
 	const userEmail = user?.email ?? "";
 
@@ -23,7 +24,7 @@ function JoinTeamForm() {
 	const router = useRouter();
 	const overlay = useOverlay();
 
-	const hasExecutedRef = useRef(false);
+	const queryClient = useQueryClient();
 
 	// Modal을 띄우는 함수
 	const openModal = useCallback(
@@ -82,9 +83,8 @@ function JoinTeamForm() {
 			[userEmail],
 		),
 		onSuccess: () => {
-			openModal(() => {
-				router.push(`/${groupId}`);
-			});
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+			openModal(() => {});
 		},
 		onError: (error, ctx) => {
 			openModal(() => {}, error.message);
@@ -114,51 +114,54 @@ function JoinTeamForm() {
 	// token이 있을 경우 바로 팀 참여 요청을 보냅니다.
 	useEffect(() => {
 		// 한 번만 실행되도록 합니다.
-		if (token && !hasExecutedRef.current) {
-			hasExecutedRef.current = true;
+		if (token && !isMounted) {
+			setIsMounted(true);
+
 			joinTeamMutation.mutate({ token });
 		}
-	}, [token, joinTeamMutation]);
+	}, [token, joinTeamMutation, isMounted]);
 
 	if (token) {
 		return <section className="flex size-full flex-col items-center justify-center text-3xl font-bold">팀 참여 중...</section>;
 	}
 
 	return (
-		<section className="flex size-full flex-col items-center justify-center">
-			<div className="pb-20">
-				<h1 className="text-[40px] font-medium leading-[48px] text-white">팀 참여하기</h1>
-			</div>
+		<main className="size-full min-w-[320px] pt-20">
+			<section className="flex size-full flex-col items-center justify-center">
+				<div className="pb-20">
+					<h1 className="text-[40px] font-medium leading-[48px] text-white">팀 참여하기</h1>
+				</div>
 
-			<div className="w-full">
-				<Form onSubmit={handleJoinTeam}>
-					<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
-						<label htmlFor="teamUrl" className="w-full pb-3 text-start text-lg text-text-primary">
-							팀 코드
-						</label>
+				<div className="w-full">
+					<Form onSubmit={handleJoinTeam}>
+						<div className="mx-auto flex w-full max-w-[340px] flex-col tablet:max-w-[460px]">
+							<label htmlFor="teamUrl" className="w-full pb-3 text-start text-lg text-text-primary">
+								팀 코드
+							</label>
 
-						<Form.Input
-							id="teamUrl"
-							type="text"
-							placeholder="팀 코드를 입력하세요"
-							tests={[{ type: "require", data: true, error: "팀 코드는 필수로 입력해야 합니다" }]}
-						/>
+							<Form.Input
+								id="teamUrl"
+								type="text"
+								placeholder="팀 코드를 입력하세요"
+								tests={[{ type: "require", data: true, error: "팀 코드는 필수로 입력해야 합니다" }]}
+							/>
 
-						<div className="pt-3" />
+							<div className="pt-3" />
 
-						<Form.Error htmlFor="teamUrl" />
+							<Form.Error htmlFor="teamUrl" />
 
-						<div className="pt-6" />
+							<div className="pt-6" />
 
-						<div className="h-12">{joinTeamFormMutation.isPending ? <Button disabled>팀 참여 중</Button> : <Form.Submit>참여하기</Form.Submit>}</div>
-					</div>
-				</Form>
-			</div>
+							<div className="h-12">{joinTeamFormMutation.isPending ? <Button disabled>팀 참여 중</Button> : <Form.Submit>참여하기</Form.Submit>}</div>
+						</div>
+					</Form>
+				</div>
 
-			<div className="max-w-[340px] pt-6 tablet:max-w-[460px]">
-				<p className="text-md font-normal text-text-primary tablet:text-lg">공유받은 팀 코드를 입력해 참여할 수 있어요.</p>
-			</div>
-		</section>
+				<div className="max-w-[340px] pt-6 tablet:max-w-[460px]">
+					<p className="text-md font-normal text-text-primary tablet:text-lg">공유받은 팀 코드를 입력해 참여할 수 있어요.</p>
+				</div>
+			</section>
+		</main>
 	);
 }
 

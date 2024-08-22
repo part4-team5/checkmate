@@ -14,15 +14,13 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function LoginPage() {
 	const router = useRouter();
-	const queryClient = useQueryClient();
-	const [accessToken, setAccessToken] = useCookie<string>("accessToken");
-	const [refreshToken, setRefreshToken] = useCookie<string>("refreshToken");
-	const setUser = useAuthStore((state) => state.setUser);
-	const user = useAuthStore((state) => state.user);
 
-	if (accessToken && refreshToken && user) {
-		router.replace("/");
-	}
+	const queryClient = useQueryClient();
+
+	const [, setAccessToken] = useCookie<string>("accessToken");
+	const [, setRefreshToken] = useCookie<string>("refreshToken");
+
+	const setUser = useAuthStore((state) => state.setUser);
 
 	const loginMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
@@ -111,9 +109,11 @@ export default function LoginPage() {
 						]}
 					/>
 					<Form.Error htmlFor="password" />
-					<Link href="/reset-password" className="text-right text-brand-primary underline">
-						비밀번호를 잊으셨나요?
-					</Link>
+					<div className="flex justify-end">
+						<Link href="/reset-password" className="text-brand-primary underline">
+							비밀번호를 잊으셨나요?
+						</Link>
+					</div>
 				</div>
 				<div className="mb-[24px] mt-[40px] h-12">
 					<Form.Submit>로그인</Form.Submit>
