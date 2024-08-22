@@ -76,6 +76,16 @@ export default {
 			backgroundImage: {
 				"conic-gradient": "conic-gradient(from 0deg, #10b981, #cef57e, #10b981)",
 			},
+			keyframes: {
+				scaleUp: {
+					"0%": { transform: "scale(1)" },
+					"100%": { transform: "scale(1.2)" },
+				},
+			},
+			animation: {
+				scaleUp: "scaleUp 0.2s ease-in-out",
+				sparkle: "sparkle 0.6s ease-in-out",
+			},
 		},
 	},
 	content: ["./pages/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}", "./stories/**/*.{js,ts,jsx,tsx}"],

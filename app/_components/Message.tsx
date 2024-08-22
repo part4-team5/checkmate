@@ -50,10 +50,10 @@ Message.Author = function Author() {
 	const data = useMessageContext();
 	return (
 		<div className="flex items-center gap-[12px]">
-			<Image src={data.userProfile ?? defaultImage} alt={data.userName ?? ""} width={32} height={32} />
-			<div>
-				<div className="text-primary text-md font-medium">{data.userName}</div>
+			<div className="overflow-hidden rounded-full">
+				<Image src={data.userProfile ?? defaultImage} alt={data.userName ?? ""} width={32} height={32} />
 			</div>
+			<div className="text-primary text-md font-medium">{data.userName}</div>
 		</div>
 	);
 };
