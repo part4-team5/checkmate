@@ -1,12 +1,27 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 
 type SideBarProps = {
 	close: () => void;
 	children: React.ReactNode;
 };
 export default function SideBarWrapper({ close, children }: SideBarProps) {
+	const handlePopState = () => {
+		if (close) {
+			close();
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener("popstate", handlePopState);
+
+		return () => {
+			window.removeEventListener("popstate", handlePopState);
+		};
+	}, [close]);
+
 	const handleButtonClick = () => {
 		if (close) {
 			close();
