@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import WarningIcon from "@/public/icons/ic_warning";
 
@@ -10,10 +10,15 @@ interface ToastPopupProps {
 export default function ToastPopup({ message, position = "bottom" }: ToastPopupProps) {
 	const [show, setShow] = useState(true);
 
-	// 2초 후에 자동으로 사라지도록 설정
-	setTimeout(() => {
-		setShow(false);
-	}, 2000);
+	// 컴포넌트가 마운트된 후에 2초 후에 자동으로 사라지도록 설정
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setShow(false);
+		}, 2000);
+
+		// 컴포넌트가 언마운트될 때 타이머를 정리합니다.
+		return () => clearTimeout(timer);
+	}, []);
 
 	const positionClass = position === "top" ? "top-20" : "bottom-20";
 

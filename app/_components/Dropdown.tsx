@@ -189,7 +189,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 	}
 
 	return (
-		<div className="flex">
+		<div className="flex" onMouseUp={(event) => event.stopPropagation()} onMouseDown={(event) => event.stopPropagation()}>
 			<Popover overlay={(close) => recursive(options, close)} {...getPopoverOrigins()} gapX={gapX} gapY={gapY}>
 				<div className="cursor-pointer">{children}</div>
 			</Popover>

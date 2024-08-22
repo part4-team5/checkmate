@@ -10,7 +10,7 @@ import useCookie from "@/app/_hooks/useCookie";
 import useOverlay from "@/app/_hooks/useOverlay";
 import Icon from "@/app/_icons";
 import useAuthStore from "@/app/_store/useAuthStore";
-import debounce from "@/app/_utils/debounce";
+import { debounce } from "@/app/_utils/DelayManager";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
