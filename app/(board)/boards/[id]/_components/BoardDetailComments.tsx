@@ -15,8 +15,9 @@ type CommentsProps = {
 
 export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const [commentText, setCommentText] = useState("");
-	const [editingCommentId, setEditingCommentId] = useState<number | null>(null); // 현재 수정 중인 댓글 ID
-	const [editingCommentText, setEditingCommentText] = useState(""); // 수정할 댓글 텍스트
+	const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+	const [editingCommentText, setEditingCommentText] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const queryClient = useQueryClient();
 
 	// 댓글 목록
@@ -65,10 +66,12 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["comments", articleId] });
 			setCommentText("");
+			setIsSubmitting(false);
 		},
 		onError: (error) => {
 			alert(`댓글 추가 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
+			setIsSubmitting(false);
 		},
 	});
 
@@ -102,7 +105,8 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const handleAddComment = useCallback(
 		(e: React.FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
-			if (commentText.length === 0) return;
+			if (commentText.length === 0 || isSubmitting) return;
+			setIsSubmitting(true);
 			addCommentMutation.mutate(commentText);
 		},
 		[commentText, addCommentMutation],
@@ -165,8 +169,8 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 					</div>
 					<div className="mt-[16px] flex justify-end">
 						<div className="h-[48px] w-[185px]">
-							<Button type="submit" disabled={addCommentMutation.isPending}>
-								{addCommentMutation.isPending ? "등록중..." : "등록"}
+							<Button type="submit" disabled={isSubmitting || addCommentMutation.isPending}>
+								{isSubmitting || addCommentMutation.isPending ? "등록중..." : "등록"}
 							</Button>
 						</div>
 					</div>

@@ -81,11 +81,6 @@ export default {
 					"0%": { transform: "scale(1)" },
 					"100%": { transform: "scale(1.2)" },
 				},
-				sparkle: {
-					"0%": { opacity: "1" },
-					"50%": { opacity: "0.6" },
-					"100%": { opacity: "1" },
-				},
 			},
 			animation: {
 				scaleUp: "scaleUp 0.2s ease-in-out",

@@ -164,15 +164,15 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 								<Message.Date />
 							</div>
 						</div>
-						<div className="flex items-center gap-[15px] text-text-disabled">
-							<p className="flex items-center gap-[3px]">
+						<div className="flex items-center gap-[15px] text-md text-text-disabled">
+							<p className="flex items-center gap-[7px]">
 								<Image src="/icons/comment.svg" alt="댓글수" width={15} height={15} />
 								{article?.commentCount}
 							</p>
 							<button type="button" onClick={handleLike} className="flex items-center">
-								<span className="flex items-center gap-[3px]">
-									<span className={`flex items-center gap-[3px] transition-transform ${isAnimating ? "animate-scaleUp" : ""}`}>
-										<Icon.Heart width={15} height={15} color={article?.isLiked ? "#FF0000" : "#64748B"} />
+								<span className="flex items-center gap-[7px]">
+									<span className={`transition-transform ${isAnimating ? "animate-scaleUp" : ""}`}>
+										{article?.isLiked ? <Icon.HeartFull width={15} height={15} color="#FF0000" /> : <Icon.Heart width={15} height={15} color="#64748B" />}
 									</span>
 									{article?.likeCount}
 								</span>
@@ -184,7 +184,11 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 					) : (
 						<>
 							<Message.Content />
-							<Image src={article?.image ?? ""} alt="댓글수" width={100} height={100} />
+							{article?.image && (
+								<div className="relative mt-[20px] min-h-[300px] min-w-[300px] max-w-full">
+									<Image src={article?.image} alt="content Image" layout="fill" objectFit="contain" />
+								</div>
+							)}
 						</>
 					)}
 				</Message>
