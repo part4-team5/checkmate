@@ -137,7 +137,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				{tasks &&
 					tasks.map((task) => (
 						<button
-							className={`${task.id === currentTaskId ? "text-text-primary underline underline-offset-4" : "text-text-default"}`}
+							className={`${task.id === currentTaskId ? "text-text-primary underline underline-offset-4" : "text-text-default"} rounded-md p-1 hover:bg-background-tertiary hover:text-white`}
 							type="button"
 							key={task.id}
 							// onMouseEnter={prefetchTasks}
@@ -156,7 +156,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							key={i}
 							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
 						>
-							<div className="h-5 w-28 animate-pulse rounded-sm bg-background-tertiary" />
+							<div className="h-3 w-28 animate-pulse rounded-sm bg-background-tertiary" />
 							<div className="h-3 w-48 animate-pulse rounded-sm bg-background-tertiary" />
 						</div>
 					))}
@@ -185,7 +185,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			)}
 
 			{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
-				<div className="h-vh mt-60 flex items-center justify-center text-text-default">
+				<div className="h-vh flex items-center justify-center text-text-default">
 					<div className="text-center">
 						아직 할 일이 없습니다.
 						<br />
