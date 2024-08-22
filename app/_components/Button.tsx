@@ -4,6 +4,7 @@
 
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { MouseEvent, PropsWithChildren } from "react";
 
@@ -61,17 +62,26 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 
 	const btnStyle = `${btnVariant} ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "text-lg" : "text-md"} size-full py-[6px] `;
 
+	const MotionButton = motion.button;
+	const MotionLink = motion(Link);
+
+	const buttonAnimation = {
+		whileTap: {
+			scale: 0.95,
+		},
+	};
+
 	if (href) {
 		return (
-			<Link className={`${btnStyle}`} href={href}>
+			<MotionLink className={`${btnStyle}`} href={href} whileTap={buttonAnimation.whileTap}>
 				{children}
-			</Link>
+			</MotionLink>
 		);
 	}
 
 	return (
-		<button type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled}>
+		<MotionButton type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled} whileTap={buttonAnimation.whileTap}>
 			{children}
-		</button>
+		</MotionButton>
 	);
 }
