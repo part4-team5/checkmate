@@ -53,11 +53,11 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 				close();
 
 				// 낙관적 업데이트 수행
-				await queryClient.cancelQueries({ queryKey: ["groupInfo", groupId], exact: true });
+				await queryClient.cancelQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
 
-				const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", groupId]);
+				const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", { groupId }]);
 
-				queryClient.setQueryData(["groupInfo", groupId], (oldData: any) => {
+				queryClient.setQueryData(["groupInfo", { groupId }], (oldData: any) => {
 					const newTaskList = { id: Date.now(), name: ctx.values.postTasks, tasks: [] };
 					const updatedTaskLists = oldData?.taskLists ? [...oldData.taskLists, newTaskList] : [newTaskList];
 					return {
@@ -70,7 +70,7 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 			},
 			onError: (error, ctx, context) => {
 				if (context?.previousGroupInfo) {
-					queryClient.setQueryData(["groupInfo", groupId], context.previousGroupInfo);
+					queryClient.setQueryData(["groupInfo", { groupId }], context.previousGroupInfo);
 				}
 
 				if (error.message === "이미 존재하는 할 일 목록입니다.") {
@@ -85,7 +85,7 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 				}, 10);
 			},
 			onSettled: () => {
-				queryClient.invalidateQueries({ queryKey: ["groupInfo", groupId], exact: true });
+				queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
 			},
 		},
 	);
@@ -115,11 +115,11 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 					close();
 
 					// 낙관적 업데이트 수행
-					await queryClient.cancelQueries({ queryKey: ["groupInfo", groupId], exact: true });
+					await queryClient.cancelQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
 
-					const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", groupId]);
+					const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", { groupId }]);
 
-					queryClient.setQueryData(["groupInfo", groupId], (oldData: any) => {
+					queryClient.setQueryData(["groupInfo", { groupId }], (oldData: any) => {
 						if (!oldData?.taskLists) return oldData;
 
 						const updatedTaskLists = oldData.taskLists.map((taskList: any) => (taskList.id === taskId ? { ...taskList, name: ctx.values.postTasks } : taskList));
@@ -134,7 +134,7 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 				},
 				onError: (error, ctx, context) => {
 					if (context?.previousGroupInfo) {
-						queryClient.setQueryData(["groupInfo", groupId], context.previousGroupInfo);
+						queryClient.setQueryData(["groupInfo", { groupId }], context.previousGroupInfo);
 					}
 
 					if (error.message === "이미 존재하는 할 일 목록입니다.") {
@@ -150,7 +150,7 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 					ctx.setError("postTasks", "목록 수정에 실패했습니다.");
 				},
 				onSettled: () => {
-					queryClient.invalidateQueries({ queryKey: ["groupInfo", groupId], exact: true });
+					queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
 				},
 			});
 
