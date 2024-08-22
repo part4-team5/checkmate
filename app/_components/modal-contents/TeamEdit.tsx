@@ -24,7 +24,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 	const [imageRemoved, setImageRemoved] = useState(false); // 이미지 삭제 상태 관리
 
 	const { data: teamInfo } = useQuery({
-		queryKey: ["groupInfo", id],
+		queryKey: ["groupInfo", { group: id }],
 		queryFn: () => API["{teamId}/groups/{id}"].GET({ id }),
 	});
 
@@ -50,7 +50,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
-			queryClient.invalidateQueries({ queryKey: ["groupInfo", id] });
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { group: id }] });
 
 			close();
 			router.push(`/${id}`);

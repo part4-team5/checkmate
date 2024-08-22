@@ -95,64 +95,64 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 		Error,
 		FormContext,
 		MutationContext
-	>({
-		mutationFn: async (ctx: FormContext) => {
-			const editTasks = ctx.values.postTasks as string;
+			>({
+				mutationFn: async (ctx: FormContext) => {
+					const editTasks = ctx.values.postTasks as string;
 
-			const payload: Parameters<(typeof API)["{teamId}/groups/{groupId}/task-lists/{id}"]["PATCH"]>[1] = { name: editTasks };
+					const payload: Parameters<(typeof API)["{teamId}/groups/{groupId}/task-lists/{id}"]["PATCH"]>[1] = { name: editTasks };
 
-			const response = await API["{teamId}/groups/{groupId}/task-lists/{id}"].PATCH(
-				{
-					groupId,
-					id: taskId!,
+					const response = await API["{teamId}/groups/{groupId}/task-lists/{id}"].PATCH(
+						{
+							groupId,
+							id: taskId!,
+						},
+						payload,
+					);
+
+					return response;
 				},
-				payload,
-			);
+				onMutate: async (ctx) => {
+					close();
 
-			return response;
-		},
-		onMutate: async (ctx) => {
-			close();
+					// 낙관적 업데이트 수행
+					await queryClient.cancelQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
 
-			// 낙관적 업데이트 수행
-			await queryClient.cancelQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
+					const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", { groupId }]);
 
-			const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", { groupId }]);
+					queryClient.setQueryData(["groupInfo", { groupId }], (oldData: any) => {
+						if (!oldData?.taskLists) return oldData;
 
-			queryClient.setQueryData(["groupInfo", { groupId }], (oldData: any) => {
-				if (!oldData?.taskLists) return oldData;
+						const updatedTaskLists = oldData.taskLists.map((taskList: any) => (taskList.id === taskId ? { ...taskList, name: ctx.values.postTasks } : taskList));
 
-				const updatedTaskLists = oldData.taskLists.map((taskList: any) => (taskList.id === taskId ? { ...taskList, name: ctx.values.postTasks } : taskList));
+						return {
+							...oldData,
+							taskLists: updatedTaskLists,
+						};
+					});
 
-				return {
-					...oldData,
-					taskLists: updatedTaskLists,
-				};
+					return { previousGroupInfo };
+				},
+				onError: (error, ctx, context) => {
+					if (context?.previousGroupInfo) {
+						queryClient.setQueryData(["groupInfo", { groupId }], context.previousGroupInfo);
+					}
+
+					if (error.message === "이미 존재하는 할 일 목록입니다.") {
+						setToastMessage("이미 존재하는 할 일 목록입니다.");
+					} else {
+						setToastMessage("목록 수정에 실패했습니다.");
+					}
+
+					setToast(false);
+					setTimeout(() => {
+						setToast(true);
+					}, 10);
+					ctx.setError("postTasks", "목록 수정에 실패했습니다.");
+				},
+				onSettled: () => {
+					queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
+				},
 			});
-
-			return { previousGroupInfo };
-		},
-		onError: (error, ctx, context) => {
-			if (context?.previousGroupInfo) {
-				queryClient.setQueryData(["groupInfo", { groupId }], context.previousGroupInfo);
-			}
-
-			if (error.message === "이미 존재하는 할 일 목록입니다.") {
-				setToastMessage("이미 존재하는 할 일 목록입니다.");
-			} else {
-				setToastMessage("목록 수정에 실패했습니다.");
-			}
-
-			setToast(false);
-			setTimeout(() => {
-				setToast(true);
-			}, 10);
-			ctx.setError("postTasks", "목록 수정에 실패했습니다.");
-		},
-		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
-		},
-	});
 
 	const handlePostOrEditTasks = useCallback(
 		(ctx: FormContext) => {

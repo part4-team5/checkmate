@@ -30,9 +30,9 @@ export const useDeleteTaskList = (groupId: number) => {
 		onMutate: async (taskListId: number) => {
 			await queryClient.cancelQueries({ queryKey: ["groupInfo", { groupId }] });
 
-			const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskListType[] }>(["groupInfo", groupId]);
+			const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskListType[] }>(["groupInfo", { groupId }]);
 
-			queryClient.setQueryData(["groupInfo", groupId], (oldData: any) => {
+			queryClient.setQueryData(["groupInfo", { groupId }], (oldData: any) => {
 				if (!oldData?.taskLists) return oldData;
 
 				const updatedTaskLists = oldData.taskLists.filter((taskListItem: TaskListType) => taskListItem.id !== taskListId);
