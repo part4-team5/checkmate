@@ -67,7 +67,7 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 
 	const buttonAnimation = {
 		whileTap: {
-			scale: 0.95,
+			scale: 0.8,
 		},
 	};
 

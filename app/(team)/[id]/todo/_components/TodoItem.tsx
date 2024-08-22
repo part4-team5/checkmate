@@ -5,7 +5,7 @@ import useOverlay from "@/app/_hooks/useOverlay";
 import Icon from "@/app/_icons";
 import { convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
-import { useRef } from "react";
+import { useState } from "react";
 
 type FrequencyType = "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
 const frequency: Record<FrequencyType, string> = {
@@ -33,36 +33,46 @@ type TodoItemProps = {
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
 export default function TodoItem({ taskId, todoItem, groupId, currentDate, onToggleTodo, onTodoClick, onTodoDelete }: TodoItemProps) {
-	const isLongPress = useRef(false);
-	const timerId = useRef<NodeJS.Timeout>();
+	const [isLongPress, setIsLongPress] = useState(false);
+	const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
+	const [isDragging, setIsDragging] = useState(false);
 	const overlay = useOverlay();
-
-	// 타이머 시작
-	const handleMouseDown = () => {
-		isLongPress.current = false;
-		timerId.current = setTimeout(() => {
-			isLongPress.current = true;
-		}, 200); // 200ms 이상 눌리면 long press로 간주
-	};
 
 	const handleTodoDelete = (todoId: number, name: string) => {
 		overlay.open(({ close }) => <DeleteModal onClick={() => onTodoDelete(todoId)} close={close} modalName={name} modalContent="삭제하시겠습니까?" />);
+	};
+	const handleMouseDown = () => {
+		setIsLongPress(false);
+		const id = setTimeout(() => {
+			setIsLongPress(true);
+			setIsDragging(true); // Long press 시 드래그 상태로 전환
+		}, 200); // 200ms 이상 눌리면 long press로 간주
+		setTimerId(id);
+	};
+
+	const handleMouseUp = () => {
+		console.log("mouseup");
+		if (timerId) {
+			clearTimeout(timerId);
+			setTimerId(null);
+		}
+		setIsDragging(false); // 마우스를 뗄 때 드래그 상태 종료
 	};
 
 	const { date } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
 	return (
 		<div
-			className="lg:hover:bg-background-tertiary flex w-full justify-between rounded-lg bg-background-secondary px-[14px] py-3 hover:cursor-pointer"
+			className={`lg:hover:bg-background-tertiary flex w-full justify-between rounded-lg bg-background-secondary px-[14px] py-3 ${
+				isDragging ? "cursor-grabbing" : "cursor-pointer"
+			}`}
 			key={todoItem.id}
 			onClick={(e) => {
 				e.stopPropagation();
-				if (isLongPress.current) return;
+				if (isLongPress) return;
 				onTodoClick(groupId, taskId, todoItem.id, currentDate, todoItem.doneAt);
 			}}
 			onMouseDown={handleMouseDown}
-			onMouseUp={() => {
-				clearTimeout(timerId.current);
-			}}
+			onMouseUp={handleMouseUp}
 		>
 			<div className="flex flex-col gap-[11px]">
 				<div className="flex items-center justify-between">
