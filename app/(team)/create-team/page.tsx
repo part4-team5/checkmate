@@ -109,6 +109,7 @@ export default function CreateTeamPage() {
 								placeholder="팀 이름을 입력하세요"
 								tests={[{ type: "require", data: true, error: "팀 이름은 필수입니다" }]}
 							/>
+							<div className="pt-3" />
 							<Form.Error htmlFor="teamName" />
 
 							<div className="pt-10" />
