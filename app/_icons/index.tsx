@@ -288,10 +288,10 @@ Icon.HeartFull = function Heart({ width, height, color }: IconProps) {
 				stroke={color}
 				stroke-width="1.2"
 			/>
-     </svg>
+		</svg>
 	);
 };
-      
+
 Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#10B981" }: IconProps) {
 	return (
 		<svg
