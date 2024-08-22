@@ -36,6 +36,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 	const [isLongPress, setIsLongPress] = useState(false);
 	const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 	const [isDragging, setIsDragging] = useState(false);
+	const [isHovered, setIsHovered] = useState(false);
 	const overlay = useOverlay();
 
 	const handleTodoDelete = (todoId: number, name: string) => {
@@ -113,14 +114,17 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 				<DateTimeFrequency date={date} frequency={frequency[todoItem.frequency]} />
 			</div>
 			<button
+				className="pr-2"
 				aria-label="할 일 삭제"
 				type="submit"
 				onClick={(event) => {
 					event.stopPropagation();
 					handleTodoDelete(todoItem.id, todoItem.name);
 				}}
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}
 			>
-				<Icon.TodoDelete width={24} height={24} />
+				<Icon.TodoDelete width={24} height={24} color={isHovered ? "#EF4444" : "#64748B"} />
 			</button>
 		</div>
 	);
