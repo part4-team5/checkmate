@@ -18,6 +18,7 @@ import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
 import { useDeleteTodoMutation, useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import { Reorder } from "framer-motion";
 import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
+import { motion } from "framer-motion";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -128,25 +129,43 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						</div>
 					</div>
 				</Calendar>
-				<button onClick={handleAddTaskClick} type="button" className="text-brand-primary" aria-label="addtask">
+
+				<motion.button
+					onClick={handleAddTaskClick}
+					type="button"
+					className="text-brand-primary"
+					aria-label="addtask"
+					whileHover={{ scale: 1.07 }}
+					whileTap={{ scale: 0.95 }}
+					transition={{ type: "spring", stiffness: 300 }}
+				>
 					+새로운 목록 추가하기
-				</button>
+				</motion.button>
 			</div>
 
-			<div className="flex flex-wrap gap-3 text-lg font-medium">
+			<motion.div className="layout layoutRoot flex flex-wrap gap-3 text-lg font-medium">
 				{tasks &&
 					tasks.map((task) => (
-						<button
-							className={`${task.id === currentTaskId ? "text-text-primary underline underline-offset-4" : "text-text-default"} rounded-md p-1 hover:bg-background-tertiary hover:text-white`}
-							type="button"
-							key={task.id}
-							// onMouseEnter={prefetchTasks}
-							onClick={() => updateSearchParams(task.id)}
-						>
-							{task.name}
-						</button>
+						<motion.div layout className="relative cursor-pointer rounded-md p-1" key={task.id} onClick={() => updateSearchParams(task.id)}>
+							<motion.span className={task.id === currentTaskId ? "text-text-primary" : "text-text-default"}>{task.name}</motion.span>
+							{task.id === currentTaskId && (
+								<motion.div
+									layoutId="underline"
+									className="absolute bottom-0 left-0 right-0 h-0.5 bg-text-primary"
+									initial={{ opacity: 0, translateY: 10 }} // 언더바의 초기 위치를 아래로 설정
+									animate={{ opacity: 1, translateY: 0 }} // 위로 이동하면서 나타나는 애니메이션
+									exit={{ opacity: 0, translateY: 10 }} // 사라질 때 아래로 이동하는 애니메이션
+									transition={{
+										type: "spring",
+										stiffness: 500,
+										damping: 30,
+										duration: 0.3,
+									}}
+								/>
+							)}
+						</motion.div>
 					))}
-			</div>
+			</motion.div>
 
 			{isTodoItemsLoading && (
 				<div>
@@ -166,7 +185,20 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			{todoItems && (
 				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="pb-56">
 					{todoItems.map((todoItem) => (
-						<Reorder.Item value={todoItem} key={todoItem.id} onDragEnd={() => handleDragEnd(todoItem)}>
+						<Reorder.Item
+							value={todoItem}
+							key={todoItem.id}
+							onDragEnd={() => handleDragEnd(todoItem)}
+							whileHover={{ scale: 1.015 }}
+							whileTap={{ boxShadow: "0px 0px 15px rgba(0,0,0,0.2)" }}
+							dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }}
+							dragConstraints={{
+								top: -150,
+								left: -150,
+								right: 150,
+								bottom: 150,
+							}}
+						>
 							<div className="mt-4 flex flex-col gap-4">
 								<TodoItem
 									key={todoItem.id}
