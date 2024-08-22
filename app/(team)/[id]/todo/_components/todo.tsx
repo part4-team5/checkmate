@@ -16,9 +16,8 @@ import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_compon
 import AddTaskModal from "@/app/(team)/[id]/todo/_components/AddTask";
 import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
 import { useDeleteTodoMutation, useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
-import { Reorder } from "framer-motion";
+import { Reorder, motion } from "framer-motion";
 import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
-import { motion } from "framer-motion";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -151,10 +150,10 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							{task.id === currentTaskId && (
 								<motion.div
 									layoutId="underline"
-									className="absolute bottom-0 left-0 right-0 h-0.5 bg-text-primary"
-									initial={{ opacity: 0, translateY: 10 }} // 언더바의 초기 위치를 아래로 설정
-									animate={{ opacity: 1, translateY: 0 }} // 위로 이동하면서 나타나는 애니메이션
-									exit={{ opacity: 0, translateY: 10 }} // 사라질 때 아래로 이동하는 애니메이션
+									className="absolute bottom-0 left-0 right-0 h-[2px] bg-text-primary" // 밑줄 두께를 줄임
+									initial={{ opacity: 0, translateY: 10 }}
+									animate={{ opacity: 1, translateY: 0 }}
+									exit={{ opacity: 0, translateY: 10 }}
 									transition={{
 										type: "spring",
 										stiffness: 500,
@@ -171,13 +170,20 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				<div>
 					{Array.from({ length: 5 }).map((_, i) => (
 						/* eslint-disable react/no-array-index-key */
-						<div
+						<motion.div
 							key={i}
-							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
+							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3"
+							initial={{ opacity: 0.2 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0 }}
+							transition={{
+								duration: 0.2, // 빠르고 간결한 애니메이션 속도
+								ease: "easeInOut",
+							}}
 						>
-							<div className="h-3 w-28 animate-pulse rounded-sm bg-background-tertiary" />
-							<div className="h-3 w-48 animate-pulse rounded-sm bg-background-tertiary" />
-						</div>
+							<div className="h-3 w-28 rounded-sm bg-background-tertiary" />
+							<div className="h-3 w-48 rounded-sm bg-background-tertiary" />
+						</motion.div>
 					))}
 				</div>
 			)}
