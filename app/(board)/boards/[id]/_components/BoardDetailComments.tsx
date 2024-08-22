@@ -81,7 +81,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 			API["{teamId}/comments/{commentId}"].PATCH({ commentId }, { content }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["comments", articleId] });
-			setEditingCommentId(null); // 수정 완료 후 수정 모드 종료
+			setEditingCommentId(null);
 		},
 		onError: (error) => {
 			alert(`댓글 수정 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
@@ -105,7 +105,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const handleAddComment = useCallback(
 		(e: React.FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
-			if (commentText.length === 0 || isSubmitting) return;
+			if (!commentText.trim() || isSubmitting) return;
 			setIsSubmitting(true);
 			addCommentMutation.mutate(commentText);
 		},
@@ -116,7 +116,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const handleUpdateComment = useCallback(
 		(e: React.FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
-			if (editingCommentText.length === 0 || editingCommentId === null) return;
+			if (editingCommentText.trim().length === 0 || editingCommentId === null) return;
 			updateCommentMutation.mutate({ commentId: editingCommentId, content: editingCommentText });
 		},
 		[editingCommentText, editingCommentId, updateCommentMutation],
@@ -162,6 +162,11 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 						<textarea
 							id="commentText"
 							onChange={handleCommentChange}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									e.preventDefault();
+								}
+							}}
 							className="h-[100px] w-full resize-none overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[24px] py-[16px] text-lg text-text-primary placeholder:text-text-default focus:outline-none"
 							value={commentText}
 							placeholder="댓글을 입력해주세요"
@@ -178,6 +183,15 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 			</div>
 			{/* 댓글 목록 표시 */}
 			<div className="my-[40px] flex flex-col gap-4 border-t border-solid border-t-[rgba(248,250,252,0.1)] pt-[40px]">
+				{comments?.pages.length === 0 && !isFetching && (
+					<div className="my-[100px] text-center text-lg font-medium text-text-default">아직 작성된 댓글이 없습니다</div>
+				)}
+				{isFetching && (
+					<div className="rounded-[12px] bg-background-secondary px-[24px] py-[16px]">
+						<div className="h-[16px] w-[60%] animate-pulse rounded-md bg-border-primary/25" />
+						<div className="mt-[30px] h-[30px] w-[30%] animate-pulse rounded-md bg-border-primary/25" />
+					</div>
+				)}
 				{comments?.pages.map((comment, index) => {
 					const messageData = {
 						content: comment.content,
@@ -199,10 +213,11 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 											id={`editComment-${comment.id}`}
 											onChange={handleEditCommentChange}
 											onKeyDown={(e) => {
-												if (e.key === "Enter" && !e.shiftKey) {
+												if (e.key === "Enter") {
 													e.preventDefault();
 												}
 											}}
+											wrap="soft"
 											className="h-[100px] w-full resize-none overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[24px] py-[16px] text-lg text-text-primary placeholder:text-text-default focus:outline-none"
 											value={editingCommentText}
 										/>

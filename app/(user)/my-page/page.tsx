@@ -33,12 +33,11 @@ export default function Page() {
 	});
 
 	// 이미지 업로드
-	const imageUpload = useCallback(async (file: File): Promise<{ url: string | undefined }> => {
+	const imageUpload = async (file: File) => {
 		if (typeof file === "string") return { url: undefined };
 
-		const response = await API["{teamId}/images/upload"].POST({}, file);
-		return response;
-	}, []);
+		return API["{teamId}/images/upload"].POST({}, file);
+	};
 
 	// 프로필 수정
 	const updateProfileMutation = useMutation({
