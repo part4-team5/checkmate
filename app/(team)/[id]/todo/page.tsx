@@ -16,7 +16,7 @@ export default async function Page({ params, searchParams }: PageProps) {
 	const groupId = Number(params.id);
 	const taskId = Number(searchParams.taskId);
 	await queryClient.prefetchQuery({
-		queryKey: ["tasks", { groupId }],
+		queryKey: ["groupInfo", { groupId }],
 		queryFn: async () => {
 			const res = API["{teamId}/groups/{id}"].GET({
 				id: groupId,

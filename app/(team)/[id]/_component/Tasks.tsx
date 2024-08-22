@@ -142,7 +142,7 @@ export default function Tasks({ id }: { id: number }) {
 	const reorderMutation = useReorderTaskLists(id);
 
 	const handleReorder = (newTaskLists: TaskListType[]) => {
-		queryClient.setQueryData(["groupInfo", id], { ...data, taskLists: newTaskLists });
+		queryClient.setQueryData(["groupInfo", { groupId: id }], { ...data, taskLists: newTaskLists });
 	};
 
 	const handleDragEnd = (taskList: TaskListType) => {

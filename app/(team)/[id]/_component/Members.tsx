@@ -32,7 +32,7 @@ function Members({ id }: ReportProps) {
 	});
 
 	const { data, isLoading, error } = useQuery<Team>({
-		queryKey: ["groupInfo", id],
+		queryKey: ["groupInfo", { groupId: id }],
 		queryFn: fetchGroupInfo,
 		enabled: !!id,
 		refetchInterval: 60000,

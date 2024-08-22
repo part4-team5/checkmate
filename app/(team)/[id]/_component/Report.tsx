@@ -18,7 +18,7 @@ function Report({ id }: ReportProps) {
 	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id }), [id]);
 
 	const { data, isLoading, error } = useQuery<Team>({
-		queryKey: ["groupInfo", id],
+		queryKey: ["groupInfo", { groupId: id }],
 		queryFn: fetchGroupInfo,
 		enabled: !!id,
 		refetchInterval: 60000,

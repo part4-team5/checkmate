@@ -11,7 +11,7 @@ export const useGroupInfo = (id: number) => {
 	const fetchGroupInfo = async (): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id });
 
 	return useQuery<Team>({
-		queryKey: ["groupInfo", id],
+		queryKey: ["groupInfo", { groupId: id }],
 		queryFn: fetchGroupInfo,
 		refetchInterval: 60000,
 		retry: 3,
@@ -28,7 +28,7 @@ export const useDeleteTaskList = (groupId: number) => {
 			await API["{teamId}/groups/{groupId}/task-lists/{id}"].DELETE({ id: taskListId });
 		},
 		onMutate: async (taskListId: number) => {
-			await queryClient.cancelQueries({ queryKey: ["groupInfo", groupId] });
+			await queryClient.cancelQueries({ queryKey: ["groupInfo", { groupId }] });
 
 			const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskListType[] }>(["groupInfo", groupId]);
 
@@ -44,11 +44,11 @@ export const useDeleteTaskList = (groupId: number) => {
 		},
 		onError: (err, variables, context) => {
 			if (context?.previousGroupInfo) {
-				queryClient.setQueryData(["groupInfo", groupId], context.previousGroupInfo);
+				queryClient.setQueryData(["groupInfo", { groupId }], context.previousGroupInfo);
 			}
 		},
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ["groupInfo", groupId] });
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 		},
 	});
 };
@@ -61,13 +61,13 @@ export const useReorderTaskLists = (groupId: number) => {
 		mutationFn: async ({ taskListId, displayIndex }: { taskListId: number; displayIndex: string }) =>
 			API["{teamId}/groups/{groupId}/task-lists/{id}/order"].PATCH({ groupId, id: taskListId }, { displayIndex }),
 		onMutate: async ({ taskListId, displayIndex }) => {
-			await queryClient.cancelQueries({ queryKey: ["groupInfo", groupId] });
+			await queryClient.cancelQueries({ queryKey: ["groupInfo", { groupId }] });
 
-			const previousTaskLists = queryClient.getQueryData<TaskListType[]>(["groupInfo", groupId]);
+			const previousTaskLists = queryClient.getQueryData<TaskListType[]>(["groupInfo", { groupId }]);
 
 			if (Array.isArray(previousTaskLists)) {
 				const newTaskLists = previousTaskLists.map((task) => (task.id === taskListId ? { ...task, displayIndex: Number(displayIndex) } : task));
-				queryClient.setQueryData(["groupInfo", groupId], { ...previousTaskLists, taskLists: newTaskLists });
+				queryClient.setQueryData(["groupInfo", { groupId }], { ...previousTaskLists, taskLists: newTaskLists });
 			}
 
 			return { previousTaskLists };

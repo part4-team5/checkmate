@@ -43,29 +43,11 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const { data: todoItems, isLoading: isTodoItemsLoading } = useGetTodoItems(groupId, currentTaskId, currentDate);
 	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
 	const todoOrderMutation = useTodoOrderMutation();
-	const todoDeleteMutation = useDeleteTodoMutation();
+	const todoDeleteMutation = useDeleteTodoMutation(groupId, currentTaskId, currentDate);
 
 	const containerRef = useRef(null);
 
 	const tasks = groupList?.taskLists;
-
-	// /* eslint-disable no-restricted-syntax */
-	// const prefetchTasks = () => {
-	// 	if (!tasks) return;
-	// 	for (const task of tasks) {
-	// 		queryClient.prefetchQuery({
-	// 			queryKey: tasksKey.detail(groupId, task.id, currentDate.toLocaleDateString("ko-KR")),
-	// 			queryFn: async () => {
-	// 				const response = API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks"].GET({
-	// 					groupId,
-	// 					taskListId: task.id,
-	// 					date: currentDate.toLocaleDateString("ko-KR"),
-	// 				});
-	// 				return response;
-	// 			},
-	// 		});
-	// 	}
-	// };
 
 	const updateSearchParams = (value: number) => {
 		setCurrentTaskId(value);
@@ -112,6 +94,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			}
 		}
 	};
+
 	return (
 		<>
 			<div className="my-6 flex justify-between" ref={containerRef}>
@@ -149,6 +132,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					+새로운 목록 추가하기
 				</button>
 			</div>
+
 			<div className="flex flex-wrap gap-3 text-lg font-medium">
 				{tasks &&
 					tasks.map((task) => (
@@ -163,6 +147,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						</button>
 					))}
 			</div>
+
 			{isTodoItemsLoading && (
 				<div>
 					{Array.from({ length: 5 }).map((_, i) => (
@@ -178,7 +163,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			)}
 
 			{todoItems && (
-				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)}>
+				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="pb-56">
 					{todoItems.map((todoItem) => (
 						<Reorder.Item value={todoItem} key={todoItem.id} onDragEnd={() => handleDragEnd(todoItem)}>
 							<div className="mt-4 flex flex-col gap-4">
@@ -197,6 +182,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					))}
 				</Reorder.Group>
 			)}
+
 			{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
 				<div className="h-vh mt-60 flex items-center justify-center text-text-default">
 					<div className="text-center">

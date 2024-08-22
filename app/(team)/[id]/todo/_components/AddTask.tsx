@@ -1,8 +1,7 @@
 import React from "react";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import Form from "@/app/_components/Form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import API from "@/app/_api";
+import { useAddTaskMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 
 type AddTaskModalProps = {
 	groupId: number;
@@ -12,34 +11,11 @@ type AddTaskModalProps = {
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function AddTaskModal({ close, groupId }: AddTaskModalProps): JSX.Element {
-	const queryClient = useQueryClient();
-
-	const postAddTask = async (id: number, ctx: FormContext) => {
-		const name = ctx.values.task as string;
-		const response = API["{teamId}/groups/{groupId}/task-lists"].POST(
-			{
-				groupId: id,
-			},
-			{
-				name,
-			},
-		);
-		return response;
-	};
-
-	const addTaskMutation = useMutation({
-		mutationFn: (ctx: FormContext) => postAddTask(groupId, ctx),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["tasks", { groupId }] });
-			close();
-		},
-		onError: (error) => {
-			console.log(error.message);
-		},
-	});
+	const postAddTaskMutation = useAddTaskMutation(groupId);
 
 	const handleSubmit = (ctx: FormContext) => {
-		addTaskMutation.mutate(ctx);
+		postAddTaskMutation.mutate(ctx);
+		close();
 	};
 
 	return (
