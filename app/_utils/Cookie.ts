@@ -33,7 +33,6 @@ export default class Cookie {
 	public static set(key: string, value: unknown) {
 		// :3
 		const data = encodeURIComponent(serialize(value));
-
 		switch (typeof window) {
 			//
 			// server side
@@ -44,11 +43,11 @@ export default class Cookie {
 
 				const store = cookies();
 
-				// eslint-disable-next-line no-inner-declarations
-				function action() {
+				try {
 					store.set(key, data, { path: "/", maxAge: 60 * 60 * 24 });
+				} catch (_) {
+					// ignore
 				}
-				action();
 				break;
 			}
 			//
@@ -72,11 +71,11 @@ export default class Cookie {
 
 				const store = cookies();
 
-				// eslint-disable-next-line no-inner-declarations
-				function action() {
+				try {
 					store.delete(key, { path: "/" });
+				} catch (_) {
+					// ignore
 				}
-				action();
 				break;
 			}
 			//
