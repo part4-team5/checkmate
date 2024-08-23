@@ -4,14 +4,14 @@
 
 "use client";
 
-import React, { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import UserInfo from "@/app/(team)/[id]/_component/UserInfo";
 import API from "@/app/_api";
 import useOverlay from "@/app/_hooks/useOverlay";
 import MemberInvite from "@/app/_components/modal-contents/MemberInvite";
 import MemberProfile from "@/app/_components/modal-contents/MemberProfile";
-import ToastPopup from "@/app/(team)/[id]/_component/ToastPopup";
+import toast from "@/app/_utils/Toast";
 import { ReportProps } from "./Report";
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
@@ -19,7 +19,6 @@ type Token = string;
 
 function Members({ id }: ReportProps) {
 	const overlay = useOverlay();
-	const [showToast, setShowToast] = useState(false);
 
 	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id }), [id]);
 
@@ -64,10 +63,7 @@ function Members({ id }: ReportProps) {
 			const invitationUrl = `${redirectUrl}/join-team?${params.toString()}`;
 			await navigator.clipboard.writeText(invitationUrl);
 
-			setShowToast(true);
-			setTimeout(() => {
-				setShowToast(false);
-			}, 2000);
+			toast.success("링크가 복사되었습니다!");
 		}
 	};
 
@@ -84,7 +80,6 @@ function Members({ id }: ReportProps) {
 
 	return (
 		<main className="mt-[48px]">
-			{showToast && <ToastPopup message="링크가 복사되었습니다!" position="bottom" />}
 			<section className="flex justify-between">
 				<div className="flex gap-[8px]">
 					<p className="text-[16px] font-medium">멤버</p>
