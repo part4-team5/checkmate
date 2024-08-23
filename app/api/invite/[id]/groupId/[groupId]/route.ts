@@ -15,25 +15,25 @@ export async function DELETE(req: NextRequest) {
 	console.log({ id, groupId });
 
 	if (!id) {
-		return NextResponse.json({ error: "Invite ID is required" }, { status: 400 });
+		return NextResponse.json({ error: "User ID", message: "올바르지 않은 ID입니다." }, { status: 400 });
 	}
 
 	try {
 		const user = await UserModel.findOne({ id });
 
 		if (!user) {
-			return NextResponse.json({ error: "User not found" }, { status: 404 });
+			return NextResponse.json({ error: "User not found", message: "유저를 찾을 수 없습니다." }, { status: 404 });
 		}
 
 		const invite = await InviteModel.findOneAndDelete({ email: user.email, groupId });
 
 		if (!invite) {
-			return NextResponse.json({ error: "Invite not found" }, { status: 404 });
+			return NextResponse.json({ error: "Invite not found", message: "초대를 찾을 수 없습니다." }, { status: 404 });
 		}
 
-		return NextResponse.json({ message: "Invite deleted successfully", invite }, { status: 200 });
+		return NextResponse.json({ invite, message: "성공적으로 초대를 삭제했습니다." }, { status: 200 });
 	} catch (error) {
-		return NextResponse.json({ error: "Failed to delete invite", message: error }, { status: 500 });
+		return NextResponse.json({ error, message: "초대 삭제에 실패했습니다." }, { status: 500 });
 	}
 }
 

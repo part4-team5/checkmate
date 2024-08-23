@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import mongoose, { Schema, Model, Document } from "mongoose";
 
 interface IInvite extends Document {
@@ -6,6 +7,7 @@ interface IInvite extends Document {
 	groupImage: string;
 	groupId: number;
 	token: string;
+	createdAt: Date;
 }
 
 const InviteSchema: Schema<IInvite> = new Schema(
@@ -13,7 +15,6 @@ const InviteSchema: Schema<IInvite> = new Schema(
 		email: {
 			type: String,
 			required: true,
-			unique: true,
 		},
 		groupId: {
 			type: Number,
@@ -35,6 +36,9 @@ const InviteSchema: Schema<IInvite> = new Schema(
 		timestamps: true,
 	},
 );
+
+// TTL 인덱스 설정 (createdAt 기준으로 3일 후 문서 삭제)
+InviteSchema.index({ createdAt: 1 }, { expireAfterSeconds: 259200 });
 
 const InviteModel: Model<IInvite> = mongoose.models.Invite || mongoose.model<IInvite>("Invite", InviteSchema);
 

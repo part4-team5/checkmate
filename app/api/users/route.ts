@@ -1,31 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import UserModel from "@/app/_utils/_models/Users.model";
 import dbConnect from "@/app/_utils/dbConnect";
-import InviteModel from "@/app/_utils/_models/Invite.model";
 
 export async function GET() {
 	await dbConnect();
 
 	try {
-		const users = await UserModel.find();
-		const Invites = await InviteModel.find();
+		// 유저와 관련된 invite 데이터를 populate로 가져오기
+		const users = await UserModel.find().populate("invite");
 
-		const usersWithInvites = users.map((user) => {
-			const userInvites = Invites.filter((invite) => invite.email === user.email);
-
-			// 유저 객체에 `invite` 필드를 추가
-			return {
-				...user.toObject(),
-				invite: userInvites,
-			};
-		});
-
-		return NextResponse.json(usersWithInvites, { status: 200 });
+		return NextResponse.json(users, { status: 200 });
 	} catch (error) {
-		return NextResponse.json({ error: "Failed to fetch users", message: error }, { status: 500 });
+		return NextResponse.json({ error, message: "유저 정보를 가져오는데 실패했습니다." }, { status: 500 });
 	}
 }
-
 export async function POST(req: NextRequest) {
 	await dbConnect();
 
@@ -33,13 +21,13 @@ export async function POST(req: NextRequest) {
 		const body = await req.json();
 
 		if (await UserModel.findOne({ email: body.email })) {
-			return NextResponse.json({ message: "User already exists" }, { status: 202 });
+			return NextResponse.json({ error: "User Already Exists", message: "이미 존재하는 유저입니다." }, { status: 400 });
 		}
 
 		const createUser = await UserModel.create(body);
 
 		return NextResponse.json(createUser, { status: 201 });
 	} catch (error) {
-		return NextResponse.json({ error: "Failed to create user", message: error }, { status: 400 });
+		return NextResponse.json({ error, message: "유저 생성에 실패했습니다." }, { status: 500 });
 	}
 }

@@ -1,12 +1,13 @@
-import InviteModel from "@/app/_utils/_models/Invite.model";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import mongoose, { Schema, Model, Document } from "mongoose";
+import InviteModel from "@/app/_utils/_models/Invite.model";
 
 type InviteType = InstanceType<typeof InviteModel>;
 
 interface IUser extends Document {
 	id: number;
 	email: string;
-	invite: InviteType[]; // 초대된 정보의 배열로 선언
+	invite: InviteType[];
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -24,7 +25,6 @@ const UserSchema: Schema<IUser> = new Schema({
 		{
 			type: Schema.Types.ObjectId,
 			ref: "Invite",
-			required: false,
 		},
 	],
 });
