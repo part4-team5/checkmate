@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useLayoutEffect, useRef } from "react";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useAuthStore from "@/app/_store/useAuthStore";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import KebabIcon from "@/public/icons/KebabIcon";
 import Message from "@/app/_components/Message";
@@ -19,6 +20,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const [editingCommentText, setEditingCommentText] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const queryClient = useQueryClient();
+	const { user } = useAuthStore();
 
 	// 댓글 목록
 	const {
@@ -248,16 +250,18 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 											</div>
 										</Message>
 									</div>
-									<DropDown
-										options={[
-											{ text: "수정", onClick: () => enterEditMode(comment.id, comment.content) },
-											{ text: "삭제", onClick: () => handleDeleteComment(comment.id) },
-										]}
-									>
-										<button type="button" aria-label="dropdown">
-											<KebabIcon />
-										</button>
-									</DropDown>
+									{comment.writer?.id === user?.id && (
+										<DropDown
+											options={[
+												{ text: "수정", onClick: () => enterEditMode(comment.id, comment.content) },
+												{ text: "삭제", onClick: () => handleDeleteComment(comment.id) },
+											]}
+										>
+											<button type="button" aria-label="dropdown">
+												<KebabIcon />
+											</button>
+										</DropDown>
+									)}
 								</div>
 							)}
 						</div>

@@ -13,11 +13,13 @@ import { useState, ChangeEvent } from "react";
 import Button from "@/app/_components/Button";
 import Quill from "@/app/_components/Quill";
 import { useRouter } from "next/navigation";
+import useAuthStore from "@/app/_store/useAuthStore";
 
 export default function BoardDetail({ params }: { params: { id: string } }) {
 	const articleId = Number(params.id);
 	const router = useRouter();
 	const queryClient = useQueryClient();
+	const { user } = useAuthStore();
 	const [isEditing, setIsEditing] = useState(false);
 	const [editArticleData, setEditArticleData] = useState({ title: "", content: "", image: "" });
 	const [isAnimating, setIsAnimating] = useState(false);
@@ -175,16 +177,18 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 							<>
 								<h2 className="text-[18px] font-medium text-text-secondary">{article?.title}</h2>
 								<div>
-									<DropDown
-										options={[
-											{ text: "수정", onClick: handleEditClick },
-											{ text: "삭제", onClick: handleDeleteClick },
-										]}
-									>
-										<button type="button" aria-label="dropdown">
-											<KebabIcon />
-										</button>
-									</DropDown>
+									{article?.writer.id === user?.id && (
+										<DropDown
+											options={[
+												{ text: "수정", onClick: handleEditClick },
+												{ text: "삭제", onClick: handleDeleteClick },
+											]}
+										>
+											<button type="button" aria-label="dropdown">
+												<KebabIcon />
+											</button>
+										</DropDown>
+									)}
 								</div>
 							</>
 						)}
