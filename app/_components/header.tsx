@@ -141,12 +141,21 @@ export default function Header() {
 				{!!accessToken && (
 					<div className="z-50 flex w-full items-center justify-end tablet:justify-between">
 						<nav className="hidden tablet:flex">
-							<ul className="flex items-center gap-10">
+							<ul className="flex items-center gap-5">
 								{/* 팀 선택 드롭다운 */}
 								{teamDropdown.length > 0 && (
 									<li>
 										<DropDown options={teamDropdown} gapY={10} align="LL">
-											<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
+											<button type="button" className="flex items-center gap-[10px] font-medium tablet:text-md desktop:text-lg">
+												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image && (
+													<Image
+														src={user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image ?? "/icons/emptyImage.svg"}
+														alt="team"
+														width={32}
+														height={32}
+														className="size-8 rounded-lg object-cover"
+													/>
+												)}
 												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
 												<Icon.ArrowDown width={16} height={16} />
 											</button>
