@@ -8,6 +8,7 @@ import Link from "next/link";
 import { MouseEvent, PropsWithChildren } from "react";
 
 export interface ButtonProps extends PropsWithChildren {
+	id?: string;
 	variant?: "primary" | "secondary" | "white" | "outline" | "danger";
 	fontSize?: "lg" | "md";
 	rounded?: "full" | "xl";
@@ -31,7 +32,7 @@ export interface ButtonProps extends PropsWithChildren {
  * @param {boolean} [props.disabled=false] - 버튼 비활성화 여부.
  * @returns {JSX.Element} 주어진 속성에 따라 스타일링된 버튼 또는 링크 엘리먼트를 반환합니다.
  */
-export default function Button({ children, variant = "primary", fontSize = "lg", rounded = "xl", href, type = "button", onClick, disabled }: ButtonProps) {
+export default function Button({ id, children, variant = "primary", fontSize = "lg", rounded = "xl", href, type = "button", onClick, disabled }: ButtonProps) {
 	let btnVariant = "";
 
 	switch (variant) {
@@ -63,14 +64,14 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 
 	if (href) {
 		return (
-			<Link className={`${btnStyle}`} href={href}>
+			<Link id={id} className={`${btnStyle}`} href={href}>
 				{children}
 			</Link>
 		);
 	}
 
 	return (
-		<button type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled}>
+		<button id={id} type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled}>
 			{children}
 		</button>
 	);

@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 
 import API from "@/app/_api";
 
 import Quill from "@/app/_components/Quill";
 import Button from "@/app/_components/Button";
 import { useRouter } from "next/navigation";
+import Tour from "@/app/_utils/Tour";
 
 const [FILE_SIZE, FILE_NAME] = [1024 * 10000, /^[a-zA-Z0-9._\-\s]+\.(?:gif|png|jpe?g|webp)$/];
 
@@ -97,10 +98,36 @@ export default function Page() {
 		[image, title, content],
 	);
 
+	useEffect(() => {
+		Tour.play([
+			{
+				query: "#thumb",
+				content: "Click 또는 Drag & Drop 으로 사진을 추가할 수 있어요",
+				position: "bottom",
+			},
+			{
+				query: "#editor",
+				content: "Markdown 문법을 지원해요",
+				position: "top",
+			},
+			{
+				query: "#to-viewer",
+				content: "작성한 내용을 미리 볼 수 있어요",
+				position: "right",
+			},
+			{
+				query: "#create-post",
+				content: "작성을 완료하면 이 버튼을 누르세요",
+				position: "left"
+			}
+		]);
+	}, []);
+
 	return (
 		<main className="flex w-full flex-col items-center tablet:px-[60px] tablet:py-[30px] desktop:pt-[60px]">
 			<form className="h-full w-full bg-background-secondary desktop:container tablet:rounded-[10px] tablet:shadow-lg" onSubmit={onSubmit}>
 				<label
+					id="thumb"
 					htmlFor="image"
 					onDrop={onDrop}
 					onDragEnd={onDrop}
@@ -130,7 +157,7 @@ export default function Page() {
 						/>
 					</div>
 					<div className="h-full w-[75px]">
-						<Button type="submit" fontSize="md" disabled={!(1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0))}>
+						<Button id="create-post" type="submit" fontSize="md" disabled={!(1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0))}>
 							작성하기
 						</Button>
 					</div>
