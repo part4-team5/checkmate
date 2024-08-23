@@ -770,7 +770,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
 		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { userEmail: string; token: string }) {
-			return API.POST<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/accept-invitation`, query, body);
+			return API.POST<{ groupId: number }>(MIME.JSON, `${BASE_URL}/${teamId}/groups/accept-invitation`, query, body);
 		}
 	})();
 
@@ -1129,7 +1129,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 유저 정보
 		 */
 		public override GET({ ...query }) {
-			return API.GET<{ id: number; email: string; invite: InstanceType<typeof InviteModel>[] }>(MIME.JSON, `${SITE_URL}/api/users`, query);
+			return API.GET<{ id: number; email: string; groups: { groupId: number }[]; invite: InviteType[] }>(MIME.JSON, `${SITE_URL}/api/users`, query);
 		}
 
 		/**
@@ -1140,14 +1140,31 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 추가된 유저 정보
 		 */
 		public override POST({ ...query }, body: { id: number; email: string }) {
-			return API.POST<{ id: number; email: string }>(MIME.JSON, `${SITE_URL}/api/users`, query, body);
+			return API.POST<{ id: number; email: string; groups: { groupId: number }[]; invite: InviteType[] }>(MIME.JSON, `${SITE_URL}/api/users`, query, body);
 		}
 	})();
 
 	/**
-	 * 몽고 DB 유저 정보 삭제 API
+	 * 몽고 DB 유저 정보 수정, 삭제 API
 	 */
 	public static readonly ["api/users/{id}"] = new (class extends API {
+		/**
+		 * 몽고 DB 유저 정보 수정
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @param {Object} body - 수정할 유저 정보
+		 * @returns {Promise<Object>} - 수정된 유저 정보
+		 */
+		public override PATCH({ id, ...query }: { id: number }, body: { groupId: number }) {
+			return API.PATCH<{ id: number; email: string; groups: { groupId: number }[]; invite: InviteType[] }>(
+				MIME.JSON,
+				`${SITE_URL}/api/users/${id}`,
+				query,
+				body,
+			);
+		}
+
 		/**
 		 * 몽고 DB 유저 정보 삭제
 		 * @param {Object}
@@ -1157,6 +1174,23 @@ export default abstract class API {
 		 */
 		public override DELETE({ id, ...query }: { id: number }) {
 			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/users/${id}`, query);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 유저 그룹 정보 삭제 API
+	 */
+	public static readonly ["api/users/{id}/groupId/{groupId}"] = new (class extends API {
+		/**
+		 * 몽고 DB 유저 그룹 정보 삭제
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {number} groupId - 팀 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 응답 객체
+		 */
+		public override DELETE({ id, groupId, ...query }: { id: number; groupId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/users/${id}/groupId/${groupId}`, query);
 		}
 	})();
 
@@ -1398,3 +1432,5 @@ interface CursorBasedPaginationResponse<T> {
 	list: T[];
 	nextCursor?: number;
 }
+
+type InviteType = InstanceType<typeof InviteModel>;

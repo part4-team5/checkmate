@@ -12,8 +12,6 @@ export async function DELETE(req: NextRequest) {
 	const id = parts[parts.indexOf("invite") + 1]; // 경로에서 [id] 추출
 	const groupId = parts[parts.indexOf("groupId") + 1]; // 경로에서 [groupId] 추출
 
-	console.log({ id, groupId });
-
 	if (!id) {
 		return NextResponse.json({ error: "User ID", message: "올바르지 않은 ID입니다." }, { status: 400 });
 	}

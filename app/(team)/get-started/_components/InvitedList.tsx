@@ -25,6 +25,9 @@ export default function InvitedList() {
 			[user?.email],
 		),
 		onSuccess: (data, { groupId }) => {
+			// 몽고 DB에서 사용자 그룹 정보 업데이트
+			API["api/users/{id}"].PATCH({ id: Number(user?.id) }, { groupId });
+
 			rejectInviteMutation.mutate({ id: Number(user?.id), groupId });
 
 			queryClient.invalidateQueries({ queryKey: ["invited"] });

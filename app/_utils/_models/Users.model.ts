@@ -7,6 +7,7 @@ type InviteType = InstanceType<typeof InviteModel>;
 interface IUser extends Document {
 	id: number;
 	email: string;
+	groups: { groupId: number }[];
 	invite: InviteType[];
 }
 
@@ -21,6 +22,14 @@ const UserSchema: Schema<IUser> = new Schema({
 		required: true,
 		unique: true,
 	},
+	groups: [
+		{
+			groupId: {
+				type: Number,
+				required: true,
+			},
+		},
+	],
 	invite: [
 		{
 			type: Schema.Types.ObjectId,

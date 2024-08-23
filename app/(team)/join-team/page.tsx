@@ -7,21 +7,18 @@ import useAuthStore from "@/app/_store/useAuthStore";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useState } from "react";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 function JoinTeamForm() {
-	const [isMounted, setIsMounted] = useState(false);
 	const user = useAuthStore((state) => state.user);
 	const userEmail = user?.email ?? "";
 
 	const searchParams = useSearchParams();
 	const [groupId] = useState(searchParams.get("groupId"));
-	const [token, setToken] = useState(searchParams.get("token"));
 
-	const router = useRouter();
 	const overlay = useOverlay();
 
 	const queryClient = useQueryClient();
@@ -66,15 +63,8 @@ function JoinTeamForm() {
 		[groupId, overlay],
 	);
 
-	useEffect(() => {
-		if (token) {
-			// token을 숨기기 위해 주소를 변경합니다.
-			window.history.replaceState(null, "", `/join-team?groupId=${groupId}`);
-		}
-	}, [groupId, token]);
-
 	// Form을 통해 팀 참여 요청을 보내는 mutation
-	const joinTeamFormMutation = useMutation<{}, Error, FormContext>({
+	const joinTeamFormMutation = useMutation<{ groupId: number }, Error, FormContext>({
 		mutationFn: useCallback(
 			async (ctx: FormContext) => {
 				const teamUrl = ctx.values.teamUrl as string;
@@ -82,7 +72,10 @@ function JoinTeamForm() {
 			},
 			[userEmail],
 		),
-		onSuccess: () => {
+		onSuccess: (data) => {
+			// 몽고 DB에서 사용자 그룹 정보 업데이트
+			API["api/users/{id}"].PATCH({ id: Number(user?.id) }, { groupId: data.groupId });
+
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 			openModal(() => {});
 		},
@@ -96,34 +89,6 @@ function JoinTeamForm() {
 		if (joinTeamFormMutation.isPending) return;
 		joinTeamFormMutation.mutate(ctx);
 	};
-
-	// 팀 참여 요청을 보내는 mutation
-	const joinTeamMutation = useMutation<{}, Error, { token: string }>({
-		mutationFn: useCallback(async () => API["{teamId}/groups/accept-invitation"].POST({}, { userEmail, token: token ?? "" }), [token, userEmail]),
-		onSuccess: () => {
-			openModal(() => {
-				router.push(`/${groupId}`);
-			});
-		},
-		onError: (error) => {
-			setToken(null);
-			openModal(() => {}, error.message);
-		},
-	});
-
-	// token이 있을 경우 바로 팀 참여 요청을 보냅니다.
-	useEffect(() => {
-		// 한 번만 실행되도록 합니다.
-		if (token && !isMounted) {
-			setIsMounted(true);
-
-			joinTeamMutation.mutate({ token });
-		}
-	}, [token, joinTeamMutation, isMounted]);
-
-	if (token) {
-		return <section className="flex size-full flex-col items-center justify-center text-3xl font-bold">팀 참여 중...</section>;
-	}
 
 	return (
 		<main className="size-full min-w-[320px] pt-20">

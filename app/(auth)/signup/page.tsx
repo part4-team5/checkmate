@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
 import Oauth from "@/app/(auth)/_components/Oauth";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import UserUpload from "@/app/(auth)/_components/UserUpload";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
@@ -19,6 +19,8 @@ export default function SignupPage() {
 	const setUser = useAuthStore((state) => state.setUser);
 
 	const queryClient = useQueryClient();
+
+	const userUpload = UserUpload();
 
 	const signupMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
@@ -42,7 +44,7 @@ export default function SignupPage() {
 			});
 
 			// 몽고 DB에 유저 정보 저장
-			UserUpload().mutate({ id: response.user.id, email: response.user.email as string });
+			userUpload.mutate({ id: response.user.id, email: response.user.email as string });
 
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);

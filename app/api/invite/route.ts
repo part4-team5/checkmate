@@ -15,6 +15,11 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "User Not Found", message: "유저를 찾을 수 없습니다." }, { status: 404 });
 		}
 
+		const member = user.groups.find((group) => group.groupId === body.groupId);
+		if (member) {
+			return NextResponse.json({ error: "Already Member", message: "이미 해당 그룹에 속해있습니다." }, { status: 400 });
+		}
+
 		// 이미 해당 그룹에 대한 초대장이 있는지 확인
 		const existingInvite = await InviteModel.findOne({ email: body.email, groupId: body.groupId });
 		if (existingInvite) {

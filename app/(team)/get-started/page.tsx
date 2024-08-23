@@ -7,11 +7,11 @@ export default function GetStartedPage() {
 		<main className="size-full min-w-[320px] pt-20">
 			<article className="flex h-full flex-col items-center justify-center gap-4 px-[30px]">
 				{/* 팀 있으면 목록 보여주기 ? */}
-				<section className="size-full">
+				<section className="size-full max-w-screen-tablet">
 					<TeamList />
 				</section>
 
-				<section className="size-full">
+				<section className="size-full max-w-screen-tablet">
 					<InvitedList />
 				</section>
 
