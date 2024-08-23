@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 
-import Cookie from "@/app/_utils/Cookie";
+import Token from "@/app/_utils/Token";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -28,38 +28,6 @@ function createURL(url: string, query: object) {
 	return location.toString();
 }
 
-abstract class Token {
-	private static readonly CACHE: Record<string, string> = {};
-
-	private constructor() {
-		// final
-	}
-
-	public static get ACCESS() {
-		// eslint-disable-next-line no-return-assign
-		return (this.CACHE.accessToken ??= Cookie.get("accessToken") as string);
-	}
-
-	public static set ACCESS(value: string) {
-		if (typeof window === "undefined") {
-			this.CACHE.accessToken = value;
-		}
-		Cookie.set("accessToken", value);
-	}
-
-	public static get REFRESH() {
-		// eslint-disable-next-line no-return-assign
-		return (this.CACHE.refreshToken ??= Cookie.get("refreshToken") as string);
-	}
-
-	public static set REFRESH(value: string) {
-		if (typeof window === "undefined") {
-			this.CACHE.refreshToken = value;
-		}
-		Cookie.set("refreshToken", value);
-	}
-}
-
 /** @see https://fe-project-cowokers.vercel.app/docs/ */
 export default abstract class API {
 	private constructor() {
@@ -72,6 +40,7 @@ export default abstract class API {
 				const impl: HeadersInit = { "Content-Type": type, accept: MIME.JSON };
 
 				impl.Authorization = `Bearer ${Token.ACCESS}`;
+				// console.log(impl);
 
 				// eslint-disable-next-line default-case
 				switch (type) {

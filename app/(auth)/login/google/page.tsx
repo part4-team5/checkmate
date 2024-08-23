@@ -49,6 +49,8 @@ export default function GoogleLogin() {
 			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "GOOGLE" }, loginPayload);
 		},
 		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			// 전역 상태에 유저 정보 저장
 			setUser({
 				id: data.user.id,
@@ -60,8 +62,6 @@ export default function GoogleLogin() {
 			// 쿠키에 토큰 저장
 			setAccessToken(data.accessToken);
 			setRefreshToken(data.refreshToken);
-
-			queryClient.invalidateQueries({ queryKey: ["user"] });
 
 			router.replace("/");
 		},

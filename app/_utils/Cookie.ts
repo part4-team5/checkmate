@@ -44,11 +44,11 @@ export default class Cookie {
 
 				const store = cookies();
 
-				try {
+				// eslint-disable-next-line no-inner-declarations
+				function action() {
 					store.set(key, data, { path: "/", maxAge: 60 * 60 * 24 });
-				} catch (_) {
-					// ignore
 				}
+				action();
 				break;
 			}
 			//
@@ -72,11 +72,11 @@ export default class Cookie {
 
 				const store = cookies();
 
-				try {
+				// eslint-disable-next-line no-inner-declarations
+				function action() {
 					store.delete(key, { path: "/" });
-				} catch (_) {
-					// ignore
 				}
+				action();
 				break;
 			}
 			//

@@ -11,7 +11,7 @@ import useOverlay from "@/app/_hooks/useOverlay";
 import Icon from "@/app/_icons";
 import useAuthStore from "@/app/_store/useAuthStore";
 import { debounce } from "@/app/_utils/DelayManager";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -23,6 +23,8 @@ export default function Header() {
 
 	const [accessToken, setAccessToken] = useCookie("accessToken");
 	const [, setRefreshToken] = useCookie("refreshToken");
+
+	const queryClient = useQueryClient();
 
 	const [isSidebarOpened, setIsSidebarOpened] = useState(false);
 	const [isTeamOpened, setIsTeamOpened] = useState(false);
@@ -94,10 +96,14 @@ export default function Header() {
 							onClick={() => {
 								setRefreshToken(null);
 								setAccessToken(null);
-								sideBarClose();
 								useAuthStore.persist.clearStorage();
-								router.push("/");
+
+								queryClient.clear();
+
+								sideBarClose();
 								close();
+
+								router.push("/");
 							}}
 							close={close}
 						/>
@@ -105,7 +111,7 @@ export default function Header() {
 				},
 			},
 		],
-		[overlay, router, setAccessToken, setRefreshToken, sideBarClose],
+		[overlay, queryClient, router, setAccessToken, setRefreshToken, sideBarClose],
 	);
 
 	return (

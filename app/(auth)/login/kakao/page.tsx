@@ -29,6 +29,8 @@ export default function KakaoLogin() {
 			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "KAKAO" }, payload);
 		},
 		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			// 전역 상태에 유저 정보 저장
 			setUser({
 				id: data.user.id,
@@ -40,8 +42,6 @@ export default function KakaoLogin() {
 			// 쿠키에 토큰 저장
 			setAccessToken(data.accessToken);
 			setRefreshToken(data.refreshToken);
-
-			queryClient.invalidateQueries({ queryKey: ["user"] });
 
 			router.replace("/");
 		},
