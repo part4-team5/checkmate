@@ -100,7 +100,7 @@ function Impl({ steps, onClose }: { steps: Guide[]; onClose: () => void }) {
 	})();
 
 	return (
-		<div className="fixed inset-0 h-screen w-screen bg-black/75">
+		<div className="fixed inset-0 h-screen w-screen bg-black/75 z-[69]">
 			<div className="fixed border border-white bg-white/25 transition-all" style={style}>
 				<Popover
 					init

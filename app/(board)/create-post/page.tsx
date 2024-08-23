@@ -118,8 +118,8 @@ export default function Page() {
 			{
 				query: "#create-post",
 				content: "작성을 완료하면 이 버튼을 누르세요",
-				position: "left"
-			}
+				position: "left",
+			},
 		]);
 	}, []);
 
