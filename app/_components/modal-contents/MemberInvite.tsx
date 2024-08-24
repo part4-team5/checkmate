@@ -4,6 +4,8 @@ import API from "@/app/_api";
 import { useMutation } from "@tanstack/react-query";
 import useAuthStore from "@/app/_store/useAuthStore";
 import Icon from "@/app/_icons";
+import toast from "@/app/_utils/Toast";
+import Button from "@/app/_components/Button";
 
 type MemberInviteProps = {
 	close: () => void;
@@ -31,12 +33,12 @@ export default function MemberInvite({ close, groupId }: MemberInviteProps): JSX
 
 			return response;
 		},
-		onSuccess: () => {
+		onSuccess: (data, ctx) => {
+			toast.success(`${ctx.values.email}님에게 초대장을 보냈습니다.`);
 			close();
 		},
 		onError: (error) => {
-			console.log("onError called", error);
-			console.log("Error message:", error.message);
+			toast.error(error.message);
 		},
 	});
 
@@ -63,9 +65,7 @@ export default function MemberInvite({ close, groupId }: MemberInviteProps): JSX
 						<Form.Error htmlFor="email" />
 					</div>
 					<div className="pt-4" />
-					<div className="h-12">
-						<Form.Submit>초대하기</Form.Submit>
-					</div>
+					<div className="h-12">{inviteMemberMutation.isPending ? <Button disabled>전송 중...</Button> : <Form.Submit>초대하기</Form.Submit>}</div>
 				</Form>
 			</div>
 		</ModalWrapper>

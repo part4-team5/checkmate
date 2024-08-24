@@ -3,6 +3,7 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import useAuthStore from "@/app/_store/useAuthStore";
+import toast from "@/app/_utils/Toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,6 +27,8 @@ export default function InvitedList() {
 			[user?.email],
 		),
 		onSuccess: (data, { groupId }) => {
+			toast.success("팀 초대를 수락했습니다.");
+
 			// 몽고 DB에서 사용자 그룹 정보 업데이트
 			API["api/users/{id}"].PATCH({ id: Number(user?.id) }, { groupId });
 
