@@ -4,7 +4,9 @@
 
 import ReactDOM from "react-dom/client";
 
-import { useLayoutEffect, useCallback, useState } from "react";
+import { usePathname } from "next/navigation";
+
+import { useCallback, useState, useEffect } from "react";
 
 import Icon from "@/app/_icons";
 
@@ -34,10 +36,16 @@ export default class Tour {
 }
 
 function Impl({ steps, onClose }: { steps: Guide[]; onClose: () => void }) {
+	const pathname = usePathname();
+
 	const [stage, setStage] = useState(0);
 	const [style, setStyle] = useState<React.CSSProperties>({});
 
-	useLayoutEffect(() => {
+	useEffect(() => {
+		onClose();
+	}, [pathname]);
+
+	useEffect(() => {
 		const target = document.querySelector(steps[stage].query);
 
 		if (!target) throw new Error();
@@ -100,7 +108,7 @@ function Impl({ steps, onClose }: { steps: Guide[]; onClose: () => void }) {
 	})();
 
 	return (
-		<div className="fixed inset-0 h-screen w-screen bg-black/75 z-[69]">
+		<div className="fixed inset-0 z-[69] h-screen w-screen bg-black/75">
 			<div className="fixed border border-white bg-white/25 transition-all" style={style}>
 				<Popover
 					init
