@@ -5,6 +5,7 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
+import toast from "@/app/_utils/Toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -37,6 +38,8 @@ export default function CreateTeamPage() {
 			return API["{teamId}/groups"].POST({}, payload);
 		},
 		onSuccess: (data) => {
+			toast.success("팀이 생성되었습니다.");
+
 			// 쿼리 무효화
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 

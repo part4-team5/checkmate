@@ -6,8 +6,8 @@ import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
-import useCookie from "@/app/_hooks/useCookie";
 import useOverlay from "@/app/_hooks/useOverlay";
+import toast from "@/app/_utils/Toast";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
@@ -15,9 +15,6 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 function ResetPasswordForm() {
-	// 로그인 상태인지 확인
-	const [isUser] = useCookie("accessToken");
-
 	const overlay = useOverlay();
 
 	const router = useRouter();
@@ -76,6 +73,7 @@ function ResetPasswordForm() {
 			openModal({ title: "이메일 전송 성공", message: `${ctx.values.email as string}`, isEmail: true });
 		},
 		onError: (error, ctx) => {
+			toast.error("이메일 전송 도중 문제가 발생했습니다.");
 			ctx.setError("email", error.message);
 		},
 	});
@@ -86,46 +84,29 @@ function ResetPasswordForm() {
 			const password = ctx.values.password as string;
 			const passwordConfirmation = ctx.values.passwordConfirmation as string;
 
-			// 유저가 로그인 상태인지 확인
-			if (!isUser) {
-				if (!password || !passwordConfirmation || !passwordToken) {
-					return { message: "비밀번호 변경 오류" };
-				}
-
-				// 비로그인 상태에서 비밀번호 재설정 API 호출
-				const payload: Parameters<(typeof API)["{teamId}/user/reset-password"]["PATCH"]>[1] = {
-					passwordConfirmation,
-					password,
-					token: passwordToken,
-				};
-
-				for (const [key, value] of Object.entries(ctx.values)) {
-					payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
-				}
-
-				return API["{teamId}/user/reset-password"].PATCH({}, payload);
+			if (!password || !passwordConfirmation || !passwordToken) {
+				return { message: "비밀번호 변경 오류" };
 			}
 
-			// 로그인 상태에서 비밀번호 재설정 API 호출
-			const payload: Parameters<(typeof API)["{teamId}/user/password"]["PATCH"]>[1] = {
+			const payload: Parameters<(typeof API)["{teamId}/user/reset-password"]["PATCH"]>[1] = {
 				passwordConfirmation,
 				password,
+				token: passwordToken,
 			};
 
 			for (const [key, value] of Object.entries(ctx.values)) {
 				payload[key as keyof typeof payload] = value as (typeof payload)[keyof typeof payload];
 			}
 
-			const response = await API["{teamId}/user/password"].PATCH({}, payload);
-			return response;
+			return API["{teamId}/user/reset-password"].PATCH({}, payload);
 		},
-		onSuccess: (data) => {
-			// TODO: 토스트 메시지로 변경
-			if (isUser) openModal({ title: "비밀번호 재설정 성공", message: data.message, isEmail: false });
-			else router.push("/login");
+		onSuccess: () => {
+			toast.success("비밀번호 재설정에 성공했습니다.");
+
+			router.push("/login");
 		},
 		onError: (error) => {
-			openModal({ title: "비밀번호 재설정 실패", message: error.message, isEmail: false });
+			toast.error(error.message ?? "비밀번호 재설정 도중 문제가 발생했습니다.");
 		},
 	});
 
@@ -148,7 +129,7 @@ function ResetPasswordForm() {
 	);
 
 	// 비 로그인 상태에서 비밀번호 재설정 링크 전송 페이지
-	if (!isUser && !passwordToken) {
+	if (!passwordToken) {
 		return (
 			<div className="flex size-full min-w-[340px] flex-col items-center gap-20">
 				<div className="flex flex-col gap-3">
