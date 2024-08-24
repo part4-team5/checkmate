@@ -150,7 +150,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 	const detailMessageData = {
 		content: article?.content,
 		date: new Date(article?.createdAt ?? "").toLocaleDateString(),
-		userProfile: article?.image ?? defaultImage,
+		userProfile: defaultImage,
 		userName: article?.writer.nickname,
 	};
 
@@ -221,7 +221,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 								<Quill init={article?.content} onChange={(data) => setEditArticleData({ ...editArticleData, content: data })} />
 								<input type="file" accept="image/*" onChange={handleImageChange} className="mt-4" />
 								{editArticleData.image && (
-									<Image src={editArticleData.image} alt="Selected Image" width={300} height={300} objectFit="contain" className="mt-4" />
+									<Image src={editArticleData.image} alt="Selected Image" width={100} height={100} objectFit="contain" className="mt-4" />
 								)}
 							</>
 						) : (
