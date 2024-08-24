@@ -26,9 +26,10 @@ export default {
 				yellow: "#EAB308",
 			},
 			background: {
-				primary: "#0F172A",
-				secondary: "#1E293B",
-				tertiary: "#334155",
+				primary: "#1E1F22",
+				secondary: "#26272A",
+				tertiary: "#303336",
+				quaternary: "#424548",
 				inverse: "#FFFFFF",
 			},
 			interaction: {
@@ -75,6 +76,10 @@ export default {
 		extend: {
 			backgroundImage: {
 				"conic-gradient": "conic-gradient(from 0deg, #10b981, #cef57e, #10b981)",
+			},
+			boxShadow: {
+				primary:
+					"1px 1px 2px rgba(57, 61, 64, 0.3), -1px -1px 2px rgba(39, 41, 44, 0.5), inset -5px 5px 10px rgba(39, 41, 44, 0.2), inset 5px -5px 10px rgba(39, 41, 44, 0.2)",
 			},
 			keyframes: {
 				scaleUp: {

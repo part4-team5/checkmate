@@ -119,7 +119,7 @@ export default function InvitedList() {
 
 						<div className="flex w-full max-w-[160px] gap-2">
 							<Button onClick={() => handleAcceptInvite({ groupId: invited.groupId, token: invited.token })}>수락</Button>
-							<Button onClick={() => handleRejectInvite({ id: Number(user?.id), groupId: invited.groupId })} variant="white">
+							<Button onClick={() => handleRejectInvite({ id: Number(user?.id), groupId: invited.groupId })} variant="outline">
 								거절
 							</Button>
 						</div>
