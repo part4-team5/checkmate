@@ -9,12 +9,12 @@ import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBa
 import Icon from "@/app/_icons";
 import Image from "next/image";
 import DropDown from "@/app/_components/Dropdown";
-import ToastPopup from "@/app/(team)/[id]/_component/ToastPopup";
 import PostEditTasks from "@/app/_components/modal-contents/PostEditTasks";
 import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import { useRouter } from "next/navigation";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useQueryClient } from "@tanstack/react-query";
+import toast from "@/app/_utils/Toast";
 import { useGroupInfo, useDeleteTaskList, useReorderTaskLists, TaskListType } from "./useTaskList";
 
 function getColorClass(index: number) {
@@ -39,7 +39,6 @@ function TaskItem({
 	const completedTasks = taskList.tasks?.filter((task) => task.doneAt !== null).length ?? 0;
 	const completionRate = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
 	const overlay = useOverlay();
-	const [showToast, setShowToast] = useState(false);
 	const router = useRouter();
 	const isLongPress = useRef(false);
 	const timerId = useRef<NodeJS.Timeout>();
@@ -68,8 +67,7 @@ function TaskItem({
 	const handleDelete = () => {
 		deleteTaskListMutation.mutate(taskList.id, {
 			onError: () => {
-				setShowToast(true);
-				setTimeout(() => setShowToast(false), 2000);
+				toast.error("삭제에 실패했습니다. 다시 한 번 시도해주세요.");
 			},
 		});
 	};
@@ -99,37 +97,34 @@ function TaskItem({
 	];
 
 	return (
-		<>
-			{showToast && <ToastPopup message="삭제에 실패했습니다. 다시 한 번 시도해주세요." position="bottom" />}
-			<section
-				className="flex w-full cursor-pointer rounded-[12px] bg-background-secondary"
-				onMouseDown={handleMouseDown}
-				onMouseUp={handleMouseUp}
-				onDrag={onDrag} // onDrag 이벤트 핸들러 추가
-			>
-				<div className={`${getColorClass(index)} w-2 flex-shrink-0 rounded-l-lg`} />
-				<div className="flex h-[40px] w-full items-center justify-between">
-					<div className="max-w-[500px] truncate pl-2 text-white">{taskList.name}</div>
-					<div className="flex w-[78px] items-center justify-center gap-[4px]" onClick={(e) => e.stopPropagation()}>
-						<div className="flex h-[25px] w-[58px] items-center justify-center gap-[4px] rounded-[12px] bg-[#0F172A]">
-							{completedTasks === totalTasks && totalTasks !== 0 ? (
-								<Image src="/icons/DoneCheckIcon.svg" alt="Completed" height={16} width={16} />
-							) : (
-								<CircularProgressBar percent={completionRate} size={10} strokeWidth={2} backgroundColor="#FFFFFF" useGradient={false} strokeColor="#10B981" />
-							)}
-							<p className="text-[12px] text-[#10B981]">
-								{completedTasks}/{totalTasks}
-							</p>
-						</div>
-						<div onClick={handleDropdownClick} className="mr-[8px] rounded-[4px] hover:bg-[#3F4752]">
-							<DropDown options={editDropdown} gapY={-20} gapX={19} align="RR">
-								<Icon.Kebab color="#64748B" width={16} height={16} />
-							</DropDown>
-						</div>
+		<section
+			className="flex w-full cursor-pointer rounded-[12px] bg-background-secondary"
+			onMouseDown={handleMouseDown}
+			onMouseUp={handleMouseUp}
+			onDrag={onDrag} // onDrag 이벤트 핸들러 추가
+		>
+			<div className={`${getColorClass(index)} w-2 flex-shrink-0 rounded-l-lg`} />
+			<div className="flex h-[40px] w-full items-center justify-between">
+				<div className="max-w-[500px] truncate pl-2 text-white">{taskList.name}</div>
+				<div className="flex w-[78px] items-center justify-center gap-[4px]" onClick={(e) => e.stopPropagation()}>
+					<div className="flex h-[25px] w-[58px] items-center justify-center gap-[4px] rounded-[12px] bg-[#0F172A]">
+						{completedTasks === totalTasks && totalTasks !== 0 ? (
+							<Image src="/icons/DoneCheckIcon.svg" alt="Completed" height={16} width={16} />
+						) : (
+							<CircularProgressBar percent={completionRate} size={10} strokeWidth={2} backgroundColor="#FFFFFF" useGradient={false} strokeColor="#10B981" />
+						)}
+						<p className="text-[12px] text-[#10B981]">
+							{completedTasks}/{totalTasks}
+						</p>
+					</div>
+					<div onClick={handleDropdownClick} className="mr-[8px] rounded-[4px] hover:bg-[#3F4752]">
+						<DropDown options={editDropdown} gapY={-20} gapX={19} align="RR">
+							<Icon.Kebab color="#64748B" width={16} height={16} />
+						</DropDown>
 					</div>
 				</div>
-			</section>
-		</>
+			</div>
+		</section>
 	);
 }
 
