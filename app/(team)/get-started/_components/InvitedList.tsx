@@ -13,6 +13,7 @@ export default function InvitedList() {
 	const queryClient = useQueryClient();
 
 	const user = useAuthStore((state) => state.user);
+
 	const invites = useQuery({
 		queryKey: ["invited"],
 		queryFn: async () => API["api/invite/{id}"].GET({ id: Number(user?.id) }),
@@ -60,13 +61,52 @@ export default function InvitedList() {
 		});
 	};
 
+	if (invites.isPending)
+		return (
+			<div className="size-full p-8">
+				<div className="flex size-full max-h-[40px] items-center justify-center">
+					<div className="bg-background-quaternary h-full w-52 animate-pulse rounded-lg" />
+					<div className="size-full grow" />
+					<div className="bg-background-quaternary size-full max-w-[220px] grow-[2] animate-pulse rounded-lg" />
+				</div>
+
+				<ul className="mt-8 max-h-[80%] overflow-y-auto">
+					{Array.from({ length: 7 }).map((_, index) => (
+						// eslint-disable-next-line react/no-array-index-key
+						<li key={index} className="mb-2 w-full animate-pulse">
+							<div className="flex items-center gap-3 rounded-md pb-2">
+								<div className="bg-background-quaternary h-8 w-8 rounded-lg" />
+								<div className="bg-background-quaternary h-8 w-full rounded-lg" />
+							</div>
+						</li>
+					))}
+				</ul>
+			</div>
+		);
+
 	return (
-		<div className="size-full max-w-screen-tablet rounded-lg bg-background-secondary px-2 py-3">
-			<p className="rounded-lg bg-background-tertiary px-6 py-2 text-xl font-semibold text-text-primary">초대받은 팀</p>
-			<ul className="size-full max-h-[60dvh] min-h-28 max-w-screen-tablet overflow-y-auto px-3 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
+		<div className="size-full max-w-[528px] p-8">
+			<div className="flex size-full max-h-[40px] items-center justify-center">
+				<p className="w-full grow rounded-lg bg-background-tertiary text-lg font-semibold text-text-primary">초대받은 팀</p>
+
+				<div className="size-full max-w-[220px]">
+					<Button variant="outline" href="/join-team">
+						참여하기
+					</Button>
+				</div>
+			</div>
+
+			{!invites.data?.length && ( // 초대받은 팀이 없을 때
+				<div className="flex size-full flex-col items-center justify-center gap-10">
+					<Image src="/images/teamEmpty.webp" alt="team-empty" priority width={400} height={60} />
+					<p className="text-lg font-medium text-text-primary">초대받은 팀이 없습니다.</p>
+				</div>
+			)}
+
+			<ul className="mt-8 flex max-h-[80%] flex-col gap-3 overflow-y-auto pr-2 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-secondary scrollbar-thumb:rounded-full scrollbar-thumb:bg-interaction-inactive/60">
 				{invites.data?.map((invited) => (
-					<li key={invited.token} className="mb-2 flex w-full text-text-primary">
-						<div className="flex grow items-center gap-3 whitespace-nowrap rounded-md p-2 text-lg font-medium text-text-primary">
+					<li key={invited.token} className="bg-background-quaternary flex w-full gap-2 rounded-md px-4 py-3">
+						<div className="flex w-[60%] items-center gap-3 whitespace-nowrap text-lg font-medium text-text-primary">
 							<Image
 								src={invited.groupImage ?? "/icons/emptyImage.svg"}
 								alt={invited.groupName}
@@ -74,12 +114,12 @@ export default function InvitedList() {
 								height={32}
 								className="size-8 rounded-lg object-cover"
 							/>
-							<div>{invited.groupName}</div>
+							<p className="overflow-x-hidden text-ellipsis">{invited.groupName}</p>
 						</div>
 
-						<div className="flex max-w-[400px] grow gap-3 py-5">
+						<div className="flex w-full max-w-[160px] gap-2">
 							<Button onClick={() => handleAcceptInvite({ groupId: invited.groupId, token: invited.token })}>수락</Button>
-							<Button onClick={() => handleRejectInvite({ id: Number(user?.id), groupId: invited.groupId })} variant="outline">
+							<Button onClick={() => handleRejectInvite({ id: Number(user?.id), groupId: invited.groupId })} variant="white">
 								거절
 							</Button>
 						</div>

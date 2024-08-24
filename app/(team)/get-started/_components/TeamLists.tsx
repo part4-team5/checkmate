@@ -1,6 +1,7 @@
 "use client";
 
 import API from "@/app/_api";
+import Button from "@/app/_components/Button";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,37 +12,47 @@ export default function TeamList() {
 		queryFn: async () => API["{teamId}/user"].GET({}),
 	});
 
-	// 로딩 스켈레톤
-	if (isLoading) {
+	if (isLoading)
 		return (
-			<div className="size-full max-w-screen-tablet rounded-lg bg-background-secondary px-2 py-3">
-				<p className="rounded-lg bg-background-tertiary px-6 py-2 text-xl font-semibold text-text-primary">내 팀</p>
-				<ul className="size-full max-h-[60dvh] min-h-28 max-w-screen-tablet overflow-y-auto px-3 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
-					{Array.from({ length: 5 }).map((_, i) => (
+			<div className="size-full p-8">
+				<div className="flex size-full max-h-[40px] items-center justify-center">
+					<div className="bg-background-quaternary h-full w-52 animate-pulse rounded-lg" />
+					<div className="size-full grow" />
+					<div className="bg-background-quaternary size-full max-w-[220px] grow-[2] animate-pulse rounded-lg" />
+				</div>
+
+				<ul className="mt-8 max-h-[80%] overflow-y-auto">
+					{Array.from({ length: 7 }).map((_, index) => (
 						// eslint-disable-next-line react/no-array-index-key
-						<li key={i} className="mb-2 w-full animate-pulse">
-							<div className="flex items-center gap-3 whitespace-nowrap rounded-md p-2 text-lg font-medium text-text-primary">
-								<div className="size-8 rounded-full bg-background-tertiary" />
-								<div className="h-8 w-full rounded-md bg-background-tertiary" />
+						<li key={index} className="mb-2 w-full animate-pulse">
+							<div className="flex items-center gap-3 rounded-md pb-2">
+								<div className="bg-background-quaternary h-8 w-8 rounded-lg" />
+								<div className="bg-background-quaternary h-8 w-full rounded-lg" />
 							</div>
 						</li>
 					))}
 				</ul>
 			</div>
 		);
-	}
 
 	if (user?.memberships.length) {
 		return (
 			// 팀 있으면 목록 보여주기
-			<div className="size-full max-w-screen-tablet rounded-lg bg-background-secondary px-2 py-3">
-				<p className="rounded-lg bg-background-tertiary px-6 py-2 text-xl font-semibold text-text-primary">내 팀</p>
-				<ul className="size-full max-h-[60dvh] min-h-28 max-w-screen-tablet overflow-y-auto px-3 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
+			<div className="size-full max-w-[528px] p-8">
+				<div className="flex size-full max-h-[40px] items-center justify-center">
+					<p className="w-full grow rounded-lg bg-background-tertiary text-lg font-semibold text-text-primary">참여 중인 팀</p>
+
+					<div className="size-full max-w-[220px]">
+						<Button href="/create-team">생성하기</Button>
+					</div>
+				</div>
+
+				<ul className="mt-8 flex max-h-[80%] flex-col gap-3 overflow-y-auto pr-2 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-secondary scrollbar-thumb:rounded-full scrollbar-thumb:bg-interaction-inactive/60">
 					{user?.memberships.map((team) => (
-						<li key={team.groupId} className="mb-2 w-full">
+						<li key={team.groupId} className="w-full">
 							<Link
 								href={`/${team.groupId}`}
-								className="flex items-center gap-3 whitespace-nowrap rounded-md p-2 text-lg font-medium text-text-primary hover:bg-background-tertiary"
+								className="bg-background-quaternary flex items-center gap-3 whitespace-nowrap rounded-md px-4 py-3 text-lg font-medium text-text-primary hover:bg-interaction-inactive/30"
 							>
 								<Image
 									src={team.group.image ?? "/icons/emptyImage.svg"}
@@ -61,12 +72,22 @@ export default function TeamList() {
 
 	return (
 		// 팀 없으면 안내 문구 보여주기
-		<div className="flex h-fit w-full max-w-screen-desktop flex-col items-center justify-center gap-12">
-			<Image src="/images/teamEmpty.webp" alt="team-empty" priority width={810} height={255} />
-			<div className="text-center text-md font-medium text-text-default tablet:text-lg">
-				아직 소속됨 팀이 없습니다.
-				<br />
-				팀을 생성하거나 팀에 참여해보세요.
+		<div className="size-full max-w-[528px] p-8">
+			<div className="flex size-full max-h-[40px] items-center justify-center">
+				<p className="w-full grow rounded-lg bg-background-tertiary text-lg font-semibold text-text-primary">참여 중인 팀</p>
+
+				<div className="size-full max-w-[220px]">
+					<Button href="/create-team">생성하기</Button>
+				</div>
+			</div>
+
+			<div className="flex size-full flex-col items-center justify-center gap-10 px-5 tablet:px-10">
+				<Image src="/images/teamEmpty.webp" alt="team-empty" priority width={400} height={60} />
+				<div className="text-center text-md font-medium text-text-secondary tablet:text-lg">
+					아직 소속됨 팀이 없습니다.
+					<br />
+					팀을 생성하거나 팀에 참여해보세요.
+				</div>
 			</div>
 		</div>
 	);

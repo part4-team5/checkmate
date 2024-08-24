@@ -1,30 +1,17 @@
 import InvitedList from "@/app/(team)/get-started/_components/InvitedList";
 import TeamList from "@/app/(team)/get-started/_components/TeamLists";
-import Button from "@/app/_components/Button";
 
 export default function GetStartedPage() {
 	return (
-		<main className="size-full min-w-[320px] pt-20">
-			<article className="flex h-full flex-col items-center justify-center gap-4 px-[30px]">
-				{/* 팀 있으면 목록 보여주기 ? */}
-				<section className="size-full max-w-screen-tablet">
+		<main className="flex h-[85dvh] max-h-[720px] min-h-[500px] w-full justify-center pb-5 pt-20">
+			<article className="shadow-primary flex size-full justify-center gap-12 rounded-xl bg-background-secondary p-12 desktop:max-w-screen-desktop">
+				<section className="shadow-primary size-full grow rounded-xl bg-background-tertiary">
 					<TeamList />
 				</section>
 
-				<section className="size-full max-w-screen-tablet">
+				<section className="shadow-primary size-full grow rounded-xl bg-background-tertiary">
 					<InvitedList />
 				</section>
-
-				<div className="mt-12 flex w-full max-w-screen-tablet items-center justify-center gap-4 tablet:mt-20">
-					<div className="h-[48px] flex-grow">
-						<Button href="/create-team">팀 생성하기</Button>
-					</div>
-					<div className="h-[48px] flex-grow">
-						<Button variant="outline" href="/join-team">
-							팀 참여하기
-						</Button>
-					</div>
-				</div>
 			</article>
 		</main>
 	);
