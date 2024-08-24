@@ -11,6 +11,7 @@ import useOverlay from "@/app/_hooks/useOverlay";
 import Icon from "@/app/_icons";
 import useAuthStore from "@/app/_store/useAuthStore";
 import { debounce } from "@/app/_utils/DelayManager";
+import toast from "@/app/_utils/Toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -58,7 +59,7 @@ export default function Header() {
 			if (window.innerWidth > 744) {
 				sideBarClose();
 			}
-		}, 300);
+		}, 600);
 		window.addEventListener("resize", handleResize);
 
 		// eslint-disable-next-line consistent-return
@@ -94,6 +95,8 @@ export default function Header() {
 					overlay.open(({ close }) => (
 						<Logout
 							onClick={() => {
+								toast.success("로그아웃 되었습니다.");
+
 								setRefreshToken(null);
 								setAccessToken(null);
 								useAuthStore.persist.clearStorage();
@@ -196,24 +199,42 @@ export default function Header() {
 					onClick={() => sideBarClose()}
 				>
 					<div className="z-40 h-full bg-background-secondary px-4 py-5 pr-5" onClick={(event) => event.stopPropagation()}>
+						<Link
+							href="/boards"
+							className="flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary"
+							onClick={sideBarClose}
+						>
+							<div className="flex w-full grow items-center gap-2 px-4 py-2">
+								<Icon.Star width={32} height={32} />
+								<p className="grow">내 대시보드</p>
+							</div>
+
+							<div className="w-[95%] border-b border-[#353535]" />
+						</Link>
+
+						<div className="h-2" />
+
 						<button
 							type="button"
 							onClick={() => setIsTeamOpened(!isTeamOpened)}
-							className={`w-full items-center gap-2 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
+							className={`w-full flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 						>
-							<Image src="/icons/list.svg" alt="selectArrow" width={32} height={32} />
-							<p className="grow text-left">팀 목록</p>
-							<div className={`flex size-7 items-center duration-300 ${isTeamOpened ? "rotate-90" : ""}`}>
-								<Icon.ArrowRight width={28} height={28} color="#fff" />
+							<div className="flex w-full grow items-center gap-2 px-4 py-2">
+								<Image src="/icons/list.svg" alt="selectArrow" width={32} height={32} />
+								<p className="grow text-left">팀 목록</p>
+								<div className={`size-7 items-center duration-300 ${isTeamOpened ? "rotate-90" : ""}`}>
+									<Icon.ArrowRight width={28} height={28} color="#fff" />
+								</div>
 							</div>
+
+							<div className="w-[95%] border-b border-[#353535]" />
 						</button>
 
 						{/* 팀 목록 */}
-						{/* max-h-[calc(100dvh-200px)]으로 위에 크기만큼 빼서 스크롤 넣어줌 */}
-						<div className={`overflow-hidden duration-500 ease-in-out ${isTeamOpened ? "max-h-[calc(100dvh-270px)]" : "max-h-0"} `}>
-							<ul className="max-h-[calc(100dvh-270px)] max-w-full overflow-y-auto rounded-md scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
+						<div className={`overflow-hidden duration-500 ease-in-out ${isTeamOpened ? "max-h-[calc(100dvh-340px)]" : "max-h-0"} `}>
+							<ul className="mx-4 mt-2 max-h-[calc(100dvh-348px)] max-w-full overflow-y-auto rounded-md scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
 								{user?.memberships.map((membership) => (
-									<li key={membership.groupId} className="size-full pl-8">
+									<li key={membership.groupId} className="size-full pb-2">
 										<Link
 											href={`/${membership.groupId}`}
 											className="mr-2 flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-lg font-medium hover:bg-background-tertiary"
@@ -221,10 +242,6 @@ export default function Header() {
 										>
 											<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={32} height={32} className="size-8" />
 											<p className="w-fit grow overflow-x-hidden text-ellipsis">{membership.group.name}</p>
-
-											<div className="flex size-7 items-center">
-												<Icon.ArrowRight width={28} height={28} color="#fff" />
-											</div>
 										</Link>
 									</li>
 								))}
@@ -235,14 +252,15 @@ export default function Header() {
 
 						<Link
 							href="/create-team"
-							className={`items-center gap-2 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
+							className={`flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 							onClick={sideBarClose}
 						>
-							<Image src="/icons/add.svg" alt="selectArrow" width={32} height={32} />
-							<p className="grow">팀 생성하기</p>
-							<div className="flex size-7 items-center">
-								<Icon.ArrowRight width={28} height={28} color="#fff" />
+							<div className="flex w-full grow items-center gap-2 px-4 py-2">
+								<Image src="/icons/add.svg" alt="selectArrow" width={32} height={32} />
+								<p className="grow">팀 생성하기</p>
 							</div>
+
+							<div className="w-[95%] border-b border-[#353535]" />
 						</Link>
 
 						<div className="h-2" />
@@ -250,14 +268,15 @@ export default function Header() {
 						<div className="flex flex-col pb-2">
 							<Link
 								href="/boards"
-								className="flex items-center gap-2 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary"
+								className="flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary"
 								onClick={sideBarClose}
 							>
-								<Image src="/icons/box.svg" alt="selectArrow" width={32} height={32} />
-								<p className="grow">자유게시판</p>
-								<div className="flex size-7 items-center">
-									<Icon.ArrowRight width={28} height={28} color="#fff" />
+								<div className="flex w-full grow items-center gap-2 px-4 py-2">
+									<Image src="/icons/box.svg" alt="selectArrow" width={32} height={32} />
+									<p className="grow">자유게시판</p>
 								</div>
+
+								<div className="w-[95%] border-b border-[#353535]" />
 							</Link>
 						</div>
 					</div>

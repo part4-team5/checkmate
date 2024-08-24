@@ -394,3 +394,26 @@ Icon.Loading = function Loading({ width = 24, height = 24, color = "#10B981" }: 
 		</svg>
 	);
 };
+
+Icon.Enter = function B({ width = 24, height = 24, color = "#fff" }: IconProps) {
+	return (
+		<svg viewBox="0 0 24 24" width={width} height={height} fill="none" xmlns="http://www.w3.org/2000/svg">
+			<g id="SVGRepo_bgCarrier" strokeWidth="0" />
+			<g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
+			<g id="SVGRepo_iconCarrier">
+				<path d="M4 4V20M8 12H20M20 12L16 8M20 12L16 16" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+			</g>
+		</svg>
+	);
+};
+
+Icon.Star = function Star({ width = 24, height = 24, color = "#10B981" }: IconProps) {
+	return (
+		<svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+			<g fill="#FFFFFF">
+				<path fill={color} d="M30 33.5l-2.3-7.1 6.1-4.4h-7.5L24 14.9 21.7 22h-7.5l6.1 4.4-2.3 7.1 6-4.4z" />
+				<path d="M24 8.5l2.9 8.8c.5 1.7 2.1 2.8 3.8 2.8H40l-7.5 5.4c-1.4 1-2 2.8-1.5 4.5l2.9 8.8-7.5-5.4c-.7-.5-1.5-.8-2.4-.8-.9 0-1.7.3-2.4.8l-7.5 5.4L17 30c.5-1.7 0-3.5-1.5-4.5L8.1 20h9.3c1.7 0 3.3-1.1 3.8-2.8L24 8.5m0-2c-.8 0-1.6.5-1.9 1.4l-2.9 8.8c-.3.8-1 1.4-1.9 1.4H8.1c-1.9 0-2.7 2.5-1.2 3.6l7.5 5.4c.7.5 1 1.4.7 2.2l-2.9 8.8c-.5 1.4.7 2.6 1.9 2.6.4 0 .8-.1 1.2-.4l7.5-5.4c.4-.3.8-.4 1.2-.4s.8.1 1.2.4l7.5 5.4c.4.3.8.4 1.2.4 1.2 0 2.4-1.2 1.9-2.6l-2.9-8.8c-.3-.8 0-1.7.7-2.2l7.5-5.4c1.6-1.1.8-3.6-1.2-3.6h-9.3c-.9 0-1.6-.6-1.9-1.4l-2.9-8.8c-.2-1-1-1.4-1.8-1.4z" />
+			</g>
+		</svg>
+	);
+};
