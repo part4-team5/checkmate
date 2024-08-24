@@ -15,6 +15,11 @@ export default class Tour {
 	private static root: ReactDOM.Root;
 
 	public static play(steps: Guide[]) {
+		// uwu
+		const opt = !!localStorage.getItem(window.location.pathname);
+
+		if (opt) return;
+
 		if (!this.dom) {
 			document.body.append((this.dom = document.createElement("div")));
 		}
@@ -27,6 +32,7 @@ export default class Tour {
 				onClose={() => {
 					this.root.render(null);
 					this.dom.style.display = "none";
+					localStorage.setItem(window.location.pathname, ":3");
 				}}
 			/>,
 		);
