@@ -4,8 +4,6 @@
 
 import ReactDOM from "react-dom/client";
 
-import { usePathname } from "next/navigation";
-
 import { useCallback, useState, useEffect } from "react";
 
 import Icon from "@/app/_icons";
@@ -36,14 +34,8 @@ export default class Tour {
 }
 
 function Impl({ steps, onClose }: { steps: Guide[]; onClose: () => void }) {
-	const pathname = usePathname();
-
 	const [stage, setStage] = useState(0);
 	const [style, setStyle] = useState<React.CSSProperties>({});
-
-	useEffect(() => {
-		onClose();
-	}, [pathname]);
 
 	useEffect(() => {
 		const target = document.querySelector(steps[stage].query);
