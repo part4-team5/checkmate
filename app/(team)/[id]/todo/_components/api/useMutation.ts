@@ -1,5 +1,6 @@
 import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import API from "@/app/_api";
+import Form from "@/app/_components/Form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 
@@ -12,6 +13,19 @@ const patchToggleTodoStatus = async (id: number, done: boolean) => {
 			taskId: id,
 		},
 		body,
+	);
+};
+
+type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
+const postAddTask = async (id: number, ctx: FormContext) => {
+	const name = ctx.values.task as string;
+	return API["{teamId}/groups/{groupId}/task-lists"].POST(
+		{
+			groupId: id,
+		},
+		{
+			name,
+		},
 	);
 };
 
@@ -106,6 +120,7 @@ export const useToggleTodoStatusMutation = (groupId: number, currentTaskId: numb
 		},
 		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 			queryClient.invalidateQueries({ queryKey: ["tasks", { taskId: currentTaskId }] });
 		},
@@ -191,6 +206,7 @@ export const useEditTodoMutation = (groupId: number, currentTaskId: number, curr
 			alert(`오류: ${error.message} - 할 일 수정에 실패했습니다.`);
 		},
 		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 		},
 	});
@@ -205,9 +221,9 @@ export const useTodoOrderMutation = () =>
 	useMutation({
 		mutationFn: ({ todoId, displayIndex }: MutationVariables) => patchTodoOrder(todoId, displayIndex),
 	});
+
 export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
 	const queryClient = useQueryClient();
-	const currentDate = new Date();
 
 	return useMutation({
 		mutationFn: ({
@@ -217,7 +233,7 @@ export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
 			frequencyType,
 			weekDays,
 			monthDay,
-		}: Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>>) => {
+		}: Parameters<(typeof API)["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"]["POST"]>[1]) => {
 			const body = {
 				name,
 				description,
@@ -226,50 +242,45 @@ export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
 				weekDays: frequencyType === "WEEKLY" ? weekDays : undefined,
 				monthDay: frequencyType === "MONTHLY" ? monthDay : undefined,
 			};
-			return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"].POST(
-				{
-					groupId,
-					taskListId,
-				},
-				body,
-			);
+			return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/recurring"].POST({ groupId, taskListId }, body);
 		},
-		onMutate: async ({ name, description, startDate, frequencyType, weekDays, monthDay }) => {
-			// 최신 데이터로 업데이트하기 위해 쿼리 캔슬
-			await queryClient.cancelQueries({ queryKey: tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")) });
-			// 이전 데이터를 저장
-			const oldData = queryClient.getQueryData<TaskListType>(tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")));
-			// 새로운 데이터로 업데이트
-			const newData = oldData
-				? [...oldData, { id: 1, name, description, date: startDate, frequency: frequencyType, weekDays, monthDay }]
-				: [{ id: 1, name, description, date: startDate, frequency: frequencyType, weekDays, monthDay }];
-
-			queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")), newData as TaskListType);
-
-			// 이전 데이터를 반환
-			return { oldData };
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["tasks", { taskId: taskListId }] });
 		},
-		// 요청 실패 시 이전 데이터로 롤백
-		onError: (error, variables, context) => {
-			if (context?.oldData) {
-				queryClient.setQueryData(tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")), context.oldData);
-			}
+		onError: (error) => {
 			alert(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
 		},
 		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, taskListId, currentDate.toLocaleDateString("ko-KR")) });
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 		},
 	});
 };
 
-export const useDeleteTodoMutation = () =>
-	useMutation({
+export const useDeleteTodoMutation = (groupId: number, currentTaskId: number, currentDate: Date) => {
+	const queryClient = useQueryClient();
+	return useMutation({
 		mutationFn: (todoId: number) => deleteTodo(todoId),
-		onError: (error) => {
+		onMutate: async (todoId) => {
+			await queryClient.cancelQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
+			const oldData = queryClient.getQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")));
+			console.log(oldData);
+			const newData = oldData?.filter((todo) => todo.id !== todoId);
+			queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), newData);
+			return { oldData };
+		},
+		onError: (error, variables, context) => {
+			if (context?.oldData) {
+				queryClient.setQueryData(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), context.oldData);
+			}
 			alert(`오류: ${error.message} - 할 일 삭제에 실패했습니다.`);
 		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
+			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
+		},
 	});
+};
 
 export const usePatchTodoCommentEditMutation = (setter: Dispatch<SetStateAction<boolean>>, todoId: number) => {
 	const queryClient = useQueryClient();
@@ -315,6 +326,22 @@ export const useDeleteTodoCommentMutation = (todoId: number, groupId: number, cu
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
+		},
+	});
+};
+
+export const useAddTaskMutation = (groupId: number) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (ctx: FormContext) => postAddTask(groupId, ctx),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
+		},
+		onError: (error) => {
+			alert(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 		},
 	});
 };

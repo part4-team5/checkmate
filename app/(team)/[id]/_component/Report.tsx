@@ -15,20 +15,10 @@ export interface ReportProps {
 }
 
 function Report({ id }: ReportProps) {
-	const fetchGroupInfo = useCallback(
-		(): Promise<Team> =>
-			API["{teamId}/groups/{id}"]
-				.GET({ id })
-				.then((response) => response)
-				.catch((error) => {
-					console.error("그룹 정보 조회 실패:", error);
-					throw error;
-				}),
-		[id],
-	);
+	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id }), [id]);
 
 	const { data, isLoading, error } = useQuery<Team>({
-		queryKey: ["groupInfo", id],
+		queryKey: ["groupInfo", { groupId: id }],
 		queryFn: fetchGroupInfo,
 		enabled: !!id,
 		refetchInterval: 60000,

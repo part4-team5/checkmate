@@ -4,7 +4,7 @@ import Form from "@/app/_components/Form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import CloseIcon from "@/public/icons/ic_close";
 import Icon from "@/app/_icons";
 
@@ -21,9 +21,10 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps): JSX.Element {
 	const queryClient = useQueryClient();
 	const router = useRouter();
+	const [imageRemoved, setImageRemoved] = useState(false); // 이미지 삭제 상태 관리
 
 	const { data: teamInfo } = useQuery({
-		queryKey: ["groupInfo", id],
+		queryKey: ["groupInfo", { group: id }],
 		queryFn: () => API["{teamId}/groups/{id}"].GET({ id }),
 	});
 
@@ -32,10 +33,16 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 			const file = ctx.values.profileImage as File;
 			const teamName = ctx.values.teamName as string;
 
-			let url: string | undefined;
-			if (file) {
+			let url: string | undefined = teamInfo?.image;
+			if (imageRemoved) {
+				url = "http://example.com"; // 이미지가 삭제된 경우, 기본 이미지 URL로 대체
+			} else if (file && !(typeof file === "string")) {
 				const response = await API["{teamId}/images/upload"].POST({}, file);
 				url = response.url;
+			} else if (teamInfo?.image) {
+				url = teamInfo.image;
+			} else {
+				url = undefined;
 			}
 
 			const payload = { image: url, name: teamName };
@@ -43,7 +50,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
-			queryClient.invalidateQueries({ queryKey: ["groupInfo"] });
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { group: id }] });
 
 			close();
 			router.push(`/${id}`);
@@ -60,6 +67,13 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 		},
 		[teamEditMutation],
 	);
+
+	const handleRemoveImage = () => {
+		setImageRemoved(true); // 이미지 삭제 상태 변경
+	};
+
+	// 이미지 URL이 "http://example.com"이거나 이미지가 제거된 상태라면 기본 이미지로 대체
+	const imageSrc = imageRemoved || teamInfo?.image === "http://example.com" ? "/icons/emptyImage.svg" : teamInfo?.image;
 
 	return (
 		<ModalWrapper close={close}>
@@ -82,34 +96,41 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 									팀 프로필
 								</label>
 								<div className="pb-3" />
-								<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
-									{(file) =>
-										(file ?? teamInfo?.image) ? (
-											<div className="relative flex size-16 cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10">
-												<Image
-													src={(file as string) ?? teamInfo?.image ?? ""}
-													alt="Profile Preview"
-													fill
-													className="rounded-[12px] object-cover object-center"
-												/>
-												<div className="relative size-full">
-													<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155]">
+								<div className="relative flex items-center">
+									<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
+										{(file) =>
+											(file ?? imageSrc) ? (
+												<div className="relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10">
+													<Image src={(file as string) ?? imageSrc} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
+													<div className="relative size-full">
+														<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155]">
+															<Icon.Edit width={11} height={11} color="#64748B" />
+														</div>
+													</div>
+												</div>
+											) : (
+												<div className="relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
+													<div className="\\ relative">
+														<Image src="/icons/emptyImage.svg" alt="Profile Preview" width={20} height={20} />
+													</div>
+													<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155] pl-[1px]">
 														<Icon.Edit width={11} height={11} color="#64748B" />
 													</div>
 												</div>
-											</div>
-										) : (
-											<div className="relative flex size-16 cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
-												<div className="\\ relative">
-													<Image src="/icons/emptyImage.svg" alt="Profile Preview" width={20} height={20} />
-												</div>
-												<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155] pl-[1px]">
-													<Icon.Edit width={11} height={11} color="#64748B" />
-												</div>
-											</div>
-										)
-									}
-								</Form.ImageInput>
+											)
+										}
+									</Form.ImageInput>
+									{imageSrc !== "/icons/emptyImage.svg" && (
+										<button
+											type="button"
+											onClick={handleRemoveImage}
+											className="absolute -left-[-6px] top-[6px] flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[#334155] text-white"
+											aria-label="Remove profile image"
+										>
+											<Icon.TodoDelete width={18} height={18} color="#ffffff" />
+										</button>
+									)}
+								</div>
 							</div>
 							<div className="mt-[10px]" />
 

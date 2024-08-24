@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function Page() {
 	return (
@@ -23,12 +22,13 @@ export default function Page() {
 				</div>
 
 				<div className="z-10 flex items-center justify-center pb-[180px]">
-					<Link
+					{/* fetch 작동 안하게 a 태그 사용 */}
+					<a
 						href="/get-started"
 						className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
 					>
 						지금 시작하기
-					</Link>
+					</a>
 				</div>
 			</section>
 

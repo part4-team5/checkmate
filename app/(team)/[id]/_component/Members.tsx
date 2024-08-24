@@ -4,8 +4,8 @@
 
 "use client";
 
+import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import React, { useCallback } from "react";
 import UserInfo from "@/app/(team)/[id]/_component/UserInfo";
 import API from "@/app/_api";
 import useOverlay from "@/app/_hooks/useOverlay";
@@ -21,7 +21,7 @@ function Members({ id }: ReportProps) {
 	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id }), [id]);
 
 	const { data, isLoading, error } = useQuery<Team>({
-		queryKey: ["groupInfo", id],
+		queryKey: ["groupInfo", { groupId: id }],
 		queryFn: fetchGroupInfo,
 		enabled: !!id,
 		refetchInterval: 60000,
@@ -29,7 +29,6 @@ function Members({ id }: ReportProps) {
 		retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
 	});
 
-	// 사용자 정보 가져오기
 	const { data: user } = useQuery({
 		queryKey: ["user"],
 		queryFn: async () => API["{teamId}/user"].GET({}),
@@ -51,7 +50,6 @@ function Members({ id }: ReportProps) {
 
 	const members = data?.members || [];
 
-	// 현재 사용자가 ADMIN인지 확인
 	const isAdmin = user?.memberships.some((membership) => membership.groupId === id && membership.role === "ADMIN");
 
 	return (
@@ -61,7 +59,6 @@ function Members({ id }: ReportProps) {
 					<p className="text-[16px] font-medium">멤버</p>
 					<p className="text-[16px] text-[#64748B]"> ({members.length}명)</p>
 				</div>
-				{/* ADMIN인 경우에만 버튼 렌더링 */}
 				{isAdmin && (
 					<button onClick={handleInviteClick} className="text-[14px] font-normal text-brand-primary" type="button">
 						+새로운 멤버 초대하기
@@ -78,7 +75,7 @@ function Members({ id }: ReportProps) {
 							aria-label={`${member.userName}의 프로필 열기`}
 							onClick={() => handleProfileModal(member)}
 						>
-							<UserInfo userName={member.userName} userEmail={member.userEmail} userProfile={member.userImage ?? ""} />
+							<UserInfo userName={member.userName} userEmail={member.userEmail} userProfile={member.userImage ?? ""} isAdmin={member.role === "ADMIN"} />
 						</div>
 					))}
 				</div>

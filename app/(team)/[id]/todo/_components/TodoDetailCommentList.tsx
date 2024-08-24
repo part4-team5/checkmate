@@ -11,15 +11,23 @@ import { useDeleteTodoCommentMutation, usePatchTodoCommentEditMutation } from "@
 type CommnetListType = Awaited<ReturnType<(typeof API)["{teamId}/tasks/{taskId}/comments"]["GET"]>>;
 type CommentType = CommnetListType[number];
 
+type User = {
+	id: number;
+	email: string;
+	nickname: string;
+	image: string | null;
+};
+
 type TodoDetailCommentListProps = {
 	comment: CommentType;
 	todoId: number;
 	groupId: number;
 	currentTaskId: number;
 	currentDate: Date;
+	user: User;
 };
 
-export default function TodoDetailCommentList({ comment, todoId, groupId, currentDate, currentTaskId }: TodoDetailCommentListProps) {
+export default function TodoDetailCommentList({ comment, todoId, groupId, currentDate, currentTaskId, user }: TodoDetailCommentListProps) {
 	const [isCommentEdit, setIsCommentEdit] = useState(false);
 	const [editedComment, setEditedComment] = useState(comment.content);
 	const patchTodoCommentEditMutation = usePatchTodoCommentEditMutation(setIsCommentEdit, todoId);
@@ -47,6 +55,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 
 	const handleTodoCommentEditSubmit = (e: React.FormEvent<HTMLFormElement>, commentId: number) => {
 		e.preventDefault();
+		if (editedComment.length === 0) return;
 		patchTodoCommentEditMutation.mutate({ commentId, content: editedComment });
 	};
 
@@ -58,7 +67,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 					<div className="flex justify-between">
 						{isCommentEdit ? (
 							<textarea
-								className="w-full rounded-lg bg-background-secondary p-2 shadow-sm shadow-brand-secondary focus:outline-none"
+								className={`${editedComment.length > 0 ? "border-brand-primary" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-background-secondary pl-2 focus:outline-none`}
 								onChange={handleEditCommentChange}
 								value={editedComment}
 								onKeyDown={(e) => {
@@ -71,11 +80,13 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 						) : (
 							<div className="flex w-full justify-between">
 								<div className="whitespace-pre-line text-md font-normal">{comment.content}</div>
-								<DropDown options={options}>
-									<button type="button" aria-label="dropdown">
-										<KebabIcon />
-									</button>
-								</DropDown>
+								{comment.user?.id === user.id && (
+									<DropDown options={options}>
+										<button type="button" aria-label="dropdown">
+											<KebabIcon />
+										</button>
+									</DropDown>
+								)}
 							</div>
 						)}
 					</div>

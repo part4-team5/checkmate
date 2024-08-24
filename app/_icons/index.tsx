@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 interface IconProps {
 	width: number | string;
 	height: number | string;
@@ -279,6 +281,19 @@ Icon.Heart = function Heart({ width, height, color }: IconProps) {
 	);
 };
 
+Icon.HeartFull = function Heart({ width, height, color }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path
+				d="M2.55791 7.31158C2.4082 7.18017 2.28843 7.07476 2.20065 6.9974V6.95148L2.02492 6.77575C1.33111 6.08194 0.933983 5.16548 0.933983 4.20001V4.07613C0.995453 2.20621 2.59252 0.666676 4.46732 0.666676C4.7456 0.666676 5.11481 0.763446 5.48286 0.961626C5.83019 1.14865 6.13506 1.40384 6.3375 1.68843C6.63199 2.31495 7.53978 2.30367 7.81218 1.65458C7.97992 1.36093 8.27391 1.09551 8.62623 0.899026C8.99385 0.694006 9.3603 0.600006 9.6007 0.600006C11.53 0.600006 13.0723 2.12743 13.134 4.07582V4.20001C13.134 5.24202 12.7306 6.14474 12.0619 6.75772L11.8673 6.93607V6.97958C11.7662 7.06526 11.6359 7.17767 11.484 7.30975C11.1469 7.60291 10.6955 8 10.2039 8.43321C10.0462 8.57221 9.8844 8.71491 9.7208 8.85921C8.86455 9.61431 7.96001 10.4119 7.34664 10.9417C7.17012 11.0861 6.89785 11.0861 6.72132 10.9417C5.98911 10.3093 4.8265 9.29621 3.83715 8.43161C3.34152 7.99841 2.88978 7.60287 2.55791 7.31158Z"
+				fill={color}
+				stroke={color}
+				stroke-width="1.2"
+			/>
+		</svg>
+	);
+};
+
 Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#10B981" }: IconProps) {
 	return (
 		<svg
@@ -294,6 +309,88 @@ Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#10B98
 		>
 			<line x1="18" y1="6" x2="6" y2="18" />
 			<line x1="6" y1="6" x2="18" y2="18" />
+		</svg>
+	);
+};
+
+Icon.Crown = function Crown({ width = 16, height = 16, color = "#FDD446" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<g clip-path="url(#clip0_540_4887)">
+				<path
+					d="M14.5115 12.25H3.07821C2.83635 12.25 2.63846 12.4469 2.63846 12.6875V13.5625C2.63846 13.8031 2.83635 14 3.07821 14H14.5115C14.7534 14 14.9513 13.8031 14.9513 13.5625V12.6875C14.9513 12.4469 14.7534 12.25 14.5115 12.25ZM16.2705 3.5C15.5422 3.5 14.9513 4.08789 14.9513 4.8125C14.9513 5.00664 14.9953 5.18711 15.0722 5.35391L13.0824 6.54063C12.6591 6.79219 12.1122 6.65 11.8676 6.22344L9.62764 2.32422C9.92171 2.08359 10.1141 1.72266 10.1141 1.3125C10.1141 0.587891 9.5232 0 8.79487 0C8.06655 0 7.47564 0.587891 7.47564 1.3125C7.47564 1.72266 7.66803 2.08359 7.96211 2.32422L5.72216 6.22344C5.47756 6.65 4.92788 6.79219 4.50737 6.54063L2.52028 5.35391C2.59449 5.18984 2.64121 5.00664 2.64121 4.8125C2.64121 4.08789 2.0503 3.5 1.32198 3.5C0.593654 3.5 0 4.08789 0 4.8125C0 5.53711 0.590905 6.125 1.31923 6.125C1.39069 6.125 1.46215 6.11406 1.53086 6.10313L3.51795 11.375H14.0718L16.0589 6.10313C16.1276 6.11406 16.1991 6.125 16.2705 6.125C16.9988 6.125 17.5897 5.53711 17.5897 4.8125C17.5897 4.08789 16.9988 3.5 16.2705 3.5Z"
+					fill={color}
+				/>
+			</g>
+			<defs>
+				<clipPath id="clip0_540_4887">
+					<rect width="17.5897" height="14" fill="white" />
+				</clipPath>
+			</defs>
+		</svg>
+	);
+};
+
+Icon.CheckAnimation = function CheckAnimation({ width = 14, height = 14, primary = "#10B981", secondary = "#fff" }) {
+	const circleVariants = {
+		hidden: { scale: 0, opacity: 0 },
+		visible: {
+			scale: 1,
+			opacity: 1,
+			transition: {
+				duration: 0.3,
+				delay: 0.1,
+				type: "spring",
+				stiffness: 300,
+			},
+		},
+	};
+
+	return (
+		<motion.div
+			initial="hidden"
+			animate="visible"
+			variants={circleVariants}
+			style={{
+				width: 24,
+				height: 24,
+				borderRadius: "50%",
+				backgroundColor: primary,
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+			}}
+		>
+			<motion.svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke={secondary}
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				width={width}
+				height={height}
+			>
+				<motion.path d="M5 13l4 4L19 7" initial="hidden" animate="visible" />
+			</motion.svg>
+		</motion.div>
+	);
+};
+
+Icon.Info = function Info({ width = 24, height = 24, color = "#6B7280" }: IconProps) {
+	return (
+		<svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+			<path d="M12 2C6.48 2 2 6.48 2 12c0 5.52 4.48 10 10 10 5.52 0 10-4.48 10-10 0-5.52-4.48-10-10-10zM11 7h2v2h-2V7zm0 4h2v6h-2V11z" fill={color} />
+		</svg>
+	);
+};
+
+Icon.Loading = function Loading({ width = 24, height = 24, color = "#10B981" }: IconProps) {
+	return (
+		<svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+			<circle cx="12" cy="12" r="10" stroke="#00000040" strokeWidth="4" />
+			<path fill={color} d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
 		</svg>
 	);
 };

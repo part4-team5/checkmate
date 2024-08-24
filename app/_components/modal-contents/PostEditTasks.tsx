@@ -1,15 +1,14 @@
-/* eslint-disable no-nested-ternary */
+/* eslint-disable indent */
 
 "use client";
 
-import React, { useState, useCallback } from "react";
-import Button from "@/app/_components/Button";
+import { useCallback } from "react";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import Form from "@/app/_components/Form";
 import API from "@/app/_api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CloseIcon from "@/public/icons/ic_close";
-import ToastPopup from "@/app/(team)/[id]/_component/ToastPopup";
+import toast from "@/app/_utils/Toast";
 
 type PostEditTasksProps = {
 	initialTasksName?: string;
@@ -26,130 +25,129 @@ type TaskList = {
 	tasks: { doneAt: string | null }[];
 };
 
+type MutationContext = {
+	previousGroupInfo?: { taskLists: TaskList[] };
+};
+
 // Tasks를 Post 하거나 Edit하는 모달
 export default function PostEditTasks({ initialTasksName, close, groupId, taskId }: PostEditTasksProps): JSX.Element {
 	const queryClient = useQueryClient();
-	const [toast, setToast] = useState(false);
-	// post, edit에 따라 메시지 다르게 설정
-	const [toastMessage, setToastMessage] = useState("");
 
-	const postTasksMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists"]["POST"]>>, Error, FormContext>({
-		mutationFn: async (ctx: FormContext) => {
-			const postTasks = ctx.values.postTasks as string;
+	const postTasksMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists"]["POST"]>>, Error, FormContext, MutationContext>(
+		{
+			mutationFn: async (ctx: FormContext) => {
+				const postTasks = ctx.values.postTasks as string;
 
-			const payload: Parameters<(typeof API)["{teamId}/groups/{groupId}/task-lists"]["POST"]>[1] = {
-				name: postTasks,
-			};
-
-			const response = await API["{teamId}/groups/{groupId}/task-lists"].POST({ groupId }, payload);
-
-			return response;
-		},
-		onSuccess: (data) => {
-			// 새로운 할 일 목록을 추가한 후에 캐시 업데이트
-			queryClient.setQueryData(["groupInfo", groupId], (oldData: any) => {
-				const updatedTaskLists = oldData?.taskLists ? [...oldData.taskLists, data] : [data];
-				return {
-					...oldData,
-					taskLists: updatedTaskLists,
+				const payload: Parameters<(typeof API)["{teamId}/groups/{groupId}/task-lists"]["POST"]>[1] = {
+					name: postTasks,
 				};
-			});
-			close();
-		},
-		onError: (error, ctx) => {
-			console.log("onError called", error);
-			console.log("Error message:", error.message);
 
-			if (error.message === "이미 존재하는 할 일 목록입니다.") {
-				setToastMessage("이미 존재하는 할 일 목록입니다.");
-				setToast(false);
-				setTimeout(() => {
-					setToast(true);
-				}, 10);
-			} else {
-				ctx.setError("postTasks", "목록 추가에 실패했습니다.");
-			}
+				const response = await API["{teamId}/groups/{groupId}/task-lists"].POST({ groupId }, payload);
+
+				return response;
+			},
+			onMutate: async (ctx) => {
+				// 모달을 바로 닫기
+				close();
+
+				// 낙관적 업데이트 수행
+				await queryClient.cancelQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
+
+				const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", { groupId }]);
+
+				queryClient.setQueryData(["groupInfo", { groupId }], (oldData: any) => {
+					const newTaskList = { id: Date.now(), name: ctx.values.postTasks, tasks: [] };
+					const updatedTaskLists = oldData?.taskLists ? [...oldData.taskLists, newTaskList] : [newTaskList];
+					return {
+						...oldData,
+						taskLists: updatedTaskLists,
+					};
+				});
+
+				return { previousGroupInfo };
+			},
+			onError: (error, ctx, context) => {
+				if (context?.previousGroupInfo) {
+					queryClient.setQueryData(["groupInfo", { groupId }], context.previousGroupInfo);
+				}
+
+				if (error.message === "이미 존재하는 할 일 목록입니다.") {
+					toast.error("이미 존재하는 할 일 목록입니다.");
+				} else {
+					toast.error("목록 추가에 실패했습니다.");
+				}
+			},
+			onSettled: () => {
+				queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
+			},
 		},
-	});
+	);
 
 	const editTasksMutation = useMutation<
 		Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists/{id}"]["PATCH"]>>,
 		Error,
 		FormContext,
-		{ previousGroupInfo: { taskLists: TaskList[] } | undefined }
-			>({
-				mutationFn: async (ctx: FormContext) => {
-					const editTasks = ctx.values.postTasks as string;
+		MutationContext
+	>({
+		mutationFn: async (ctx: FormContext) => {
+			const editTasks = ctx.values.postTasks as string;
 
-					const payload: Parameters<(typeof API)["{teamId}/groups/{groupId}/task-lists/{id}"]["PATCH"]>[1] = { name: editTasks };
+			const payload: Parameters<(typeof API)["{teamId}/groups/{groupId}/task-lists/{id}"]["PATCH"]>[1] = { name: editTasks };
 
-					const response = await API["{teamId}/groups/{groupId}/task-lists/{id}"].PATCH(
-						{
-							groupId,
-							id: taskId!,
-						},
-						payload,
-					);
-
-					return response;
+			const response = await API["{teamId}/groups/{groupId}/task-lists/{id}"].PATCH(
+				{
+					groupId,
+					id: taskId!,
 				},
-				onMutate: async (ctx) => {
-					// 캐시 쿼리 취소 (낙관적 업데이트시 최신 데이터 반영 목적)
-					await queryClient.cancelQueries({
-						queryKey: ["groupInfo", groupId],
-						exact: true,
-					});
+				payload,
+			);
 
-					const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", groupId]);
+			return response;
+		},
+		onMutate: async (ctx) => {
+			close();
 
-					queryClient.setQueryData(["groupInfo", groupId], (oldData: any) => {
-						if (!oldData?.taskLists) return oldData;
+			// 낙관적 업데이트 수행
+			await queryClient.cancelQueries({ queryKey: ["groupInfo", groupId], exact: true });
 
-						const updatedTaskLists = oldData.taskLists.map((taskList: any) => (taskList.id === taskId ? { ...taskList, name: ctx.values.postTasks } : taskList));
+			const previousGroupInfo = queryClient.getQueryData<{ taskLists: TaskList[] }>(["groupInfo", groupId]);
 
-						return {
-							...oldData,
-							taskLists: updatedTaskLists,
-						};
-					});
+			queryClient.setQueryData(["groupInfo", groupId], (oldData: any) => {
+				if (!oldData?.taskLists) return oldData;
 
-					return { previousGroupInfo };
-				},
-				onError: (error, ctx, context) => {
-					if (context?.previousGroupInfo) {
-						queryClient.setQueryData(["groupInfo", groupId], context.previousGroupInfo);
-					}
+				const updatedTaskLists = oldData.taskLists.map((taskList: any) => (taskList.id === taskId ? { ...taskList, name: ctx.values.postTasks } : taskList));
 
-					if (error.message === "이미 존재하는 할 일 목록입니다.") {
-						setToastMessage("이미 존재하는 할 일 목록입니다.");
-					} else {
-						setToastMessage("목록 수정에 실패했습니다. 다시 시도해주세요.");
-					}
-
-					setToast(false);
-					setTimeout(() => {
-						setToast(true);
-					}, 10);
-					ctx.setError("postTasks", "목록 수정에 실패했습니다.");
-				},
-				onSuccess: () => {
-					close();
-				},
-				onSettled: () => {
-					queryClient.invalidateQueries({
-						queryKey: ["groupInfo", groupId],
-						exact: true,
-					});
-				},
+				return {
+					...oldData,
+					taskLists: updatedTaskLists,
+				};
 			});
+
+			return { previousGroupInfo };
+		},
+		onError: (error, ctx, context) => {
+			if (context?.previousGroupInfo) {
+				queryClient.setQueryData(["groupInfo", groupId], context.previousGroupInfo);
+			}
+
+			if (error.message === "이미 존재하는 할 일 목록입니다.") {
+				toast.error("이미 존재하는 할 일 목록입니다.");
+			} else {
+				toast.error("목록 수정에 실패했습니다.");
+			}
+
+			ctx.setError("postTasks", "목록 수정에 실패했습니다.");
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", groupId], exact: true });
+		},
+	});
 
 	const handlePostOrEditTasks = useCallback(
 		(ctx: FormContext) => {
 			if (taskId) {
-				if (editTasksMutation.isPending) return;
 				editTasksMutation.mutate(ctx);
 			} else {
-				if (postTasksMutation.isPending) return;
 				postTasksMutation.mutate(ctx);
 			}
 		},
@@ -187,21 +185,10 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 					</div>
 
 					<div className="h-12">
-						{taskId ? (
-							editTasksMutation.status === "pending" ? (
-								<Button disabled>수정 중...</Button>
-							) : (
-								<Form.Submit>수정하기</Form.Submit>
-							)
-						) : postTasksMutation.status === "pending" ? (
-							<Button disabled>추가 중...</Button>
-						) : (
-							<Form.Submit>만들기</Form.Submit>
-						)}
+						<Form.Submit>{taskId ? "수정하기" : "만들기"}</Form.Submit>
 					</div>
 				</div>
 			</Form>
-			{toast && <ToastPopup message={toastMessage} position="top" />}
 		</ModalWrapper>
 	);
 }

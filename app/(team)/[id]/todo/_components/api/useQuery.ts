@@ -28,7 +28,7 @@ const getComments = async (todoId: number) => {
 
 export const useGetGroupList = (groupId: number) => {
 	const query = useQuery({
-		queryKey: ["tasks", { groupId }],
+		queryKey: ["groupInfo", { groupId }],
 		queryFn: () => getGroupList(groupId),
 	});
 	return query;

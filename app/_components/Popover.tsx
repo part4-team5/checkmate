@@ -131,7 +131,12 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 
 	return (
 		<div ref={pop} style={{ position: "relative" }}>
-			<div aria-hidden="true" onClick={() => setToggle(!toggle)}>
+			<div
+				aria-hidden="true"
+				onClick={() => setToggle(!toggle)}
+				onMouseUp={(event) => event.stopPropagation()}
+				onMouseDown={(event) => event.stopPropagation()}
+			>
 				{children}
 			</div>
 			{cloneElement(

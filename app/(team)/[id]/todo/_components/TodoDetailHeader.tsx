@@ -54,6 +54,7 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 	const handleTodoEditSubmit = (e: React.FormEvent<HTMLFormElement>, done: string | null) => {
 		e.preventDefault();
 		if (!todoContent) return;
+		if (editedTitle.length === 0 || editedDescription.length === 0) return;
 		todoEditMutation.mutate({
 			todoId,
 			name: editedTitle,
@@ -63,16 +64,17 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 		setIsEdit(false);
 	};
 
-	const { date, time } = convertIsoToDateAndTime(todoContent?.date);
+	const { date } = convertIsoToDateAndTime(todoContent?.date);
 	return (
 		<div>
 			{!todoContent && (
-				<div className="flex h-80 w-full items-center justify-center">
+				<div className="flex h-64 w-full items-center justify-center">
 					<Image src="/icons/spinner.svg" alt="spinner" width={30} height={30} className="animate-spin" />
 				</div>
 			)}
+
 			{todoContent && (
-				<div className="mb-48">
+				<div className="mb-36">
 					{isCheck && (
 						<div className="mb-[13px] flex items-center gap-[6px]">
 							<Icon.TodoCheck width={16} height={16} />
@@ -80,13 +82,13 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 						</div>
 					)}
 					<form className="text-text-primary" onSubmit={(e) => handleTodoEditSubmit(e, todoContent.doneAt)}>
-						<div className="flex justify-between">
+						<div className="flex justify-between gap-7">
 							{isEdit ? (
 								<input
 									type="text"
 									onChange={handleEditTitleChange}
 									value={editedTitle}
-									className="rounded-md bg-background-secondary p-1 shadow-sm shadow-brand-secondary focus:outline-none"
+									className={`${editedTitle.length > 0 ? "border-brand-primary" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-background-secondary p-1 pl-2 focus:outline-none`}
 								/>
 							) : (
 								<div className={`${isCheck ? "line-through" : ""} text-xl font-bold text-text-primary`}>{todoContent.name}</div>
@@ -118,7 +120,7 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 								{todoContent.recurring.createdAt.split("T")[0].split("-").join(".")}
 							</div>
 						</div>
-						<DateTimeFrequency date={date} time={time} frequency={frequency[todoContent.frequency as FrequencyType]} />
+						<DateTimeFrequency date={date} frequency={frequency[todoContent.frequency as FrequencyType]} />
 						<div className="mt-6">
 							{isEdit ? (
 								<textarea
@@ -129,7 +131,8 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 											handleEditDescriptionChange({ target: { value: `${editedDescription}\n` } } as React.ChangeEvent<HTMLTextAreaElement>);
 										}
 									}}
-									className="w-full rounded-lg bg-background-secondary p-2 shadow-sm shadow-brand-secondary focus:outline-none"
+									className={`${editedDescription.length > 0 ? "border-brand-primary" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-background-secondary pl-2 focus:outline-none`}
+									rows={5}
 								/>
 							) : (
 								<div className="whitespace-pre-line break-words">{todoContent.description}</div>

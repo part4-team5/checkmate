@@ -71,16 +71,26 @@ export default function Page() {
 		[upload],
 	);
 
+	const ongoing = useRef(false);
+
 	const onSubmit = useCallback(
 		(event: React.FormEvent) => {
 			// :3
 			event.preventDefault();
 			event.stopPropagation();
 
+			if (ongoing.current) return;
+
 			if (1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0)) {
-				API["{teamId}/articles"].POST({}, { image, title: title!, content: content! }).then((response) => {
-					router.push(`boards/${response.id}`);
-				});
+				API["{teamId}/articles"]
+					.POST({}, { image, title: title!, content: content! })
+					.then((response) => {
+						router.push(`boards/${response.id}`);
+					})
+					.finally(() => {
+						ongoing.current = false;
+					});
+				ongoing.current = true;
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
