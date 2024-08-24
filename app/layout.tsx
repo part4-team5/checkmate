@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/app/_components/header";
 import GlobalModals from "@/app/_components/GlobalModals";
 import QueryProvider from "@/app/_components/QueryProvider";
+import Toaster from "@/app/_components/Toaster";
 
 export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
 	return (
@@ -12,6 +13,7 @@ export default function Layout({ children }: Readonly<React.PropsWithChildren>) 
 					<Header />
 					{children}
 					<GlobalModals />
+					<Toaster />
 				</QueryProvider>
 			</body>
 		</html>

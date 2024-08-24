@@ -79,13 +79,17 @@ export default function Page() {
 			event.preventDefault();
 			event.stopPropagation();
 
-			if (!ongoing.current) return;
+			if (ongoing.current) return;
 
 			if (1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0)) {
-				API["{teamId}/articles"].POST({}, { image, title: title!, content: content! }).then((response) => {
-					router.push(`boards/${response.id}`);
-					ongoing.current = false;
-				});
+				API["{teamId}/articles"]
+					.POST({}, { image, title: title!, content: content! })
+					.then((response) => {
+						router.push(`boards/${response.id}`);
+					})
+					.finally(() => {
+						ongoing.current = false;
+					});
 				ongoing.current = true;
 			}
 		},
