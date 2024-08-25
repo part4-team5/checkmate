@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable no-nested-ternary */
 
 "use client";
 
@@ -74,7 +75,9 @@ function Members({ id }: ReportProps) {
 	if (isLoading) return <div>Loading...</div>;
 	if (error) return <div>오류 발생: {error instanceof Error ? error.message : "Unknown error"}</div>;
 
-	const members = data?.members || [];
+	let members = data?.members || [];
+
+	members = members.sort((a, b) => (a.role === "ADMIN" ? -1 : b.role === "ADMIN" ? 1 : 0));
 
 	const isAdmin = user?.memberships.some((membership) => membership.groupId === id && membership.role === "ADMIN");
 
