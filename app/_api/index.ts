@@ -1242,6 +1242,38 @@ export default abstract class API {
 			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/invite/${id}/groupId/${groupId}`, query);
 		}
 	})();
+
+	/**
+	 * 몽고 DB 초대 링크 생성 API
+	 */
+	public static readonly ["api/invite/link"] = new (class extends API {
+		/**
+		 * 몽고 DB 초대 링크 생성
+		 * @param {Object}
+		 * @param {Object} query - 쿼리 파라미터
+		 * @param {Object} body - 추가할 초대 정보
+		 * @returns {Promise<Object>} - 초대 정보
+		 */
+		public override POST({ ...query }, body: { groupId: number; groupName: string; groupImage?: string; token: string }) {
+			return API.POST<{ shortURL: string }>(MIME.JSON, `${SITE_URL}/api/invite/link`, query, body);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 초대 링크 정보 확인 API
+	 */
+	public static readonly ["api/invite/link/{key}"] = new (class extends API {
+		/**
+		 * 몽고 DB 초대 링크 정보 확인
+		 * @param {Object}
+		 * @param {string} key - 초대 링크 키
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 초대 정보
+		 */
+		public override GET({ key, ...query }: { key: string }) {
+			return API.GET<InstanceType<typeof InviteModel>>(MIME.JSON, `${SITE_URL}/api/invite/link/${key}`, query);
+		}
+	})();
 }
 
 const enum Role {

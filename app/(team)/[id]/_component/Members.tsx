@@ -11,6 +11,7 @@ import API from "@/app/_api";
 import useOverlay from "@/app/_hooks/useOverlay";
 import MemberInvite from "@/app/_components/modal-contents/MemberInvite";
 import MemberProfile from "@/app/_components/modal-contents/MemberProfile";
+import toast from "@/app/_utils/Toast";
 import { ReportProps } from "./Report";
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
@@ -19,6 +20,8 @@ function Members({ id }: ReportProps) {
 	const overlay = useOverlay();
 
 	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id }), [id]);
+
+	const getInvitationToken = useCallback((): Promise<string> => API["{teamId}/groups/{id}/invitation"].GET({ id }), [id]);
 
 	const { data, isLoading, error } = useQuery<Team>({
 		queryKey: ["groupInfo", { groupId: id }],
@@ -34,6 +37,12 @@ function Members({ id }: ReportProps) {
 		queryFn: async () => API["{teamId}/user"].GET({}),
 	});
 
+	const { refetch } = useQuery<string>({
+		queryKey: ["invitationLink", id],
+		queryFn: getInvitationToken,
+		enabled: false,
+	});
+
 	const handleProfileModal = useCallback(
 		(member: { userName: string; userEmail: string; userImage?: string }) => {
 			overlay.open(({ close }) => <MemberProfile userName={member.userName} email={member.userEmail} close={close} userProfile={member.userImage || ""} />);
@@ -41,8 +50,23 @@ function Members({ id }: ReportProps) {
 		[overlay],
 	);
 
+	const handleLinkCopy = async () => {
+		const { data: invitationToken } = await refetch();
+
+		if (invitationToken) {
+			const invitationUrl = await API["api/invite/link"].POST(
+				{},
+				{ groupId: id, groupName: data?.name as string, groupImage: data?.image, token: invitationToken },
+			);
+
+			await navigator.clipboard.writeText(invitationUrl.shortURL);
+
+			toast.success("초대 링크가 복사되었습니다!");
+		}
+	};
+
 	const handleInviteClick = () => {
-		overlay.open(({ close }) => <MemberInvite close={close} groupId={id} />);
+		overlay.open(({ close }) => <MemberInvite onCopy={handleLinkCopy} close={close} groupId={id} />);
 	};
 
 	if (isLoading) return <div>Loading...</div>;

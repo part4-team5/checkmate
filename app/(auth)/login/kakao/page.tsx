@@ -1,12 +1,12 @@
 "use client";
 
-import UserUpload from "@/app/(auth)/_components/UserUpload";
 import API from "@/app/_api";
 import useCookie from "@/app/_hooks/useCookie";
 import useAuthStore from "@/app/_store/useAuthStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import useUserUpload from "@/app/_hooks/useUserUpload";
 
 export default function KakaoLogin() {
 	const [token] = useState<string>(useSearchParams().get("code") ?? "");
@@ -19,7 +19,7 @@ export default function KakaoLogin() {
 
 	const queryClient = useQueryClient();
 
-	const userUpload = UserUpload();
+	const userUpload = useUserUpload();
 
 	// 카카오 로그인 Mutation
 	const kakaoLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({

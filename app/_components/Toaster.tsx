@@ -1,19 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import useToastStore from "@/app/_store/toastStore";
 import Icon from "@/app/_icons";
 
 function Toaster() {
-	const { toasts, removeToast, clearToasts } = useToastStore();
-	const pathname = usePathname();
-
-	// 라우트 변경 시 toast 초기화
-	useEffect(() => {
-		clearToasts();
-	}, [pathname, clearToasts]);
+	const { toasts, removeToast } = useToastStore();
 
 	const animation = (type: string) => {
 		switch (type) {

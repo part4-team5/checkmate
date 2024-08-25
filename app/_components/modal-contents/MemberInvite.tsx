@@ -9,17 +9,17 @@ import Button from "@/app/_components/Button";
 
 type MemberInviteProps = {
 	close: () => void;
+	onCopy: () => void;
 	groupId: number;
 };
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
-export default function MemberInvite({ close, groupId }: MemberInviteProps): JSX.Element {
+export default function MemberInvite({ close, onCopy, groupId }: MemberInviteProps): JSX.Element {
 	const { user } = useAuthStore.getState();
 
 	const inviteMemberMutation = useMutation<Awaited<ReturnType<(typeof API)["api/invite/{id}"]["POST"]>>, Error, FormContext>({
 		mutationFn: async (ctx: FormContext) => {
-			const token = await API["{teamId}/groups/{id}/invitation"].GET({ id: groupId });
-			const group = await API["{teamId}/groups/{id}"].GET({ id: groupId });
+			const [token, group] = await Promise.all([API["{teamId}/groups/{id}/invitation"].GET({ id: groupId }), API["{teamId}/groups/{id}"].GET({ id: groupId })]);
 
 			const payload: Parameters<(typeof API)["api/invite"]["POST"]>[1] = {
 				email: ctx.values.email as string,
@@ -49,14 +49,15 @@ export default function MemberInvite({ close, groupId }: MemberInviteProps): JSX
 
 	return (
 		<ModalWrapper close={close}>
-			<div className="py-2 tablet:min-w-[320px]">
+			<div className="pt-2 tablet:min-w-[320px]">
 				<button type="button" onClick={close} className="absolute right-2 top-2" aria-label="close">
 					<Icon.Close height={28} width={28} />
 				</button>
 				<h2 className="flex items-center justify-center text-xl font-semibold">멤버 초대</h2>
+
 				<Form onSubmit={handleInviteMember}>
-					<div>
-						<label htmlFor="email" className="pl-2 text-lg">
+					<div className="pt-5">
+						<label htmlFor="email" className="pl-1 text-lg">
 							이메일
 						</label>
 						<div className="pt-2" />
@@ -64,8 +65,19 @@ export default function MemberInvite({ close, groupId }: MemberInviteProps): JSX
 						<div className="pt-2" />
 						<Form.Error htmlFor="email" />
 					</div>
-					<div className="pt-4" />
-					<div className="h-12">{inviteMemberMutation.isPending ? <Button disabled>전송 중...</Button> : <Form.Submit>초대하기</Form.Submit>}</div>
+					<div className="pt-2" />
+					<div className="flex h-12 gap-3">
+						<Button
+							onClick={() => {
+								onCopy();
+								close();
+							}}
+							type="button"
+						>
+							초대 링크 복사하기
+						</Button>
+						{inviteMemberMutation.isPending ? <Button disabled>전송 중...</Button> : <Form.Submit>초대하기</Form.Submit>}
+					</div>
 				</Form>
 			</div>
 		</ModalWrapper>

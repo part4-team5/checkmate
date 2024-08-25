@@ -7,6 +7,7 @@ interface IInvite extends Document {
 	groupImage: string;
 	groupId: number;
 	token: string;
+	key: string;
 	createdAt: Date;
 }
 
@@ -14,7 +15,6 @@ const InviteSchema: Schema<IInvite> = new Schema(
 	{
 		email: {
 			type: String,
-			required: true,
 		},
 		groupId: {
 			type: Number,
@@ -30,6 +30,10 @@ const InviteSchema: Schema<IInvite> = new Schema(
 		token: {
 			type: String,
 			required: true,
+		},
+		key: {
+			type: String,
+			unique: true,
 		},
 	},
 	{

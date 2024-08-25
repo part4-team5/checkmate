@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useCallback } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
 import Oauth from "@/app/(auth)/_components/Oauth";
-import UserUpload from "@/app/(auth)/_components/UserUpload";
+import useUserUpload from "@/app/_hooks/useUserUpload";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -18,7 +18,7 @@ export default function LoginPage() {
 
 	const queryClient = useQueryClient();
 
-	const userUpload = UserUpload();
+	const userUpload = useUserUpload();
 
 	const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
