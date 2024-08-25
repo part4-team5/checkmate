@@ -37,12 +37,6 @@ function Members({ id }: ReportProps) {
 		queryFn: async () => API["{teamId}/user"].GET({}),
 	});
 
-	const { refetch } = useQuery<string>({
-		queryKey: ["invitationLink", id],
-		queryFn: getInvitationToken,
-		enabled: false,
-	});
-
 	const handleProfileModal = useCallback(
 		(member: { userName: string; userEmail: string; userImage?: string }) => {
 			overlay.open(({ close }) => <MemberProfile userName={member.userName} email={member.userEmail} close={close} userProfile={member.userImage || ""} />);
@@ -51,7 +45,7 @@ function Members({ id }: ReportProps) {
 	);
 
 	const handleLinkCopy = async () => {
-		const { data: invitationToken } = await refetch();
+		const invitationToken = await getInvitationToken();
 
 		if (invitationToken) {
 			const invitationUrl = await API["api/invite/link"].POST(
