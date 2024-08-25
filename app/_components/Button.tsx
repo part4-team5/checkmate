@@ -44,7 +44,7 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 				"flex items-center justify-center border-2 border-brand-primary bg-background-inverse font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive";
 			break;
 		case "white":
-			btnVariant = "flex items-center justify-center border border-text-secondary bg-background-inverse font-semibold text-text-default";
+			btnVariant = "flex items-center justify-center border-2 border-text-secondary bg-background-inverse font-semibold text-text-default";
 			break;
 		case "outline":
 			btnVariant =

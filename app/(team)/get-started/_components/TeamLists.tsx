@@ -2,93 +2,152 @@
 
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
+import Icon from "@/app/_icons";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default function TeamList() {
+export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; isTablet: boolean }) {
+	const [currentIndex, setCurrentIndex] = useState(0);
+
+	// eslint-disable-next-line no-nested-ternary
+	const itemsPerPage = isMobile ? 4 : isTablet ? 6 : 9;
+
 	const { data: user, isLoading } = useQuery({
 		queryKey: ["user"],
 		queryFn: async () => API["{teamId}/user"].GET({}),
 	});
 
+	const nextPage = () => {
+		if (user && currentIndex < user.memberships.length - itemsPerPage) {
+			setCurrentIndex((prevIndex) => prevIndex + itemsPerPage);
+		}
+	};
+
+	const prevPage = () => {
+		if (currentIndex > 0) {
+			setCurrentIndex((prevIndex) => prevIndex - itemsPerPage);
+		}
+	};
+
+	const totalPages = Math.ceil((user?.memberships.length ?? 0) / itemsPerPage) || 1;
+	const currentPage = Math.ceil((currentIndex + itemsPerPage) / itemsPerPage);
+
+	useEffect(() => {
+		setCurrentIndex(0);
+	}, [isMobile, isTablet]);
+
 	if (isLoading)
 		return (
-			<div className="size-full p-8">
-				<div className="flex size-full max-h-[40px] items-center justify-center">
-					<div className="bg-background-quaternary h-full w-52 animate-pulse rounded-lg" />
-					<div className="size-full grow" />
-					<div className="bg-background-quaternary size-full max-w-[220px] grow-[2] animate-pulse rounded-lg" />
-				</div>
+			<section className="w-full px-4">
+				<Header />
 
-				<ul className="mt-8 max-h-[80%] overflow-y-auto">
-					{Array.from({ length: 7 }).map((_, index) => (
-						// eslint-disable-next-line react/no-array-index-key
-						<li key={index} className="mb-2 w-full animate-pulse">
-							<div className="flex items-center gap-3 rounded-md pb-2">
-								<div className="bg-background-quaternary h-8 w-8 rounded-lg" />
-								<div className="bg-background-quaternary h-8 w-full rounded-lg" />
-							</div>
-						</li>
-					))}
-				</ul>
-			</div>
+				<div className="pt-5" />
+
+				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-secondary">
+					{renderLoadingSkeletons(9, "hidden desktop:grid grid-cols-3 grid-rows-3")}
+					{renderLoadingSkeletons(6, "hidden tablet:grid desktop:hidden grid-cols-2 grid-rows-3")}
+					{renderLoadingSkeletons(4, "grid tablet:hidden grid-cols-1 grid-rows-4")}
+
+					<div className="flex size-full h-11 grow items-center justify-center gap-2 pt-4">
+						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary" />
+
+						<p className="size-full max-w-9 animate-pulse rounded-md bg-background-tertiary text-sm" />
+
+						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary" />
+					</div>
+				</div>
+			</section>
 		);
 
 	if (user?.memberships.length) {
-		return (
-			// 팀 있으면 목록 보여주기
-			<div className="size-full max-w-[528px] p-8">
-				<div className="flex size-full max-h-[40px] items-center justify-center">
-					<p className="w-full grow rounded-lg bg-background-tertiary text-lg font-semibold text-text-primary">참여 중인 팀</p>
+		const paginatedTeams = user.memberships.slice(currentIndex, currentIndex + itemsPerPage);
 
-					<div className="size-full max-w-[220px]">
-						<Button href="/create-team">생성하기</Button>
+		return (
+			<section className="w-full px-4">
+				<Header />
+
+				<div className="pt-5" />
+
+				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-secondary">
+					<ul className="grid w-full grid-rows-4 gap-4 tablet:grid-cols-2 tablet:grid-rows-3 desktop:grid-cols-3">
+						{paginatedTeams.map((team) => (
+							<li key={team.groupId} className="flex gap-3 overflow-x-hidden">
+								<Link
+									href={`/${team.groupId}`}
+									className="flex grow items-center gap-3 overflow-x-hidden text-ellipsis whitespace-nowrap rounded-md bg-background-tertiary px-4 py-3 shadow-tertiary hover:bg-interaction-inactive/30"
+								>
+									<Image
+										src={team.group.image ?? "/icons/emptyImage.svg"}
+										alt={team.group.name}
+										width={32}
+										height={32}
+										className="size-8 min-h-8 min-w-8 rounded-lg object-cover"
+									/>
+									<p className="w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-lg font-medium text-text-primary">{team.group.name}</p>
+
+									<div className="flex h-full w-fit items-end justify-end">
+										<p className="text-sm text-text-default">{team.group.createdAt.toString().split("T")[0]}</p>
+									</div>
+								</Link>
+							</li>
+						))}
+					</ul>
+
+					<div className="flex size-full grow items-center justify-center gap-2 pt-3">
+						<button type="button" disabled={currentIndex <= 0} onClick={prevPage} aria-label="prev">
+							<Icon.ArrowLeft width={32} height={32} color={currentIndex <= 0 ? "#64748B" : "#94A3B8"} />
+						</button>
+
+						<p className="w-max text-md text-text-secondary">
+							{currentPage} / {totalPages}
+						</p>
+						<button type="button" disabled={currentIndex >= user.memberships.length - itemsPerPage} onClick={nextPage} aria-label="next">
+							<Icon.ArrowRight width={32} height={32} color={currentIndex >= user.memberships.length - itemsPerPage ? "#64748B" : "#94A3B8"} />
+						</button>
 					</div>
 				</div>
-
-				<ul className="mt-8 flex max-h-[80%] flex-col gap-3 overflow-y-auto pr-2 scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-secondary scrollbar-thumb:rounded-full scrollbar-thumb:bg-interaction-inactive/60">
-					{user?.memberships.map((team) => (
-						<li key={team.groupId} className="w-full">
-							<Link
-								href={`/${team.groupId}`}
-								className="bg-background-quaternary flex items-center gap-3 whitespace-nowrap rounded-md px-4 py-3 text-lg font-medium text-text-primary hover:bg-interaction-inactive/30"
-							>
-								<Image
-									src={team.group.image ?? "/icons/emptyImage.svg"}
-									alt={team.group.name}
-									width={32}
-									height={32}
-									className="size-8 rounded-lg object-cover"
-								/>
-								<p className="w-fit overflow-x-hidden text-ellipsis">{team.group.name}</p>
-							</Link>
-						</li>
-					))}
-				</ul>
-			</div>
+			</section>
 		);
 	}
 
 	return (
-		// 팀 없으면 안내 문구 보여주기
-		<div className="size-full max-w-[528px] p-8">
-			<div className="flex size-full max-h-[40px] items-center justify-center">
-				<p className="w-full grow rounded-lg bg-background-tertiary text-lg font-semibold text-text-primary">참여 중인 팀</p>
+		<section className="w-full px-4">
+			<Header />
 
-				<div className="size-full max-w-[220px]">
-					<Button href="/create-team">생성하기</Button>
-				</div>
+			<div className="pt-5" />
+
+			<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-primary">
+				<Image src="/images/teamEmpty.webp" alt="empty" width={700} height={220} />
+				<p className="text-center text-text-primary">아직 참여 중인 팀이 없습니다.</p>
 			</div>
+		</section>
+	);
+}
 
-			<div className="flex size-full flex-col items-center justify-center gap-10 px-5 tablet:px-10">
-				<Image src="/images/teamEmpty.webp" alt="team-empty" priority width={400} height={60} />
-				<div className="text-center text-md font-medium text-text-secondary tablet:text-lg">
-					아직 소속됨 팀이 없습니다.
-					<br />
-					팀을 생성하거나 팀에 참여해보세요.
-				</div>
+function Header() {
+	return (
+		<div className="flex size-full max-h-[40px] items-center justify-center">
+			<p className="w-full grow text-xl font-semibold text-text-primary">참여 중인 팀</p>
+			<div className="h-10 w-full max-w-[220px] shadow-secondary">
+				<Button href="/create-team">생성하기</Button>
 			</div>
 		</div>
 	);
 }
+
+const renderLoadingSkeletons = (count: number, colClasses: string) => (
+	<ul className={`w-full gap-4 ${colClasses}`}>
+		{Array.from({ length: count }).map((_, index) => (
+			// eslint-disable-next-line react/no-array-index-key
+			<li key={index} className="flex animate-pulse gap-3 rounded-md bg-background-tertiary px-4 py-3 shadow-tertiary">
+				<div className="min-h-8 min-w-8 rounded-lg bg-background-quaternary" />
+				<p className="w-full rounded-lg bg-background-quaternary" />
+				<div className="flex h-full w-fit items-end justify-end">
+					<div className="h-1/2 w-20 rounded-md bg-background-quaternary" />
+				</div>
+			</li>
+		))}
+	</ul>
+);

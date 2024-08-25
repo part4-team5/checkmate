@@ -6,7 +6,6 @@ import useAuthStore from "@/app/_store/useAuthStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import useUserUpload from "@/app/_hooks/useUserUpload";
 
 export default function GoogleLogin() {
 	const [code] = useState<string>(useSearchParams().get("code") ?? "");
@@ -19,7 +18,9 @@ export default function GoogleLogin() {
 
 	const queryClient = useQueryClient();
 
-	const userUpload = useUserUpload();
+	const userUploadMutation = useMutation({
+		mutationFn: async ({ id, email }: { id: number; email: string }) => API["api/users"].POST({}, { id, email }),
+	});
 
 	const googleLoginMutation = useMutation({
 		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
@@ -63,7 +64,7 @@ export default function GoogleLogin() {
 			});
 
 			// 몽고 DB에 유저 정보 저장
-			userUpload.mutate({ id: data.user.id, email: data.user.email as string });
+			userUploadMutation.mutate({ id: data.user.id, email: data.user.email as string });
 
 			// 쿠키에 토큰 저장
 			setAccessToken(data.accessToken);

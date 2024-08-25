@@ -394,3 +394,19 @@ Icon.Loading = function Loading({ width = 24, height = 24, color = "#10B981" }: 
 		</svg>
 	);
 };
+
+Icon.MailAccept = function MailAccept2({ width = 24, height = 24, color = "#fff" }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M638-80 468-250l56-56 114 114 226-226 56 56L638-80ZM480-520l320-200H160l320 200Zm0 80L160-640v400h206l80 80H160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v174l-80 80v-174L480-440Zm0 0Zm0-80Zm0 80Z" />
+		</svg>
+	);
+};
+
+Icon.MailReject = function MailReject({ width = 24, height = 24, color = "#EF4444" }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M383-463Zm194-34ZM791-55 686-160H160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800l80 80h-80v480h446L55-791l57-57 736 736-57 57Zm80-148-71-71v-366L575-499l-49-49 274-172H354l-80-80h526q33 0 56.5 23.5T880-720v480q0 10-2 19.5t-7 17.5Z" />
+		</svg>
+	);
+};

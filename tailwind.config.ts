@@ -78,8 +78,12 @@ export default {
 				"conic-gradient": "conic-gradient(from 0deg, #10b981, #cef57e, #10b981)",
 			},
 			boxShadow: {
-				primary:
-					"1px 1px 2px rgba(57, 61, 64, 0.3), -1px -1px 2px rgba(39, 41, 44, 0.5), inset -5px 5px 10px rgba(39, 41, 44, 0.2), inset 5px -5px 10px rgba(39, 41, 44, 0.2)",
+				buttonPrimary:
+					"-5px 5px 10px rgba(20, 21, 23, 0.2), 5px -5px 10px rgba(20, 21, 23, 0.2), inset 1px 1px 2px rgba(66, 69, 75, 0.3), inset -1px -1px 2px rgba(20, 21, 23, 0.5)",
+				secondary:
+					"-5px 5px 10px rgba(27, 28, 30, 0.2), 5px -5px 10px rgba(27, 28, 30, 0.2), 5px 5px 13px rgba(27, 28, 30, 0.9), inset 1px 1px 2px rgba(49, 50, 54, 0.3), inset -1px -1px 2px rgba(27, 28, 30, 0.5)",
+				tertiary:
+					"-5px 5px 10px rgba(31, 33, 35, 0.2), 5px -5px 10px rgba(31, 33, 35, 0.2), 5px 5px 13px rgba(31, 33, 35, 0.9), inset 1px 1px 2px rgba(65, 69, 73, 0.3), inset -1px -1px 2px rgba(31, 33, 35, 0.5)",
 			},
 			keyframes: {
 				scaleUp: {

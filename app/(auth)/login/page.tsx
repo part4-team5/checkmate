@@ -9,7 +9,6 @@ import Link from "next/link";
 import { useCallback } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
 import Oauth from "@/app/(auth)/_components/Oauth";
-import useUserUpload from "@/app/_hooks/useUserUpload";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -18,12 +17,14 @@ export default function LoginPage() {
 
 	const queryClient = useQueryClient();
 
-	const userUpload = useUserUpload();
-
 	const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
 
 	const setUser = useAuthStore((state) => state.setUser);
+
+	const userUploadMutation = useMutation({
+		mutationFn: async ({ id, email }: { id: number; email: string }) => API["api/users"].POST({}, { id, email }),
+	});
 
 	const loginMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
@@ -45,7 +46,7 @@ export default function LoginPage() {
 			});
 
 			// 몽고 DB에 유저 정보 저장
-			userUpload.mutate({ id: response.user.id, email: response.user.email as string });
+			userUploadMutation.mutate({ id: response.user.id, email: response.user.email as string });
 
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);
