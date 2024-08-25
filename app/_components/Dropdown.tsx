@@ -160,7 +160,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 							}`} // 배경색 변경
 							tabIndex={0}
 							ref={(el) => {
-								menuRefs.current[index] = el!; //index에 DOM 요소 참조를 저장
+								menuRefs.current[index] = el!; // index에 DOM 요소 참조를 저장
 							}}
 							onClick={(e) => handleOptionClick(e, option.onClick, close)}
 						>
