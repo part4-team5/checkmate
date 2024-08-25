@@ -4,6 +4,7 @@ import API from "@/app/_api";
 import useAuthStore from "@/app/_store/useAuthStore";
 import toast from "@/app/_utils/Toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
 
@@ -54,5 +55,12 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 		}
 	}, [inviteKey, joinTeamMutation, isMounted, getInvitedMutation]);
 
-	return <section className="flex size-full flex-col items-center justify-center text-3xl font-bold">팀 참여 중...</section>;
+	return (
+		<main className="size-full">
+			<section className="flex size-full flex-col items-center justify-center gap-20 pt-40 text-3xl font-bold text-text-default">
+				<Image src="/images/teamEmpty.webp" alt="loading" width={800} height={500} />
+				팀에 참가 중입니다. 잠시만 기다려주세요.
+			</section>
+		</main>
+	);
 }
