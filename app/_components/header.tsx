@@ -41,6 +41,7 @@ export default function Header() {
 			text: membership.group.name,
 			image: membership.group.image ?? "/icons/emptyImage.svg",
 			onClick: () => router.push(`/${membership.groupId}`),
+			groupId: String(membership.groupId), // 그룹 ID 추가
 		})) ?? []),
 	];
 
@@ -137,16 +138,14 @@ export default function Header() {
 						<nav className="hidden tablet:flex">
 							<ul className="flex items-center gap-10">
 								{/* 팀 선택 드롭다운 */}
-								{teamDropdown.length > 0 && (
-									<li>
-										<DropDown options={teamDropdown} gapY={10} align="LL">
-											<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
-												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
-												<Icon.ArrowDown width={16} height={16} />
-											</button>
-										</DropDown>
-									</li>
-								)}
+								<li>
+									<DropDown options={teamDropdown.length > 0 ? teamDropdown : []} gapY={10} align="LL">
+										<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
+											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
+											<Icon.ArrowDown width={16} height={16} />
+										</button>
+									</DropDown>
+								</li>
 								<li>
 									<Link href="/boards" className="text-lg font-medium">
 										자유게시판
