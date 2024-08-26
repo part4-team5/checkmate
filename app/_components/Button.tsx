@@ -52,7 +52,7 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 				"flex items-center justify-center border-2 border-brand-primary bg-transparent font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive";
 			break;
 		case "danger":
-			btnVariant = "flex items-center justify-center bg-status-danger font-semibold text-text-inverse";
+			btnVariant = "flex items-center justify-center bg-status-danger font-semibold text-text-inverse hover:bg-status-danger/80";
 			break;
 		default:
 			btnVariant =
