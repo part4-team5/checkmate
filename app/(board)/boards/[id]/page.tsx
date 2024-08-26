@@ -160,9 +160,9 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 		<main className="mx-auto h-full px-[16px] py-[56px] text-text-primary desktop:container tablet:px-[24px] tablet:py-[40px] desktop:px-0">
 			{isArticleLoading ? (
 				<>
-					<div className="h-[16px] w-[70%] animate-pulse rounded-md bg-border-primary/25" />
-					<div className="my-4 h-[24px] w-[30%] animate-pulse rounded-md bg-border-primary/25" />
-					<div className="h-[200px] w-full animate-pulse rounded-md bg-border-primary/25" />
+					<div className="bg-border-primary/25 h-[16px] w-[70%] animate-pulse rounded-md" />
+					<div className="bg-border-primary/25 my-4 h-[24px] w-[30%] animate-pulse rounded-md" />
+					<div className="bg-border-primary/25 h-[200px] w-full animate-pulse rounded-md" />
 				</>
 			) : (
 				<section className="mb-8">

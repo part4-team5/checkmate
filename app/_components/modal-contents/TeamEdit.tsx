@@ -100,7 +100,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 									<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
 										{(file) =>
 											(file ?? imageSrc) ? (
-												<div className="relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10">
+												<div className="border-border-primary/10 relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2">
 													<Image src={(file as string) ?? imageSrc} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
 													<div className="relative size-full">
 														<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155]">
@@ -109,7 +109,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 													</div>
 												</div>
 											) : (
-												<div className="relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
+												<div className="border-border-primary/10 relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2 bg-background-secondary">
 													<div className="\\ relative">
 														<Image src="/icons/emptyImage.svg" alt="Profile Preview" width={20} height={20} />
 													</div>
