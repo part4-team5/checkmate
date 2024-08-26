@@ -4,7 +4,7 @@ import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import useAuthStore from "@/app/_store/useAuthStore";
 import toast from "@/app/_utils/Toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -16,6 +16,11 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 	const userEmail = user?.email as string;
 
 	const [inviteGroup, setInviteGroup] = useState<InviteType>();
+
+	const { data: groups } = useQuery({
+		queryKey: ["user"],
+		queryFn: async () => API["{teamId}/user"].GET({}),
+	});
 
 	// useEffect 내부에서 한 번만 실행되도록 합니다. useEffect가 개발 환경에서 strict mode일 때 state를 사용하면 두 번 실행이 됩니다.
 	const isMounted = useRef<boolean>(false);
@@ -100,18 +105,33 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 							<div className="size-full">
 								<p className="text-center text-2xl text-text-primary">&quot;{inviteGroup?.groupName}&quot;</p>
 								<div className="pt-3" />
-								<p className="text-center text-xl text-text-primary">팀에서 당신을 초대했습니다.</p>
 
-								<div className="pt-8" />
+								{groups?.memberships.find((membership) => membership.groupId === inviteGroup?.groupId) ? (
+									<div className="flex flex-col items-center justify-center">
+										<p className="text-center text-xl text-text-primary">이미 참여 중인 팀입니다.</p>
 
-								<div className="flex h-12 items-center justify-center gap-10">
-									<Button onClick={handleAccept} fontSize="xl">
-										참여
-									</Button>
-									<Button variant="outline" fontSize="xl" onClick={handleReject}>
-										거절
-									</Button>
-								</div>
+										<div className="pt-3" />
+										<div className="w-full max-w-[300px]">
+											<Button variant="outline" fontSize="xl" onClick={() => router.back()}>
+												돌아가기
+											</Button>
+										</div>
+									</div>
+								) : (
+									<>
+										<p className="text-center text-xl text-text-primary">팀에서 당신을 초대했습니다.</p>
+
+										<div className="pt-8" />
+										<div className="flex h-12 items-center justify-center gap-10">
+											<Button onClick={handleAccept} fontSize="xl">
+												참여
+											</Button>
+											<Button variant="outline" fontSize="xl" onClick={handleReject}>
+												거절
+											</Button>
+										</div>
+									</>
+								)}
 							</div>
 						</>
 					)}
