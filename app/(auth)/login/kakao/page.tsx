@@ -19,6 +19,10 @@ export default function KakaoLogin() {
 
 	const queryClient = useQueryClient();
 
+	const userUploadMutation = useMutation({
+		mutationFn: async ({ id, email }: { id: number; email: string }) => API["api/users"].POST({}, { id, email }),
+	});
+
 	// 카카오 로그인 Mutation
 	const kakaoLoginMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>, Error>({
 		mutationFn: async (): Promise<Awaited<ReturnType<(typeof API)["{teamId}/auth/signIn/{provider}"]["POST"]>>> => {
@@ -37,10 +41,13 @@ export default function KakaoLogin() {
 			// 전역 상태에 유저 정보 저장
 			setUser({
 				id: data.user.id,
-				email: data.user.email ?? "",
+				email: data.user.email as string,
 				nickname: data.user.nickname,
 				image: data.user.image ? data.user.image : null,
 			});
+
+			// 몽고 DB에 유저 정보 저장
+			userUploadMutation.mutate({ id: data.user.id, email: data.user.email as string });
 
 			// 쿠키에 토큰 저장
 			setAccessToken(data.accessToken);

@@ -46,6 +46,9 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 	const mutation = useMutation({
 		mutationFn: async () => API["{teamId}/groups/{id}"].DELETE({ id }),
 		onSuccess: () => {
+			// 몽고 DB에서 사용자 그룹 제거
+			API["api/users/{id}/groupId/{groupId}"].DELETE({ id: Number(user?.id), groupId: id });
+
 			router.push("/get-started");
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 		},

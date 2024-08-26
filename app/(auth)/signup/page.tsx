@@ -16,7 +16,12 @@ export default function SignupPage() {
 	const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
 	const setUser = useAuthStore((state) => state.setUser);
+
 	const queryClient = useQueryClient();
+
+	const userUploadMutation = useMutation({
+		mutationFn: async ({ id, email }: { id: number; email: string }) => API["api/users"].POST({}, { id, email }),
+	});
 
 	const signupMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
@@ -34,14 +39,18 @@ export default function SignupPage() {
 
 			setUser({
 				id: response.user.id,
-				email: response.user.email || "",
+				email: response.user.email as string,
 				nickname: response.user.nickname,
 				image: response.user.image ? response.user.image : null,
 			});
 
+			// 몽고 DB에 유저 정보 저장
+			userUploadMutation.mutate({ id: response.user.id, email: response.user.email as string });
+
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);
-			router.replace("/login");
+
+			router.replace("/");
 		},
 		onError: (error) => {
 			alert(`${error.message ?? "알 수 없는 오류 발생"}`);

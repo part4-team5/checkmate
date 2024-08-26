@@ -24,7 +24,7 @@ export default function CreateTeamPage() {
 		return API["{teamId}/images/upload"].POST({}, file);
 	};
 
-	const teamManagementMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/groups"]["POST"]>>, Error, FormContext>({
+	const createTeamMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/groups"]["POST"]>>, Error, FormContext>({
 		mutationFn: async (ctx: FormContext): Promise<Awaited<ReturnType<(typeof API)["{teamId}/groups"]["POST"]>>> => {
 			const file = ctx.values.profileImage as File;
 			const teamName = ctx.values.teamName as string;
@@ -39,6 +39,11 @@ export default function CreateTeamPage() {
 			return API["{teamId}/groups"].POST({}, payload);
 		},
 		onSuccess: (data) => {
+			const user = queryClient.getQueryData<{ id: number }>(["user"]) ?? { id: 0 };
+
+			// 몽고 DB에서 사용자 그룹 정보 업데이트
+			API["api/users/{id}"].PATCH({ id: user.id }, { groupId: data.id });
+
 			toast.success("팀이 생성되었습니다.");
 
 			// 쿼리 무효화
@@ -51,13 +56,13 @@ export default function CreateTeamPage() {
 		},
 	});
 
-	const handleTeamManagement = useCallback(
+	const handleTeamCreation = useCallback(
 		(ctx: FormContext) => {
-			if (teamManagementMutation.isPending) return;
+			if (createTeamMutation.isPending) return;
 
-			teamManagementMutation.mutate(ctx);
+			createTeamMutation.mutate(ctx);
 		},
-		[teamManagementMutation],
+		[createTeamMutation],
 	);
 
 	return (
@@ -68,7 +73,7 @@ export default function CreateTeamPage() {
 				</div>
 
 				<div className="w-full">
-					<Form onSubmit={handleTeamManagement}>
+					<Form onSubmit={handleTeamCreation}>
 						<div className="mx-auto flex w-full max-w-[21.25rem] flex-col tablet:max-w-[28.75rem]">
 							<div className="w-full">
 								<div className="pb-3" />
@@ -110,7 +115,7 @@ export default function CreateTeamPage() {
 
 							<div className="pt-10" />
 
-							<div className="h-12">{teamManagementMutation.isPending ? <Button disabled>팀 생성 중</Button> : <Form.Submit>생성하기</Form.Submit>}</div>
+							<div className="h-12">{createTeamMutation.isPending ? <Button disabled>팀 생성 중</Button> : <Form.Submit>생성하기</Form.Submit>}</div>
 						</div>
 					</Form>
 				</div>
