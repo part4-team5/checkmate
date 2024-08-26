@@ -117,7 +117,13 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 						{paginatedInvites.map((invite) => (
 							<li key={invite.groupId} className="flex items-center gap-2 rounded-lg bg-background-tertiary p-4 text-text-primary shadow-tertiary">
 								<div className="relative size-10 min-h-10 min-w-10">
-									<Image src={invite.groupImage ?? "/icons/emptyImage.svg"} alt={invite.groupName} fill className="rounded-lg object-cover object-center" />
+									<Image
+										src={invite.groupImage ?? "/icons/emptyImage.svg"}
+										alt={invite.groupName}
+										fill
+										sizes="40px"
+										className="rounded-lg object-cover object-center"
+									/>
 								</div>
 
 								<div className="flex w-full flex-col overflow-hidden whitespace-nowrap">
