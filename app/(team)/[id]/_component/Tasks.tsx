@@ -28,12 +28,14 @@ function TaskItem({
 	groupId,
 	onEditTask,
 	onDrag,
+	isLastItem,
 }: {
 	taskList: TaskListType;
 	index: number;
 	groupId: number;
 	onEditTask: (name: string, id: number) => void;
 	onDrag: (e: any) => void;
+	isLastItem: boolean;
 }) {
 	const totalTasks = taskList.tasks?.length ?? 0;
 	const completedTasks = taskList.tasks?.filter((task) => task.doneAt !== null).length ?? 0;
@@ -45,16 +47,22 @@ function TaskItem({
 
 	const deleteTaskListMutation = useDeleteTaskList(groupId);
 
-	const handleMouseDown = () => {
+	const handleMouseDown = (event: React.MouseEvent) => {
+		// 우클릭일 경우 페이지 이동 방지
+		if (event.button === 2) return;
+
 		isLongPress.current = false;
 		timerId.current = setTimeout(() => {
 			isLongPress.current = true;
 		}, 100);
 	};
 
-	const handleMouseUp = () => {
+	const handleMouseUp = (event: React.MouseEvent) => {
+		// 우클릭일 경우 페이지 이동 방지
+		if (event.button === 2) return;
+
 		clearTimeout(timerId.current);
-		if (!isLongPress.current) {
+		if (!isLongPress.current && event.button === 0) {
 			router.push(`/${groupId}/todo?taskId=${taskList.id}`);
 		}
 	};
@@ -101,6 +109,7 @@ function TaskItem({
 			className="flex w-full cursor-pointer rounded-[12px] bg-background-secondary"
 			onMouseDown={handleMouseDown}
 			onMouseUp={handleMouseUp}
+			onContextMenu={(e) => e.preventDefault()} // 우클릭 시 기본 메뉴 차단
 			onDrag={onDrag} // onDrag 이벤트 핸들러 추가
 		>
 			<div className={`${getColorClass(index)} w-2 flex-shrink-0 rounded-l-lg`} />
@@ -118,7 +127,7 @@ function TaskItem({
 						</p>
 					</div>
 					<div onClick={handleDropdownClick} className="mr-[8px] rounded-[4px] hover:bg-[#3F4752]">
-						<DropDown options={editDropdown} gapY={-20} gapX={19} align="RR">
+						<DropDown options={editDropdown} gapY={isLastItem ? -80 : -20} gapX={19} align="RR">
 							<Icon.Kebab color="#64748B" width={16} height={16} />
 						</DropDown>
 					</div>
@@ -229,7 +238,15 @@ export default function Tasks({ id }: { id: number }) {
 								onDragEnd={() => handleDragEnd(taskList)}
 								onDrag={handleDrag} // onDrag 이벤트 핸들러 추가
 							>
-								<TaskItem key={taskList.id} taskList={taskList} index={index} groupId={id} onEditTask={handleEditTasksClick} onDrag={handleDrag} />
+								<TaskItem
+									key={taskList.id}
+									taskList={taskList}
+									index={index}
+									groupId={id}
+									onEditTask={handleEditTasksClick}
+									onDrag={handleDrag}
+									isLastItem={index === data.taskLists.length - 1} // 마지막 요소인지 판단
+								/>
 							</Reorder.Item>
 						))}
 					</Reorder.Group>
