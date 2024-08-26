@@ -1,9 +1,11 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 
-import Cookie from "@/app/_utils/Cookie";
+import InviteModel from "@/app/_utils/_models/Invite.model";
+import Token from "@/app/_utils/Token";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const SITE_URL = process.env.NEXT_PUBLIC_REDIRECT_URL;
 
 const enum MIME {
 	JSON = "application/json",
@@ -28,38 +30,6 @@ function createURL(url: string, query: object) {
 	return location.toString();
 }
 
-abstract class Token {
-	private static readonly CACHE: Record<string, string> = {};
-
-	private constructor() {
-		// final
-	}
-
-	public static get ACCESS() {
-		// eslint-disable-next-line no-return-assign
-		return (this.CACHE.accessToken ??= Cookie.get("accessToken") as string);
-	}
-
-	public static set ACCESS(value: string) {
-		if (typeof window === "undefined") {
-			this.CACHE.accessToken = value;
-		}
-		Cookie.set("accessToken", value);
-	}
-
-	public static get REFRESH() {
-		// eslint-disable-next-line no-return-assign
-		return (this.CACHE.refreshToken ??= Cookie.get("refreshToken") as string);
-	}
-
-	public static set REFRESH(value: string) {
-		if (typeof window === "undefined") {
-			this.CACHE.refreshToken = value;
-		}
-		Cookie.set("refreshToken", value);
-	}
-}
-
 /** @see https://fe-project-cowokers.vercel.app/docs/ */
 export default abstract class API {
 	private constructor() {
@@ -72,6 +42,7 @@ export default abstract class API {
 				const impl: HeadersInit = { "Content-Type": type, accept: MIME.JSON };
 
 				impl.Authorization = `Bearer ${Token.ACCESS}`;
+				// console.log(impl);
 
 				// eslint-disable-next-line default-case
 				switch (type) {
@@ -768,7 +739,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
 		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { userEmail: string; token: string }) {
-			return API.POST<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/accept-invitation`, query, body);
+			return API.POST<{ groupId: number }>(MIME.JSON, `${BASE_URL}/${teamId}/groups/accept-invitation`, query, body);
 		}
 	})();
 
@@ -1112,6 +1083,166 @@ export default abstract class API {
 			return API.DELETE<Article>(MIME.JSON, `${BASE_URL}/${teamId}/articles/${articleId}/like`, query);
 		}
 	})();
+
+	// * [ Custom API ]
+
+	/**
+	 * 몽고 DB 유저 정보 확인 API
+	 */
+	public static readonly ["api/users"] = new (class extends API {
+		/**
+		 * 몽고 DB 유저 정보 확인
+		 * @param {Object} param - 파라미터 객체
+		 * @param {number} id - 유저 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 유저 정보
+		 */
+		public override GET({ ...query }) {
+			return API.GET<{ id: number; email: string; groups: { groupId: number }[]; invite: InviteType[] }>(MIME.JSON, `${SITE_URL}/api/users`, query);
+		}
+
+		/**
+		 * 몽고 DB 유저 정보 추가
+		 * @param {Object}
+		 * @param {Object} query - 쿼리 파라미터
+		 * @param {Object} body - 추가할 유저 정보
+		 * @returns {Promise<Object>} - 추가된 유저 정보
+		 */
+		public override POST({ ...query }, body: { id: number; email: string }) {
+			return API.POST<{ id: number; email: string; groups: { groupId: number }[]; invite: InviteType[] }>(MIME.JSON, `${SITE_URL}/api/users`, query, body);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 유저 정보 수정, 삭제 API
+	 */
+	public static readonly ["api/users/{id}"] = new (class extends API {
+		/**
+		 * 몽고 DB 유저 정보 수정
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @param {Object} body - 수정할 유저 정보
+		 * @returns {Promise<Object>} - 수정된 유저 정보
+		 */
+		public override PATCH({ id, ...query }: { id: number }, body: { groupId: number }) {
+			return API.PATCH<{ id: number; email: string; groups: { groupId: number }[]; invite: InviteType[] }>(
+				MIME.JSON,
+				`${SITE_URL}/api/users/${id}`,
+				query,
+				body,
+			);
+		}
+
+		/**
+		 * 몽고 DB 유저 정보 삭제
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 응답 객체
+		 */
+		public override DELETE({ id, ...query }: { id: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/users/${id}`, query);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 유저 그룹 정보 삭제 API
+	 */
+	public static readonly ["api/users/{id}/groupId/{groupId}"] = new (class extends API {
+		/**
+		 * 몽고 DB 유저 그룹 정보 삭제
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {number} groupId - 팀 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 응답 객체
+		 */
+		public override DELETE({ id, groupId, ...query }: { id: number; groupId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/users/${id}/groupId/${groupId}`, query);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 초대 API
+	 */
+	public static readonly ["api/invite"] = new (class extends API {
+		/**
+		 * 몽고 DB 초대 정보 추가
+		 * @param {Object}
+		 * @param {Object} query - 쿼리 파라미터
+		 * @param {Object} body - 추가할 초대 정보
+		 * @returns {Promise<Object>} - 추가된 초대 정보
+		 */
+		public override POST({ ...query }, body: { email: string; groupId: number; groupName: string; groupImage?: string; token: string }) {
+			return API.POST<InstanceType<typeof InviteModel>>(MIME.JSON, `${SITE_URL}/api/invite`, query, body);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 초대 정보
+	 */
+	public static readonly ["api/invite/{id}"] = new (class extends API {
+		/**
+		 * 몽고 DB 초대 정보 확인
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 초대 정보
+		 */
+		public override GET({ id, ...query }: { id: number }) {
+			return API.GET<InstanceType<typeof InviteModel>[]>(MIME.JSON, `${SITE_URL}/api/invite/${id}`, query);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 초대 정보 삭제 API
+	 */
+	public static readonly ["api/invite/{id}/groupId/{groupId}"] = new (class extends API {
+		/**
+		 * 몽고 DB 초대 정보 삭제
+		 * @param {Object}
+		 * @param {number} id - 유저 ID
+		 * @param {number} groupId - 팀 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 응답 객체
+		 */
+		public override DELETE({ id, groupId, ...query }: { id: number; groupId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/invite/${id}/groupId/${groupId}`, query);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 초대 링크 생성 API
+	 */
+	public static readonly ["api/invite/link"] = new (class extends API {
+		/**
+		 * 몽고 DB 초대 링크 생성
+		 * @param {Object}
+		 * @param {Object} query - 쿼리 파라미터
+		 * @param {Object} body - 추가할 초대 정보
+		 * @returns {Promise<Object>} - 초대 정보
+		 */
+		public override POST({ ...query }, body: { groupId: number; groupName: string; groupImage?: string; token: string }) {
+			return API.POST<{ shortURL: string }>(MIME.JSON, `${SITE_URL}/api/invite/link`, query, body);
+		}
+	})();
+
+	/**
+	 * 몽고 DB 초대 링크 정보 확인 API
+	 */
+	public static readonly ["api/invite/link/{key}"] = new (class extends API {
+		/**
+		 * 몽고 DB 초대 링크 정보 확인
+		 * @param {Object}
+		 * @param {string} key - 초대 링크 키
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 초대 정보
+		 */
+		public override GET({ key, ...query }: { key: string }) {
+			return API.GET<InstanceType<typeof InviteModel>>(MIME.JSON, `${SITE_URL}/api/invite/link/${key}`, query);
+		}
+	})();
 }
 
 const enum Role {
@@ -1303,3 +1434,5 @@ interface CursorBasedPaginationResponse<T> {
 	list: T[];
 	nextCursor?: number;
 }
+
+type InviteType = InstanceType<typeof InviteModel>;

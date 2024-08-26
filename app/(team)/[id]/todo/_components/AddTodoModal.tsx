@@ -8,6 +8,7 @@ import Icon from "@/app/_icons";
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCreateTodoMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import toast from "@/app/_utils/Toast";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -46,14 +47,21 @@ export default function Modal({ close }: { close: () => void }) {
 	};
 
 	const handleCreateTodo = async (ctx: FormContext) => {
-		createTodoMutation.mutate({
-			name: ctx.values.name as string,
-			description: ctx.values.description as string,
-			startDate: `${formattedDate}T00:00:00Z`,
-			frequencyType: frequency,
-			weekDays,
-			monthDay,
-		});
+		toast.promise(
+			createTodoMutation.mutateAsync({
+				name: ctx.values.name as string,
+				description: ctx.values.description as string,
+				startDate: `${formattedDate}T00:00:00Z`,
+				frequencyType: frequency,
+				weekDays,
+				monthDay,
+			}),
+			{
+				loading: "생성 중...",
+				success: "할 일이 생성되었습니다.",
+				error: "할 일 생성 중 문제가 발생했습니다.",
+			},
+		);
 	};
 
 	useEffect(() => {
@@ -127,8 +135,7 @@ export default function Modal({ close }: { close: () => void }) {
 							<Calendar
 								onChange={(date) => {
 									setStartDate(date);
-									// TODO: 날짜 선택 후 닫히도록 수정
-									// setIsOpenedCalendar(false);
+									setIsCalendarOpened(false);
 								}}
 							>
 								<div className="flex size-full items-center justify-center rounded-xl border border-border-primary shadow-lg">

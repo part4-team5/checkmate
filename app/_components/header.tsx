@@ -211,8 +211,6 @@ export default function Header() {
 								<Icon.Star width={28} height={28} />
 								<p className="grow">내 대시보드</p>
 							</div>
-
-							{/* <div className="w-[95%] border-b border-[#353535]" /> */}
 						</Link>
 
 						<div className="h-2" />
