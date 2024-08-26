@@ -3,8 +3,8 @@
 import API from "@/app/_api";
 import Calendar from "@/app/_components/Calendar";
 import { useQueryClient } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import SideBarWrapper from "@/app/_components/sidebar";
 import { convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
@@ -38,6 +38,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const [currentTaskId, setCurrentTaskId] = useState<number>(taskListId);
 	const queryClient = useQueryClient();
 	const pathname = usePathname();
+	const searchParams = useSearchParams();
 	const overlay = useOverlay();
 	const { data: groupList } = useGetGroupList(groupId);
 	const { data: todoItems, isLoading: isTodoItemsLoading } = useGetTodoItems(groupId, currentTaskId, currentDate);
@@ -46,14 +47,21 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const todoDeleteMutation = useDeleteTodoMutation(groupId, currentTaskId, currentDate);
 
 	const containerRef = useRef(null);
-
 	const tasks = groupList?.taskLists;
+
+	useEffect(() => {
+		const taskIdFromURL = searchParams.get("taskId");
+		if (taskIdFromURL && Number(taskIdFromURL) !== currentTaskId) {
+			setCurrentTaskId(Number(taskIdFromURL));
+		}
+	}, [searchParams]);
 
 	const updateSearchParams = (value: number) => {
 		setCurrentTaskId(value);
 		window.history.pushState(null, "", `${pathname}?taskId=${value}`);
 	};
 
+	console.log("실행");
 	const handleCurrentDate = (date: Date) => {
 		setCurrentDate(() => date);
 	};
