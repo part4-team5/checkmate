@@ -248,9 +248,6 @@ export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["tasks", { taskId: taskListId }] });
 		},
-		onError: (error) => {
-			toast.error(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
-		},
 		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
