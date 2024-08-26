@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/button-has-type */
 /* eslint-disable indent */
 /* eslint-disable react/require-default-props */
@@ -9,7 +10,7 @@ import { MouseEvent, PropsWithChildren } from "react";
 
 export interface ButtonProps extends PropsWithChildren {
 	variant?: "primary" | "secondary" | "white" | "outline" | "danger";
-	fontSize?: "lg" | "md";
+	fontSize?: "xl" | "lg" | "md";
 	rounded?: "full" | "xl";
 	href?: string;
 	type?: "button" | "submit" | "reset";
@@ -59,18 +60,45 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 			break;
 	}
 
-	const btnStyle = `${btnVariant} ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "text-lg" : "text-md"} size-full py-[6px] `;
+	switch (rounded) {
+		case "full":
+			btnVariant += " rounded-full ";
+			break;
+		case "xl":
+			btnVariant += " rounded-xl ";
+			break;
+		default:
+			btnVariant += " rounded-full ";
+			break;
+	}
+
+	switch (fontSize) {
+		case "lg":
+			btnVariant += " text-lg ";
+			break;
+		case "xl":
+			btnVariant += " text-xl ";
+			break;
+		case "md":
+			btnVariant += " text-md ";
+			break;
+		default:
+			btnVariant += " text-lg ";
+			break;
+	}
+
+	const btnStyle = `${btnVariant} size-full py-[6px] `;
 
 	if (href) {
 		return (
-			<Link className={`${btnStyle}`} href={href}>
+			<Link className={btnStyle} href={href}>
 				{children}
 			</Link>
 		);
 	}
 
 	return (
-		<button type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled}>
+		<button type={type} className={btnStyle} onClick={onClick} disabled={disabled}>
 			{children}
 		</button>
 	);
