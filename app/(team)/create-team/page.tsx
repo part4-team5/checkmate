@@ -5,6 +5,7 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
+import Icon from "@/app/_icons";
 import toast from "@/app/_utils/Toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -63,38 +64,30 @@ export default function CreateTeamPage() {
 		<main className="size-full min-w-[20rem] pt-20">
 			<section className="flex size-full flex-col items-center justify-center">
 				<div className="pb-20">
-					<h1 className="text-[2.5rem] font-medium leading-[3rem] text-text-primary">팀 생성하기</h1>
+					<h1 className="text-[2.5rem] font-medium leading-[3rem] text-brand-primary">팀 생성하기</h1>
 				</div>
 
 				<div className="w-full">
 					<Form onSubmit={handleTeamManagement}>
 						<div className="mx-auto flex w-full max-w-[21.25rem] flex-col tablet:max-w-[28.75rem]">
-							<div className="w-fit">
-								<label htmlFor="profileImage" className="w-full pb-3 text-start font-medium text-text-primary">
-									팀 프로필
-								</label>
+							<div className="w-full">
 								<div className="pb-3" />
 								<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 4 * 1048576, error: "이미지 파일 크기는 4MB 이하여야 합니다" }]}>
 									{(file) => (
 										// eslint-disable-next-line react/jsx-no-useless-fragment
-										<>
+										<div className="flex w-full items-center justify-center">
 											{file ? (
-												<div className="relative flex size-16 items-center justify-center rounded-[.75rem] border-2 border-border-primary">
+												<div className="relative flex size-[140px] min-h-[140px] min-w-[140px] items-center justify-center rounded-[.75rem] border-2 border-brand-primary">
 													<Image src={file as string} alt="Profile Preview" fill className="rounded-[.75rem] object-cover object-center" />
-													<div className="relative size-full">
-														<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
-													</div>
 												</div>
 											) : (
-												<div className="relative flex size-16 items-center justify-center rounded-[.75rem] border-2 border-border-primary bg-background-secondary">
-													<div className="relative size-5">
-														<Image src="/icons/emptyImage.svg" alt="Profile Preview" fill />
+												<div className="relative flex size-[140px] items-center justify-center rounded-[.75rem] border-2 border-brand-primary bg-background-secondary">
+													<div className="relative size-[56px]">
+														<Icon.EmptyImage width={56} height={56} />
 													</div>
-
-													<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
 												</div>
 											)}
-										</>
+										</div>
 									)}
 								</Form.ImageInput>
 							</div>

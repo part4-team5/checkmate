@@ -108,10 +108,6 @@ export default {
 				scaleUp: "scaleUp 0.2s ease-in-out",
 				sparkle: "sparkle 0.6s ease-in-out",
 			},
-			boxShadow: {
-				primary:
-					"1px 1px 2px rgba(57, 61, 64, 0.3), -1px -1px 2px rgba(39, 41, 44, 0.5), inset -5px 5px 10px rgba(39, 41, 44, 0.2), inset 5px -5px 10px rgba(39, 41, 44, 0.2)",
-			},
 		},
 	},
 	content: ["./pages/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}", "./stories/**/*.{js,ts,jsx,tsx}"],
