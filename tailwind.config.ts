@@ -128,11 +128,23 @@ export default {
 				scaleUp: "scaleUp 0.2s ease-in-out",
 				sparkle: "sparkle 0.6s ease-in-out",
 			},
+			textShadow: {
+				primary:
+					"-1px 1px 2px rgba(14, 159, 111, 0.2), 1px -1px 2px rgba(14, 159, 111, 0.2), -1px -1px 2px rgba(18, 211, 147, 0.9), 1px 1px 3px rgba(14, 159, 111, 0.9)",
+			},
 		},
 	},
 	content: ["./pages/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}", "./stories/**/*.{js,ts,jsx,tsx}"],
 	plugins: [
-		plugin(({ addUtilities, addVariant }) => {
+		plugin(({ matchUtilities, addUtilities, addVariant, theme }) => {
+			matchUtilities(
+				{
+					"text-shadow": (value) => ({
+						textShadow: value,
+					}),
+				},
+				{ values: theme("textShadow") },
+			);
 			addUtilities({
 				".scrollbar-hide": {
 					"scrollbar-width": "none",

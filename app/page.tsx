@@ -1,104 +1,117 @@
-import Image from "next/image";
+import Button from "@/app/_components/Button";
+import LandingProgressBar from "@/app/_components/LandingProgressBar";
 
 export default function Page() {
 	return (
-		<main className="h-full min-w-[320px] bg-background-primary">
-			<section className="flex h-[640px] flex-col items-center justify-between tablet:h-[940px] desktop:h-[1080px]">
-				<div className="absolute h-[640px] w-full min-w-[320px] tablet:h-[940px] desktop:h-[1080px] desktop:max-w-[1920px]">
-					<Image src="/images/landing_main.webp" alt="Landing main" fill priority className="object-cover object-top" />
-				</div>
+		<main className="flex size-full min-w-[320px] flex-col items-center bg-landing-primary">
+			<section className="flex h-[1200px] max-h-[calc(100dvh-60px)] w-full max-w-[1400px] items-center justify-center px-4">
+				<div className="z-10 flex flex-col">
+					<p className="text-3xl font-semibold text-text-primary">함께 만들어가는 할 일 목록</p>
 
-				<div className="z-10 flex flex-col gap-5 pb-[320px] pt-[85px] text-center">
-					<div className="flex items-center justify-center gap-1 tablet:gap-4 desktop:gap-6">
-						<p className="text-2xl font-semibold text-text-primary tablet:text-[40px] desktop:text-[48px]">함께 만들어가는 투두 리스트</p>
-						<div className="relative h-7 w-7 tablet:h-12 tablet:w-12 desktop:h-14 desktop:w-14">
-							<Image src="/icons/landingRepair.svg" alt="Repair" fill />
-						</div>
-					</div>
-
-					<p className="bg-gradient-to-r from-brand-primary to-[#CEF57E] bg-clip-text text-3xl font-semibold text-transparent tablet:text-[48px] tablet:leading-[57px] desktop:text-[64px] desktop:leading-[76px]">
-						Coworkers
+					<p className="text-[130px] font-bold leading-[140px] text-brand-primary text-shadow-primary">
+						CHECK,
+						<br />
+						MATE!
 					</p>
+					<div className="flex h-[48px] w-full items-center justify-center pl-10 pr-36">
+						<Button rounded="full">지금 함께하기</Button>
+					</div>
 				</div>
 
-				<div className="z-10 flex items-center justify-center pb-[180px]">
-					{/* fetch 작동 안하게 a 태그 사용 */}
-					<a
-						href="/get-started"
-						className="flex w-screen min-w-[320px] max-w-[370px] items-center justify-center rounded-full bg-gradient-to-r from-brand-primary to-brand-tertiary py-3 font-semibold text-text-primary"
-					>
-						지금 시작하기
-					</a>
-				</div>
+				<LandingProgressBar />
 			</section>
 
-			<section className="flex flex-col items-center gap-6 px-4 tablet:px-6 desktop:gap-20">
-				{/* 할 일 추가 */}
-				<div className="shadow-background-inverse/25 flex h-screen max-h-[467px] w-full min-w-[320px] rounded-[40px] bg-conic-gradient p-[2px] shadow-[0_0_12px_2px_rgba(0,0,0,0.25)] tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
-					<div className="flex h-full w-full flex-col-reverse items-center gap-11 rounded-[38px] bg-background-primary tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:gap-48">
-						<div className="flex tablet:items-end">
-							<div className="relative h-[268px] w-[231px] desktop:h-[329px] desktop:w-[284px]">
-								<Image src="/images/landing_1.webp" alt="Landing 1" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
-							</div>
-						</div>
+			<section className="flex h-[1200px] max-h-[calc(100dvh-60px)] w-full items-center justify-center bg-landing-tertiary">
+				<div className="flex size-full grow items-center justify-center gap-16 px-4">
+					<div className="size-full max-h-[450px] max-w-[660px] grow rounded-[40px] bg-landing-secondary">{/* 이미지 */}</div>
 
-						<div className="flex w-[251px] flex-col tablet:w-fit tablet:justify-center">
-							<div className="relative size-[72px]">
-								<Image src="/icons/landingFolder.svg" alt="Folder Icon" fill />
-							</div>
-							<p className="pl-[12px] pt-1 text-2lg font-medium text-text-primary desktop:text-2xl">
-								그룹으로 <br />할 일을 관리해요
-							</p>
-						</div>
-					</div>
-				</div>
-
-				{/* 멤버 초대 */}
-				<div className="border-border-primary/10 flex h-screen max-h-[467px] w-full min-w-[320px] flex-col items-center justify-start gap-10 rounded-[40px] border bg-background-secondary tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row-reverse tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
-					<div className="relative flex h-[268px] w-[231px] items-start desktop:h-[329px] desktop:w-[284px]">
-						<Image src="/images/landing_2.webp" alt="Landing 2" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
-					</div>
-
-					<div className="flex w-[251px] flex-col tablet:w-fit tablet:items-end tablet:justify-center">
-						<div className="relative flex size-[72px]">
-							<Image src="/icons/landingMail.svg" alt="Mail Icon" fill />
-						</div>
-						<p className="pl-[12px] pt-1 font-medium text-text-primary tablet:pl-0 tablet:pr-[12px] tablet:text-right tablet:text-2lg desktop:text-2xl">
-							간단하게 멤버들을 <br />
-							초대해요
-						</p>
-					</div>
-				</div>
-
-				{/* 할 일 체크 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[320px] flex-col items-center justify-start gap-10 rounded-[40px] bg-[#020617] tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
-					<div className="relative flex h-[268px] w-[231px] items-start desktop:h-[329px] desktop:w-[284px]">
-						<Image src="/images/landing_3.webp" alt="Landing 3" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
-					</div>
-
-					<div className="flex w-[251px] flex-col tablet:w-fit tablet:justify-center">
-						<div className="relative size-[72px]">
-							<Image src="/icons/landingChecked.svg" alt="Checked Icon" fill />
-						</div>
-						<p className="pl-[12px] pt-1 text-2lg font-medium text-text-primary desktop:text-2xl">
-							할 일도 간편하게 <br /> 체크해요
+					<div className="">
+						<p className="text-xl font-medium text-brand-primary">POINT 1</p>
+						<div className="pt-[30px]" />
+						<p className="text-[65px] font-semibold leading-[80px] text-text-primary">
+							그룹으로
+							<br /> 할 일 관리
 						</p>
 					</div>
 				</div>
 			</section>
 
-			<section className="flex h-[640px] flex-col items-center justify-between tablet:h-[940px] desktop:h-[1080px]">
-				<div className="absolute h-[640px] w-full min-w-[320px] tablet:h-[940px] desktop:h-[1080px] desktop:max-w-[1920px]">
-					<Image src="/images/landing_footer.webp" alt="Landing footer" fill className="object-cover object-bottom" />
-				</div>
+			<section className="flex h-[1200px] max-h-[calc(100dvh-60px)] w-full items-center justify-center bg-landing-secondary">
+				<div className="flex size-full grow flex-row-reverse items-center justify-center gap-16 px-4">
+					<div className="size-full max-h-[450px] max-w-[660px] grow rounded-[40px] bg-landing-tertiary">{/* 이미지 */}</div>
 
-				<div className="z-10 flex flex-col items-center justify-center gap-6 pt-32 text-center tablet:pt-44 desktop:pt-56">
-					<p className="text-2xl font-semibold text-text-primary tablet:text-[40px]">지금 바로 시작해보세요</p>
-					<p className="text-lg font-medium text-text-primary tablet:text-2xl">
-						팀원 모두와 같은 방향, <br className="block tablet:hidden" /> 같은 속도로 나아가는 가장 쉬운 방법
-					</p>
+					<div className="">
+						<p className="text-end text-xl font-medium text-brand-primary">POINT 2</p>
+						<div className="pt-[30px]" />
+						<p className="text-end text-[65px] font-semibold leading-[80px] text-text-primary">
+							할 일을 간편하게
+							<br /> CHECK!
+						</p>
+					</div>
 				</div>
 			</section>
+
+			<section className="flex h-[1200px] max-h-[calc(100dvh-60px)] w-full items-center justify-center bg-landing-tertiary">
+				<div className="flex size-full grow items-center justify-center gap-16 px-4">
+					<div className="flex size-full max-h-[600px] max-w-[660px] grow justify-center">
+						<div className="size-full max-h-[600px] max-w-[363px] grow rounded-[40px] bg-landing-secondary">{/* 이미지 */}</div>
+					</div>
+
+					<div className="">
+						<p className="text-xl font-medium text-brand-primary">POINT 3</p>
+						<div className="pt-[30px]" />
+						<p className="text-[65px] font-semibold leading-[80px] text-text-primary">
+							자유게시판에서
+							<br />
+							Mate들과 소통
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<section className="flex h-[1200px] max-h-[calc(100dvh-60px)] w-full flex-col items-center justify-center bg-landing-secondary">
+				<p className="text-center text-[40px] font-semibold leading-[45px] text-text-primary">
+					팀원 모두와 같은 방향,
+					<br />
+					같은 속도로 나아가는 가장 쉬운 방법
+				</p>
+
+				<div className="pt-14" />
+
+				<div className="flex h-[56px] w-full max-w-[400px] items-center justify-center">
+					<Button fontSize="xl" rounded="full">
+						지금 함께하기
+					</Button>
+				</div>
+
+				<div className="h-[50%]">{/* 이미지 */}</div>
+			</section>
+
+			<footer className="flex h-[300px] w-full items-center justify-around bg-landing-quaternary text-md text-text-primary">
+				<div className="">
+					<p className="text-lg font-bold">Copyright ⓒ CHECKMATE. All Rights Reserved</p>
+					<div className="pt-[10px]" />
+					<p>
+						사업자등록번호 2024-09-020000 | 통신판매신고 제2020-서울-00000호 | 대표 : 김유정
+						<br />
+						서울특별시 중구 청계천로 123, 대신증권빌딩
+					</p>
+
+					<div className="pt-[26px]" />
+
+					<div className="flex gap-7">
+						<button type="button">서비스 이용약관</button>
+						<button type="button">개인정보 취급방침</button>
+						<button type="button">전자금융거래 기본약관</button>
+					</div>
+				</div>
+
+				<div className="flex gap-4">
+					<button type="button">이메일</button>
+					<button type="button">페이스북</button>
+					<button type="button">인스타그램</button>
+				</div>
+			</footer>
 		</main>
 	);
 }

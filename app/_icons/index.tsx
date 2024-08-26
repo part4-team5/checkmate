@@ -499,3 +499,11 @@ Icon.MailReject = function MailReject({ width = 24, height = 24, color = "#EF444
 		</svg>
 	);
 };
+
+Icon.Pointer = function Pointer({ width = 24, height = 24, color = "#8EDCC3" }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24">
+			<path fill={color} d="M4 0l16 12.279-6.951 1.17 4.325 8.817-3.596 1.734-4.35-8.879-5.428 4.702z" />
+		</svg>
+	);
+};
