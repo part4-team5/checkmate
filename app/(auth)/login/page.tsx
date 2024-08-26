@@ -65,7 +65,7 @@ export default function LoginPage() {
 
 	return (
 		<>
-			<h2 className="relative m-[0_auto_40px] h-[150px] w-[256px]">
+			<h2 className="relative m-[0_auto_40px] h-[120px] w-[226px] tablet:h-[150px] tablet:w-[256px]">
 				<Image src="/icons/bigLogo.svg" alt="로그인" fill />
 			</h2>
 			<Form onSubmit={handleSubmit}>

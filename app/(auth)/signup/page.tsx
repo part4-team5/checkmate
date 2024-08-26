@@ -58,7 +58,7 @@ export default function SignupPage() {
 
 	return (
 		<>
-			<h2 className="relative m-[0_auto_40px] h-[150px] w-[256px]">
+			<h2 className="relative m-[0_auto_40px] h-[120px] w-[226px] tablet:h-[150px] tablet:w-[256px]">
 				<Image src="/icons/bigLogo.svg" alt="회원가입" fill />
 			</h2>
 			<Form onSubmit={handleSubmit}>
