@@ -1,6 +1,7 @@
 import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import API from "@/app/_api";
 import Form from "@/app/_components/Form";
+import toast from "@/app/_utils/Toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 
@@ -116,7 +117,7 @@ export const useToggleTodoStatusMutation = (groupId: number, currentTaskId: numb
 			if (context?.oldData) {
 				queryClient.setQueryData(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), context.oldData);
 			}
-			alert(`오류: ${error.message} - ${variables.done ? "완료" : "미완료"} 처리에 실패했습니다.`);
+			toast.error(`오류: ${error.message} - ${variables.done ? "완료" : "미완료"} 처리에 실패했습니다.`);
 		},
 		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
@@ -174,7 +175,7 @@ export const useAddCommentMutation = (
 			if (context?.oldData) {
 				queryClient.setQueryData(["todo", { todoId, comment: true }], context.oldData);
 			}
-			alert(`오류: ${error.message} - 댓글 작성에 실패했습니다.`);
+			toast.error(`오류: ${error.message} - 댓글 작성에 실패했습니다.`);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), refetchType: "all" });
@@ -203,7 +204,7 @@ export const useEditTodoMutation = (groupId: number, currentTaskId: number, curr
 			if (context?.oldData) {
 				queryClient.setQueryData(["todo", { todoId: variables.todoId }], context.oldData);
 			}
-			alert(`오류: ${error.message} - 할 일 수정에 실패했습니다.`);
+			toast.error(`오류: ${error.message} - 할 일 수정에 실패했습니다.`);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
@@ -248,7 +249,7 @@ export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
 			queryClient.invalidateQueries({ queryKey: ["tasks", { taskId: taskListId }] });
 		},
 		onError: (error) => {
-			alert(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
+			toast.error(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
 		},
 		// 요청이 성공하던 실패하던 무효화해서 최신 데이터로 업데이트
 		onSettled: () => {
@@ -273,7 +274,7 @@ export const useDeleteTodoMutation = (groupId: number, currentTaskId: number, cu
 			if (context?.oldData) {
 				queryClient.setQueryData(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), context.oldData);
 			}
-			alert(`오류: ${error.message} - 할 일 삭제에 실패했습니다.`);
+			toast.error(`오류: ${error.message} - 할 일 삭제에 실패했습니다.`);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
@@ -302,7 +303,7 @@ export const usePatchTodoCommentEditMutation = (setter: Dispatch<SetStateAction<
 			return { oldData };
 		},
 		onError: (error) => {
-			alert(`오류: ${error.message} - 댓글 수정에 실패했습니다.`);
+			toast.error(`오류: ${error.message} - 댓글 수정에 실패했습니다.`);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["todo", { todoId, comments: true }] });
@@ -322,7 +323,7 @@ export const useDeleteTodoCommentMutation = (todoId: number, groupId: number, cu
 			return { oldData };
 		},
 		onError: (error) => {
-			alert(`오류: ${error.message} - 댓글 삭제에 실패했습니다.`);
+			toast.error(`오류: ${error.message} - 댓글 삭제에 실패했습니다.`);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
@@ -338,7 +339,7 @@ export const useAddTaskMutation = (groupId: number) => {
 			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 		},
 		onError: (error) => {
-			alert(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
+			toast.error(`오류: ${error.message} - 할 일 추가에 실패했습니다.`);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
