@@ -3,9 +3,15 @@
 import { motion, AnimatePresence } from "framer-motion";
 import useToastStore from "@/app/_store/toastStore";
 import Icon from "@/app/_icons";
+import { useShallow } from "zustand/react/shallow";
 
 function Toaster() {
-	const { toasts, removeToast } = useToastStore();
+	const { toasts, removeToast } = useToastStore(
+		useShallow((state) => ({
+			toasts: state.toasts,
+			removeToast: state.removeToast,
+		})),
+	);
 
 	const animation = (type: string) => {
 		switch (type) {
