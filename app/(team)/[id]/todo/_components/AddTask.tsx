@@ -1,7 +1,10 @@
+"use client";
+
 import React from "react";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import Form from "@/app/_components/Form";
 import { useAddTaskMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import Button from "@/app/_components/Button";
 
 type AddTaskModalProps = {
 	groupId: number;
@@ -13,9 +16,12 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 export default function AddTaskModal({ close, groupId }: AddTaskModalProps): JSX.Element {
 	const postAddTaskMutation = useAddTaskMutation(groupId);
 
+	if (postAddTaskMutation.isSuccess) {
+		close();
+	}
+
 	const handleSubmit = (ctx: FormContext) => {
 		postAddTaskMutation.mutate(ctx);
-		close();
 	};
 
 	return (
@@ -53,9 +59,17 @@ export default function AddTaskModal({ close, groupId }: AddTaskModalProps): JSX
 						/>
 						<Form.Error htmlFor="task" />
 					</div>
-					<div className="mt-6 h-12">
-						<Form.Submit>만들기</Form.Submit>
-					</div>
+					{postAddTaskMutation.isPending ? (
+						<div className="mt-6 h-12">
+							<Button disabled type="button">
+								목록 생성중...
+							</Button>
+						</div>
+					) : (
+						<div className="mt-6 h-12">
+							<Form.Submit>만들기</Form.Submit>
+						</div>
+					)}
 				</Form>
 			</div>
 		</ModalWrapper>

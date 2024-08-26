@@ -81,14 +81,14 @@ export default function CreateTeamPage() {
 										// eslint-disable-next-line react/jsx-no-useless-fragment
 										<>
 											{file ? (
-												<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10">
+												<div className="border-border-primary/10 relative flex size-16 items-center justify-center rounded-[12px] border-2">
 													<Image src={file as string} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
 													<div className="relative size-full">
 														<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute -bottom-2 -right-2" />
 													</div>
 												</div>
 											) : (
-												<div className="relative flex size-16 items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
+												<div className="border-border-primary/10 relative flex size-16 items-center justify-center rounded-[12px] border-2 bg-background-secondary">
 													<div className="relative size-5">
 														<Image src="/icons/emptyImage.svg" alt="Profile Preview" fill />
 													</div>

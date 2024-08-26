@@ -76,7 +76,7 @@ export default function TeamEditForm({ id }: { id: number }) {
 									// eslint-disable-next-line react/jsx-no-useless-fragment
 									<>
 										{file || teamInfo?.image ? (
-											<div className="relative flex size-16 cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10">
+											<div className="border-border-primary/10 relative flex size-16 cursor-pointer items-center justify-center rounded-[12px] border-2">
 												<Image
 													src={(file as string) ?? teamInfo?.image ?? ""}
 													alt="Profile Preview"
@@ -88,7 +88,7 @@ export default function TeamEditForm({ id }: { id: number }) {
 												</div>
 											</div>
 										) : (
-											<div className="relative flex size-16 cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
+											<div className="border-border-primary/10 relative flex size-16 cursor-pointer items-center justify-center rounded-[12px] border-2 bg-background-secondary">
 												<div className="relative size-5">
 													<Image src="/icons/imageIcon.svg" alt="Profile Preview" fill />
 												</div>
