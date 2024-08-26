@@ -45,7 +45,7 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 
 				<div className="pt-5" />
 
-				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-secondary">
+				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
 					{renderLoadingSkeletons(9, "hidden desktop:grid grid-cols-3 grid-rows-3")}
 					{renderLoadingSkeletons(6, "hidden tablet:grid desktop:hidden grid-cols-2 grid-rows-3")}
 					{renderLoadingSkeletons(4, "grid tablet:hidden grid-cols-1 grid-rows-4")}
@@ -70,13 +70,13 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 
 				<div className="pt-5" />
 
-				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-secondary">
+				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
 					<ul className="grid w-full grid-rows-4 gap-4 tablet:grid-cols-2 tablet:grid-rows-3 desktop:grid-cols-3">
 						{paginatedTeams.map((team) => (
 							<li key={team.groupId} className="flex gap-3 overflow-x-hidden">
 								<Link
 									href={`/${team.groupId}`}
-									className="flex grow items-center gap-3 overflow-x-hidden text-ellipsis whitespace-nowrap rounded-md bg-background-tertiary px-4 py-3 shadow-tertiary hover:bg-interaction-inactive/30"
+									className="flex grow items-center gap-3 overflow-x-hidden text-ellipsis whitespace-nowrap rounded-md bg-background-tertiary px-4 py-3 hover:bg-interaction-inactive/30"
 								>
 									<Image
 										src={team.group.image ?? "/icons/emptyImage.svg"}
@@ -125,7 +125,7 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 
 			<div className="pt-5" />
 
-			<div className="flex h-dvh max-h-[292px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-secondary">
+			<div className="flex h-dvh max-h-[292px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
 				<p className="text-center text-text-primary">아직 참여 중인 팀이 없습니다.</p>
 			</div>
 		</section>
@@ -136,7 +136,7 @@ function Header() {
 	return (
 		<div className="flex size-full max-h-[40px] items-center justify-center">
 			<p className="w-full grow text-xl font-semibold text-text-primary">참여 중인 팀</p>
-			<div className="h-10 w-full max-w-[220px] shadow-secondary">
+			<div className="h-10 w-full max-w-[220px]">
 				<Button href="/create-team">생성하기</Button>
 			</div>
 		</div>
@@ -147,11 +147,11 @@ const renderLoadingSkeletons = (count: number, colClasses: string) => (
 	<ul className={`w-full gap-4 ${colClasses}`}>
 		{Array.from({ length: count }).map((_, index) => (
 			// eslint-disable-next-line react/no-array-index-key
-			<li key={index} className="flex animate-pulse gap-3 rounded-md bg-background-tertiary px-4 py-3 shadow-tertiary">
-				<div className="min-h-8 min-w-8 rounded-lg bg-background-quaternary" />
-				<p className="w-full rounded-lg bg-background-quaternary" />
+			<li key={index} className="flex animate-pulse gap-3 rounded-md bg-background-tertiary px-4 py-3">
+				<div className="bg-background-quaternary min-h-8 min-w-8 rounded-lg" />
+				<p className="bg-background-quaternary w-full rounded-lg" />
 				<div className="flex h-full w-fit items-end justify-end">
-					<div className="h-1/2 w-20 rounded-md bg-background-quaternary" />
+					<div className="bg-background-quaternary h-1/2 w-20 rounded-md" />
 				</div>
 			</li>
 		))}

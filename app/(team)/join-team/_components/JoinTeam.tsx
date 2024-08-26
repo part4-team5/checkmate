@@ -77,7 +77,7 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 	return (
 		<main className="size-full">
 			<section className="flex size-full flex-col items-center justify-center gap-20 px-4 pt-40 font-bold text-text-default">
-				<div className="flex w-full max-w-[500px] flex-col items-center justify-center rounded-xl bg-background-secondary p-8 shadow-secondary">
+				<div className="flex w-full max-w-[500px] flex-col items-center justify-center rounded-xl bg-background-secondary p-8">
 					<p className="text-2xl font-bold">팀 참여 요청</p>
 					{!inviteGroup ? (
 						<div className="flex w-full flex-col items-center">

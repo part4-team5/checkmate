@@ -22,14 +22,14 @@ export default {
 				cyan: "#06B6D4",
 				pink: "#EC4899",
 				rose: "#F43F5E",
-				ornage: "#F97316",
+				orange: "#F97316",
 				yellow: "#EAB308",
 			},
 			landing: {
 				primary: "var(--landing-primary)",
 				secondary: "var(--landing-secondary)",
 				tertiary: "var(--landing-tertiary)",
-				quanternary: "var(--landing-quanternary)",
+				quaternary: "var(--landing-quaternary)",
 				quinary: "var(--landing-quinary)",
 				Senary: "var(--landing-Senary)",
 				Septenary: "var(--landing-Septenary)",
@@ -40,7 +40,7 @@ export default {
 				primary: "var(--background-primary)",
 				secondary: "var(--background-secondary)",
 				tertiary: "var(--background-tertiary)",
-				quanternary: "var(--background-quanternary)",
+				quaternary: "var(--background-quaternary)",
 				quinary: "var(--background-quinary)",
 				Senary: "var(--background-Senary)",
 				list: "var(--background-list)",
@@ -51,7 +51,7 @@ export default {
 				primary: "var(--board-primary)",
 				secondary: "var(--board-secondary)",
 				tertiary: "var(--board-tertiary)",
-				quanternary: "var(--board-quanternary)",
+				quaternary: "var(--board-quaternary)",
 			},
 			interaction: {
 				inactive: "#94A3B8",
@@ -97,14 +97,6 @@ export default {
 		extend: {
 			backgroundImage: {
 				"conic-gradient": "conic-gradient(from 0deg, #10b981, #cef57e, #10b981)",
-			},
-			boxShadow: {
-				buttonPrimary:
-					"-5px 5px 10px rgba(20, 21, 23, 0.2), 5px -5px 10px rgba(20, 21, 23, 0.2), inset 1px 1px 2px rgba(66, 69, 75, 0.3), inset -1px -1px 2px rgba(20, 21, 23, 0.5)",
-				secondary:
-					"-5px 5px 10px rgba(27, 28, 30, 0.2), 5px -5px 10px rgba(27, 28, 30, 0.2), 5px 5px 13px rgba(27, 28, 30, 0.9), inset 1px 1px 2px rgba(49, 50, 54, 0.3), inset -1px -1px 2px rgba(27, 28, 30, 0.5)",
-				tertiary:
-					"-5px 5px 10px rgba(31, 33, 35, 0.2), 5px -5px 10px rgba(31, 33, 35, 0.2), 5px 5px 13px rgba(31, 33, 35, 0.9), inset 1px 1px 2px rgba(65, 69, 73, 0.3), inset -1px -1px 2px rgba(31, 33, 35, 0.5)",
 			},
 			keyframes: {
 				scaleUp: {
