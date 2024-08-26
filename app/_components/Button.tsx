@@ -39,7 +39,7 @@ export default function Button({ children, variant = "primary", fontSize = "lg",
 	switch (variant) {
 		case "primary":
 			btnVariant =
-				"flex items-center justify-center bg-brand-primary font-semibold text-text-inverse hover:bg-interaction-hover active:bg-interaction-pressed disabled:bg-interaction-inactive ";
+				"flex items-center justify-center bg-brand-primary font-semibold text-text-inverse hover:bg-interaction-hover active:bg-interaction-pressed disabled:bg-interaction-inactive shadow-loginButton";
 			break;
 		case "secondary":
 			btnVariant =

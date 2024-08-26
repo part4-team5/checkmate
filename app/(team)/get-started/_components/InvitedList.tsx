@@ -112,10 +112,10 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 			)}
 
 			{invites.data && invites.data.length > 0 && (
-				<div className="w-full rounded-xl bg-background-secondary p-4">
+				<div className="shadow-teamInvitation w-full rounded-xl bg-background-secondary p-4">
 					<ul className="grid grid-cols-1 grid-rows-2 gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
 						{paginatedInvites.map((invite) => (
-							<li key={invite.groupId} className="flex items-center gap-2 rounded-lg bg-background-tertiary p-4 text-text-primary">
+							<li key={invite.groupId} className="shadow-teamCard flex items-center gap-2 rounded-lg bg-background-tertiary p-4 text-text-primary">
 								<div className="relative size-10 min-h-10 min-w-10">
 									<Image
 										src={invite.groupImage ?? "/icons/emptyImage.svg"}
@@ -173,8 +173,8 @@ const renderLoadingSkeletons = (count: number, colClasses: string) => (
 		{Array.from({ length: count }).map((_, index) => (
 			// eslint-disable-next-line react/no-array-index-key
 			<li key={index} className="flex h-[72px] animate-pulse gap-3 rounded-lg bg-background-tertiary px-4 py-3">
-				<div className="size-12 rounded-lg bg-background-quaternary" />
-				<p className="w-full rounded-lg bg-background-quaternary" />
+				<div className="bg-background-quaternary size-12 rounded-lg" />
+				<p className="bg-background-quaternary w-full rounded-lg" />
 			</li>
 		))}
 	</ul>

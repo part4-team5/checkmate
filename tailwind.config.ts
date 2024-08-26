@@ -56,11 +56,14 @@ export default {
 			interaction: {
 				inactive: "#94A3B8",
 				pressed: "#047857",
-				hover: "var(--background-hover)",
+				hover: "#059669",
 				focus: "#10B981",
 			},
 			border: {
 				primary: "var(--border-primary)",
+			},
+			header: {
+				primary: "var(--header-primary)",
 			},
 			text: {
 				primary: "var(--text-primary)",

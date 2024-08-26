@@ -4,7 +4,7 @@
 "use client";
 
 import API from "@/app/_api";
-import DarkModeToggle from "@/app/_components/DarkModeTogle";
+import DarkModeToggle from "@/app/_components/DarkModeToggle";
 import DropDown from "@/app/_components/Dropdown";
 import Logout from "@/app/_components/modal-contents/Logout";
 import useCookie from "@/app/_hooks/useCookie";
@@ -85,6 +85,13 @@ export default function Header() {
 				},
 			},
 			{
+				text: "내 대시보드",
+				onClick: () => {
+					router.push("/get-started");
+					sideBarClose();
+				},
+			},
+			{
 				text: "팀 참여",
 				onClick: () => {
 					router.push("/join-team");
@@ -120,7 +127,7 @@ export default function Header() {
 	);
 
 	return (
-		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary bg-background-secondary text-text-primary">
+		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border-b border-header-primary bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
 				<div className="z-50 block pl-4 tablet:hidden">
 					<button type="button" onClick={() => setIsSidebarOpened(!isSidebarOpened)} aria-label="Menu" className="flex size-full items-center justify-center">
@@ -150,7 +157,7 @@ export default function Header() {
 								{/* 팀 선택 드롭다운 */}
 								<li>
 									<DropDown options={teamDropdown.length > 0 ? teamDropdown : []} gapY={10} align="LL">
-										<button type="button" className="flex items-center gap-[10px] font-medium tablet:text-md desktop:text-lg">
+										<button type="button" className="flex max-h-[40px] items-center gap-[10px] px-2 py-3 text-md font-medium tablet:text-lg">
 											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image && (
 												<Image
 													src={user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image ?? "/icons/emptyImage.svg"}
@@ -161,7 +168,7 @@ export default function Header() {
 												/>
 											)}
 											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
-											<Icon.ArrowDown width={16} height={16} />
+											<Icon.ArrowDown width={16} height={16} color="var(--text-primary)" />
 										</button>
 									</DropDown>
 								</li>
@@ -175,9 +182,9 @@ export default function Header() {
 
 						{/* 유저 정보 */}
 						<DropDown options={userDropdown} gapY={10} align="RR">
-							<button type="button" className="flex gap-2">
+							<button type="button" className="flex gap-2 p-2">
 								<div className="size-4 tablet:size-6">
-									<Icon.User width="100%" height="100%" />
+									<Icon.User width="100%" height="100%" color="var(--text-primary)" />
 								</div>
 								<span className="hidden desktop:block">{user?.nickname}</span>
 							</button>
@@ -185,30 +192,30 @@ export default function Header() {
 					</div>
 				)}
 
-				{/* 다크 모드 토글 버튼 */}
-				<DarkModeToggle />
-
 				<nav className={`flex size-full items-center justify-end ${accessToken ? "hidden" : "flex"}`}>
 					<Link href="/login" className="flex h-full items-center gap-2 px-4 text-lg font-medium" onClick={() => sideBarClose()}>
 						로그인
 					</Link>
 				</nav>
 
+				{/* 다크 모드 토글 버튼 */}
+				<DarkModeToggle />
+
 				<div className="pr-4 tablet:pr-10 desktop:p-0" />
 
 				{/* 사이드바 */}
 				<div
-					className={`fixed inset-0 left-0 top-[60px] z-30 bg-black/50 ${isSidebarOpened ? "block" : "hidden"} cursor-default tablet:hidden`}
+					className={`fixed inset-0 left-0 top-[60px] z-30 ${isSidebarOpened ? "block" : "hidden"} cursor-default tablet:hidden`}
 					onClick={() => sideBarClose()}
 				>
 					<div className="z-40 h-full bg-background-secondary px-4 py-5 pr-5" onClick={(event) => event.stopPropagation()}>
 						<Link
-							href="/boards"
+							href="/get-started"
 							className="flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary"
 							onClick={sideBarClose}
 						>
 							<div className="flex w-full grow items-center gap-2 px-4 py-2">
-								<Icon.Star width={32} height={32} />
+								<Icon.Star width={32} height={32} secondary="var(--text-primary)" />
 								<p className="grow">내 대시보드</p>
 							</div>
 
@@ -226,7 +233,7 @@ export default function Header() {
 								<Image src="/icons/list.svg" alt="selectArrow" width={32} height={32} />
 								<p className="grow text-left">팀 목록</p>
 								<div className={`size-7 items-center duration-300 ${isTeamOpened ? "rotate-90" : ""}`}>
-									<Icon.ArrowRight width={28} height={28} color="#fff" />
+									<Icon.ArrowRight width={28} height={28} color="var(--text-primary)" />
 								</div>
 							</div>
 
@@ -235,7 +242,7 @@ export default function Header() {
 
 						{/* 팀 목록 */}
 						<div className={`overflow-hidden duration-500 ease-in-out ${isTeamOpened ? "max-h-[calc(100dvh-340px)]" : "max-h-0"} `}>
-							<ul className="mx-4 mt-2 max-h-[calc(100dvh-348px)] max-w-full overflow-y-auto rounded-md scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
+							<ul className="mx-4 mt-2 max-h-[calc(100dvh-348px)] max-w-full overflow-y-auto rounded-md scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-Senary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-primary">
 								{user?.memberships.map((membership) => (
 									<li key={membership.groupId} className="size-full pb-2">
 										<Link
@@ -259,7 +266,7 @@ export default function Header() {
 							onClick={sideBarClose}
 						>
 							<div className="flex w-full grow items-center gap-2 px-4 py-2">
-								<Image src="/icons/add.svg" alt="selectArrow" width={32} height={32} />
+								<Icon.Add width={32} height={32} secondary="var(--text-primary)" />
 								<p className="grow">팀 생성하기</p>
 							</div>
 
