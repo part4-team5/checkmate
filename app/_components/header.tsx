@@ -16,7 +16,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
 export default function Header() {
 	const router = useRouter();
@@ -29,6 +29,8 @@ export default function Header() {
 
 	const [isSidebarOpened, setIsSidebarOpened] = useState(false);
 	const [isTeamOpened, setIsTeamOpened] = useState(false);
+
+	const [isDarkMode, setIsDarkMode] = useState(typeof window !== "undefined" && localStorage.getItem("theme") === "dark");
 
 	const overlay = useOverlay();
 
@@ -44,6 +46,7 @@ export default function Header() {
 			text: membership.group.name,
 			image: membership.group.image ?? "/icons/emptyImage.svg",
 			onClick: () => router.push(`/${membership.groupId}`),
+			groupId: String(membership.groupId), // 그룹 ID 추가
 		})) ?? []),
 	];
 
@@ -117,8 +120,26 @@ export default function Header() {
 		[overlay, queryClient, router, setAccessToken, setRefreshToken, sideBarClose],
 	);
 
+	const toggleTheme = useCallback(() => {
+		const newTheme = isDarkMode ? "light" : "dark";
+		setIsDarkMode(!isDarkMode);
+		document.documentElement.classList.toggle("dark", !isDarkMode);
+		localStorage.setItem("theme", newTheme);
+	}, [isDarkMode]);
+
+	useLayoutEffect(() => {
+		const theme = localStorage.getItem("theme") || "light";
+		if (theme === "dark") {
+			document.documentElement.classList.add("dark");
+			setIsDarkMode(true);
+		} else {
+			document.documentElement.classList.remove("dark");
+			setIsDarkMode(false);
+		}
+	}, []);
+
 	return (
-		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary/10 bg-background-secondary text-text-primary">
+		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
 				<div className="z-50 block pl-4 tablet:hidden">
 					<button type="button" onClick={() => setIsSidebarOpened(!isSidebarOpened)} aria-label="Menu" className="flex size-full items-center justify-center">
@@ -146,25 +167,23 @@ export default function Header() {
 						<nav className="hidden tablet:flex">
 							<ul className="flex items-center gap-5">
 								{/* 팀 선택 드롭다운 */}
-								{teamDropdown.length > 0 && (
-									<li>
-										<DropDown options={teamDropdown} gapY={10} align="LL">
-											<button type="button" className="flex items-center gap-[10px] font-medium tablet:text-md desktop:text-lg">
-												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image && (
-													<Image
-														src={user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image ?? "/icons/emptyImage.svg"}
-														alt="team"
-														width={32}
-														height={32}
-														className="size-8 rounded-lg object-cover"
-													/>
-												)}
-												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
-												<Icon.ArrowDown width={16} height={16} />
-											</button>
-										</DropDown>
-									</li>
-								)}
+								<li>
+									<DropDown options={teamDropdown.length > 0 ? teamDropdown : []} gapY={10} align="LL">
+										<button type="button" className="flex items-center gap-[10px] font-medium tablet:text-md desktop:text-lg">
+											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image && (
+												<Image
+													src={user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image ?? "/icons/emptyImage.svg"}
+													alt="team"
+													width={32}
+													height={32}
+													className="size-8 rounded-lg object-cover"
+												/>
+											)}
+											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
+											<Icon.ArrowDown width={16} height={16} />
+										</button>
+									</DropDown>
+								</li>
 								<li>
 									<Link href="/boards" className="text-lg font-medium">
 										자유게시판
@@ -184,6 +203,11 @@ export default function Header() {
 						</DropDown>
 					</div>
 				)}
+
+				{/* 다크 모드 토글 버튼 */}
+				<button type="button" onClick={toggleTheme} className="ml-4 rounded-full bg-background-tertiary p-2 text-lg font-medium" aria-label="Toggle Dark Mode">
+					{isDarkMode ? <Icon.Kebab width={24} height={24} /> : <Icon.Kebab width={24} height={24} />}
+				</button>
 
 				<nav className={`flex size-full items-center justify-end ${accessToken ? "hidden" : "flex"}`}>
 					<Link href="/login" className="flex h-full items-center gap-2 px-4 text-lg font-medium" onClick={() => sideBarClose()}>

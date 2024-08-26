@@ -16,7 +16,7 @@ import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_compon
 import AddTaskModal from "@/app/(team)/[id]/todo/_components/AddTask";
 import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
 import { useDeleteTodoMutation, useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
-import { Reorder } from "framer-motion";
+import { Reorder, motion } from "framer-motion";
 import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
 
 type ClientTodoProps = {
@@ -128,36 +128,62 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						</div>
 					</div>
 				</Calendar>
-				<button onClick={handleAddTaskClick} type="button" className="text-brand-primary" aria-label="addtask">
+
+				<motion.button
+					onClick={handleAddTaskClick}
+					type="button"
+					className="text-brand-primary"
+					aria-label="addtask"
+					whileHover={{ scale: 1.07 }}
+					whileTap={{ scale: 0.95 }}
+					transition={{ type: "spring", stiffness: 300 }}
+				>
 					+새로운 목록 추가하기
-				</button>
+				</motion.button>
 			</div>
 
-			<div className="flex flex-wrap gap-3 text-lg font-medium">
+			<motion.div className="layout layoutRoot flex flex-wrap gap-3 text-lg font-medium">
 				{tasks &&
 					tasks.map((task) => (
-						<button
-							className={`${task.id === currentTaskId ? "text-text-primary underline underline-offset-4" : "text-text-default"}`}
-							type="button"
-							key={task.id}
-							// onMouseEnter={prefetchTasks}
-							onClick={() => updateSearchParams(task.id)}
-						>
-							{task.name}
-						</button>
+						<motion.div layout className="relative cursor-pointer rounded-md p-1" key={task.id} onClick={() => updateSearchParams(task.id)}>
+							<motion.span className={task.id === currentTaskId ? "text-text-primary" : "text-text-default"}>{task.name}</motion.span>
+							{task.id === currentTaskId && (
+								<motion.div
+									layoutId="underline"
+									className="absolute bottom-0 left-0 right-0 h-[2px] bg-text-primary" // 밑줄 두께를 줄임
+									initial={{ opacity: 0, translateY: 10 }}
+									animate={{ opacity: 1, translateY: 0 }}
+									exit={{ opacity: 0, translateY: 10 }}
+									transition={{
+										type: "spring",
+										stiffness: 500,
+										damping: 30,
+										duration: 0.3,
+									}}
+								/>
+							)}
+						</motion.div>
 					))}
-			</div>
+			</motion.div>
 
 			{isTodoItemsLoading && (
 				<div>
 					{Array.from({ length: 5 }).map((_, i) => (
 						/* eslint-disable react/no-array-index-key */
-						<div
+						<motion.div
 							key={i}
-							className="mt-4 flex h-[75px] w-full flex-col items-center justify-center gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 hover:bg-background-tertiary"
+							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3"
+							initial={{ opacity: 0.2 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0 }}
+							transition={{
+								duration: 0.2, // 빠르고 간결한 애니메이션 속도
+								ease: "easeInOut",
+							}}
 						>
-							<Image src="/icons/spinner.svg" alt="spinner" width={30} height={30} className="animate-spin" />
-						</div>
+							<div className="h-3 w-28 rounded-sm bg-background-tertiary" />
+							<div className="h-3 w-48 rounded-sm bg-background-tertiary" />
+						</motion.div>
 					))}
 				</div>
 			)}
@@ -165,7 +191,20 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			{todoItems && (
 				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="pb-56">
 					{todoItems.map((todoItem) => (
-						<Reorder.Item value={todoItem} key={todoItem.id} onDragEnd={() => handleDragEnd(todoItem)}>
+						<Reorder.Item
+							value={todoItem}
+							key={todoItem.id}
+							onDragEnd={() => handleDragEnd(todoItem)}
+							whileHover={{ scale: 1.015 }}
+							whileTap={{ boxShadow: "0px 0px 15px rgba(0,0,0,0.2)" }}
+							dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }}
+							dragConstraints={{
+								top: -150,
+								left: -150,
+								right: 150,
+								bottom: 150,
+							}}
+						>
 							<div className="mt-4 flex flex-col gap-4">
 								<TodoItem
 									key={todoItem.id}
@@ -184,7 +223,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			)}
 
 			{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
-				<div className="h-vh mt-60 flex items-center justify-center text-text-default">
+				<div className="h-vh flex items-center justify-center text-text-default">
 					<div className="text-center">
 						아직 할 일이 없습니다.
 						<br />

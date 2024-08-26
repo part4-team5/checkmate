@@ -70,9 +70,9 @@ export default function Oauth({ type = "signin" }: { type?: "signin" | "signup" 
 	return (
 		<div className="flex flex-col pt-6 text-lg text-text-primary">
 			<div className="flex items-center justify-center">
-				<div className="w-full border-b border-border-primary/50" />
+				<div className="border-border-primary/50 w-full border-b" />
 				<p className="px-5 font-normal">OR</p>
-				<div className="w-full border-b border-border-primary/50" />
+				<div className="border-border-primary/50 w-full border-b" />
 			</div>
 
 			<div className="pt-4" />

@@ -111,7 +111,7 @@ export default function Page() {
 								{(file) => (
 									<div className="relative flex size-16 cursor-pointer items-center justify-center">
 										<div
-											className={`relative size-full overflow-hidden rounded-full border-border-primary/10 bg-background-secondary ${file ? "border-2" : ""}`}
+											className={`border-border-primary/10 relative size-full overflow-hidden rounded-full bg-background-secondary ${file ? "border-2" : ""}`}
 										>
 											<Image src={file ? (file as string) : (user?.image ?? "/icons/defaultAvatar.svg")} alt="Profile Image" fill />
 										</div>
