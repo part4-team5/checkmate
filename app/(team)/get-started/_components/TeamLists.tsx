@@ -148,10 +148,10 @@ const renderLoadingSkeletons = (count: number, colClasses: string) => (
 		{Array.from({ length: count }).map((_, index) => (
 			// eslint-disable-next-line react/no-array-index-key
 			<li key={index} className="flex animate-pulse gap-3 rounded-md bg-background-tertiary px-4 py-3">
-				<div className="bg-background-quaternary min-h-8 min-w-8 rounded-lg" />
-				<p className="bg-background-quaternary w-full rounded-lg" />
+				<div className="min-h-8 min-w-8 rounded-lg bg-background-quaternary" />
+				<p className="w-full rounded-lg bg-background-quaternary" />
 				<div className="flex h-full w-fit items-end justify-end">
-					<div className="bg-background-quaternary h-1/2 w-20 rounded-md" />
+					<div className="h-1/2 w-20 rounded-md bg-background-quaternary" />
 				</div>
 			</li>
 		))}

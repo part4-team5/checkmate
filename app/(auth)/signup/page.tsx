@@ -8,7 +8,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
 import Oauth from "@/app/(auth)/_components/Oauth";
-import { useRouter } from "next/navigation";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 

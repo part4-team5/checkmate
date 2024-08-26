@@ -398,7 +398,7 @@ Icon.Loading = function Loading({ width = 24, height = 24, color = "#10B981" }: 
 	);
 };
 
-Icon.Enter = function B({ width = 24, height = 24, color = "#fff" }: IconProps) {
+Icon.Enter = function Enter({ width = 24, height = 24, color = "#fff" }: IconProps) {
 	return (
 		<svg viewBox="0 0 24 24" width={width} height={height} fill="none" xmlns="http://www.w3.org/2000/svg">
 			<g id="SVGRepo_bgCarrier" strokeWidth="0" />
