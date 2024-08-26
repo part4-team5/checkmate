@@ -1,7 +1,8 @@
 /* eslint-disable consistent-return */
 
-import { useLayoutEffect, useEffect, useState, useRef, cloneElement } from "react";
+import { useLayoutEffect, useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface PopoverProps extends React.PropsWithChildren {
 	gapX?: number;
@@ -63,7 +64,7 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 		}
 	}, [toggle, onOpen, onClose]);
 
-	const style: React.CSSProperties = { position: "absolute", display: toggle ? "block" : "none", top: 0, left: 0, zIndex: 1000 };
+	const style: React.CSSProperties = { position: "absolute", top: 0, left: 0, zIndex: 1000 };
 
 	// eslint-disable-next-line default-case
 	switch (anchorOrigin.vertical) {
@@ -80,7 +81,6 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 			break;
 		}
 	}
-
 	// eslint-disable-next-line default-case
 	switch (anchorOrigin.horizontal) {
 		case "left": {
@@ -111,12 +111,10 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 			break;
 		}
 	}
-
 	// eslint-disable-next-line default-case
 	switch (overlayOrigin.horizontal) {
 		case "left": {
 			style.left += gapX;
-
 			break;
 		}
 		case "center": {
@@ -139,10 +137,20 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 			>
 				{children}
 			</div>
-			{cloneElement(
-				overlay(() => setToggle(false)),
-				{ ref: over, style },
-			)}
+			<AnimatePresence>
+				{toggle && (
+					<motion.div
+						ref={over}
+						style={style}
+						initial={{ opacity: 0, scale: 0.95 }}
+						animate={{ opacity: 1, scale: 1 }}
+						exit={{ opacity: 0, scale: 0.95 }}
+						transition={{ duration: 0.2 }}
+					>
+						{overlay(() => setToggle(false))}
+					</motion.div>
+				)}
+			</AnimatePresence>
 		</div>
 	);
 }

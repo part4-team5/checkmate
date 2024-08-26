@@ -294,21 +294,24 @@ Icon.HeartFull = function Heart({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#10B981" }: IconProps) {
+Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#ff0000" }: IconProps) {
 	return (
 		<svg
-			xmlns="http://www.w3.org/2000/svg"
 			width={width}
 			height={height}
 			viewBox="0 0 24 24"
-			fill="none"
+			role="img"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-labelledby="removeIconTitle"
 			stroke={color}
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			fill="none"
+			color="#000000"
 		>
-			<line x1="18" y1="6" x2="6" y2="18" />
-			<line x1="6" y1="6" x2="18" y2="18" />
+			{" "}
+			<title id="removeIconTitle">Remove</title> <path d="M17,12 L7,12" /> <circle cx="12" cy="12" r="10" />{" "}
 		</svg>
 	);
 };
