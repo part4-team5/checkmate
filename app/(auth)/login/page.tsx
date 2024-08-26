@@ -22,6 +22,10 @@ export default function LoginPage() {
 
 	const setUser = useAuthStore((state) => state.setUser);
 
+	const userUploadMutation = useMutation({
+		mutationFn: async ({ id, email }: { id: number; email: string }) => API["api/users"].POST({}, { id, email }),
+	});
+
 	const loginMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
 			const { email, password } = ctx.values as {
@@ -36,10 +40,13 @@ export default function LoginPage() {
 
 			setUser({
 				id: response.user.id,
-				email: response.user.email || "",
+				email: response.user.email as string,
 				nickname: response.user.nickname,
 				image: response.user.image ? response.user.image : null,
 			});
+
+			// 몽고 DB에 유저 정보 저장
+			userUploadMutation.mutate({ id: response.user.id, email: response.user.email as string });
 
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);

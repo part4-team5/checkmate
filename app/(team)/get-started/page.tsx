@@ -1,27 +1,19 @@
+"use client";
+
+import InvitedList from "@/app/(team)/get-started/_components/InvitedList";
 import TeamList from "@/app/(team)/get-started/_components/TeamLists";
-import Button from "@/app/_components/Button";
+import useBreakPoint from "@/app/_hooks/useBreakPoint";
 
 export default function GetStartedPage() {
-	return (
-		<main className="size-full min-w-[320px] pt-20">
-			<section className="flex h-full flex-col items-center justify-center px-[30px]">
-				{/* 팀 있으면 목록 보여주기 ? */}
-				<TeamList />
+	const { isMobile, isTablet } = useBreakPoint();
 
-				<div className="mt-12 flex w-full max-w-screen-tablet items-center justify-center gap-4 tablet:mt-20">
-					<div className="h-[48px] flex-grow">
-						<Button href="/create-team">팀 생성하기</Button>
-					</div>
-					<div className="h-[48px] flex-grow">
-						<Button variant="outline" href="/join-team">
-							팀 참여하기
-						</Button>
-					</div>
-				</div>
-			</section>
+	return (
+		<main className="flex w-full justify-center pb-5 pt-10">
+			<article className="flex size-full flex-col gap-8 desktop:max-w-screen-desktop">
+				<TeamList isMobile={isMobile} isTablet={isTablet} />
+
+				<InvitedList isMobile={isMobile} isTablet={isTablet} />
+			</article>
 		</main>
 	);
 }
-
-/** @type {import("next").Metadata} */
-export const metadata = { title: "시작하기" };

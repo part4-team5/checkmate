@@ -16,20 +16,13 @@ import toast from "@/app/_utils/Toast";
 import { ReportProps } from "./Report";
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
-type Token = string;
 
 function Members({ id }: ReportProps) {
 	const overlay = useOverlay();
 
 	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id }), [id]);
 
-	const getInvitationLink = useCallback((): Promise<Token> => API["{teamId}/groups/{id}/invitation"].GET({ id }), [id]);
-
-	const { refetch } = useQuery<Token>({
-		queryKey: ["invitationLink", id],
-		queryFn: getInvitationLink,
-		enabled: false,
-	});
+	const getInvitationToken = useCallback((): Promise<string> => API["{teamId}/groups/{id}/invitation"].GET({ id }), [id]);
 
 	const { data, isLoading, error } = useQuery<Team>({
 		queryKey: ["groupInfo", { groupId: id }],
@@ -53,23 +46,22 @@ function Members({ id }: ReportProps) {
 	);
 
 	const handleLinkCopy = async () => {
-		const { data: invitationToken } = await refetch();
+		const invitationToken = await getInvitationToken();
 
 		if (invitationToken) {
-			const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL ?? "";
-			const params = new URLSearchParams({
-				groupId: String(id),
-				token: invitationToken,
-			});
-			const invitationUrl = `${redirectUrl}/join-team?${params.toString()}`;
-			await navigator.clipboard.writeText(invitationUrl);
+			const invitationUrl = await API["api/invite/link"].POST(
+				{},
+				{ groupId: id, groupName: data?.name as string, groupImage: data?.image, token: invitationToken },
+			);
 
-			toast.success("링크가 복사되었습니다!");
+			await navigator.clipboard.writeText(invitationUrl.shortURL);
+
+			toast.success("초대 링크가 복사되었습니다!");
 		}
 	};
 
 	const handleInviteClick = () => {
-		overlay.open(({ close }) => <MemberInvite onClick={handleLinkCopy} close={close} />);
+		overlay.open(({ close }) => <MemberInvite onCopy={handleLinkCopy} close={close} groupId={id} />);
 	};
 
 	if (isLoading) return <div>Loading...</div>;
