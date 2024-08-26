@@ -52,7 +52,6 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 	};
 
 	const handleMouseUp = () => {
-		console.log("mouseup");
 		if (timerId) {
 			clearTimeout(timerId);
 			setTimerId(null);

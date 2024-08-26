@@ -41,7 +41,6 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 			</label>
 
 			<hr className="border-icon-primary" />
-
 			<div className="flex">
 				<input
 					onChange={handleCommentChange}
@@ -55,7 +54,7 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 				{addCommentMutation.isPending && <Image src="/icons/loading.svg" alt="spinner" width={24} height={24} className="animate-spin" />}
 				{!addCommentMutation.isPending && (
 					<button type="submit">
-						{commentText.length > 0 ? (
+						{commentText.trim().length > 0 ? (
 							<Image src={addComment} alt="add-comment" width={24} height={24} />
 						) : (
 							<Image src={disabledAddComment} alt="add-comment" width={24} height={24} />
@@ -63,7 +62,6 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 					</button>
 				)}
 			</div>
-
 			<hr className="border-icon-primary" />
 		</form>
 	);

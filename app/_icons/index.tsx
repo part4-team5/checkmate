@@ -304,9 +304,9 @@ Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#ff000
 			xmlns="http://www.w3.org/2000/svg"
 			aria-labelledby="removeIconTitle"
 			stroke={color}
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
 			fill="none"
 			color="#000000"
 		>

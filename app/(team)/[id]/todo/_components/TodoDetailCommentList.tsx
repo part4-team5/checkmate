@@ -55,7 +55,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 
 	const handleTodoCommentEditSubmit = (e: React.FormEvent<HTMLFormElement>, commentId: number) => {
 		e.preventDefault();
-		if (editedComment.length === 0) return;
+		if (editedComment.trim().length === 0) return;
 		patchTodoCommentEditMutation.mutate({ commentId, content: editedComment });
 	};
 
@@ -78,8 +78,10 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 								}}
 							/>
 						) : (
-							<div className="flex w-full justify-between">
-								<div className="whitespace-pre-line text-md font-normal">{comment.content}</div>
+							<div className="flex w-full items-center justify-between">
+								<div style={{ maxWidth: "calc(100% - 24px)" }} className="whitespace-pre-line break-words text-md font-normal">
+									{comment.content}
+								</div>
 								{comment.user?.id === user.id && (
 									<DropDown options={options}>
 										<button type="button" aria-label="dropdown">
