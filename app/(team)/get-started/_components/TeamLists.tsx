@@ -70,12 +70,12 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 
 				<div className="pt-5" />
 
-				<div className="shadow-teamInvitation flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
+				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-background-secondary">
 					<ul className="grid w-full grid-rows-4 gap-4 tablet:grid-cols-2 tablet:grid-rows-3 desktop:grid-cols-3">
 						{paginatedTeams.map((team) => (
 							<li
 								key={team.groupId}
-								className="shadow-teamCard flex gap-3 overflow-x-hidden rounded-md bg-background-tertiary hover:bg-interaction-inactive/30"
+								className="flex gap-3 overflow-x-hidden rounded-md bg-background-tertiary shadow-teamCard hover:bg-interaction-inactive/30"
 							>
 								<Link href={`/${team.groupId}`} className="flex grow items-center gap-3 overflow-x-hidden text-ellipsis whitespace-nowrap px-4 py-3">
 									<Image
@@ -148,10 +148,10 @@ const renderLoadingSkeletons = (count: number, colClasses: string) => (
 		{Array.from({ length: count }).map((_, index) => (
 			// eslint-disable-next-line react/no-array-index-key
 			<li key={index} className="flex animate-pulse gap-3 rounded-md bg-background-tertiary px-4 py-3">
-				<div className="bg-background-quaternary min-h-8 min-w-8 rounded-lg" />
-				<p className="bg-background-quaternary w-full rounded-lg" />
+				<div className="min-h-8 min-w-8 rounded-lg bg-background-quaternary" />
+				<p className="w-full rounded-lg bg-background-quaternary" />
 				<div className="flex h-full w-fit items-end justify-end">
-					<div className="bg-background-quaternary h-1/2 w-20 rounded-md" />
+					<div className="h-1/2 w-20 rounded-md bg-background-quaternary" />
 				</div>
 			</li>
 		))}

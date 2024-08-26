@@ -19,7 +19,7 @@ export default function DarkModeToggle() {
 	};
 
 	return (
-		<button type="button" onClick={toggleDarkMode} aria-label="DarkMode" className="ml-4 rounded-full bg-background-tertiary p-2 text-lg font-medium">
+		<button type="button" onClick={toggleDarkMode} aria-label="DarkMode" className="ml-2 rounded-full bg-background-tertiary p-2 text-lg font-medium">
 			{!darkMode ? <Icon.Light width={24} height={24} /> : <Icon.Dark width={24} height={24} />}
 		</button>
 	);

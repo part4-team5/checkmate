@@ -148,7 +148,7 @@ export default function Header() {
 					</div>
 				</Link>
 
-				<div className="pr-4 tablet:pr-10" />
+				<div className="pr-4 desktop:pr-10" />
 
 				{!!accessToken && (
 					<div className="z-50 flex w-full items-center justify-end tablet:justify-between">
