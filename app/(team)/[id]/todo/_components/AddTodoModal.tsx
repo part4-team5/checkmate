@@ -138,7 +138,7 @@ export default function Modal({ close }: { close: () => void }) {
 									setIsCalendarOpened(false);
 								}}
 							>
-								<div className="flex size-full items-center justify-center rounded-xl border border-border-primary shadow-lg">
+								<div className="shadow-lg flex size-full items-center justify-center rounded-xl border border-border-primary">
 									<Calendar.Picker />
 								</div>
 							</Calendar>

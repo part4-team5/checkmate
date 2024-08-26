@@ -26,7 +26,7 @@ type ClientTodoProps = {
 
 function CalendarPopoverContent() {
 	return (
-		<div className="rounded shadow-lg">
+		<div className="shadow-lg rounded">
 			<Calendar.Picker />
 		</div>
 	);
@@ -57,11 +57,11 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	}, [searchParams]);
 
 	const updateSearchParams = (value: number) => {
+		if (value === currentTaskId) return;
 		setCurrentTaskId(value);
 		window.history.pushState(null, "", `${pathname}?taskId=${value}`);
 	};
 
-	console.log("실행");
 	const handleCurrentDate = (date: Date) => {
 		setCurrentDate(() => date);
 	};

@@ -60,6 +60,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 	};
 
 	const timeDifference = calculateTimeDifference(comment.createdAt, currentTime);
+
 	return (
 		<div>
 			{comment && (
@@ -98,7 +99,13 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 							<div className="flex items-center justify-between">
 								{comment.user && (
 									<div className="flex items-center gap-3">
-										{comment.user.image ? "" : <Image src={defaultImage} alt={comment.user.nickname} width={32} height={32} />}
+										{comment.user.image ? (
+											<div className="relative h-8 w-8 overflow-hidden rounded-full">
+												<Image src={comment.user.image} alt={comment.user.nickname} layout="fill" objectFit="cover" />
+											</div>
+										) : (
+											<Image src={defaultImage} alt={comment.user.nickname} width={32} height={32} />
+										)}
 										<div>{comment.user.nickname}</div>
 									</div>
 								)}
