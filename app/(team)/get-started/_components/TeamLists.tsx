@@ -85,8 +85,15 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 										height={32}
 										className="size-8 min-h-8 min-w-8 rounded-lg object-cover"
 									/>
-									<p className="w-full overflow-x-hidden text-ellipsis whitespace-nowrap text-lg font-medium text-text-primary">{team.group.name}</p>
+									<div className="flex grow items-center gap-1 overflow-x-hidden text-ellipsis whitespace-nowrap">
+										<p className="w-fit overflow-x-hidden text-ellipsis whitespace-nowrap text-lg font-medium text-text-primary">{team.group.name}</p>
 
+										{team.role === "ADMIN" && (
+											<div className="min-h-3 min-w-3">
+												<Icon.Crown width={12} height={12} color="#FFC107" />
+											</div>
+										)}
+									</div>
 									<div className="flex h-full w-fit items-end justify-end">
 										<p className="text-sm text-text-default">{team.group.createdAt.toString().split("T")[0]}</p>
 									</div>
@@ -118,8 +125,7 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 
 			<div className="pt-5" />
 
-			<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-primary">
-				<Image src="/images/teamEmpty.webp" alt="empty" width={700} height={220} />
+			<div className="shadow-primary flex h-dvh max-h-[292px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
 				<p className="text-center text-text-primary">아직 참여 중인 팀이 없습니다.</p>
 			</div>
 		</section>

@@ -152,6 +152,12 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 					</div>
 				</div>
 			)}
+
+			{invites.data && invites.data.length === 0 && (
+				<div className="shadow-primary flex h-dvh max-h-[236px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
+					<p className="text-center text-text-primary">초대받은 팀이 없습니다.</p>
+				</div>
+			)}
 		</section>
 	);
 }
