@@ -5,6 +5,58 @@
 @tailwind components;
 
 :root {
+	--landing-primary: #f3f3f3;
+	--landing-secondary: #eeeeee;
+	--landing-tertiary: #ffffff;
+	--landing-quanternary: #4a4b4d;
+	--landing-quinary: #ffffff;
+	--landing-Senary: #d9d9d9;
+	--landing-Septenary: #fafafb;
+	--landing-border: #9b9b9b;
+	--landing-inverse: #3f3f3f;
+	--background-primary: #f0f0f3;
+	--background-secondary: #f9f9fc;
+	--background-tertiary: #fafafd;
+	--background-quanternary: #ffffff;
+	--background-Senary: #d9d9d9;
+	--background-list: #ffffff;
+	--background-hover: #f0f0f0;
+	--board-primary: #f9f9fc;
+	--board-secondary: #f9f9fc;
+	--board-tertiary: #ffffff;
+	--board-quanternary: #ffffff;
+	--text-primary: #303336;
+	--text-secondary: #828282;
+	--border-primary: #f0f0f0;
+
+	font-family: Pretendard;
+}
+
+.dark {
+	--landing-primary: #141414;
+	--landing-secondary: #1e1f22;
+	--landing-tertiary: #252629;
+	--landing-quanternary: #151515;
+	--landing-quinary: #2b2d31;
+	--landing-Senary: #383a40;
+	--landing-Septenary: #bfbfbf;
+	--landing-line: #235749;
+	--landing-inverse: #ffffff;
+	--background-primary: #1e1f22;
+	--background-secondary: #26272a;
+	--background-tertiary: #2b2d31;
+	--background-quanternary: #303236;
+	--background-Senary: #383a40;
+	--background-list: #383a40;
+	--background-hover: #414347;
+	--board-primary: #26272a;
+	--board-secondary: #303236;
+	--board-tertiary: #26272a;
+	--board-quanternary: #303236;
+	--text-primary: #f3f3f3;
+	--text-secondary: #adadad;
+	--border-primary: #3d3e40;
+
 	font-family: Pretendard;
 }
 

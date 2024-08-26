@@ -110,6 +110,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 														className={`rounded-[12px] object-cover object-center ${isEmptyImage ? "object-contain" : ""}`}
 													/>
 													<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155]">
+
 														<Icon.Edit width={11} height={11} color="#64748B" />
 													</div>
 													{!isEmptyImage && !file && (
