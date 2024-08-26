@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 
-"use client";
+("use client");
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { Reorder } from "framer-motion";
 import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
 import Icon from "@/app/_icons";
@@ -17,14 +17,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "@/app/_utils/Toast";
 import { useGroupInfo, useDeleteTaskList, useReorderTaskLists, TaskListType } from "./useTaskList";
 
-function getColorClass(index: number) {
-	const colors = ["bg-[#A855F7]", "bg-[#3B82F6]", "bg-[#06B6D4]", "bg-[#EC4899]"];
-	return colors[index % colors.length];
-}
-
 function TaskItem({
 	taskList,
-	index,
+	index, // eslint-disable-line @typescript-eslint/no-unused-vars
 	groupId,
 	onEditTask,
 	onDrag,
@@ -105,24 +100,23 @@ function TaskItem({
 	];
 
 	return (
-		<section
-			className="flex w-full cursor-pointer rounded-[12px] bg-background-secondary"
+		<div
+			className="bg-background-Quinary flex h-[40px] w-full cursor-pointer rounded-[12px] text-text-primary shadow-teamTaskList"
 			onMouseDown={handleMouseDown}
 			onMouseUp={handleMouseUp}
 			onContextMenu={(e) => e.preventDefault()} // 우클릭 시 기본 메뉴 차단
 			onDrag={onDrag} // onDrag 이벤트 핸들러 추가
 		>
-			<div className={`${getColorClass(index)} w-2 flex-shrink-0 rounded-l-lg`} />
-			<div className="flex h-[40px] w-full items-center justify-between">
-				<div className="max-w-[500px] truncate pl-2 text-white">{taskList.name}</div>
+			<div className="flex h-[40px] w-full flex-1 items-center justify-between">
+				<div className="truncate pl-4 font-semibold text-text-primary">{taskList.name}</div>
 				<div className="flex w-[78px] items-center justify-center gap-[4px]" onClick={(e) => e.stopPropagation()}>
-					<div className="flex h-[25px] w-[58px] items-center justify-center gap-[4px] rounded-[12px] bg-[#0F172A]">
+					<div className="flex h-[25px] w-[58px] items-center justify-center gap-[4px] rounded-[12px] bg-[#10B981]">
 						{completedTasks === totalTasks && totalTasks !== 0 ? (
 							<Image src="/icons/DoneCheckIcon.svg" alt="Completed" height={16} width={16} />
 						) : (
 							<CircularProgressBar percent={completionRate} size={10} strokeWidth={2} backgroundColor="#FFFFFF" useGradient={false} strokeColor="#10B981" />
 						)}
-						<p className="text-[12px] text-[#10B981]">
+						<p className="text-[12px] text-text-primary">
 							{completedTasks}/{totalTasks}
 						</p>
 					</div>
@@ -133,13 +127,12 @@ function TaskItem({
 					</div>
 				</div>
 			</div>
-		</section>
+		</div>
 	);
 }
 
 export default function Tasks({ id }: { id: number }) {
 	const overlay = useOverlay();
-	const [isListExpanded, setIsListExpanded] = useState(false);
 
 	const queryClient = useQueryClient();
 	const { data, isLoading } = useGroupInfo(id);
@@ -162,10 +155,6 @@ export default function Tasks({ id }: { id: number }) {
 				break;
 			}
 		}
-	};
-
-	const handleToggleHeight = () => {
-		setIsListExpanded((prevState) => !prevState);
 	};
 
 	const handlePostTasksClick = (taskId: number | null = null) => {
@@ -204,30 +193,27 @@ export default function Tasks({ id }: { id: number }) {
 
 	return (
 		<main>
-			<section className="mt-[24px] flex justify-between">
+			<section className="mt-[24px] flex max-h-[425px] w-full justify-between text-text-primary tablet:w-full">
 				<div className="flex justify-between gap-[8px]">
-					<p className="text-[16px] font-medium">할 일 목록</p>
-					<p className="text-[16px] text-[#64748B]">({data?.taskLists?.length ?? 0}개)</p>
+					<p className="text-[16px] font-semibold">할 일 목록</p>
+					<p className="text-[16px]">({data?.taskLists?.length ?? 0}개)</p>
 				</div>
-				<button onClick={() => handlePostTasksClick()} type="button" aria-label="Add Task List" className="text-[14px] font-normal text-brand-primary">
+				<button onClick={() => handlePostTasksClick()} type="button" aria-label="Add Task List" className="text-[14px] font-semibold text-brand-primary">
 					+ 할 일 목록 추가
 				</button>
 			</section>
-			<section className="mt-[16px]">
+			<section className="mt-[16px] min-h-[427px] rounded-[12px] bg-background-tertiary p-[30px] shadow-teamCard tablet:w-full">
 				{data?.taskLists?.length === 0 ? (
-					<div className="flex justify-center py-[64px] text-[#64748B]">
+					<div className="flex justify-center py-[64px] text-text-primary">
 						<p>아직 할 일 목록이 없습니다.</p>
 					</div>
 				) : (
 					<Reorder.Group
 						axis="y"
-						className="scroll-container flex min-h-[208px] flex-col gap-[16px] overflow-y-auto scrollbar-hide"
-						style={{
-							maxHeight: isListExpanded ? "none" : "208px",
-							transition: "max-height 0.3s ease",
-						}}
+						className="scroll-container flex h-[363px] flex-col gap-[16px] overflow-y-auto p-[15px] text-text-primary scrollbar-hide"
 						values={data?.taskLists ?? []}
 						onReorder={handleReorder}
+						onDrag={handleDrag} // onDrag 이벤트 핸들러 추가
 					>
 						{data?.taskLists.map((taskList, index) => (
 							<Reorder.Item
@@ -252,18 +238,6 @@ export default function Tasks({ id }: { id: number }) {
 					</Reorder.Group>
 				)}
 			</section>
-			{(data?.taskLists?.length ?? 0) > 4 && (
-				<button
-					type="button"
-					onClick={handleToggleHeight}
-					aria-label={isListExpanded ? "Collapse" : "Expand"}
-					className={`mx-auto mt-[10px] flex w-[70px] transform items-center justify-center rounded-[4px] bg-background-secondary transition-transform duration-300 ${
-						isListExpanded ? "rotate-180" : "rotate-0"
-					}`}
-				>
-					<Icon.ArrowDown width={20} height={20} />
-				</button>
-			)}
 		</main>
 	);
 }
