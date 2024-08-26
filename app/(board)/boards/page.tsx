@@ -133,7 +133,7 @@ export default function Page() {
 				</div>
 				<hr className="my-[40px] border-border-primary" />
 				<div className="flex flex-col gap-[24px] text-2lg font-bold text-text-primary">
-					<div className="flex items-center justify-between">
+					<div className="flex items-center justify-between text-md font-normal">
 						게시글
 						<DropDown
 							gapY={6}
