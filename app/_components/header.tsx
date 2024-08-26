@@ -4,6 +4,7 @@
 "use client";
 
 import API from "@/app/_api";
+import DarkModeToggle from "@/app/_components/DarkModeTogle";
 import DropDown from "@/app/_components/Dropdown";
 import Logout from "@/app/_components/modal-contents/Logout";
 import useCookie from "@/app/_hooks/useCookie";
@@ -11,11 +12,12 @@ import useOverlay from "@/app/_hooks/useOverlay";
 import Icon from "@/app/_icons";
 import useAuthStore from "@/app/_store/useAuthStore";
 import { debounce } from "@/app/_utils/DelayManager";
-import { useQuery } from "@tanstack/react-query";
+import toast from "@/app/_utils/Toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function Header() {
 	const router = useRouter();
@@ -24,10 +26,10 @@ export default function Header() {
 	const [accessToken, setAccessToken] = useCookie("accessToken");
 	const [, setRefreshToken] = useCookie("refreshToken");
 
+	const queryClient = useQueryClient();
+
 	const [isSidebarOpened, setIsSidebarOpened] = useState(false);
 	const [isTeamOpened, setIsTeamOpened] = useState(false);
-
-	const [isDarkMode, setIsDarkMode] = useState(typeof window !== "undefined" && localStorage.getItem("theme") === "dark");
 
 	const overlay = useOverlay();
 
@@ -59,7 +61,7 @@ export default function Header() {
 			if (window.innerWidth > 744) {
 				sideBarClose();
 			}
-		}, 300);
+		}, 600);
 		window.addEventListener("resize", handleResize);
 
 		// eslint-disable-next-line consistent-return
@@ -95,12 +97,18 @@ export default function Header() {
 					overlay.open(({ close }) => (
 						<Logout
 							onClick={() => {
+								toast.success("로그아웃 되었습니다.");
+
 								setRefreshToken(null);
 								setAccessToken(null);
-								sideBarClose();
 								useAuthStore.persist.clearStorage();
-								router.push("/");
+
+								queryClient.clear();
+
+								sideBarClose();
 								close();
+
+								router.push("/");
 							}}
 							close={close}
 						/>
@@ -108,26 +116,8 @@ export default function Header() {
 				},
 			},
 		],
-		[overlay, router, setAccessToken, setRefreshToken, sideBarClose],
+		[overlay, queryClient, router, setAccessToken, setRefreshToken, sideBarClose],
 	);
-
-	const toggleTheme = useCallback(() => {
-		const newTheme = isDarkMode ? "light" : "dark";
-		setIsDarkMode(!isDarkMode);
-		document.documentElement.classList.toggle("dark", !isDarkMode);
-		localStorage.setItem("theme", newTheme);
-	}, [isDarkMode]);
-
-	useLayoutEffect(() => {
-		const theme = localStorage.getItem("theme") || "light";
-		if (theme === "dark") {
-			document.documentElement.classList.add("dark");
-			setIsDarkMode(true);
-		} else {
-			document.documentElement.classList.remove("dark");
-			setIsDarkMode(false);
-		}
-	}, []);
 
 	return (
 		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary bg-background-secondary text-text-primary">
@@ -156,11 +146,20 @@ export default function Header() {
 				{!!accessToken && (
 					<div className="z-50 flex w-full items-center justify-end tablet:justify-between">
 						<nav className="hidden tablet:flex">
-							<ul className="flex items-center gap-10">
+							<ul className="flex items-center gap-5">
 								{/* 팀 선택 드롭다운 */}
 								<li>
 									<DropDown options={teamDropdown.length > 0 ? teamDropdown : []} gapY={10} align="LL">
-										<button type="button" className="flex items-center gap-[10px] text-lg font-medium">
+										<button type="button" className="flex items-center gap-[10px] font-medium tablet:text-md desktop:text-lg">
+											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image && (
+												<Image
+													src={user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image ?? "/icons/emptyImage.svg"}
+													alt="team"
+													width={32}
+													height={32}
+													className="size-8 rounded-lg object-cover"
+												/>
+											)}
 											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
 											<Icon.ArrowDown width={16} height={16} />
 										</button>
@@ -187,9 +186,7 @@ export default function Header() {
 				)}
 
 				{/* 다크 모드 토글 버튼 */}
-				<button type="button" onClick={toggleTheme} className="ml-4 rounded-full bg-background-tertiary p-2 text-lg font-medium" aria-label="Toggle Dark Mode">
-					{isDarkMode ? <Icon.Kebab width={24} height={24} /> : <Icon.Kebab width={24} height={24} />}
-				</button>
+				<DarkModeToggle />
 
 				<nav className={`flex size-full items-center justify-end ${accessToken ? "hidden" : "flex"}`}>
 					<Link href="/login" className="flex h-full items-center gap-2 px-4 text-lg font-medium" onClick={() => sideBarClose()}>
@@ -205,24 +202,42 @@ export default function Header() {
 					onClick={() => sideBarClose()}
 				>
 					<div className="z-40 h-full bg-background-secondary px-4 py-5 pr-5" onClick={(event) => event.stopPropagation()}>
+						<Link
+							href="/boards"
+							className="flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary"
+							onClick={sideBarClose}
+						>
+							<div className="flex w-full grow items-center gap-2 px-4 py-2">
+								<Icon.Star width={32} height={32} />
+								<p className="grow">내 대시보드</p>
+							</div>
+
+							<div className="w-[95%] border-b border-[#353535]" />
+						</Link>
+
+						<div className="h-2" />
+
 						<button
 							type="button"
 							onClick={() => setIsTeamOpened(!isTeamOpened)}
-							className={`w-full items-center gap-2 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
+							className={`w-full flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 						>
-							<Image src="/icons/list.svg" alt="selectArrow" width={32} height={32} />
-							<p className="grow text-left">팀 목록</p>
-							<div className={`flex size-7 items-center duration-300 ${isTeamOpened ? "rotate-90" : ""}`}>
-								<Icon.ArrowRight width={28} height={28} color="#fff" />
+							<div className="flex w-full grow items-center gap-2 px-4 py-2">
+								<Image src="/icons/list.svg" alt="selectArrow" width={32} height={32} />
+								<p className="grow text-left">팀 목록</p>
+								<div className={`size-7 items-center duration-300 ${isTeamOpened ? "rotate-90" : ""}`}>
+									<Icon.ArrowRight width={28} height={28} color="#fff" />
+								</div>
 							</div>
+
+							<div className="w-[95%] border-b border-[#353535]" />
 						</button>
 
 						{/* 팀 목록 */}
-						{/* max-h-[calc(100dvh-200px)]으로 위에 크기만큼 빼서 스크롤 넣어줌 */}
-						<div className={`overflow-hidden duration-500 ease-in-out ${isTeamOpened ? "max-h-[calc(100dvh-270px)]" : "max-h-0"} `}>
-							<ul className="max-h-[calc(100dvh-270px)] max-w-full overflow-y-auto rounded-md scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
+						<div className={`overflow-hidden duration-500 ease-in-out ${isTeamOpened ? "max-h-[calc(100dvh-340px)]" : "max-h-0"} `}>
+							<ul className="mx-4 mt-2 max-h-[calc(100dvh-348px)] max-w-full overflow-y-auto rounded-md scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-primary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-tertiary">
 								{user?.memberships.map((membership) => (
-									<li key={membership.groupId} className="size-full pl-8">
+									<li key={membership.groupId} className="size-full pb-2">
 										<Link
 											href={`/${membership.groupId}`}
 											className="mr-2 flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-lg font-medium hover:bg-background-tertiary"
@@ -230,10 +245,6 @@ export default function Header() {
 										>
 											<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={32} height={32} className="size-8" />
 											<p className="w-fit grow overflow-x-hidden text-ellipsis">{membership.group.name}</p>
-
-											<div className="flex size-7 items-center">
-												<Icon.ArrowRight width={28} height={28} color="#fff" />
-											</div>
 										</Link>
 									</li>
 								))}
@@ -244,14 +255,15 @@ export default function Header() {
 
 						<Link
 							href="/create-team"
-							className={`items-center gap-2 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
+							className={`flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 							onClick={sideBarClose}
 						>
-							<Image src="/icons/add.svg" alt="selectArrow" width={32} height={32} />
-							<p className="grow">팀 생성하기</p>
-							<div className="flex size-7 items-center">
-								<Icon.ArrowRight width={28} height={28} color="#fff" />
+							<div className="flex w-full grow items-center gap-2 px-4 py-2">
+								<Image src="/icons/add.svg" alt="selectArrow" width={32} height={32} />
+								<p className="grow">팀 생성하기</p>
 							</div>
+
+							<div className="w-[95%] border-b border-[#353535]" />
 						</Link>
 
 						<div className="h-2" />
@@ -259,14 +271,15 @@ export default function Header() {
 						<div className="flex flex-col pb-2">
 							<Link
 								href="/boards"
-								className="flex items-center gap-2 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary"
+								className="flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary"
 								onClick={sideBarClose}
 							>
-								<Image src="/icons/box.svg" alt="selectArrow" width={32} height={32} />
-								<p className="grow">자유게시판</p>
-								<div className="flex size-7 items-center">
-									<Icon.ArrowRight width={28} height={28} color="#fff" />
+								<div className="flex w-full grow items-center gap-2 px-4 py-2">
+									<Image src="/icons/box.svg" alt="selectArrow" width={32} height={32} />
+									<p className="grow">자유게시판</p>
 								</div>
+
+								<div className="w-[95%] border-b border-[#353535]" />
 							</Link>
 						</div>
 					</div>

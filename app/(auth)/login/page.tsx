@@ -32,6 +32,8 @@ export default function LoginPage() {
 			return API["{teamId}/auth/signIn"].POST({}, payload);
 		},
 		onSuccess: (response) => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			setUser({
 				id: response.user.id,
 				email: response.user.email || "",
@@ -41,8 +43,6 @@ export default function LoginPage() {
 
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);
-
-			queryClient.invalidateQueries({ queryKey: ["user"] });
 
 			router.replace("/");
 		},

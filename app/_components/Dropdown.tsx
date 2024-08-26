@@ -64,10 +64,6 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 					const prevIndex = (currentIndex - 1 + menuRefs.current.length) % menuRefs.current.length;
 					menuRefs.current[prevIndex]?.focus();
 				}
-			} else if (event.key === "Enter") {
-				// Enter 키를 눌렀을 때 현재 항목을 선택
-				event.preventDefault();
-				(document.activeElement as HTMLElement)?.click();
 			} else if (event.key === "Escape") {
 				// Escape 키로 메뉴 닫기
 				event.preventDefault();

@@ -3,6 +3,7 @@
 import API from "@/app/_api";
 import useCookie from "@/app/_hooks/useCookie";
 import useAuthStore from "@/app/_store/useAuthStore";
+import toast from "@/app/_utils/Toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -29,6 +30,10 @@ export default function KakaoLogin() {
 			return API["{teamId}/auth/signIn/{provider}"].POST({ provider: "KAKAO" }, payload);
 		},
 		onSuccess: (data) => {
+			toast.success("로그인에 성공했습니다.");
+
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			// 전역 상태에 유저 정보 저장
 			setUser({
 				id: data.user.id,
@@ -41,12 +46,10 @@ export default function KakaoLogin() {
 			setAccessToken(data.accessToken);
 			setRefreshToken(data.refreshToken);
 
-			queryClient.invalidateQueries({ queryKey: ["user"] });
-
 			router.replace("/");
 		},
-		onError: (error) => {
-			console.log(error);
+		onError: () => {
+			toast.error("로그인 도중 문제가 발생했습니다.");
 		},
 	});
 

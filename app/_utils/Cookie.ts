@@ -33,7 +33,6 @@ export default class Cookie {
 	public static set(key: string, value: unknown) {
 		// :3
 		const data = encodeURIComponent(serialize(value));
-
 		switch (typeof window) {
 			//
 			// server side
