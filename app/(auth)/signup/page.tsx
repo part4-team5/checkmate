@@ -8,6 +8,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
 import Oauth from "@/app/(auth)/_components/Oauth";
+import toast from "@/app/_utils/Toast";
+import Image from "next/image";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -41,7 +43,7 @@ export default function SignupPage() {
 			router.replace("/login");
 		},
 		onError: (error) => {
-			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -56,7 +58,9 @@ export default function SignupPage() {
 
 	return (
 		<>
-			<h2 className="mb-[80px] text-center text-[40px] font-medium leading-[48px] text-text-primary">회원가입</h2>
+			<h2 className="relative m-[0_auto_40px] h-[150px] w-[256px]">
+				<Image src="/icons/bigLogo.svg" alt="회원가입" fill />
+			</h2>
 			<Form onSubmit={handleSubmit}>
 				<div className="flex flex-col gap-[12px]">
 					<label htmlFor="nickname" className="text-text-primary">

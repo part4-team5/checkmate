@@ -1127,7 +1127,7 @@ const enum Frequency {
 }
 
 interface UpdateUserBody {
-	nickname: string;
+	nickname?: string;
 	image: string;
 }
 

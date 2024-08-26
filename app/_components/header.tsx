@@ -129,7 +129,7 @@ export default function Header() {
 	}, []);
 
 	return (
-		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border border-border-primary bg-background-secondary text-text-primary">
+		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border-b border-border-primary bg-background-secondary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
 				<div className="z-50 block pl-4 tablet:hidden">
 					<button type="button" onClick={() => setIsSidebarOpened(!isSidebarOpened)} aria-label="Menu" className="flex size-full items-center justify-center">
@@ -209,12 +209,12 @@ export default function Header() {
 						<button
 							type="button"
 							onClick={() => setIsTeamOpened(!isTeamOpened)}
-							className={`w-full items-center gap-2 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
+							className={`w-full items-center gap-3 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 						>
-							<Image src="/icons/list.svg" alt="selectArrow" width={32} height={32} />
+							<Image src="/images/search.png" alt="selectArrow" width={20} height={20} />
 							<p className="grow text-left">팀 목록</p>
 							<div className={`flex size-7 items-center duration-300 ${isTeamOpened ? "rotate-90" : ""}`}>
-								<Icon.ArrowRight width={28} height={28} color="#fff" />
+								<Icon.ArrowRight width={20} height={20} color="#dddddd" />
 							</div>
 						</button>
 
@@ -226,15 +226,11 @@ export default function Header() {
 									<li key={membership.groupId} className="size-full pl-8">
 										<Link
 											href={`/${membership.groupId}`}
-											className="mr-2 flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-lg font-medium hover:bg-background-tertiary"
+											className="mr-2 flex items-center gap-3 whitespace-nowrap rounded-md px-3 py-2 text-lg font-medium hover:bg-background-tertiary"
 											onClick={sideBarClose}
 										>
-											<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={32} height={32} className="size-8" />
+											<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={20} height={20} className="size-8" />
 											<p className="w-fit grow overflow-x-hidden text-ellipsis">{membership.group.name}</p>
-
-											<div className="flex size-7 items-center">
-												<Icon.ArrowRight width={28} height={28} color="#fff" />
-											</div>
 										</Link>
 									</li>
 								))}
@@ -245,14 +241,11 @@ export default function Header() {
 
 						<Link
 							href="/create-team"
-							className={`items-center gap-2 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
+							className={`items-center gap-3 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 							onClick={sideBarClose}
 						>
-							<Image src="/icons/add.svg" alt="selectArrow" width={32} height={32} />
+							<Image src="/images/add_user.png" alt="selectArrow" width={20} height={20} />
 							<p className="grow">팀 생성하기</p>
-							<div className="flex size-7 items-center">
-								<Icon.ArrowRight width={28} height={28} color="#fff" />
-							</div>
 						</Link>
 
 						<div className="h-2" />
@@ -260,14 +253,11 @@ export default function Header() {
 						<div className="flex flex-col pb-2">
 							<Link
 								href="/boards"
-								className="flex items-center gap-2 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary"
+								className="flex items-center gap-3 rounded-md px-4 py-2 text-lg font-medium hover:bg-background-tertiary"
 								onClick={sideBarClose}
 							>
-								<Image src="/icons/box.svg" alt="selectArrow" width={32} height={32} />
+								<Image src="/images/writing.png" alt="selectArrow" width={20} height={20} />
 								<p className="grow">자유게시판</p>
-								<div className="flex size-7 items-center">
-									<Icon.ArrowRight width={28} height={28} color="#fff" />
-								</div>
 							</Link>
 						</div>
 					</div>

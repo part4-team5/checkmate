@@ -3,7 +3,7 @@
 import API from "@/app/_api/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import AccountDeletionModal from "@/app/_components/modal-contents/AccountDeletion";
 import useAuthStore from "@/app/_store/useAuthStore";
@@ -11,6 +11,7 @@ import Form from "@/app/_components/Form";
 import Image from "next/image";
 import ChangePasswordModal from "@/app/_components/modal-contents/ChangePassword";
 import useCookie from "@/app/_hooks/useCookie";
+import toast from "@/app/_utils/Toast";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -22,12 +23,14 @@ export default function Page() {
 	const clearUser = useAuthStore((state) => state.clearUser);
 	const [accessToken, setAccessToken] = useCookie("accessToken");
 	const [, setRefreshToken] = useCookie("refreshToken");
+	const [initialNickname, setInitialNickname] = useState(user?.nickname);
 
 	useQuery({
 		queryKey: ["user"],
 		queryFn: async () => {
 			const data = await API["{teamId}/user"].GET({});
 			setUser(data);
+			setInitialNickname(data.nickname);
 			return data;
 		},
 		enabled: !!accessToken,
@@ -50,16 +53,20 @@ export default function Page() {
 			const uploadedImage = await imageUpload(file);
 			const imageUrl = uploadedImage ? uploadedImage.url : (user?.image ?? "");
 
-			const payload: Parameters<(typeof API)["{teamId}/user"]["PATCH"]>[1] = { image: imageUrl, nickname };
+			const payload: Parameters<(typeof API)["{teamId}/user"]["PATCH"]>[1] = { image: imageUrl };
+			if (nickname !== initialNickname) {
+				payload.nickname = nickname;
+			}
+
 			return API["{teamId}/user"].PATCH({}, payload);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
-			alert("프로필 변경이 완료되었습니다.");
+			toast.success("프로필 변경이 완료되었습니다.");
 			router.replace(window.location.pathname);
 		},
 		onError: (error) => {
-			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -78,14 +85,14 @@ export default function Page() {
 		},
 		onSuccess: () => {
 			queryClient.setQueriesData({ queryKey: ["user"] }, null);
-			alert("회원 탈퇴가 완료되었습니다.");
+			toast.success("회원 탈퇴가 완료되었습니다.");
 			setAccessToken(null);
 			setRefreshToken(null);
 			clearUser();
 			router.push("/");
 		},
 		onError: (error) => {
-			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
