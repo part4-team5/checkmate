@@ -9,6 +9,7 @@ import Message from "@/app/_components/Message";
 import DropDown from "@/app/_components/Dropdown";
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
+import toast from "@/app/_utils/Toast";
 
 type CommentsProps = {
 	articleId: number;
@@ -71,7 +72,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 			setIsSubmitting(false);
 		},
 		onError: (error) => {
-			alert(`댓글 추가 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 			setIsSubmitting(false);
 		},
@@ -86,7 +87,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 			setEditingCommentId(null);
 		},
 		onError: (error) => {
-			alert(`댓글 수정 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -98,7 +99,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 			queryClient.invalidateQueries({ queryKey: ["comments", articleId] });
 		},
 		onError: (error) => {
-			alert(`댓글 삭제 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -184,7 +185,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 				</form>
 			</div>
 			{/* 댓글 목록 표시 */}
-			<div className="my-[40px] flex flex-col gap-4 border-t border-solid border-t-[rgba(248,250,252,0.1)] pt-[40px]">
+			<div className="my-[40px] flex flex-col gap-4 border-t border-solid border-border-primary pt-[40px]">
 				{comments?.pages.length === 0 && !isFetching && (
 					<div className="my-[100px] text-center text-lg font-medium text-text-default">아직 작성된 댓글이 없습니다</div>
 				)}

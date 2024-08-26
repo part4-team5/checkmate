@@ -14,6 +14,7 @@ import Button from "@/app/_components/Button";
 import Quill from "@/app/_components/Quill";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/app/_store/useAuthStore";
+import toast from "@/app/_utils/Toast";
 
 export default function BoardDetail({ params }: { params: { id: string } }) {
 	const articleId = Number(params.id);
@@ -51,7 +52,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 			setIsEditing(false);
 		},
 		onError: (error) => {
-			alert(`게시글 수정 중 오류 발생: ${error.message}`);
+			toast.error(`게시글 수정 중 오류 발생: ${error.message}`);
 		},
 	});
 
@@ -59,11 +60,11 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 	const deleteArticleMutation = useMutation({
 		mutationFn: () => API["{teamId}/articles/{articleId}"].DELETE({ articleId }),
 		onSuccess: () => {
-			alert("게시글이 삭제되었습니다.");
+			toast.success("게시글이 삭제되었습니다.");
 			router.replace("/boards");
 		},
 		onError: (error) => {
-			alert(`게시글 삭제 중 오류 발생: ${error.message}`);
+			toast.error(`게시글 삭제 중 오류 발생: ${error.message}`);
 		},
 	});
 
@@ -74,8 +75,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 
 	// 삭제 버튼 클릭 핸들러
 	const handleDeleteClick = () => {
-		// eslint-disable-next-line no-restricted-globals
-		if (confirm("정말 삭제하시겠습니까?")) {
+		if (window.confirm("정말 삭제하시겠습니까?")) {
 			deleteArticleMutation.mutate();
 		}
 	};
@@ -119,7 +119,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 			setTimeout(() => setIsAnimating(false), 200);
 		},
 		onError: (error) => {
-			alert(`좋아요 추가 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -133,7 +133,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 			setTimeout(() => setIsAnimating(false), 200);
 		},
 		onError: (error) => {
-			alert(`좋아요 삭제 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -166,7 +166,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 				</>
 			) : (
 				<section className="mb-8">
-					<div className="flex items-center justify-between border-b border-solid border-b-[rgba(248,250,252,0.1)] py-[20px]">
+					<div className="flex items-center justify-between border-b border-solid border-border-primary py-[20px]">
 						{isEditing ? (
 							<input
 								className="h-[48px] w-full rounded-[12px] border border-border-primary bg-background-secondary px-[24px] text-lg text-text-primary focus:outline-none"
@@ -197,7 +197,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 						<div className="m-[16px_0_48px] flex justify-between">
 							<div className="flex items-center">
 								<Message.Author />
-								<div className="flex items-center text-md text-text-primary before:mx-[15px] before:inline-block before:h-[12px] before:w-[1px] before:bg-background-tertiary">
+								<div className="flex items-center text-md text-text-primary before:mx-[15px] before:inline-block before:h-[12px] before:w-[1px] before:bg-border-primary">
 									<Message.Date />
 								</div>
 							</div>
