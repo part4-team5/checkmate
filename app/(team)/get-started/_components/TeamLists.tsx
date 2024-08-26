@@ -125,7 +125,7 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 
 			<div className="pt-5" />
 
-			<div className="shadow-primary flex h-dvh max-h-[292px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
+			<div className="flex h-dvh max-h-[292px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-secondary">
 				<p className="text-center text-text-primary">아직 참여 중인 팀이 없습니다.</p>
 			</div>
 		</section>
