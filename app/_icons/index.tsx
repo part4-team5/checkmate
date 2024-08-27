@@ -239,7 +239,7 @@ Icon.LogoTypo = function LogoTypo({ width, height, color = "#10B981" }: IconProp
 	);
 };
 
-Icon.Edit = function Edit({ width = 24, height = 24, color = "#64748B" }: IconProps) {
+Icon.Edit = function Edit({ width = 24, height = 24, color = "var(--text-secondary)" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -250,7 +250,7 @@ Icon.Edit = function Edit({ width = 24, height = 24, color = "#64748B" }: IconPr
 	);
 };
 
-Icon.EditCheck = function EditCheck({ width = 24, height = 24, color = "#64748B" }: IconProps) {
+Icon.EditCheck = function EditCheck({ width = 24, height = 24, color = "var(--text-secondary)" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -261,7 +261,7 @@ Icon.EditCheck = function EditCheck({ width = 24, height = 24, color = "#64748B"
 	);
 };
 
-Icon.EditCancel = function EditCancel({ width = 24, height = 24, color = "#64748B" }: IconProps) {
+Icon.EditCancel = function EditCancel({ width = 24, height = 24, color = "var(--text-secondary)" }: IconProps) {
 	return (
 		<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 808.000000 791.000000" preserveAspectRatio="xMidYMid meet">
 			<g transform="translate(0.000000,791.000000) scale(0.100000,-0.100000)" fill={color} stroke="none">
@@ -579,7 +579,7 @@ Icon.CalendarLeftArrow = function CalendarLeftArrow({ width = 24, height = 24, c
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<g clipPath="url(#clip0_1996_77861)">
 				<circle cx="8" cy="8" r="8" fill={color} />
-				<path d="M9.5 5L6.5 8L9.5 11" stroke="#64748B" strokeWidth="1.125" strokeLinecap="round" strokeLinejoin="round" />
+				<path d="M9.5 5L6.5 8L9.5 11" stroke="var(--text-secondary)" strokeWidth="1.125" strokeLinecap="round" strokeLinejoin="round" />
 			</g>
 			<defs>
 				<clipPath id="clip0_1996_77861">
@@ -595,7 +595,7 @@ Icon.CalendarRightArrow = function CalendarRightArrow({ width = 24, height = 24,
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<g clipPath="url(#clip0_1996_77862)">
 				<circle cx="8" cy="8" r="8" fill={color} />
-				<path d="M6.5 5L9.5 8L6.5 11" stroke="#64748B" strokeWidth="1.125" strokeLinecap="round" strokeLinejoin="round" />
+				<path d="M6.5 5L9.5 8L6.5 11" stroke="var(--text-secondary)" strokeWidth="1.125" strokeLinecap="round" strokeLinejoin="round" />
 			</g>
 			<defs>
 				<clipPath id="clip0_1996_77862">
@@ -614,7 +614,7 @@ Icon.CalendarButton = function CalendarButton({ width = 24, height = 24, color =
 				fillRule="evenodd"
 				clipRule="evenodd"
 				d="M14.45 7.785H14.5C15.8807 7.785 17 8.90429 17 10.285V14.785C17 16.1657 15.8807 17.285 14.5 17.285H9.5C8.83696 17.285 8.20107 17.0216 7.73223 16.5528C7.26339 16.0839 7 15.448 7 14.785V10.285C7 8.90429 8.11929 7.785 9.5 7.785H9.55V6.875C9.55 6.66789 9.71789 6.5 9.925 6.5C10.1321 6.5 10.3 6.66789 10.3 6.875V7.785H13.7V6.875C13.7 6.66789 13.8679 6.5 14.075 6.5C14.2821 6.5 14.45 6.66789 14.45 6.875V7.785ZM9.75 10.83H14.25C14.4571 10.83 14.625 10.6621 14.625 10.455C14.625 10.2479 14.4571 10.08 14.25 10.08H9.75C9.54289 10.08 9.375 10.2479 9.375 10.455C9.375 10.6621 9.54289 10.83 9.75 10.83Z"
-				fill="#64748B"
+				fill="var(--text-secondary)"
 			/>
 		</svg>
 	);
