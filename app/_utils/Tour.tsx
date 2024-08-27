@@ -15,27 +15,26 @@ export default class Tour {
 	private static root: ReactDOM.Root;
 
 	public static play(steps: Guide[]) {
-		// uwu
-		const opt = !!localStorage.getItem(window.location.pathname);
-
-		if (opt) return;
-
 		if (!this.dom) {
 			document.body.append((this.dom = document.createElement("div")));
 		}
-		// restore
-		this.dom.style.display = "block";
+		hash(JSON.stringify(steps), "sha-256").then((sha256) => {
+			if (!(sha256 in localStorage)) {
+				// restore
+				this.dom.style.display = "block";
 
-		(this.root ??= ReactDOM.createRoot(this.dom)).render(
-			<Impl
-				steps={steps}
-				onClose={() => {
-					this.root.render(null);
-					this.dom.style.display = "none";
-					localStorage.setItem(window.location.pathname, ":3");
-				}}
-			/>,
-		);
+				(this.root ??= ReactDOM.createRoot(this.dom)).render(
+					<Impl
+						steps={steps}
+						onClose={() => {
+							this.root.render(null);
+							this.dom.style.display = "none";
+							localStorage.setItem(sha256, ":3");
+						}}
+					/>,
+				);
+			}
+		});
 	}
 }
 
@@ -148,4 +147,12 @@ interface Guide {
 	query: string;
 	content: string;
 	position: "top" | "left" | "right" | "bottom";
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest */
+async function hash(value: string, algorithm: AlgorithmIdentifier) {
+	// converts an ArrayBuffer to a hex string
+	return Array.from(new Uint8Array(await crypto.subtle.digest(algorithm, new TextEncoder().encode(value))))
+		.map((byte) => byte.toString(16).padStart(2, "0"))
+		.join("");
 }

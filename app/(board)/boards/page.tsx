@@ -9,6 +9,7 @@ import Icon from "@/app/_icons";
 import Image from "next/image";
 import Link from "next/link";
 import DropDown from "@/app/_components/Dropdown";
+import Button from "@/app/_components/Button";
 
 const enum Category {
 	ALL = "",
@@ -70,7 +71,7 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.ALL && "#10b981", backgroundColor: category === Category.ALL && "var(--background-Senary)" }}
-							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] hover:bg-background-Senary"
+							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
 							onClick={() => setCategory(Category.ALL)}
 						>
 							전체
@@ -79,7 +80,7 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.NEWS && "#10b981", backgroundColor: category === Category.NEWS && "var(--background-Senary)" }}
-							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] hover:bg-background-Senary"
+							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
 							onClick={() => setCategory(Category.NEWS)}
 						>
 							소식
@@ -88,7 +89,7 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.LIFE && "#10b981", backgroundColor: category === Category.LIFE && "var(--background-Senary)" }}
-							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] hover:bg-background-Senary"
+							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
 							onClick={() => setCategory(Category.LIFE)}
 						>
 							일상
@@ -97,13 +98,13 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.TRADE && "#10b981", backgroundColor: category === Category.TRADE && "var(--background-Senary)" }}
-							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] hover:bg-background-Senary"
+							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
 							onClick={() => setCategory(Category.TRADE)}
 						>
 							장터
 						</button>
 					</div>
-					<div className="absolute -bottom-[24px] left-0 right-[128px] flex grow translate-y-full items-center gap-[8px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px] has-[input:focus]:border-brand-primary desktop:static desktop:translate-y-0">
+					<div className="absolute -bottom-[24px] left-0 right-[128px] flex grow translate-y-full items-center gap-[8px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px] shadow-postboard has-[input:focus]:border-brand-primary desktop:static desktop:translate-y-0">
 						<Icon.Search width={24} height={24} color="var(--text-primary)" />
 						<input
 							className="h-full grow bg-transparent py-[12px] text-2lg text-text-primary outline-none"
@@ -115,7 +116,7 @@ export default function Page() {
 						<button
 							type="button"
 							aria-label="mode"
-							className="flex aspect-square items-center rounded-[12px] border border-border-primary bg-background-secondary px-[12px] hover:bg-background-quinary"
+							className="flex aspect-square items-center rounded-[12px] border border-border-primary bg-background-secondary px-[12px] shadow-postboard hover:bg-background-quinary"
 							onClick={() => {
 								// eslint-disable-next-line default-case
 								switch (display) {
@@ -153,22 +154,22 @@ export default function Page() {
 							<button
 								type="button"
 								aria-label="sort"
-								className="flex aspect-square items-center rounded-[12px] border border-border-primary bg-background-secondary px-[12px] hover:bg-background-quinary"
+								className="border-border-primary flex aspect-square items-center rounded-[12px] border bg-background-secondary px-[12px] shadow-postboard hover:bg-background-quinary"
 							>
 								<Icon.Sort width={24} height={24} color="var(--text-primary)" />
 							</button>
 						</DropDown>
 					</div>
 				</div>
-				<div className="overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px]">
+				<div className="overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] shadow-postboard">
 					{display === "card" && (
-						<div className="grid grid-cols-1 gap-[12px] text-text-primary desktop:grid-cols-2">
+						<div className="grid grid-cols-1 gap-[12px] text-text-primary tablet:grid-cols-2">
 							{posts?.map((post) => (
 								<Link
 									key={post.id}
 									ref={posts.at(-1) === post ? (ref) => setLast(ref!) : undefined}
 									href={`/boards/${post.id}`}
-									className="flex justify-between gap-[24px] rounded-[12px] border border-border-primary bg-background-tertiary px-[12px] py-[12px] hover:bg-background-quinary"
+									className="flex h-[190px] justify-between gap-[24px] rounded-[12px] border border-border-primary bg-background-tertiary px-[12px] py-[12px] shadow-bestCard hover:bg-background-quinary"
 								>
 									<div className="flex flex-col justify-between gap-[24px]">
 										<div className="flex flex-col gap-[12px]">
@@ -192,7 +193,7 @@ export default function Page() {
 									</div>
 									{post.image && (
 										<div
-											className="aspect-square h-full overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary bg-cover"
+											className="aspect-square h-full overflow-hidden rounded-[12px] bg-background-secondary bg-cover opacity-75"
 											style={{ backgroundImage: `url("${post.image}")` }}
 										/>
 									)}
@@ -203,7 +204,7 @@ export default function Page() {
 								<div
 									// eslint-disable-next-line react/no-array-index-key
 									key={index}
-									className="flex h-[125px] flex-col gap-[16px] rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px]"
+									className="flex h-[125px] flex-col gap-[16px] rounded-[12px] bg-background-secondary px-[12px] py-[12px]"
 								>
 									<div className="bg-border-primary/25 h-[16px] w-6/12 animate-pulse rounded-md" />
 									<div className="bg-border-primary/25 h-[16px] w-5/12 animate-pulse rounded-md" />
@@ -220,7 +221,7 @@ export default function Page() {
 									key={post.id}
 									ref={posts.at(-1) === post ? (ref) => setLast(ref!) : undefined}
 									href={`/boards/${post.id}`}
-									className="flex flex-col justify-between gap-[8px] rounded-[12px] border border-border-primary bg-background-tertiary px-[12px] py-[12px] hover:bg-background-quinary"
+									className="flex flex-col justify-between gap-[8px] rounded-[12px] border border-border-primary bg-background-tertiary px-[12px] py-[12px] shadow-bestCard hover:bg-background-quinary"
 								>
 									<div className="flex justify-between text-2lg">
 										{post.title}
@@ -249,7 +250,7 @@ export default function Page() {
 								<div
 									// eslint-disable-next-line react/no-array-index-key
 									key={index}
-									className="flex h-[80px] flex-col gap-[16px] rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px]"
+									className="flex h-[80px] flex-col gap-[16px] rounded-[12px] bg-background-secondary px-[12px] py-[12px]"
 								>
 									<div className="bg-border-primary/25 h-[16px] w-6/12 animate-pulse rounded-md" />
 									<div className="bg-border-primary/25 h-[16px] w-5/12 animate-pulse rounded-md" />
@@ -262,12 +263,9 @@ export default function Page() {
 					{!isFetching && (posts?.length ?? 0) === 0 && <div className="text-center text-text-primary">없어요...</div>}
 				</div>
 			</div>
-			<Link
-				href="/create-post"
-				className="shadow-lg fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary text-text-primary hover:bg-brand-secondary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
-			>
-				+ 글쓰기
-			</Link>
+			<div className="shadow-lg fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center overflow-hidden rounded-[40px] tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]">
+				<Button href="/create-post">+ 글쓰기</Button>
+			</div>
 		</main>
 	);
 }
