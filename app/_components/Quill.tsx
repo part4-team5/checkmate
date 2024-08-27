@@ -215,7 +215,7 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 									Write
 								</button>
 								<Switch.Jump to="viewer">
-									<button type="button" className="mb-[-1px] border border-transparent px-[16px] py-[8px]">
+									<button id="to-viewer" type="button" className="mb-[-1px] border border-transparent px-[16px] py-[8px]">
 										Preview
 									</button>
 								</Switch.Jump>
@@ -224,7 +224,7 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 						<Switch.Case of="viewer">
 							<div className="mx-[-1px] mt-[-1px] flex">
 								<Switch.Jump to="editor">
-									<button type="button" className="mb-[-1px] border border-transparent px-[16px] py-[8px]">
+									<button id="to-editor" type="button" className="mb-[-1px] border border-transparent px-[16px] py-[8px]">
 										Write
 									</button>
 								</Switch.Jump>
@@ -260,6 +260,7 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 								</div>
 								{/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
 								<div
+									id="editor"
 									ref={editor}
 									contentEditable={!readonly}
 									data-placeholder={placeholder}

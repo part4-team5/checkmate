@@ -49,38 +49,37 @@ function Report({ id }: ReportProps) {
 	const percent = totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
 
 	return (
-		<main className="flex items-center justify-between rounded-[12px] bg-background-secondary p-[12px] text-[#F8FAFC] tablet:p-[24px]">
-			<section className="flex items-center justify-center gap-[45px]">
-				<div className="relative">
-					<CircularProgressBar useGradient percent={percent} />
-					<div className="absolute inset-0 flex flex-col items-center justify-center tablet:hidden">
-						<p className="text-[12px] font-medium">오늘</p>
-						<p className="bg-gradient-to-r from-text-emerald to-text-lime bg-clip-text text-[20px] font-bold text-transparent">{percent.toFixed(0)}%</p>
+		<main className="mt-[24px] w-full text-text-primary tablet:w-[383px]">
+			<p className="mb-[16px] text-[16px] font-semibold text-text-primary">리포트</p>
+			<div className="flex w-full flex-col items-center justify-between rounded-[12px]">
+				<section className="flex h-[217px] w-full items-center justify-center gap-[45px] rounded-[12px] bg-background-tertiary shadow-teamCard">
+					<div className="relative">
+						<CircularProgressBar useGradient percent={percent} />
 					</div>
-				</div>
-				<div className="flex hidden flex-col items-start justify-center tablet:block">
-					<p className="text-14px font-medium">
-						오늘의 <br /> 진행 상황
-					</p>
-					<p className="h-[48px] bg-gradient-to-r from-text-emerald to-text-lime bg-clip-text text-[40px] font-bold text-transparent">{percent.toFixed(0)}%</p>
-				</div>
-			</section>
-			<section className="flex flex-col gap-[16px]">
-				<div className="flex w-[142px] items-center justify-between rounded-[12px] bg-background-tertiary p-[16px] tablet:w-[280px] desktop:w-[400px]">
-					<div>
-						<p className="text-[12px] font-medium">오늘의 할 일</p>
-						<p className="text-[24px] font-bold text-text-lime">{totalTasks}개</p>
+					<div className="flex flex-col items-start justify-center tablet:block">
+						<p className="text-[16px] font-bold text-text-primary">
+							오늘의 <br /> 진행 상황
+						</p>
+						<p className="h-[48px] text-[40px] font-bold text-[#10B981]">{percent.toFixed(0)}%</p>
 					</div>
-					<Image src={TodoIcon} alt="todo" width={40} height={40} />
-				</div>
-				<div className="flex w-[142px] items-center justify-between rounded-[12px] bg-background-tertiary p-[16px] tablet:w-[280px] desktop:w-[400px]">
-					<div>
-						<p className="text-[12px] font-medium">한 일</p>
-						<p className="text-[24px] font-bold text-text-lime">{doneTasks}개</p>
+				</section>
+				<section className="mt-[21px] flex h-[84px] w-full flex-col gap-[21px] tablet:max-w-[385px]">
+					<div className="flex items-center justify-between rounded-[12px] bg-background-tertiary p-[16px] shadow-teamCard">
+						<div className="bg-background-tertiary">
+							<p className="text-[12px] font-semibold">오늘의 할 일</p>
+							<p className="text-[24px] font-bold text-text-lime">{totalTasks}개</p>
+						</div>
+						<Image src={TodoIcon} alt="todo" width={40} height={40} />
 					</div>
-					<Image src={DoneIcon} alt="done" width={40} height={40} />
-				</div>
-			</section>
+					<div className="mb-[10px] flex h-[84px] w-full items-center justify-between rounded-[12px] bg-background-tertiary p-[16px] shadow-teamCard tablet:max-w-[385px]">
+						<div>
+							<p className="text-[12px] font-semibold">한 일</p>
+							<p className="text-[24px] font-bold text-text-lime">{doneTasks}개</p>
+						</div>
+						<Image src={DoneIcon} alt="done" width={40} height={40} />
+					</div>
+				</section>
+			</div>
 		</main>
 	);
 }
