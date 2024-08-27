@@ -74,24 +74,24 @@ function Members({ id }: ReportProps) {
 	const isAdmin = user?.memberships.some((membership) => membership.groupId === id && membership.role === "ADMIN");
 
 	return (
-		<main className="mt-[48px]">
+		<main className="mt-[48px] text-text-primary">
 			<section className="flex justify-between">
 				<div className="flex gap-[8px]">
 					<p className="text-[16px] font-medium">멤버</p>
-					<p className="text-[16px] text-[#64748B]"> ({members.length}명)</p>
+					<p className="text-[16px] text-text-primary"> ({members.length}명)</p>
 				</div>
 				{isAdmin && (
-					<button onClick={handleInviteClick} className="text-[14px] font-normal text-brand-primary" type="button">
+					<button onClick={handleInviteClick} className="text-[14px] font-semibold text-brand-primary" type="button">
 						+새로운 멤버 초대하기
 					</button>
 				)}
 			</section>
 			<section className="mt-[24px]">
-				<div className="grid grid-cols-2 gap-4 tablet:grid-cols-3">
+				<div className="grid grid-cols-2 gap-[22px] tablet:grid-cols-3">
 					{members.map((member) => (
 						<div
 							key={member.userId}
-							className="flex h-[68px] min-w-[164px] cursor-pointer items-center justify-start rounded-[16px] bg-background-secondary px-[16px]"
+							className="flex h-[68px] w-full min-w-[164px] cursor-pointer items-center justify-start rounded-[16px] bg-background-tertiary px-[16px] shadow-teamCard"
 							role="button"
 							aria-label={`${member.userName}의 프로필 열기`}
 							onClick={() => handleProfileModal(member)}

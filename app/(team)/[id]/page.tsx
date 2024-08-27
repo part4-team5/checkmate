@@ -21,15 +21,18 @@ export default async function Page({ params }: { params: { id: string } }) {
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<main className="w-full pb-[67px] text-[#F8FAFC]">
+			<main className="pb-[67px] text-[#F8FAFC]">
 				<TeamTitle id={id} />
-				<section>
-					<Tasks id={id} />
+				<section className="flex flex-col gap-[24px] tablet:flex-row">
+					{" "}
+					<section className="flex">
+						<Report id={id} />
+					</section>
+					<section className="tablet:flex-grow-1 mt-[80px] w-full flex-grow-0 tablet:mt-0">
+						<Tasks id={id} />
+					</section>
 				</section>
-				<section className="mt-[48px]">
-					<p className="mb-[16px] text-[16px] font-medium">리포트</p>
-					<Report id={id} />
-				</section>
+
 				<Members id={id} />
 			</main>
 		</HydrationBoundary>

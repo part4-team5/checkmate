@@ -12,7 +12,7 @@ interface CircularProgressBarProps {
 	backgroundColor?: string;
 }
 
-function CircularProgressBar({ percent, useGradient, strokeColor, size = 170, strokeWidth = 30, backgroundColor = "#334155" }: CircularProgressBarProps) {
+function CircularProgressBar({ percent, useGradient, strokeColor, size = 170, strokeWidth = 30, backgroundColor = "#D8D8D8" }: CircularProgressBarProps) {
 	const radius = (size - strokeWidth) / 2;
 	const circumference = 2 * Math.PI * radius;
 	const progressRef = useRef<SVGCircleElement | null>(null);
