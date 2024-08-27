@@ -161,7 +161,7 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 											handleEditDescriptionChange({ target: { value: `${editedDescription}\n` } } as React.ChangeEvent<HTMLTextAreaElement>);
 										}
 									}}
-									className={`${editedDescription.length > 0 ? "" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-todo-primary pl-2 shadow-input focus:outline-none`}
+									className={`${editedDescription.length > 0 ? "" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-todo-primary p-2 shadow-input focus:outline-none`}
 									rows={5}
 								/>
 							) : (
