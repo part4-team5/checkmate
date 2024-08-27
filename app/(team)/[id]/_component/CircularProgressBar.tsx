@@ -10,9 +10,20 @@ interface CircularProgressBarProps {
 	size?: number;
 	strokeWidth?: number;
 	backgroundColor?: string;
+	borderColor?: string;
+	borderWidth?: number;
 }
 
-function CircularProgressBar({ percent, useGradient, strokeColor, size = 170, strokeWidth = 30, backgroundColor = "#D8D8D8" }: CircularProgressBarProps) {
+function CircularProgressBar({
+	percent,
+	useGradient,
+	strokeColor,
+	size = 170,
+	strokeWidth = 30,
+	backgroundColor = "#D8D8D8",
+	borderColor: BorderColor,
+	borderWidth = 5,
+}: CircularProgressBarProps) {
 	const radius = (size - strokeWidth) / 2;
 	const circumference = 2 * Math.PI * radius;
 	const progressRef = useRef<SVGCircleElement | null>(null);
@@ -32,7 +43,7 @@ function CircularProgressBar({ percent, useGradient, strokeColor, size = 170, st
 				className="circular-progress-bar"
 				width={size}
 				height={size}
-				viewBox={`0 0 ${size} ${size}`}
+				viewBox={`${0 - borderWidth} ${0 - borderWidth} ${size + borderWidth * 2} ${size + borderWidth * 2}`}
 				animate={{
 					scale: 1.0 + (percent === 100 ? 0.05 : 0.0),
 				}}
@@ -50,7 +61,34 @@ function CircularProgressBar({ percent, useGradient, strokeColor, size = 170, st
 					</defs>
 				)}
 
+				{/* 외부 경계선 */}
+				{BorderColor && (
+					<circle
+						cx={size / 2}
+						cy={size / 2}
+						r={radius + strokeWidth / 2 + borderWidth / 2} // 외부 경계선은 외곽에 위치
+						strokeWidth={borderWidth}
+						fill="none"
+						stroke={BorderColor}
+					/>
+				)}
+
+				{/* 내부 경계선 */}
+				{BorderColor && (
+					<circle
+						cx={size / 2}
+						cy={size / 2}
+						r={radius - strokeWidth / 2 - borderWidth / 2} // 내부 경계선은 내부에 위치
+						strokeWidth={borderWidth}
+						fill="none"
+						stroke={BorderColor}
+					/>
+				)}
+
+				{/* 배경 원 */}
 				<circle cx={size / 2} cy={size / 2} r={radius} strokeWidth={strokeWidth} fill="none" stroke={backgroundColor} />
+
+				{/* 프로그레스 바 */}
 				<motion.circle
 					ref={progressRef}
 					cx={size / 2}
