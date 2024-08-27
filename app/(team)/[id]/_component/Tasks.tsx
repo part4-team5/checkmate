@@ -8,7 +8,6 @@ import { Reorder } from "framer-motion";
 import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
 import Icon from "@/app/_icons";
 import DropDown from "@/app/_components/Dropdown";
-import Image from "next/image";
 import PostEditTasks from "@/app/_components/modal-contents/PostEditTasks";
 import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import { useRouter } from "next/navigation";
