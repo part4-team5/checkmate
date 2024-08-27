@@ -26,7 +26,7 @@ type ClientTodoProps = {
 
 function CalendarPopoverContent() {
 	return (
-		<div className="rounded-3xl shadow-listPage">
+		<div className="rounded shadow-lg">
 			<Calendar.Picker />
 		</div>
 	);
@@ -122,12 +122,12 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						</div>
 						<div className="flex gap-2">
 							<Calendar.Jump to={{ unit: "day", times: -1 }}>
-								<motion.div whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="rounded-full shadow-loginButton">
+								<motion.div whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="shadow-loginButton rounded-full">
 									<Icon.CalendarLeftArrow width={20} height={20} />
 								</motion.div>
 							</Calendar.Jump>
 							<Calendar.Jump to={{ unit: "day", times: 1 }}>
-								<motion.div whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="rounded-full shadow-loginButton">
+								<motion.div whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="shadow-loginButton rounded-full">
 									<Icon.CalendarRightArrow width={20} height={20} />
 								</motion.div>
 							</Calendar.Jump>
@@ -142,7 +142,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							>
 								<div className="flex items-center">
 									<button type="button" aria-label="Open calendar">
-										<motion.div whileHover={buttonAnimation.hover} whileTap={buttonAnimation.whileTap} className="rounded-full shadow-loginButton">
+										<motion.div whileHover={buttonAnimation.hover} whileTap={buttonAnimation.whileTap} className="shadow-loginButton rounded-full">
 											<Icon.CalendarButton width={32} height={32} />
 										</motion.div>
 									</button>
@@ -165,7 +165,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				</motion.button>
 			</div>
 
-			<motion.div className="layout layoutRoot flex flex-wrap gap-3 rounded-lg bg-background-secondary px-5 py-3 text-lg font-medium shadow-listPage tablet:px-8">
+			<motion.div className="layout layoutRoot shadow-listPage flex flex-wrap gap-3 rounded-lg bg-background-secondary px-5 py-3 text-lg font-medium tablet:px-8">
 				{tasks &&
 					tasks.map((task) => (
 						<motion.div
@@ -201,7 +201,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						/* eslint-disable react/no-array-index-key */
 						<motion.div
 							key={i}
-							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 shadow-listPage"
+							className="shadow-listPage mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3"
 							initial={{ opacity: 0.2 }}
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0 }}
@@ -217,7 +217,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				</div>
 			)}
 
-			<div className="mt-6 rounded-lg bg-background-secondary px-3 py-2 shadow-board tablet:px-9 tablet:py-8">
+			<div className="shadow-board mt-6 rounded-lg bg-background-secondary px-3 py-2 tablet:px-9 tablet:py-8">
 				{todoItems && (
 					<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="mb-44">
 						{todoItems.map((todoItem) => (
