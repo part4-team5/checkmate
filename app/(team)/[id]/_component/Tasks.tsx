@@ -3,12 +3,14 @@
 
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Reorder } from "framer-motion";
 import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
 import Icon from "@/app/_icons";
-import Image from "next/image";
+import Tour from "@/app/_utils/Tour";
+
 import DropDown from "@/app/_components/Dropdown";
+import Image from "next/image";
 import PostEditTasks from "@/app/_components/modal-contents/PostEditTasks";
 import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import { useRouter } from "next/navigation";
@@ -99,30 +101,40 @@ function TaskItem({
 		},
 	];
 
+	useEffect(() => {
+		Tour.play([
+			{
+				query: ".reorder-item",
+				content: "할 일 목록을 드래그 앤 드랍으로 재정렬할 수 있어요.",
+				position: "bottom",
+			},
+		]);
+	}, []);
+
 	return (
 		<div
-			className="bg-background-Quinary flex h-[40px] w-full cursor-pointer rounded-[12px] text-text-primary shadow-teamTaskList"
+			className="reorder-item flex h-[40px] w-full cursor-pointer rounded-[12px] bg-background-quaternary text-text-primary shadow-teamTaskList"
 			onMouseDown={handleMouseDown}
 			onMouseUp={handleMouseUp}
 			onContextMenu={(e) => e.preventDefault()} // 우클릭 시 기본 메뉴 차단
 			onDrag={onDrag} // onDrag 이벤트 핸들러 추가
 		>
 			<div className="flex h-[40px] w-full flex-1 items-center justify-between">
-				<div className="truncate pl-4 font-semibold text-text-primary">{taskList.name}</div>
+				<div className="truncate pl-4 text-text-primary">{taskList.name}</div>
 				<div className="flex w-[78px] items-center justify-center gap-[4px]" onClick={(e) => e.stopPropagation()}>
 					<div className="flex h-[25px] w-[58px] items-center justify-center gap-[4px] rounded-[12px] bg-[#10B981]">
 						{completedTasks === totalTasks && totalTasks !== 0 ? (
 							<Image src="/icons/DoneCheckIcon.svg" alt="Completed" height={16} width={16} />
 						) : (
-							<CircularProgressBar percent={completionRate} size={10} strokeWidth={2} backgroundColor="#FFFFFF" useGradient={false} strokeColor="#10B981" />
+							<CircularProgressBar percent={completionRate} size={10} strokeWidth={2} backgroundColor="#FFFFFF" useGradient={false} strokeColor="#EAB308" />
 						)}
 						<p className="text-[12px] text-text-primary">
 							{completedTasks}/{totalTasks}
 						</p>
 					</div>
 					<div onClick={handleDropdownClick} className="mr-[8px] rounded-[4px] hover:bg-[#3F4752]">
-						<DropDown options={editDropdown} gapY={isLastItem ? -80 : -20} gapX={19} align="RR">
-							<Icon.Kebab color="#64748B" width={16} height={16} />
+						<DropDown options={editDropdown} gapY={isLastItem ? -80 : -20} gapX={15} align="RR">
+							<Icon.Kebab color="var(--text-primary)" width={16} height={16} />
 						</DropDown>
 					</div>
 				</div>
@@ -202,7 +214,7 @@ export default function Tasks({ id }: { id: number }) {
 					+ 할 일 목록 추가
 				</button>
 			</section>
-			<section className="mt-[16px] min-h-[427px] rounded-[12px] bg-background-tertiary p-[30px] shadow-teamCard tablet:w-full">
+			<section className="mt-[16px] min-h-[427px] rounded-[12px] bg-background-tertiary p-[30px] tablet:w-full">
 				{data?.taskLists?.length === 0 ? (
 					<div className="flex justify-center py-[64px] text-text-primary">
 						<p>아직 할 일 목록이 없습니다.</p>

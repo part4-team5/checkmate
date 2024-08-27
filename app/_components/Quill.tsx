@@ -317,7 +317,7 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 							<div
 								className="h-full min-h-[130px] w-full rounded-[10px] border border-transparent px-[10px] py-[10px] text-lg font-normal text-text-primary"
 								// eslint-disable-next-line react/no-danger
-								dangerouslySetInnerHTML={{ __html: `<article class="md">${CORE.run(data)}</article>` }}
+								dangerouslySetInnerHTML={{ __html: data && `<article class="md">${CORE.run(data)}</article>` }}
 							/>
 						</Switch.Case>
 					</div>

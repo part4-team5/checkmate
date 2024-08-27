@@ -15,33 +15,42 @@ export default class Tour {
 	private static root: ReactDOM.Root;
 
 	public static play(steps: Guide[]) {
-		// uwu
-		const opt = !!localStorage.getItem(window.location.pathname);
-
-		if (opt) return;
-
 		if (!this.dom) {
 			document.body.append((this.dom = document.createElement("div")));
 		}
-		// restore
-		this.dom.style.display = "block";
+		hash(JSON.stringify(steps), "sha-256").then((sha256) => {
+			if (!(sha256 in localStorage)) {
+				// restore
+				this.dom.style.display = "block";
 
-		(this.root ??= ReactDOM.createRoot(this.dom)).render(
-			<Impl
-				steps={steps}
-				onClose={() => {
-					this.root.render(null);
-					this.dom.style.display = "none";
-					localStorage.setItem(window.location.pathname, ":3");
-				}}
-			/>,
-		);
+				(this.root ??= ReactDOM.createRoot(this.dom)).render(
+					<Impl
+						steps={steps}
+						exit={() => {
+							this.root.render(null);
+							this.dom.style.display = "none";
+						}}
+						close={() => {
+							localStorage.setItem(sha256, ":3");
+						}}
+					/>,
+				);
+			}
+		});
 	}
 }
 
-function Impl({ steps, onClose }: { steps: Guide[]; onClose: () => void }) {
+function Impl({ steps, exit, close }: { steps: Guide[]; exit: () => void; close: () => void }) {
 	const [stage, setStage] = useState(0);
 	const [style, setStyle] = useState<React.CSSProperties>({});
+
+	useEffect(() => {
+		function handle() {
+			exit();
+		}
+		window.addEventListener("popstate", handle);
+		return () => window.removeEventListener("popstate", handle);
+	}, [exit]);
 
 	useEffect(() => {
 		const target = document.querySelector(steps[stage].query);
@@ -120,7 +129,15 @@ function Impl({ steps, onClose }: { steps: Guide[]; onClose: () => void }) {
 						<div className="relative flex flex-col gap-[10px] overflow-hidden whitespace-nowrap rounded-[12px] bg-white px-[30px] py-[16px] pt-[38px] text-text-default">
 							<div className="absolute left-0 right-0 top-0 flex h-[24px] items-center bg-interaction-inactive/50 px-[8px]">
 								<div className="grow" />
-								<button type="button" aria-label="prev" className="flex aspect-square w-[16px] items-center rounded-full" onClick={onClose}>
+								<button
+									type="button"
+									aria-label="prev"
+									className="flex aspect-square w-[16px] items-center rounded-full"
+									onClick={() => {
+										exit();
+										close();
+									}}
+								>
 									<Icon.Close width={16} height={16} />
 								</button>
 							</div>
@@ -148,4 +165,12 @@ interface Guide {
 	query: string;
 	content: string;
 	position: "top" | "left" | "right" | "bottom";
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest */
+async function hash(value: string, algorithm: AlgorithmIdentifier) {
+	// converts an ArrayBuffer to a hex string
+	return Array.from(new Uint8Array(await crypto.subtle.digest(algorithm, new TextEncoder().encode(value))))
+		.map((byte) => byte.toString(16).padStart(2, "0"))
+		.join("");
 }

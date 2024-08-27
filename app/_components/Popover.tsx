@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useState, useRef, cloneElement, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -35,15 +35,15 @@ export default function Popover({
 	const [toggle, setToggle] = useState(init);
 	const pop = useRef<HTMLDivElement>(null);
 	const over = useRef<HTMLDivElement>(null);
-	const [style, setStyle] = useState<React.CSSProperties>({ display: "none" });
+	const [style, setStyle] = useState<React.CSSProperties>({ visibility: "hidden" });
 
 	const pathname = usePathname();
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		const resize = new ResizeObserver(() => {
 			const impl: typeof style = { position: "absolute", zIndex: 69 };
 			// :3
-			if (!toggle) impl.display = "none";
+			if (!toggle) impl.visibility = "hidden";
 
 			const popRect = pop.current?.getBoundingClientRect()!;
 			const overRect = over.current?.getBoundingClientRect()!;
@@ -145,7 +145,6 @@ export default function Popover({
 	const onClick = useCallback(() => {
 		if (!readonly) {
 			setToggle((_) => !_);
-
 		}
 	}, [readonly]);
 
@@ -161,18 +160,16 @@ export default function Popover({
 				{children}
 			</div>
 			<AnimatePresence>
-				{toggle && (
-					<motion.div
-						ref={over}
-						style={style}
-						initial={{ opacity: 0, scale: 0.95 }}
-						animate={{ opacity: 1, scale: 1 }}
-						exit={{ opacity: 0, scale: 0.95 }}
-						transition={{ duration: 0.2 }}
-					>
-						{overlay(() => setToggle(false))}
-					</motion.div>
-				)}
+				<motion.div
+					ref={over}
+					style={style}
+					initial={{ opacity: 0, scale: 0.95 }}
+					animate={{ opacity: 1, scale: 1 }}
+					exit={{ opacity: 0, scale: 0.95 }}
+					transition={{ duration: 0.2 }}
+				>
+					{overlay(() => setToggle(false))}
+				</motion.div>
 			</AnimatePresence>
 		</div>
 	);
