@@ -75,6 +75,9 @@ export default {
 				emerald: "#10B981",
 				lime: "#A3E635",
 			},
+			todo: {
+				primary: "var(--todo-primary)",
+			},
 			status: {
 				danger: "#EF4444",
 			},
@@ -103,6 +106,8 @@ export default {
 			teamDropdown: "var(--teamDropdown-shadow)",
 			postboard: "var(--postboard-shadow)",
 			postboardTitle: "var(--postboardTitle-shadow)",
+			input: "var(--input-shadow)",
+			buttonPrimary: "var(--button-primary-shadow)",
 		},
 		fontSize: {
 			"3xl": ["32px", "38px"],
