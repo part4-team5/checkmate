@@ -70,7 +70,7 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.ALL && "#10b981", backgroundColor: category === Category.ALL && "var(--background-Senary)" }}
-							className="hover:bg-background-Senary rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px]"
+							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] hover:bg-background-Senary"
 							onClick={() => setCategory(Category.ALL)}
 						>
 							전체
@@ -79,7 +79,7 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.NEWS && "#10b981", backgroundColor: category === Category.NEWS && "var(--background-Senary)" }}
-							className="hover:bg-background-Senary rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px]"
+							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] hover:bg-background-Senary"
 							onClick={() => setCategory(Category.NEWS)}
 						>
 							소식
@@ -88,7 +88,7 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.LIFE && "#10b981", backgroundColor: category === Category.LIFE && "var(--background-Senary)" }}
-							className="hover:bg-background-Senary rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px]"
+							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] hover:bg-background-Senary"
 							onClick={() => setCategory(Category.LIFE)}
 						>
 							일상
@@ -97,7 +97,7 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.TRADE && "#10b981", backgroundColor: category === Category.TRADE && "var(--background-Senary)" }}
-							className="hover:bg-background-Senary rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px]"
+							className="rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px] hover:bg-background-Senary"
 							onClick={() => setCategory(Category.TRADE)}
 						>
 							장터
@@ -115,7 +115,7 @@ export default function Page() {
 						<button
 							type="button"
 							aria-label="mode"
-							className="hover:bg-background-quinary flex aspect-square items-center rounded-[12px] border border-border-primary bg-background-secondary px-[12px]"
+							className="flex aspect-square items-center rounded-[12px] border border-border-primary bg-background-secondary px-[12px] hover:bg-background-quinary"
 							onClick={() => {
 								// eslint-disable-next-line default-case
 								switch (display) {
@@ -153,7 +153,7 @@ export default function Page() {
 							<button
 								type="button"
 								aria-label="sort"
-								className="hover:bg-background-quinary flex aspect-square items-center rounded-[12px] border border-border-primary bg-background-secondary px-[12px]"
+								className="flex aspect-square items-center rounded-[12px] border border-border-primary bg-background-secondary px-[12px] hover:bg-background-quinary"
 							>
 								<Icon.Sort width={24} height={24} color="var(--text-primary)" />
 							</button>
@@ -168,7 +168,7 @@ export default function Page() {
 									key={post.id}
 									ref={posts.at(-1) === post ? (ref) => setLast(ref!) : undefined}
 									href={`/boards/${post.id}`}
-									className="hover:bg-background-quinary flex justify-between gap-[24px] rounded-[12px] border border-border-primary bg-background-tertiary px-[12px] py-[12px]"
+									className="flex justify-between gap-[24px] rounded-[12px] border border-border-primary bg-background-tertiary px-[12px] py-[12px] hover:bg-background-quinary"
 								>
 									<div className="flex flex-col justify-between gap-[24px]">
 										<div className="flex flex-col gap-[12px]">
@@ -205,10 +205,10 @@ export default function Page() {
 									key={index}
 									className="flex h-[125px] flex-col gap-[16px] rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px]"
 								>
-									<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
-									<div className="h-[16px] w-5/12 animate-pulse rounded-md bg-border-primary/25" />
-									<div className="h-[16px] w-3/12 animate-pulse rounded-md bg-border-primary/25" />
-									<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
+									<div className="bg-border-primary/25 h-[16px] w-6/12 animate-pulse rounded-md" />
+									<div className="bg-border-primary/25 h-[16px] w-5/12 animate-pulse rounded-md" />
+									<div className="bg-border-primary/25 h-[16px] w-3/12 animate-pulse rounded-md" />
+									<div className="bg-border-primary/25 h-[16px] w-6/12 animate-pulse rounded-md" />
 								</div>
 							))}
 						</div>
@@ -220,7 +220,7 @@ export default function Page() {
 									key={post.id}
 									ref={posts.at(-1) === post ? (ref) => setLast(ref!) : undefined}
 									href={`/boards/${post.id}`}
-									className="hover:bg-background-quinary flex flex-col justify-between gap-[8px] rounded-[12px] border border-border-primary bg-background-tertiary px-[12px] py-[12px]"
+									className="flex flex-col justify-between gap-[8px] rounded-[12px] border border-border-primary bg-background-tertiary px-[12px] py-[12px] hover:bg-background-quinary"
 								>
 									<div className="flex justify-between text-2lg">
 										{post.title}
@@ -251,10 +251,10 @@ export default function Page() {
 									key={index}
 									className="flex h-[80px] flex-col gap-[16px] rounded-[12px] border border-border-primary bg-background-secondary px-[12px] py-[12px]"
 								>
-									<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
-									<div className="h-[16px] w-5/12 animate-pulse rounded-md bg-border-primary/25" />
-									<div className="h-[16px] w-3/12 animate-pulse rounded-md bg-border-primary/25" />
-									<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
+									<div className="bg-border-primary/25 h-[16px] w-6/12 animate-pulse rounded-md" />
+									<div className="bg-border-primary/25 h-[16px] w-5/12 animate-pulse rounded-md" />
+									<div className="bg-border-primary/25 h-[16px] w-3/12 animate-pulse rounded-md" />
+									<div className="bg-border-primary/25 h-[16px] w-6/12 animate-pulse rounded-md" />
 								</div>
 							))}
 						</div>
@@ -264,7 +264,7 @@ export default function Page() {
 			</div>
 			<Link
 				href="/create-post"
-				className="fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary text-text-primary shadow-lg hover:bg-brand-secondary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
+				className="shadow-lg fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary text-text-primary hover:bg-brand-secondary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
 			>
 				+ 글쓰기
 			</Link>

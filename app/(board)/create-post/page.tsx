@@ -166,7 +166,7 @@ export default function Page() {
 						type="button"
 						// @ts-ignore
 						style={{ borderColor: category === Category.ALL && "#10b981", backgroundColor: category === Category.ALL && "var(--background-Senary)" }}
-						className="hover:bg-background-Senary h-full rounded-[10px] border border-white/15 bg-background-tertiary px-[12px] text-text-primary"
+						className="h-full rounded-[10px] border border-white/15 bg-background-tertiary px-[12px] text-text-primary hover:bg-background-Senary"
 						onClick={() => setCategory(Category.ALL)}
 					>
 						전체
@@ -174,7 +174,7 @@ export default function Page() {
 					<button
 						type="button" // @ts-ignore
 						style={{ borderColor: category === Category.NEWS && "#10b981", backgroundColor: category === Category.NEWS && "var(--background-Senary)" }}
-						className="hover:bg-background-Senary h-full rounded-[10px] border border-white/15 bg-background-tertiary px-[12px] text-text-primary"
+						className="h-full rounded-[10px] border border-white/15 bg-background-tertiary px-[12px] text-text-primary hover:bg-background-Senary"
 						onClick={() => setCategory(Category.NEWS)}
 					>
 						소식
@@ -182,7 +182,7 @@ export default function Page() {
 					<button
 						type="button" // @ts-ignore
 						style={{ borderColor: category === Category.LIFE && "#10b981", backgroundColor: category === Category.LIFE && "var(--background-Senary)" }}
-						className="hover:bg-background-Senary h-full rounded-[10px] border border-white/15 bg-background-tertiary px-[12px] text-text-primary"
+						className="h-full rounded-[10px] border border-white/15 bg-background-tertiary px-[12px] text-text-primary hover:bg-background-Senary"
 						onClick={() => setCategory(Category.LIFE)}
 					>
 						일상
@@ -190,7 +190,7 @@ export default function Page() {
 					<button
 						type="button" // @ts-ignore
 						style={{ borderColor: category === Category.TRADE && "#10b981", backgroundColor: category === Category.TRADE && "var(--background-Senary)" }}
-						className="hover:bg-background-Senary h-full rounded-[10px] border border-white/15 bg-background-tertiary px-[12px] text-text-primary"
+						className="h-full rounded-[10px] border border-white/15 bg-background-tertiary px-[12px] text-text-primary hover:bg-background-Senary"
 						onClick={() => setCategory(Category.TRADE)}
 					>
 						장터

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useState, useRef, cloneElement, useCallback } from "react";
+import { useLayoutEffect, useEffect, useState, useRef, useCallback } from "react";
 
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -145,7 +145,6 @@ export default function Popover({
 	const onClick = useCallback(() => {
 		if (!readonly) {
 			setToggle((_) => !_);
-
 		}
 	}, [readonly]);
 
