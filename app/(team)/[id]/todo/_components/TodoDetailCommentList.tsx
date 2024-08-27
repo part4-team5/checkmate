@@ -62,7 +62,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 	const timeDifference = calculateTimeDifference(comment.createdAt, currentTime);
 
 	return (
-		<div>
+		<div className="border-gray-300 rounded-xl bg-background-list px-3 py-2 drop-shadow-md">
 			{comment && (
 				<form onSubmit={(e) => handleTodoCommentEditSubmit(e, comment.id)} id="test">
 					<div className="flex justify-between">
@@ -124,7 +124,6 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 							</div>
 						)}
 					</div>
-					<hr className="border-text-secondary" />
 				</form>
 			)}
 		</div>

@@ -6,6 +6,7 @@ import defaultImage from "@/public/icons/defaultAvatar.svg";
 import { useState } from "react";
 import { useEditTodoMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import API from "@/app/_api";
+import { motion } from "framer-motion";
 
 type FrequencyType = "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
 const frequency: Record<FrequencyType, string> = {
@@ -64,6 +65,15 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 		setIsEdit(false);
 	};
 
+	const buttonAnimation = {
+		whileTap: {
+			scale: 0.8,
+		},
+		hover: {
+			scale: 1.2,
+		},
+	};
+
 	const { date } = convertIsoToDateAndTime(todoContent?.date);
 	return (
 		<div>
@@ -82,30 +92,50 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 						</div>
 					)}
 					<form className="text-text-primary" onSubmit={(e) => handleTodoEditSubmit(e, todoContent.doneAt)}>
-						<div className="flex justify-between gap-7">
+						<div className="flex items-center justify-between gap-7">
 							{isEdit ? (
 								<input
 									type="text"
 									onChange={handleEditTitleChange}
 									value={editedTitle}
-									className={`${editedTitle.length > 0 ? "" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-todo-primary p-1 pl-2 shadow-input focus:outline-none`}
+									className={`${editedTitle.length > 0 ? "" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-todo-primary p-3 shadow-input focus:outline-none`}
 								/>
 							) : (
 								<div className={`${isCheck ? "line-through" : ""} text-xl font-bold text-text-primary`}>{todoContent.name}</div>
 							)}
 							{isEdit ? (
 								<div className="flex gap-2">
-									<button type="button" onClick={handleEditCancelClick} aria-label="todo-edit-cancel">
-										<Icon.EditCancel width={24} height={24} color="#34D399" />
-									</button>
-									<button type="submit" aria-label="todo-edit-submit">
-										<Icon.EditCheck width={24} height={24} color="#34D399" />
-									</button>
+									<motion.button
+										whileTap={buttonAnimation.whileTap}
+										whileHover={buttonAnimation.hover}
+										type="button"
+										onClick={handleEditCancelClick}
+										aria-label="todo-edit-cancel"
+										className="h-fit w-fit rounded-full shadow-buttonPrimary"
+									>
+										<Icon.EditCancel width={22} height={22} />
+									</motion.button>
+									<motion.button
+										whileTap={buttonAnimation.whileTap}
+										whileHover={buttonAnimation.hover}
+										type="submit"
+										aria-label="todo-edit-submit"
+										className="h-fit w-fit rounded-full shadow-buttonPrimary"
+									>
+										<Icon.EditCheck width={24} height={24} />
+									</motion.button>
 								</div>
 							) : (
-								<button type="button" onClick={handleEditButtonClick} aria-label="todo-edit">
-									<Icon.Edit width={24} height={24} color="#34D399" />
-								</button>
+								<motion.button
+									whileTap={buttonAnimation.whileTap}
+									whileHover={buttonAnimation.hover}
+									type="button"
+									onClick={handleEditButtonClick}
+									aria-label="todo-edit"
+									className="h-fit w-fit rounded-full bg-background-Senary p-3 shadow-buttonPrimary"
+								>
+									<Icon.Edit width={24} height={24} />
+								</motion.button>
 							)}
 						</div>
 						<div className="my-4 flex justify-between">

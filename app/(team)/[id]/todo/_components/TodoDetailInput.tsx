@@ -40,11 +40,10 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 				댓글
 			</label>
 
-			<hr className="border-text-secondary" />
-			<div className="flex">
+			<div className="flex gap-3 rounded-md">
 				<input
 					onChange={handleCommentChange}
-					className="h-[50px] w-full bg-background-secondary focus:outline-none"
+					className="h-[50px] w-full rounded-md bg-todo-primary pl-2 shadow-input focus:outline-none"
 					id="add-comment"
 					type="text"
 					value={commentText}
@@ -62,7 +61,6 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 					</button>
 				)}
 			</div>
-			<hr className="border-text-secondary" />
 		</form>
 	);
 }
