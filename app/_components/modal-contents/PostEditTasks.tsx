@@ -169,6 +169,7 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 						</label>
 						<div className="w-full">
 							<Form.Input
+								isModal
 								id="postTasks"
 								type="text"
 								placeholder="목록 명을 입력해주세요."

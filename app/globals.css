@@ -93,6 +93,8 @@
 
 	--postboard-shadow: -5px 5px 10px rgba(179, 179, 179, 0.2), 5px -5px 10px rgba(179, 179, 179, 0.2), inset 1px 1px 2px rgba(255, 255, 255, 0.3);
 	--postboardTitle-shadow: -5px 5px 10px rgba(179, 179, 179, 0.2), 5px -5px 10px rgba(179, 179, 179, 0.2), inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+	--input-shadow: 1px 1px 2px rgba(71, 73, 81, 0.1), -1px -1px 2px rgba(41, 43, 47, 0.1), inset -2px 2px 4px rgba(41, 43, 47, 0.1),
+		inset 2px -2px 4px rgba(41, 43, 47, 0.1), inset 2px 2px 5px rgba(41, 43, 47, 0.1);
 
 	/* input */
 	--input-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3), -1px -1px 2px rgba(216, 216, 219, 0.5), inset -1px 1px 2px rgba(216, 216, 219, 0.2),

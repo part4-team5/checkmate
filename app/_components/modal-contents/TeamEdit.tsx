@@ -149,6 +149,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 							</label>
 							<div>
 								<Form.Input
+									isModal
 									id="teamName"
 									type="text"
 									placeholder="팀 이름을 입력하세요"
