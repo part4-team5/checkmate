@@ -123,7 +123,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 
 	function renderEmptyState() {
 		return (
-			<div className="flex h-[142px] w-[218px] flex-col items-center justify-between rounded-[12px] bg-background-secondary p-[16px] text-[#F8FAFC]">
+			<div className="flex h-[142px] w-[218px] flex-col items-center justify-between rounded-[12px] bg-background-secondary p-[16px] font-semibold text-text-primary">
 				<div className="flex h-[46px] w-[186px] items-center justify-center">
 					<p>참여 중인 팀이 없습니다.</p>
 				</div>
@@ -131,7 +131,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 					type="button"
 					ref={addButtonRef}
 					tabIndex={0}
-					className="mt-[16px] flex h-[48px] w-[186px] cursor-pointer items-center justify-center rounded-[12px] border text-[16px] hover:bg-[#63748D] focus:bg-[#475569] focus:outline-none"
+					className="mt-[16px] flex h-[48px] w-[186px] cursor-pointer items-center justify-center rounded-[12px] border text-[16px] hover:bg-interaction-hover focus:bg-[#475569] focus:outline-none"
 					onClick={() => {
 						router.push("/create-team");
 					}}
@@ -144,15 +144,15 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 
 	function recursive(items: Option[], close: () => void) {
 		return (
-			<div className="flex w-max min-w-[120px] flex-col rounded-[12px] border border-white border-opacity-5 bg-background-secondary text-[#F8FAFC]">
+			<div className="flex w-max min-w-[120px] flex-col rounded-[12px] border border-white border-opacity-5 bg-background-secondary shadow-teamDropdown">
 				<div
-					className={`flex max-h-[308px] flex-col overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary ${items.some((option) => option.image) ? "mt-2 space-y-2 p-[16px]" : ""}`}
+					className={`flex max-h-[308px] flex-col overflow-y-auto shadow-teamDropdown scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary ${items.some((option) => option.image) ? "mt-2 space-y-2 p-[16px]" : ""}`}
 				>
 					{items.map((option, index) => (
 						<div
 							key={`${option.text} ${index}` || index}
-							className={`flex size-full h-[46px] items-center rounded-[8px] hover:bg-[#63748D] focus:bg-[#475569] focus:outline-none ${
-								option.groupId === currentId && currentId ? "bg-[#475569]" : "bg-background-secondary"
+							className={`flex size-full h-[46px] items-center rounded-[8px] hover:bg-interaction-hover focus:bg-[#475569] focus:outline-none ${
+								option.groupId === currentId && currentId ? "bg-interaction-hover" : "bg-background-secondary"
 							}`} // 배경색 변경
 							tabIndex={0}
 							ref={(el) => {
@@ -163,11 +163,11 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 							<div className={`flex size-full items-center ${option.image ? "justify-start" : "justify-center"} gap-[12px]`}>
 								<button type="button" className="flex max-w-[220px] cursor-pointer items-center justify-start gap-2 p-[8px]">
 									{option.image && (
-										<div className="flex-shrink-0">
+										<div className="h-[32px] w-[32px] flex-shrink-0">
 											<Image src={option.image} alt={option.text || "empty"} width={32} height={32} />
 										</div>
 									)}
-									<p className="flex-grow truncate text-left">{option.text}</p>
+									<p className="flex-grow truncate text-left font-semibold text-text-primary">{option.text}</p>
 								</button>
 							</div>
 							{option.options && option.options.length > 0 && (
@@ -198,7 +198,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 							type="button"
 							ref={addButtonRef}
 							tabIndex={0}
-							className="mx-[16px] mb-[16px] flex size-full h-[48px] cursor-pointer items-center justify-center rounded-[12px] border px-[47px] text-[16px] hover:bg-[#63748D] focus:bg-[#475569] focus:outline-none"
+							className="mx-[16px] mb-[16px] flex size-full h-[48px] cursor-pointer items-center justify-center rounded-[12px] border px-[47px] text-[16px] font-semibold text-text-primary hover:bg-interaction-hover focus:bg-[#475569] focus:outline-none"
 							onClick={() => {
 								router.push("/create-team");
 							}}

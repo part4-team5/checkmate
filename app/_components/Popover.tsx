@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 
 export interface PopoverProps extends React.PropsWithChildren {
 	overlay: (close: () => void) => JSX.Element;

@@ -7,8 +7,6 @@ import { useRef, useEffect } from "react";
 import { Reorder } from "framer-motion";
 import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
 import Icon from "@/app/_icons";
-import Tour from "@/app/_utils/Tour";
-
 import DropDown from "@/app/_components/Dropdown";
 import Image from "next/image";
 import PostEditTasks from "@/app/_components/modal-contents/PostEditTasks";
@@ -17,6 +15,7 @@ import { useRouter } from "next/navigation";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "@/app/_utils/Toast";
+import Tour from "@/app/_utils/Tour";
 import { useGroupInfo, useDeleteTaskList, useReorderTaskLists, TaskListType } from "./useTaskList";
 
 function TaskItem({
@@ -124,7 +123,7 @@ function TaskItem({
 				<div className="flex w-[78px] items-center justify-center gap-[4px]" onClick={(e) => e.stopPropagation()}>
 					<div className="flex h-[25px] w-[58px] items-center justify-center gap-[4px] rounded-[12px] bg-[#10B981]">
 						{completedTasks === totalTasks && totalTasks !== 0 ? (
-							<Image src="/icons/DoneCheckIcon.svg" alt="Completed" height={16} width={16} />
+							<Icon.DoneCheck height={16} width={16} color="#ffffff" />
 						) : (
 							<CircularProgressBar percent={completionRate} size={10} strokeWidth={2} backgroundColor="#FFFFFF" useGradient={false} strokeColor="#EAB308" />
 						)}
@@ -235,6 +234,7 @@ export default function Tasks({ id }: { id: number }) {
 								style={{ cursor: "pointer" }}
 								onDragEnd={() => handleDragEnd(taskList)}
 								onDrag={handleDrag} // onDrag 이벤트 핸들러 추가
+								className="reorder-item"
 							>
 								<TaskItem
 									key={taskList.id}
