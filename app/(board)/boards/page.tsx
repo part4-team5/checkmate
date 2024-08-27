@@ -263,7 +263,7 @@ export default function Page() {
 					{!isFetching && (posts?.length ?? 0) === 0 && <div className="text-center text-text-primary">없어요...</div>}
 				</div>
 			</div>
-			<div className="shadow-lg fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center rounded-[40px] tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)] overflow-hidden">
+			<div className="shadow-lg fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center overflow-hidden rounded-[40px] tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]">
 				<Button href="/create-post">+ 글쓰기</Button>
 			</div>
 		</main>

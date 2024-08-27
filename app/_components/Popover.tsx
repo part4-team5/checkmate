@@ -35,15 +35,15 @@ export default function Popover({
 	const [toggle, setToggle] = useState(init);
 	const pop = useRef<HTMLDivElement>(null);
 	const over = useRef<HTMLDivElement>(null);
-	const [style, setStyle] = useState<React.CSSProperties>({ display: "none" });
+	const [style, setStyle] = useState<React.CSSProperties>({ visibility: "hidden" });
 
 	const pathname = usePathname();
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		const resize = new ResizeObserver(() => {
 			const impl: typeof style = { position: "absolute", zIndex: 69 };
 			// :3
-			if (!toggle) impl.display = "none";
+			if (!toggle) impl.visibility = "hidden";
 
 			const popRect = pop.current?.getBoundingClientRect()!;
 			const overRect = over.current?.getBoundingClientRect()!;
