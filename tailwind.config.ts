@@ -35,6 +35,7 @@ export default {
 				Septenary: "var(--landing-Septenary)",
 				border: "var(--landing-border)",
 				inverse: "var(--landing-inverse)",
+				green: "var(--landing-green)",
 			},
 			background: {
 				primary: "var(--background-primary)",
@@ -122,6 +123,7 @@ export default {
 		extend: {
 			backgroundImage: {
 				"conic-gradient": "conic-gradient(from 0deg, #10b981, #cef57e, #10b981)",
+				"custom-gradient": "linear-gradient(315deg, rgb(48, 218, 208) 0%, rgb(13, 204, 140) 43.5%)",
 			},
 			keyframes: {
 				scaleUp: {
