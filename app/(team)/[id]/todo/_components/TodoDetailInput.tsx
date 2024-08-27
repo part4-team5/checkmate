@@ -40,7 +40,7 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 				댓글
 			</label>
 
-			<hr className="border-icon-primary" />
+			<hr className="border-text-secondary" />
 			<div className="flex">
 				<input
 					onChange={handleCommentChange}
@@ -62,7 +62,7 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 					</button>
 				)}
 			</div>
-			<hr className="border-icon-primary" />
+			<hr className="border-text-secondary" />
 		</form>
 	);
 }

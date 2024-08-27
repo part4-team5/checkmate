@@ -68,7 +68,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 					<div className="flex justify-between">
 						{isCommentEdit ? (
 							<textarea
-								className={`${editedComment.length > 0 ? "border-brand-primary" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-background-secondary pl-2 focus:outline-none`}
+								className={`${editedComment.length > 0 ? "" : "border-status-danger"} shadow-modalInput w-full rounded-lg border border-border-primary bg-background-tertiary pl-2 focus:outline-none`}
 								onChange={handleEditCommentChange}
 								value={editedComment}
 								onKeyDown={(e) => {
@@ -124,7 +124,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 							</div>
 						)}
 					</div>
-					<hr className="border-icon-primary" />
+					<hr className="border-text-secondary" />
 				</form>
 			)}
 		</div>

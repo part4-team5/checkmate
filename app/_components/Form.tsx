@@ -116,7 +116,8 @@ Form.Input = function Input({
 	init,
 	tests,
 	placeholder,
-}: Readonly<{ id: string; type: string; init?: string; tests?: Validator[]; placeholder?: string }>) {
+	isModal,
+}: Readonly<{ id: string; type: string; init?: string; tests?: Validator[]; placeholder?: string; isModal?: boolean }>) {
 	const ctx = useCTX();
 
 	const [value, setValue] = useState(init ?? "");
@@ -219,7 +220,10 @@ Form.Input = function Input({
 	const [display, setDisplay] = useState(false);
 
 	return (
-		<div ref={self} className="flex w-full gap-[16px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px]">
+		<div
+			ref={self}
+			className={`flex w-full gap-[16px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px] ${isModal ? "shadow-input bg-background-tertiary" : ""}`}
+		>
 			<input
 				id={id}
 				// eslint-disable-next-line no-nested-ternary
@@ -229,7 +233,7 @@ Form.Input = function Input({
 				onChange={onChange}
 				placeholder={placeholder}
 				defaultValue={init}
-				className="h-[48px] grow bg-transparent text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
+				className={`h-[48px] grow bg-transparent text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none`}
 			/>
 			{type === "password" && (
 				<button type="button" onClick={() => setDisplay(!display)}>
@@ -240,7 +244,13 @@ Form.Input = function Input({
 	);
 };
 
-Form.TextArea = function TextArea({ id, init, tests, placeholder }: Readonly<{ id: string; init?: string; tests?: Validator[]; placeholder?: string }>) {
+Form.TextArea = function TextArea({
+	id,
+	init,
+	tests,
+	placeholder,
+	isModal,
+}: Readonly<{ id: string; init?: string; tests?: Validator[]; placeholder?: string; isModal?: boolean }>) {
 	const ctx = useCTX();
 
 	const [value, setValue] = useState(init ?? "");
@@ -354,7 +364,7 @@ Form.TextArea = function TextArea({ id, init, tests, placeholder }: Readonly<{ i
 			onChange={onChange}
 			placeholder={placeholder}
 			defaultValue={init}
-			className="h-auto grow resize-none overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
+			className={`${isModal ? "shadow-input bg-background-tertiary" : "bg-background-secondary"} h-auto grow resize-none overflow-hidden rounded-[12px] border border-border-primary px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none`}
 		/>
 	);
 };
