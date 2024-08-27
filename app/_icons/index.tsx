@@ -465,3 +465,106 @@ Icon.MailReject = function MailReject({ width = 24, height = 24, color = "#EF444
 		</svg>
 	);
 };
+
+Icon.UnCheckBox = function UnCheckBox({ width = 24, height = 24, color = "#10B981" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect x="4.5" y="4.5" width="15" height="15" rx="5.5" stroke={color} />
+		</svg>
+	);
+};
+
+Icon.CommentCount = function CommentCount({ width = 16, height = 16, color = "var(--text-secondary)" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path
+				fillRule="evenodd"
+				clipRule="evenodd"
+				d="M2 6.93268C2 5.43921 2 4.69247 2.29065 4.12204C2.54631 3.62028 2.95426 3.21233 3.45603 2.95666C4.02646 2.66602 4.77319 2.66602 6.26667 2.66602H9.73333C11.2268 2.66602 11.9735 2.66602 12.544 2.95666C13.0457 3.21233 13.4537 3.62028 13.7094 4.12204C14 4.69247 14 5.43921 14 6.93268V7.73268C14 9.22616 14 9.97289 13.7094 10.5433C13.4537 11.0451 13.0457 11.453 12.544 11.7087C11.9735 11.9993 11.2268 11.9993 9.73333 11.9993L4.94281 11.9993C4.766 11.9993 4.59643 12.0696 4.4714 12.1946L3.13807 13.5279C2.7181 13.9479 2 13.6505 2 13.0565V11.9993V8.66602V6.93268ZM6 5.33301C5.63181 5.33301 5.33333 5.63148 5.33333 5.99967C5.33333 6.36786 5.63181 6.66634 6 6.66634H10C10.3682 6.66634 10.6667 6.36786 10.6667 5.99967C10.6667 5.63148 10.3682 5.33301 10 5.33301H6ZM6 7.99967C5.63181 7.99967 5.33333 8.29815 5.33333 8.66634C5.33333 9.03453 5.63181 9.33301 6 9.33301H8C8.36819 9.33301 8.66667 9.03453 8.66667 8.66634C8.66667 8.29815 8.36819 7.99967 8 7.99967H6Z"
+				fill={color}
+			/>
+		</svg>
+	);
+};
+
+Icon.Calendar = function Calendar({ width = 16, height = 16, color = "var(--text-secondary)" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path
+				fillRule="evenodd"
+				clipRule="evenodd"
+				d="M11.2654 2.3813H11.332C13.173 2.3813 14.6654 3.87369 14.6654 5.71464V11.7146C14.6654 13.5556 13.173 15.048 11.332 15.048H4.66536C3.78131 15.048 2.93346 14.6968 2.30834 14.0717C1.68322 13.4465 1.33203 12.5987 1.33203 11.7146V5.71464C1.33203 3.87369 2.82442 2.3813 4.66536 2.3813H4.73203V1.16797C4.73203 0.891826 4.95589 0.667969 5.23203 0.667969C5.50817 0.667969 5.73203 0.891826 5.73203 1.16797V2.3813H10.2654V1.16797C10.2654 0.891826 10.4892 0.667969 10.7654 0.667969C11.0415 0.667969 11.2654 0.891826 11.2654 1.16797V2.3813ZM4.9987 6.4413H10.9987C11.2748 6.4413 11.4987 6.21744 11.4987 5.9413C11.4987 5.66516 11.2748 5.4413 10.9987 5.4413H4.9987C4.72256 5.4413 4.4987 5.66516 4.4987 5.9413C4.4987 6.21744 4.72256 6.4413 4.9987 6.4413Z"
+				fill={color}
+			/>
+		</svg>
+	);
+};
+
+Icon.Cycles = function Cycles({ width = 16, height = 16, color = "var(--text-secondary)" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M10 10L8 12L10 14" fill={color} />
+			<path d="M10 10L8 12L10 14V10Z" stroke="#64748B" strokeLinecap="round" strokeLinejoin="round" />
+			<path
+				d="M8 12H12.8462C14.0357 12 15 11.0449 15 9.86667V6.13333C15 4.95512 14.0357 4 12.8462 4H11.2308"
+				stroke={color}
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+			<path d="M6 6L8 4L6 2" fill={color} />
+			<path d="M6 6L8 4L6 2V6Z" stroke={color} strokeLinecap="round" strokeLinejoin="round" />
+			<path
+				d="M8 4H3.15385C1.96431 4 1 4.95513 1 6.13333V9.86667C1 11.0449 1.96431 12 3.15385 12H4.76923"
+				stroke={color}
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	);
+};
+
+Icon.CalendarLeftArrow = function CalendarLeftArrow({ width = 24, height = 24, color = "var(--background-secondary)" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<g clipPath="url(#clip0_1996_77861)">
+				<circle cx="8" cy="8" r="8" fill={color} />
+				<path d="M9.5 5L6.5 8L9.5 11" stroke="#64748B" strokeWidth="1.125" strokeLinecap="round" strokeLinejoin="round" />
+			</g>
+			<defs>
+				<clipPath id="clip0_1996_77861">
+					<rect width={width} height={height} fill="white" />
+				</clipPath>
+			</defs>
+		</svg>
+	);
+};
+
+Icon.CalendarRightArrow = function CalendarRightArrow({ width = 24, height = 24, color = "var(--background-secondary)" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<g clipPath="url(#clip0_1996_77862)">
+				<circle cx="8" cy="8" r="8" fill={color} />
+				<path d="M6.5 5L9.5 8L6.5 11" stroke="#64748B" strokeWidth="1.125" strokeLinecap="round" strokeLinejoin="round" />
+			</g>
+			<defs>
+				<clipPath id="clip0_1996_77862">
+					<rect width="16" height="16" fill="white" />
+				</clipPath>
+			</defs>
+		</svg>
+	);
+};
+
+Icon.CalendarButton = function CalendarButton({ width = 24, height = 24, color = "var(--background-secondary)" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill={color} />
+			<path
+				fillRule="evenodd"
+				clipRule="evenodd"
+				d="M14.45 7.785H14.5C15.8807 7.785 17 8.90429 17 10.285V14.785C17 16.1657 15.8807 17.285 14.5 17.285H9.5C8.83696 17.285 8.20107 17.0216 7.73223 16.5528C7.26339 16.0839 7 15.448 7 14.785V10.285C7 8.90429 8.11929 7.785 9.5 7.785H9.55V6.875C9.55 6.66789 9.71789 6.5 9.925 6.5C10.1321 6.5 10.3 6.66789 10.3 6.875V7.785H13.7V6.875C13.7 6.66789 13.8679 6.5 14.075 6.5C14.2821 6.5 14.45 6.66789 14.45 6.875V7.785ZM9.75 10.83H14.25C14.4571 10.83 14.625 10.6621 14.625 10.455C14.625 10.2479 14.4571 10.08 14.25 10.08H9.75C9.54289 10.08 9.375 10.2479 9.375 10.455C9.375 10.6621 9.54289 10.83 9.75 10.83Z"
+				fill="#64748B"
+			/>
+		</svg>
+	);
+};

@@ -62,7 +62,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 	const { date } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
 	return (
 		<div
-			className={`lg:hover:bg-background-tertiary shadow-listPage flex w-full justify-between rounded-lg bg-background-secondary px-[14px] py-3 ${
+			className={`lg:hover:bg-background-tertiary flex w-full justify-between rounded-lg bg-background-tertiary px-[14px] py-3 shadow-listPage ${
 				isDragging ? "cursor-grabbing" : "cursor-pointer"
 			}`}
 			key={todoItem.id}
@@ -86,7 +86,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 								onToggleTodo(todoItem.id, todoItem.doneAt);
 							}}
 						>
-							<Image src={todoItem.doneAt ? "/icons/checkBox.svg" : "/icons/uncheckBox.svg"} alt="Todo status" width={24} height={24} />
+							{todoItem.doneAt ? <Image src="/icons/checkBox.svg" alt="Todo status" width={24} height={24} /> : <Icon.UnCheckBox width={24} height={24} />}
 
 							{/* 호버 시 나타나는 오버레이 */}
 							<div className="lg:group-hover:opacity-90 absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 ease-in-out">
@@ -105,7 +105,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 						</div>
 
 						<div className="flex items-center justify-center gap-1 text-xs font-normal text-text-default">
-							<Image src="/icons/comment.svg" alt="comment" width={16} height={16} />
+							<Icon.CommentCount width={16} height={16} />
 							{todoItem.commentCount}
 						</div>
 					</div>
