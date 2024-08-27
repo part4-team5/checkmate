@@ -70,14 +70,14 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 
 				<div className="pt-5" />
 
-				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
+				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-background-secondary">
 					<ul className="grid w-full grid-rows-4 gap-4 tablet:grid-cols-2 tablet:grid-rows-3 desktop:grid-cols-3">
 						{paginatedTeams.map((team) => (
-							<li key={team.groupId} className="flex gap-3 overflow-x-hidden">
-								<Link
-									href={`/${team.groupId}`}
-									className="flex grow items-center gap-3 overflow-x-hidden text-ellipsis whitespace-nowrap rounded-md bg-background-tertiary px-4 py-3 hover:bg-interaction-inactive/30"
-								>
+							<li
+								key={team.groupId}
+								className="flex gap-3 overflow-x-hidden rounded-md bg-background-tertiary shadow-teamCard hover:bg-interaction-inactive/30"
+							>
+								<Link href={`/${team.groupId}`} className="flex grow items-center gap-3 overflow-x-hidden text-ellipsis whitespace-nowrap px-4 py-3">
 									<Image
 										src={team.group.image ?? "/icons/emptyImage.svg"}
 										alt={team.group.name}

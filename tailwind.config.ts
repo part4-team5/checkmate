@@ -56,11 +56,14 @@ export default {
 			interaction: {
 				inactive: "#94A3B8",
 				pressed: "#047857",
-				hover: "var(--background-hover)",
+				hover: "#059669",
 				focus: "#10B981",
 			},
 			border: {
 				primary: "var(--border-primary)",
+			},
+			header: {
+				primary: "var(--header-primary)",
 			},
 			text: {
 				primary: "var(--text-primary)",
@@ -71,6 +74,9 @@ export default {
 				disabled: "#94A3B8",
 				emerald: "#10B981",
 				lime: "#A3E635",
+			},
+			todo: {
+				primary: "var(--todo-primary)",
 			},
 			status: {
 				danger: "#EF4444",
@@ -100,6 +106,8 @@ export default {
 			teamDropdown: "var(--teamDropdown-shadow)",
 			postboard: "var(--postboard-shadow)",
 			postboardTitle: "var(--postboardTitle-shadow)",
+			input: "var(--input-shadow)",
+			buttonPrimary: "var(--button-primary-shadow)",
 		},
 		fontSize: {
 			"3xl": ["32px", "38px"],

@@ -64,7 +64,7 @@ export default function Page() {
 		<main className="h-full">
 			<Link
 				href="/create-post"
-				className="fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary text-text-primary shadow-lg hover:bg-brand-secondary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
+				className="shadow-lg fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center rounded-[40px] bg-brand-primary text-text-primary hover:bg-brand-secondary tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]"
 			>
 				+ 글쓰기
 			</Link>

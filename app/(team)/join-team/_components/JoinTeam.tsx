@@ -2,10 +2,10 @@
 
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
+import Icon from "@/app/_icons";
 import useAuthStore from "@/app/_store/useAuthStore";
 import toast from "@/app/_utils/Toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -77,29 +77,29 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 	return (
 		<main className="size-full">
 			<section className="flex size-full flex-col items-center justify-center gap-20 px-4 pt-40 font-bold text-text-default">
-				<div className="flex w-full max-w-[500px] flex-col items-center justify-center rounded-xl bg-background-secondary p-8">
-					<p className="text-2xl font-bold">팀 참여 요청</p>
+				<div className="flex w-full max-w-[500px] flex-col items-center justify-center rounded-xl bg-background-secondary p-8 shadow-background-secondary">
+					<p className="text-2xl font-bold text-brand-primary">팀 참여 요청</p>
 					{!inviteGroup ? (
 						<div className="flex w-full flex-col items-center">
-							<div className="my-4 flex size-[60px] min-h-[60px] min-w-[60px] items-center justify-center rounded-lg bg-background-tertiary" />
+							<div className="my-4 flex size-[60px] min-h-[60px] min-w-[60px] items-center justify-center rounded-lg bg-background-tertiary shadow-background-tertiary" />
 
 							<div className="flex size-full flex-col items-center">
-								<div className="h-dvh max-h-6 w-dvw max-w-[280px] rounded-lg bg-background-tertiary" />
+								<div className="h-dvh max-h-6 w-dvw max-w-[280px] rounded-lg bg-background-tertiary shadow-background-tertiary" />
 								<div className="pt-3" />
-								<div className="h-dvh max-h-6 w-dvw max-w-[200px] rounded-lg bg-background-tertiary" />
+								<div className="h-dvh max-h-6 w-dvw max-w-[200px] rounded-lg bg-background-tertiary shadow-background-tertiary" />
 
 								<div className="pt-8" />
 
 								<div className="flex h-12 w-full items-center justify-center gap-10">
-									<div className="size-full rounded-lg bg-background-tertiary" />
-									<div className="size-full rounded-lg bg-background-tertiary" />
+									<div className="size-full rounded-lg bg-background-tertiary shadow-background-tertiary" />
+									<div className="size-full rounded-lg bg-background-tertiary shadow-background-tertiary" />
 								</div>
 							</div>
 						</div>
 					) : (
 						<>
 							<div className="my-4 flex size-[60px] min-h-[60px] min-w-[60px] items-center justify-center rounded-lg">
-								<Image src={inviteGroup?.groupImage ?? "/icons/emptyImage.svg"} alt="logo" width={60} height={60} />
+								<Icon.EmptyImage width={60} height={60} />
 							</div>
 
 							<div className="size-full">
@@ -112,7 +112,7 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 
 										<div className="pt-3" />
 										<div className="w-full max-w-[300px]">
-											<Button variant="outline" fontSize="xl" onClick={() => router.back()}>
+											<Button variant="outline" fontSize="xl" onClick={() => router.push("/get-started")}>
 												돌아가기
 											</Button>
 										</div>
