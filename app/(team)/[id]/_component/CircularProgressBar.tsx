@@ -20,7 +20,7 @@ function CircularProgressBar({
 	strokeColor,
 	size = 170,
 	strokeWidth = 30,
-	backgroundColor = "#334155",
+	backgroundColor = "#D8D8D8",
 	borderColor: BorderColor,
 	borderWidth = 5,
 }: CircularProgressBarProps) {

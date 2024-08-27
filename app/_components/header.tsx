@@ -211,15 +211,13 @@ export default function Header() {
 					<div className="z-40 h-full bg-background-secondary px-4 py-5 pr-5" onClick={(event) => event.stopPropagation()}>
 						<Link
 							href="/get-started"
-							className="flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary"
+							className="flex flex-col items-center justify-center rounded-md text-[18px] font-medium hover:bg-background-tertiary"
 							onClick={sideBarClose}
 						>
-							<div className="flex w-full grow items-center gap-2 px-4 py-2">
-								<Icon.Star width={32} height={32} secondary="var(--text-primary)" />
+							<div className="flex w-full grow items-center gap-3 px-4 py-3">
+								<Icon.Star width={28} height={28} />
 								<p className="grow">내 대시보드</p>
 							</div>
-
-							<div className="w-[95%] border-b border-[#353535]" />
 						</Link>
 
 						<div className="h-2" />
@@ -227,17 +225,15 @@ export default function Header() {
 						<button
 							type="button"
 							onClick={() => setIsTeamOpened(!isTeamOpened)}
-							className={`w-full flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
+							className={`w-full items-center gap-3 rounded-md px-4 py-3 text-[18px] font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 						>
-							<div className="flex w-full grow items-center gap-2 px-4 py-2">
-								<Image src="/icons/list.svg" alt="selectArrow" width={32} height={32} />
-								<p className="grow text-left">팀 목록</p>
-								<div className={`size-7 items-center duration-300 ${isTeamOpened ? "rotate-90" : ""}`}>
-									<Icon.ArrowRight width={28} height={28} color="var(--text-primary)" />
-								</div>
+							<Image src="/icons/team_list.svg" alt="selectArrow" width={28} height={28} />
+							<p className="grow text-left">팀 목록</p>
+							<div className={`flex size-[20px] items-center duration-300 ${isTeamOpened ? "rotate-90" : ""}`}>
+								<Icon.ArrowRight width={20} height={20} color="#dddddd" />
 							</div>
 
-							<div className="w-[95%] border-b border-[#353535]" />
+							{/* <div className="w-[95%] border-b border-[#353535]" /> */}
 						</button>
 
 						{/* 팀 목록 */}
@@ -247,10 +243,10 @@ export default function Header() {
 									<li key={membership.groupId} className="size-full pb-2">
 										<Link
 											href={`/${membership.groupId}`}
-											className="mr-2 flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-lg font-medium hover:bg-background-tertiary"
+											className="mr-2 flex items-center gap-3 whitespace-nowrap rounded-md px-3 py-2 text-lg font-medium hover:bg-background-tertiary"
 											onClick={sideBarClose}
 										>
-											<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={32} height={32} className="size-8" />
+											<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={28} height={28} className="size-8" />
 											<p className="w-fit grow overflow-x-hidden text-ellipsis">{membership.group.name}</p>
 										</Link>
 									</li>
@@ -262,15 +258,11 @@ export default function Header() {
 
 						<Link
 							href="/create-team"
-							className={`flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
+							className={`items-center gap-3 rounded-md px-4 py-3 text-[18px] font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 							onClick={sideBarClose}
 						>
-							<div className="flex w-full grow items-center gap-2 px-4 py-2">
-								<Icon.Add width={32} height={32} secondary="var(--text-primary)" />
-								<p className="grow">팀 생성하기</p>
-							</div>
-
-							<div className="w-[95%] border-b border-[#353535]" />
+							<Image src="/icons/teamAdd.svg" alt="selectArrow" width={28} height={28} />
+							<p className="grow">팀 생성하기</p>
 						</Link>
 
 						<div className="h-2" />
@@ -278,15 +270,11 @@ export default function Header() {
 						<div className="flex flex-col pb-2">
 							<Link
 								href="/boards"
-								className="flex flex-col items-center justify-center rounded-md text-lg font-medium hover:bg-background-tertiary"
+								className="flex items-center gap-3 rounded-md px-4 py-3 text-[18px] font-medium hover:bg-background-tertiary"
 								onClick={sideBarClose}
 							>
-								<div className="flex w-full grow items-center gap-2 px-4 py-2">
-									<Image src="/icons/box.svg" alt="selectArrow" width={32} height={32} />
-									<p className="grow">자유게시판</p>
-								</div>
-
-								<div className="w-[95%] border-b border-[#353535]" />
+								<Image src="/icons/board.svg" alt="selectArrow" width={28} height={28} />
+								<p className="grow">자유게시판</p>
 							</Link>
 						</div>
 					</div>

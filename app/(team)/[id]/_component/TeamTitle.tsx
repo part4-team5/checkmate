@@ -87,7 +87,7 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 
 	if (!teamName)
 		return (
-			<div className="mt-[24px] flex h-[64px] w-full items-center justify-between rounded-[12px] bg-background-secondary px-[24px] py-[20px]">
+			<div className="mt-[24px] flex h-[64px] w-full items-center justify-between rounded-[12px] bg-background-tertiary px-[24px] py-[20px] shadow-teamCard">
 				<div className="flex w-full justify-between">
 					<div className="h-[24px] w-[150px] animate-pulse rounded-md bg-background-primary" />
 					<div className="h-[24px] w-[24px] animate-pulse rounded-md bg-background-primary" />
@@ -97,8 +97,8 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 
 	return (
 		<main>
-			<section className="mt-[24px] flex h-[64px] w-full items-center justify-between rounded-[12px] bg-background-secondary px-[24px] py-[20px]">
-				<p className="text-[20px] font-bold">{teamName}</p>
+			<section className="mt-[24px] flex h-[64px] w-full items-center justify-between rounded-[12px] bg-background-tertiary px-[24px] py-[20px] shadow-teamCard">
+				<p className="text-[20px] font-bold text-text-primary">{teamName}</p>
 				{isAdmin && (
 					<DropDown options={EditDropdown ?? []} gapX={10} align="RR">
 						<Icon.Gear width={20} height={20} />
