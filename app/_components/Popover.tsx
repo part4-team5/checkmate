@@ -1,15 +1,16 @@
-/* eslint-disable consistent-return */
+import { useLayoutEffect, useEffect, useState, useRef, cloneElement, useCallback } from "react";
 
-import { useLayoutEffect, useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface PopoverProps extends React.PropsWithChildren {
+	overlay: (close: () => void) => JSX.Element;
 	gapX?: number;
 	gapY?: number;
-	overlay: (close: () => void) => JSX.Element;
+	init?: boolean;
 	onOpen?: () => void;
 	onClose?: () => void;
+	readonly?: boolean;
 	anchorOrigin: Origin;
 	overlayOrigin: Origin;
 }
@@ -19,42 +20,105 @@ interface Origin {
 	horizontal: "left" | "center" | "right";
 }
 
-export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, anchorOrigin, overlayOrigin, children }: Readonly<PopoverProps>) {
+export default function Popover({
+	overlay,
+	gapX = 0,
+	gapY = 0,
+	init = false,
+	onOpen,
+	onClose,
+	readonly,
+	anchorOrigin,
+	overlayOrigin,
+	children,
+}: Readonly<PopoverProps>) {
+	const [toggle, setToggle] = useState(init);
 	const pop = useRef<HTMLDivElement>(null);
 	const over = useRef<HTMLDivElement>(null);
+	const [style, setStyle] = useState<React.CSSProperties>({ display: "none" });
 
 	const pathname = usePathname();
 
-	const [popRect, setPopRect] = useState({ width: 0, height: 0 });
-	const [overRect, setOverRect] = useState({ width: 0, height: 0 });
-
-	const [toggle, setToggle] = useState(false);
-
-	useEffect(() => {
-		setToggle(false);
-	}, [pathname]);
-
-	useEffect(() => {
-		if (toggle) {
-			const handle = (event: MouseEvent) => {
-				if (pop.current && !pop.current.contains(event.target as Element)) {
-					setToggle(false);
-				}
-			};
-			document.addEventListener("click", handle, true);
-			return () => document.removeEventListener("click", handle, true);
-		}
-	}, [toggle]);
-
 	useLayoutEffect(() => {
-		if (toggle) {
-			const popRectTemp = pop.current?.getBoundingClientRect();
-			setPopRect({ width: popRectTemp?.width ?? 0, height: popRectTemp?.height ?? 0 });
+		const resize = new ResizeObserver(() => {
+			const impl: typeof style = { position: "absolute", zIndex: 69 };
+			// :3
+			if (!toggle) impl.display = "none";
 
-			const overRectTemp = over.current?.getBoundingClientRect();
-			setOverRect({ width: overRectTemp?.width ?? 0, height: overRectTemp?.height ?? 0 });
+			const popRect = pop.current?.getBoundingClientRect()!;
+			const overRect = over.current?.getBoundingClientRect()!;
+
+			// eslint-disable-next-line default-case
+			switch (anchorOrigin.vertical) {
+				case "top": {
+					impl.top = 0;
+					break;
+				}
+				case "center": {
+					impl.top = popRect.height * 0.5;
+					break;
+				}
+				case "bottom": {
+					impl.top = popRect.height * 1.0;
+					break;
+				}
+			}
+			// eslint-disable-next-line default-case
+			switch (anchorOrigin.horizontal) {
+				case "left": {
+					impl.left = 0;
+					break;
+				}
+				case "center": {
+					impl.left = popRect.width * 0.5;
+					break;
+				}
+				case "right": {
+					impl.left = popRect.width * 1.0;
+					break;
+				}
+			}
+			// eslint-disable-next-line default-case
+			switch (overlayOrigin.vertical) {
+				case "top": {
+					impl.top += gapY;
+					break;
+				}
+				case "center": {
+					impl.top -= overRect.height * 0.5;
+					break;
+				}
+				case "bottom": {
+					impl.top -= overRect.height * 1.0 + gapY;
+					break;
+				}
+			}
+			// eslint-disable-next-line default-case
+			switch (overlayOrigin.horizontal) {
+				case "left": {
+					impl.left += gapX;
+					break;
+				}
+				case "center": {
+					impl.left -= overRect.width * 0.5;
+					break;
+				}
+				case "right": {
+					impl.left -= overRect.width * 1.0 + gapX;
+					break;
+				}
+			}
+			setStyle(impl);
+		});
+		resize.observe(pop.current!);
+		return () => resize.disconnect();
+	}, [toggle, children, gapY, gapX, anchorOrigin, overlayOrigin]);
+
+	useEffect(() => {
+		if (!readonly) {
+			setToggle(false);
 		}
-	}, [toggle, children]);
+	}, [readonly, pathname]);
 
 	useEffect(() => {
 		if (toggle) {
@@ -64,76 +128,35 @@ export default function Popover({ gapX = 0, gapY = 0, overlay, onOpen, onClose, 
 		}
 	}, [toggle, onOpen, onClose]);
 
-	const style: React.CSSProperties = { position: "absolute", top: 0, left: 0, zIndex: 1000 };
+	// eslint-disable-next-line consistent-return
+	useEffect(() => {
+		if (!readonly && toggle) {
+			// eslint-disable-next-line no-inner-declarations
+			function handle(event: MouseEvent) {
+				if (pop.current && !pop.current.contains(event.target as Element)) {
+					setToggle(false);
+				}
+			}
+			document.addEventListener("click", handle, true);
+			return () => document.removeEventListener("click", handle, true);
+		}
+	}, [readonly, toggle]);
 
-	// eslint-disable-next-line default-case
-	switch (anchorOrigin.vertical) {
-		case "top": {
-			style.top = 0;
-			break;
+	const onClick = useCallback(() => {
+		if (!readonly) {
+			setToggle((_) => !_);
+
 		}
-		case "center": {
-			style.top = popRect.height * 0.5;
-			break;
-		}
-		case "bottom": {
-			style.top = popRect.height * 1.0;
-			break;
-		}
-	}
-	// eslint-disable-next-line default-case
-	switch (anchorOrigin.horizontal) {
-		case "left": {
-			style.left = 0;
-			break;
-		}
-		case "center": {
-			style.left = popRect.width * 0.5;
-			break;
-		}
-		case "right": {
-			style.left = popRect.width * 1.0;
-			break;
-		}
-	}
-	// eslint-disable-next-line default-case
-	switch (overlayOrigin.vertical) {
-		case "top": {
-			style.top += gapY;
-			break;
-		}
-		case "center": {
-			style.top -= overRect.height * 0.5;
-			break;
-		}
-		case "bottom": {
-			style.top -= overRect.height * 1.0 + gapY;
-			break;
-		}
-	}
-	// eslint-disable-next-line default-case
-	switch (overlayOrigin.horizontal) {
-		case "left": {
-			style.left += gapX;
-			break;
-		}
-		case "center": {
-			style.left -= overRect.width * 0.5;
-			break;
-		}
-		case "right": {
-			style.left -= overRect.width * 1.0 + gapX;
-			break;
-		}
-	}
+	}, [readonly]);
 
 	return (
-		<div ref={pop} style={{ position: "relative" }}>
+		<div ref={pop} style={{ position: "relative" }} className="h-full w-full">
 			<div
 				aria-hidden="true"
-				onClick={() => setToggle(!toggle)}
+				onClick={onClick}
 				onMouseUp={(event) => event.stopPropagation()}
 				onMouseDown={(event) => event.stopPropagation()}
+				className="h-full w-full"
 			>
 				{children}
 			</div>
