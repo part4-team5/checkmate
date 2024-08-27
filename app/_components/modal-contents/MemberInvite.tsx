@@ -61,7 +61,7 @@ export default function MemberInvite({ close, onCopy, groupId }: MemberInvitePro
 							이메일
 						</label>
 						<div className="pt-2" />
-						<Form.Input type="email" id="email" tests={[{ type: "require", data: true, error: "이메일은 필수입니다." }]} />
+						<Form.Input isModal={true} type="email" id="email" tests={[{ type: "require", data: true, error: "이메일은 필수입니다." }]} />
 						<div className="pt-2" />
 						<Form.Error htmlFor="email" />
 					</div>
