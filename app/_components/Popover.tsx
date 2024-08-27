@@ -1,6 +1,7 @@
 import { useLayoutEffect, useEffect, useState, useRef, cloneElement, useCallback } from "react";
 
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface PopoverProps extends React.PropsWithChildren {
 	overlay: (close: () => void) => JSX.Element;
@@ -144,6 +145,7 @@ export default function Popover({
 	const onClick = useCallback(() => {
 		if (!readonly) {
 			setToggle((_) => !_);
+
 		}
 	}, [readonly]);
 
@@ -158,10 +160,20 @@ export default function Popover({
 			>
 				{children}
 			</div>
-			{cloneElement(
-				overlay(() => setToggle(false)),
-				{ ref: over, style },
-			)}
+			<AnimatePresence>
+				{toggle && (
+					<motion.div
+						ref={over}
+						style={style}
+						initial={{ opacity: 0, scale: 0.95 }}
+						animate={{ opacity: 1, scale: 1 }}
+						exit={{ opacity: 0, scale: 0.95 }}
+						transition={{ duration: 0.2 }}
+					>
+						{overlay(() => setToggle(false))}
+					</motion.div>
+				)}
+			</AnimatePresence>
 		</div>
 	);
 }

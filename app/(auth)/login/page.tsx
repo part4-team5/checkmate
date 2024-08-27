@@ -9,6 +9,8 @@ import Link from "next/link";
 import { useCallback } from "react";
 import useAuthStore from "@/app/_store/useAuthStore";
 import Oauth from "@/app/(auth)/_components/Oauth";
+import toast from "@/app/_utils/Toast";
+import Image from "next/image";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -22,6 +24,10 @@ export default function LoginPage() {
 
 	const setUser = useAuthStore((state) => state.setUser);
 
+	const userUploadMutation = useMutation({
+		mutationFn: async ({ id, email }: { id: number; email: string }) => API["api/users"].POST({}, { id, email }),
+	});
+
 	const loginMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
 			const { email, password } = ctx.values as {
@@ -32,22 +38,26 @@ export default function LoginPage() {
 			return API["{teamId}/auth/signIn"].POST({}, payload);
 		},
 		onSuccess: (response) => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			setUser({
 				id: response.user.id,
-				email: response.user.email || "",
+				email: response.user.email as string,
 				nickname: response.user.nickname,
 				image: response.user.image ? response.user.image : null,
 			});
 
+			// 몽고 DB에 유저 정보 저장
+			userUploadMutation.mutate({ id: response.user.id, email: response.user.email as string });
+
 			setAccessToken(response.accessToken);
 			setRefreshToken(response.refreshToken);
-
-			queryClient.invalidateQueries({ queryKey: ["user"] });
 
 			router.replace("/");
 		},
 		onError: (error) => {
-			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			// alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -62,7 +72,9 @@ export default function LoginPage() {
 
 	return (
 		<>
-			<h2 className="mb-[80px] text-center text-[40px] font-medium leading-[48px] text-text-primary">로그인</h2>
+			<h2 className="relative m-[0_auto_40px] h-[120px] w-[226px] tablet:h-[150px] tablet:w-[256px]">
+				<Image src="/icons/bigLogo.svg" alt="로그인" fill />
+			</h2>
 			<Form onSubmit={handleSubmit}>
 				<div className="flex flex-col gap-[12px]">
 					<label htmlFor="email" className="text-text-primary">

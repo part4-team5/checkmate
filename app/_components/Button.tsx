@@ -1,16 +1,18 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/button-has-type */
 /* eslint-disable indent */
 /* eslint-disable react/require-default-props */
 
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { MouseEvent, PropsWithChildren } from "react";
 
 export interface ButtonProps extends PropsWithChildren {
 	id?: string;
 	variant?: "primary" | "secondary" | "white" | "outline" | "danger";
-	fontSize?: "lg" | "md";
+	fontSize?: "xl" | "lg" | "md";
 	rounded?: "full" | "xl";
 	href?: string;
 	type?: "button" | "submit" | "reset";
@@ -45,14 +47,14 @@ export default function Button({ id, children, variant = "primary", fontSize = "
 				"flex items-center justify-center border-2 border-brand-primary bg-background-inverse font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive";
 			break;
 		case "white":
-			btnVariant = "flex items-center justify-center border border-text-secondary bg-background-inverse font-semibold text-text-default";
+			btnVariant = "flex items-center justify-center border-2 border-text-secondary bg-background-inverse font-semibold text-text-default";
 			break;
 		case "outline":
 			btnVariant =
 				"flex items-center justify-center border-2 border-brand-primary bg-transparent font-semibold text-brand-primary hover:border-interaction-hover hover:text-interaction-hover active:border-interaction-pressed active:text-interaction-pressed disabled:border-interaction-inactive disabled:text-interaction-inactive";
 			break;
 		case "danger":
-			btnVariant = "flex items-center justify-center bg-status-danger font-semibold text-text-inverse";
+			btnVariant = "flex items-center justify-center bg-status-danger font-semibold text-text-inverse hover:bg-status-danger/80";
 			break;
 		default:
 			btnVariant =
@@ -60,19 +62,57 @@ export default function Button({ id, children, variant = "primary", fontSize = "
 			break;
 	}
 
-	const btnStyle = `${btnVariant} ${rounded === "xl" ? "rounded-xl" : "rounded-full"} ${fontSize === "lg" ? "text-lg" : "text-md"} size-full py-[6px] `;
+	switch (rounded) {
+		case "full":
+			btnVariant += " rounded-full ";
+			break;
+		case "xl":
+			btnVariant += " rounded-xl ";
+			break;
+		default:
+			btnVariant += " rounded-full ";
+			break;
+	}
+
+	switch (fontSize) {
+		case "lg":
+			btnVariant += " text-lg ";
+			break;
+		case "xl":
+			btnVariant += " text-xl ";
+			break;
+		case "md":
+			btnVariant += " text-md ";
+			break;
+		default:
+			btnVariant += " text-lg ";
+			break;
+	}
+
+	const btnStyle = `${btnVariant} size-full py-[6px] `;
+
+	const MotionButton = motion.button;
+	const MotionLink = motion(Link);
+
+	const buttonAnimation = {
+		whileTap: {
+			scale: 0.8,
+		},
+	};
 
 	if (href) {
 		return (
-			<Link id={id} className={`${btnStyle}`} href={href}>
+
+			<MotionLink id={id}  className={`${btnStyle}`} href={href} whileTap={buttonAnimation.whileTap}>
 				{children}
-			</Link>
+			</MotionLink>
 		);
 	}
 
 	return (
-		<button id={id} type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled}>
+
+		<MotionButton id={id}  type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled} whileTap={buttonAnimation.whileTap}>
 			{children}
-		</button>
+		</MotionButton>
 	);
 }

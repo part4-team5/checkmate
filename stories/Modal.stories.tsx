@@ -20,7 +20,7 @@ const ModalExample: React.FC = () => {
 	const overlay = useOverlay();
 
 	const openMemberInvite = () => {
-		overlay.open(({ close }) => <MemberInvite onClick={() => alert("링크 복사하기")} close={close} />);
+		overlay.open(({ close }) => <MemberInvite onCopy={() => {}} groupId={1} close={close} />);
 	};
 
 	const openAccountDeletion = () => {

@@ -34,7 +34,7 @@ export default function Page() {
 
 			<section className="flex flex-col items-center gap-6 px-4 tablet:px-6 desktop:gap-20">
 				{/* 할 일 추가 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[320px] rounded-[40px] bg-conic-gradient p-[2px] shadow-[0_0_12px_2px_rgba(0,0,0,0.25)] shadow-background-inverse/25 tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
+				<div className="shadow-background-inverse/25 flex h-screen max-h-[467px] w-full min-w-[320px] rounded-[40px] bg-conic-gradient p-[2px] shadow-[0_0_12px_2px_rgba(0,0,0,0.25)] tablet:max-h-[354px] tablet:max-w-[696px] desktop:max-h-[419px] desktop:max-w-[996px]">
 					<div className="flex h-full w-full flex-col-reverse items-center gap-11 rounded-[38px] bg-background-primary tablet:flex-row tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:gap-48">
 						<div className="flex tablet:items-end">
 							<div className="relative h-[268px] w-[231px] desktop:h-[329px] desktop:w-[284px]">
@@ -54,7 +54,7 @@ export default function Page() {
 				</div>
 
 				{/* 멤버 초대 */}
-				<div className="flex h-screen max-h-[467px] w-full min-w-[320px] flex-col items-center justify-start gap-10 rounded-[40px] border border-border-primary/10 bg-background-secondary tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row-reverse tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
+				<div className="border-border-primary/10 flex h-screen max-h-[467px] w-full min-w-[320px] flex-col items-center justify-start gap-10 rounded-[40px] border bg-background-secondary tablet:max-h-[354px] tablet:max-w-[696px] tablet:flex-row-reverse tablet:items-stretch tablet:justify-center tablet:gap-24 desktop:max-h-[419px] desktop:max-w-[996px] desktop:gap-48">
 					<div className="relative flex h-[268px] w-[231px] items-start desktop:h-[329px] desktop:w-[284px]">
 						<Image src="/images/landing_2.webp" alt="Landing 2" fill className="object-contain" sizes="(max-width: 284px) 100vw" />
 					</div>

@@ -21,7 +21,7 @@ type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps): JSX.Element {
 	const queryClient = useQueryClient();
 	const router = useRouter();
-	const [imageRemoved, setImageRemoved] = useState(false); // 이미지 삭제 상태 관리
+	const [imageRemoved, setImageRemoved] = useState(false);
 
 	const { data: teamInfo } = useQuery({
 		queryKey: ["groupInfo", { group: id }],
@@ -33,19 +33,18 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 			const file = ctx.values.profileImage as File;
 			const teamName = ctx.values.teamName as string;
 
-			let url: string | undefined = teamInfo?.image;
+			let url: string | null = teamInfo?.image ?? null;
 			if (imageRemoved) {
-				url = "http://example.com"; // 이미지가 삭제된 경우, 기본 이미지 URL로 대체
+				url = null; // 이미지가 삭제된 경우 null로 설정
 			} else if (file && !(typeof file === "string")) {
 				const response = await API["{teamId}/images/upload"].POST({}, file);
 				url = response.url;
-			} else if (teamInfo?.image) {
-				url = teamInfo.image;
-			} else {
-				url = undefined;
 			}
 
-			const payload = { image: url, name: teamName };
+			const payload = {
+				image: url ?? "null",
+				name: teamName,
+			};
 			return API["{teamId}/groups/{id}"].PATCH({ id }, payload);
 		},
 		onSuccess: () => {
@@ -69,11 +68,10 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 	);
 
 	const handleRemoveImage = () => {
-		setImageRemoved(true); // 이미지 삭제 상태 변경
+		setImageRemoved(true);
 	};
 
-	// 이미지 URL이 "http://example.com"이거나 이미지가 제거된 상태라면 기본 이미지로 대체
-	const imageSrc = imageRemoved || teamInfo?.image === "http://example.com" ? "/icons/emptyImage.svg" : teamInfo?.image;
+	const imageSrc = imageRemoved || !teamInfo?.image ? "/icons/emptyImage.svg" : teamInfo.image;
 
 	return (
 		<ModalWrapper close={close}>
@@ -98,27 +96,36 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 								<div className="pb-3" />
 								<div className="relative flex items-center">
 									<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
-										{(file) =>
-											(file ?? imageSrc) ? (
+										{(file) => {
+											const isEmptyImage = (file ?? imageSrc) === "/icons/emptyImage.svg";
+
+											return (
 												<div className="relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10">
-													<Image src={(file as string) ?? imageSrc} alt="Profile Preview" fill className="rounded-[12px] object-cover object-center" />
-													<div className="relative size-full">
-														<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155]">
-															<Icon.Edit width={11} height={11} color="#64748B" />
-														</div>
-													</div>
-												</div>
-											) : (
-												<div className="relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10 bg-background-secondary">
-													<div className="\\ relative">
-														<Image src="/icons/emptyImage.svg" alt="Profile Preview" width={20} height={20} />
-													</div>
-													<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155] pl-[1px]">
+													<Image
+														src={(file as string) ?? imageSrc}
+														alt="Profile Preview"
+														fill={isEmptyImage ? undefined : true} // 크기 조정 필요 없음
+														width={isEmptyImage ? 60 : undefined}
+														height={isEmptyImage ? 60 : undefined}
+														className={`rounded-[12px] object-cover object-center ${isEmptyImage ? "object-contain" : ""}`}
+													/>
+													<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155]">
+
 														<Icon.Edit width={11} height={11} color="#64748B" />
 													</div>
+													{!isEmptyImage && !file && (
+														<button
+															type="button"
+															onClick={handleRemoveImage}
+															className="absolute -left-[-6px] top-[6px] flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[#334155] text-white"
+															aria-label="Remove profile image"
+														>
+															<Icon.TodoDelete width={18} height={18} color="#ffffff" />
+														</button>
+													)}
 												</div>
-											)
-										}
+											);
+										}}
 									</Form.ImageInput>
 									{imageSrc !== "/icons/emptyImage.svg" && (
 										<button

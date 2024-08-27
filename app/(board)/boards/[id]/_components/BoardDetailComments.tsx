@@ -2,12 +2,14 @@
 
 import { useState, useCallback, useLayoutEffect, useRef } from "react";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useAuthStore from "@/app/_store/useAuthStore";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import KebabIcon from "@/public/icons/KebabIcon";
 import Message from "@/app/_components/Message";
 import DropDown from "@/app/_components/Dropdown";
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
+import toast from "@/app/_utils/Toast";
 
 type CommentsProps = {
 	articleId: number;
@@ -19,6 +21,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const [editingCommentText, setEditingCommentText] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const queryClient = useQueryClient();
+	const { user } = useAuthStore();
 
 	// 댓글 목록
 	const {
@@ -69,7 +72,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 			setIsSubmitting(false);
 		},
 		onError: (error) => {
-			alert(`댓글 추가 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 			setIsSubmitting(false);
 		},
@@ -81,10 +84,10 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 			API["{teamId}/comments/{commentId}"].PATCH({ commentId }, { content }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["comments", articleId] });
-			setEditingCommentId(null); // 수정 완료 후 수정 모드 종료
+			setEditingCommentId(null);
 		},
 		onError: (error) => {
-			alert(`댓글 수정 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -96,7 +99,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 			queryClient.invalidateQueries({ queryKey: ["comments", articleId] });
 		},
 		onError: (error) => {
-			alert(`댓글 삭제 중 오류 발생: ${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -105,7 +108,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const handleAddComment = useCallback(
 		(e: React.FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
-			if (commentText.length === 0 || isSubmitting) return;
+			if (!commentText.trim() || isSubmitting) return;
 			setIsSubmitting(true);
 			addCommentMutation.mutate(commentText);
 		},
@@ -116,7 +119,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const handleUpdateComment = useCallback(
 		(e: React.FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
-			if (editingCommentText.length === 0 || editingCommentId === null) return;
+			if (editingCommentText.trim().length === 0 || editingCommentId === null) return;
 			updateCommentMutation.mutate({ commentId: editingCommentId, content: editingCommentText });
 		},
 		[editingCommentText, editingCommentId, updateCommentMutation],
@@ -162,6 +165,11 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 						<textarea
 							id="commentText"
 							onChange={handleCommentChange}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									e.preventDefault();
+								}
+							}}
 							className="h-[100px] w-full resize-none overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[24px] py-[16px] text-lg text-text-primary placeholder:text-text-default focus:outline-none"
 							value={commentText}
 							placeholder="댓글을 입력해주세요"
@@ -177,7 +185,16 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 				</form>
 			</div>
 			{/* 댓글 목록 표시 */}
-			<div className="my-[40px] flex flex-col gap-4 border-t border-solid border-t-[rgba(248,250,252,0.1)] pt-[40px]">
+			<div className="my-[40px] flex flex-col gap-4 border-t border-solid border-border-primary pt-[40px]">
+				{comments?.pages.length === 0 && !isFetching && (
+					<div className="my-[100px] text-center text-lg font-medium text-text-default">아직 작성된 댓글이 없습니다</div>
+				)}
+				{isFetching && (
+					<div className="rounded-[12px] bg-background-secondary px-[24px] py-[16px]">
+						<div className="bg-border-primary/25 h-[16px] w-[60%] animate-pulse rounded-md" />
+						<div className="bg-border-primary/25 mt-[30px] h-[30px] w-[30%] animate-pulse rounded-md" />
+					</div>
+				)}
 				{comments?.pages.map((comment, index) => {
 					const messageData = {
 						content: comment.content,
@@ -199,10 +216,11 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 											id={`editComment-${comment.id}`}
 											onChange={handleEditCommentChange}
 											onKeyDown={(e) => {
-												if (e.key === "Enter" && !e.shiftKey) {
+												if (e.key === "Enter") {
 													e.preventDefault();
 												}
 											}}
+											wrap="soft"
 											className="h-[100px] w-full resize-none overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[24px] py-[16px] text-lg text-text-primary placeholder:text-text-default focus:outline-none"
 											value={editingCommentText}
 										/>
@@ -233,16 +251,18 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 											</div>
 										</Message>
 									</div>
-									<DropDown
-										options={[
-											{ text: "수정", onClick: () => enterEditMode(comment.id, comment.content) },
-											{ text: "삭제", onClick: () => handleDeleteComment(comment.id) },
-										]}
-									>
-										<button type="button" aria-label="dropdown">
-											<KebabIcon />
-										</button>
-									</DropDown>
+									{comment.writer?.id === user?.id && (
+										<DropDown
+											options={[
+												{ text: "수정", onClick: () => enterEditMode(comment.id, comment.content) },
+												{ text: "삭제", onClick: () => handleDeleteComment(comment.id) },
+											]}
+										>
+											<button type="button" aria-label="dropdown">
+												<KebabIcon />
+											</button>
+										</DropDown>
+									)}
 								</div>
 							)}
 						</div>

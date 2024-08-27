@@ -121,19 +121,19 @@ export default function Page() {
 								<div
 									// eslint-disable-next-line react/no-array-index-key
 									key={index}
-									className="flex h-[220px] flex-col gap-[12px] rounded-[12px] border border-border-primary bg-background-secondary/75 px-[16px] py-[16px]"
+									className="bg-background-secondary/75 flex h-[220px] flex-col gap-[12px] rounded-[12px] border border-border-primary px-[16px] py-[16px]"
 								>
-									<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
-									<div className="h-[16px] w-5/12 animate-pulse rounded-md bg-border-primary/25" />
-									<div className="h-[16px] w-3/12 animate-pulse rounded-md bg-border-primary/25" />
-									<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
+									<div className="bg-border-primary/25 h-[16px] w-6/12 animate-pulse rounded-md" />
+									<div className="bg-border-primary/25 h-[16px] w-5/12 animate-pulse rounded-md" />
+									<div className="bg-border-primary/25 h-[16px] w-3/12 animate-pulse rounded-md" />
+									<div className="bg-border-primary/25 h-[16px] w-6/12 animate-pulse rounded-md" />
 								</div>
 							))}
 					</div>
 				</div>
 				<hr className="my-[40px] border-border-primary" />
 				<div className="flex flex-col gap-[24px] text-2lg font-bold text-text-primary">
-					<div className="flex items-center justify-between">
+					<div className="flex items-center justify-between text-md font-normal">
 						게시글
 						<DropDown
 							gapY={6}
@@ -194,11 +194,11 @@ export default function Page() {
 								key={index}
 								className="flex h-[176px] flex-col gap-[12px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px] py-[16px]"
 							>
-								<div className="h-[16px] w-8/12 animate-pulse rounded-md bg-border-primary/25" />
-								<div className="h-[16px] w-6/12 animate-pulse rounded-md bg-border-primary/25" />
-								<div className="h-[16px] w-7/12 animate-pulse rounded-md bg-border-primary/25" />
-								<div className="h-[16px] w-4/12 animate-pulse rounded-md bg-border-primary/25" />
-								<div className="h-[16px] w-5/12 animate-pulse rounded-md bg-border-primary/25" />
+								<div className="bg-border-primary/25 h-[16px] w-8/12 animate-pulse rounded-md" />
+								<div className="bg-border-primary/25 h-[16px] w-6/12 animate-pulse rounded-md" />
+								<div className="bg-border-primary/25 h-[16px] w-7/12 animate-pulse rounded-md" />
+								<div className="bg-border-primary/25 h-[16px] w-4/12 animate-pulse rounded-md" />
+								<div className="bg-border-primary/25 h-[16px] w-5/12 animate-pulse rounded-md" />
 							</div>
 						))}
 					</div>

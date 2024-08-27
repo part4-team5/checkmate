@@ -2,13 +2,13 @@
 
 "use client";
 
-import React, { useState, useCallback } from "react";
+import { useCallback } from "react";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import Form from "@/app/_components/Form";
 import API from "@/app/_api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CloseIcon from "@/public/icons/ic_close";
-import ToastPopup from "@/app/(team)/[id]/_component/ToastPopup";
+import toast from "@/app/_utils/Toast";
 
 type PostEditTasksProps = {
 	initialTasksName?: string;
@@ -32,8 +32,6 @@ type MutationContext = {
 // Tasks를 Post 하거나 Edit하는 모달
 export default function PostEditTasks({ initialTasksName, close, groupId, taskId }: PostEditTasksProps): JSX.Element {
 	const queryClient = useQueryClient();
-	const [toast, setToast] = useState(false);
-	const [toastMessage, setToastMessage] = useState("");
 
 	const postTasksMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/groups/{groupId}/task-lists"]["POST"]>>, Error, FormContext, MutationContext>(
 		{
@@ -74,15 +72,10 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 				}
 
 				if (error.message === "이미 존재하는 할 일 목록입니다.") {
-					setToastMessage("이미 존재하는 할 일 목록입니다.");
+					toast.error("이미 존재하는 할 일 목록입니다.");
 				} else {
-					setToastMessage("목록 추가에 실패했습니다.");
+					toast.error("목록 추가에 실패했습니다.");
 				}
-
-				setToast(false);
-				setTimeout(() => {
-					setToast(true);
-				}, 10);
 			},
 			onSettled: () => {
 				queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }], exact: true });
@@ -138,15 +131,11 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 			}
 
 			if (error.message === "이미 존재하는 할 일 목록입니다.") {
-				setToastMessage("이미 존재하는 할 일 목록입니다.");
+				toast.error("이미 존재하는 할 일 목록입니다.");
 			} else {
-				setToastMessage("목록 수정에 실패했습니다.");
+				toast.error("목록 수정에 실패했습니다.");
 			}
 
-			setToast(false);
-			setTimeout(() => {
-				setToast(true);
-			}, 10);
 			ctx.setError("postTasks", "목록 수정에 실패했습니다.");
 		},
 		onSettled: () => {
@@ -200,7 +189,6 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 					</div>
 				</div>
 			</Form>
-			{toast && <ToastPopup message={toastMessage} position="top" />}
 		</ModalWrapper>
 	);
 }

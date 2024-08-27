@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 interface IconProps {
 	width: number | string;
 	height: number | string;
@@ -292,21 +294,24 @@ Icon.HeartFull = function Heart({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#10B981" }: IconProps) {
+Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#ff0000" }: IconProps) {
 	return (
 		<svg
-			xmlns="http://www.w3.org/2000/svg"
 			width={width}
 			height={height}
 			viewBox="0 0 24 24"
-			fill="none"
+			role="img"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-labelledby="removeIconTitle"
 			stroke={color}
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			fill="none"
+			color="#000000"
 		>
-			<line x1="18" y1="6" x2="6" y2="18" />
-			<line x1="6" y1="6" x2="18" y2="18" />
+			{" "}
+			<title id="removeIconTitle">Remove</title> <path d="M17,12 L7,12" /> <circle cx="12" cy="12" r="10" />{" "}
 		</svg>
 	);
 };
@@ -314,7 +319,7 @@ Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#10B98
 Icon.Crown = function Crown({ width = 16, height = 16, color = "#FDD446" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<g clip-path="url(#clip0_540_4887)">
+			<g clipPath="url(#clip0_540_4887)">
 				<path
 					d="M14.5115 12.25H3.07821C2.83635 12.25 2.63846 12.4469 2.63846 12.6875V13.5625C2.63846 13.8031 2.83635 14 3.07821 14H14.5115C14.7534 14 14.9513 13.8031 14.9513 13.5625V12.6875C14.9513 12.4469 14.7534 12.25 14.5115 12.25ZM16.2705 3.5C15.5422 3.5 14.9513 4.08789 14.9513 4.8125C14.9513 5.00664 14.9953 5.18711 15.0722 5.35391L13.0824 6.54063C12.6591 6.79219 12.1122 6.65 11.8676 6.22344L9.62764 2.32422C9.92171 2.08359 10.1141 1.72266 10.1141 1.3125C10.1141 0.587891 9.5232 0 8.79487 0C8.06655 0 7.47564 0.587891 7.47564 1.3125C7.47564 1.72266 7.66803 2.08359 7.96211 2.32422L5.72216 6.22344C5.47756 6.65 4.92788 6.79219 4.50737 6.54063L2.52028 5.35391C2.59449 5.18984 2.64121 5.00664 2.64121 4.8125C2.64121 4.08789 2.0503 3.5 1.32198 3.5C0.593654 3.5 0 4.08789 0 4.8125C0 5.53711 0.590905 6.125 1.31923 6.125C1.39069 6.125 1.46215 6.11406 1.53086 6.10313L3.51795 11.375H14.0718L16.0589 6.10313C16.1276 6.11406 16.1991 6.125 16.2705 6.125C16.9988 6.125 17.5897 5.53711 17.5897 4.8125C17.5897 4.08789 16.9988 3.5 16.2705 3.5Z"
 					fill={color}
@@ -325,6 +330,138 @@ Icon.Crown = function Crown({ width = 16, height = 16, color = "#FDD446" }: Icon
 					<rect width="17.5897" height="14" fill="white" />
 				</clipPath>
 			</defs>
+		</svg>
+	);
+};
+
+Icon.CheckAnimation = function CheckAnimation({ width = 14, height = 14, primary = "#10B981", secondary = "#fff" }) {
+	const circleVariants = {
+		hidden: { scale: 0, opacity: 0 },
+		visible: {
+			scale: 1,
+			opacity: 1,
+			transition: {
+				duration: 0.3,
+				delay: 0.1,
+				type: "spring",
+				stiffness: 300,
+			},
+		},
+	};
+
+	return (
+		<motion.div
+			initial="hidden"
+			animate="visible"
+			variants={circleVariants}
+			style={{
+				width: 24,
+				height: 24,
+				borderRadius: "50%",
+				backgroundColor: primary,
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+			}}
+		>
+			<motion.svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke={secondary}
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				width={width}
+				height={height}
+			>
+				<motion.path d="M5 13l4 4L19 7" initial="hidden" animate="visible" />
+			</motion.svg>
+		</motion.div>
+	);
+};
+
+Icon.Info = function Info({ width = 24, height = 24, color = "#6B7280" }: IconProps) {
+	return (
+		<svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+			<path d="M12 2C6.48 2 2 6.48 2 12c0 5.52 4.48 10 10 10 5.52 0 10-4.48 10-10 0-5.52-4.48-10-10-10zM11 7h2v2h-2V7zm0 4h2v6h-2V11z" fill={color} />
+		</svg>
+	);
+};
+
+Icon.Loading = function Loading({ width = 24, height = 24, color = "#10B981" }: IconProps) {
+	return (
+		<svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+			<circle cx="12" cy="12" r="10" stroke="#00000040" strokeWidth="4" />
+			<path fill={color} d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+		</svg>
+	);
+};
+
+Icon.Enter = function Enter({ width = 24, height = 24, color = "#fff" }: IconProps) {
+	return (
+		<svg viewBox="0 0 24 24" width={width} height={height} fill="none" xmlns="http://www.w3.org/2000/svg">
+			<g id="SVGRepo_bgCarrier" strokeWidth="0" />
+			<g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
+			<g id="SVGRepo_iconCarrier">
+				<path d="M4 4V20M8 12H20M20 12L16 8M20 12L16 16" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+			</g>
+		</svg>
+	);
+};
+
+Icon.Star = function Star({ width = 24, height = 24, color = "#10B981" }: IconProps) {
+	return (
+		<svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+			<g fill="#FFFFFF">
+				<path fill={color} d="M30 33.5l-2.3-7.1 6.1-4.4h-7.5L24 14.9 21.7 22h-7.5l6.1 4.4-2.3 7.1 6-4.4z" />
+				<path d="M24 8.5l2.9 8.8c.5 1.7 2.1 2.8 3.8 2.8H40l-7.5 5.4c-1.4 1-2 2.8-1.5 4.5l2.9 8.8-7.5-5.4c-.7-.5-1.5-.8-2.4-.8-.9 0-1.7.3-2.4.8l-7.5 5.4L17 30c.5-1.7 0-3.5-1.5-4.5L8.1 20h9.3c1.7 0 3.3-1.1 3.8-2.8L24 8.5m0-2c-.8 0-1.6.5-1.9 1.4l-2.9 8.8c-.3.8-1 1.4-1.9 1.4H8.1c-1.9 0-2.7 2.5-1.2 3.6l7.5 5.4c.7.5 1 1.4.7 2.2l-2.9 8.8c-.5 1.4.7 2.6 1.9 2.6.4 0 .8-.1 1.2-.4l7.5-5.4c.4-.3.8-.4 1.2-.4s.8.1 1.2.4l7.5 5.4c.4.3.8.4 1.2.4 1.2 0 2.4-1.2 1.9-2.6l-2.9-8.8c-.3-.8 0-1.7.7-2.2l7.5-5.4c1.6-1.1.8-3.6-1.2-3.6h-9.3c-.9 0-1.6-.6-1.9-1.4l-2.9-8.8c-.2-1-1-1.4-1.8-1.4z" />
+			</g>
+		</svg>
+	);
+};
+
+Icon.Light = function Light({ width = 24, height = 24, color = "#64748B" }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z" />
+		</svg>
+	);
+};
+
+Icon.Dark = function Dark({ width = 24, height = 24, color = "#64748B" }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z" />
+		</svg>
+	);
+};
+
+Icon.EmptyImage = function EmptyImage({ width = 24, height = 24, color = "#10B981" }: IconProps) {
+	return (
+		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path
+				fill-rule="evenodd"
+				clip-rule="evenodd"
+				d="M14.23 2H10C5.58172 2 2 5.58172 2 10V14.24C2 18.6583 5.58172 22.24 10 22.24H14.23C18.6483 22.24 22.23 18.6583 22.23 14.24V10C22.23 5.58172 18.6483 2 14.23 2ZM8.12 6.12C9.22457 6.12 10.12 7.01543 10.12 8.12C10.12 9.22457 9.22457 10.12 8.12 10.12C7.01543 10.12 6.12 9.22457 6.12 8.12C6.12 7.01543 7.01543 6.12 8.12 6.12ZM15.51 20.12C18.3411 19.0627 20.2212 16.3621 20.23 13.34L20.2 11.62C20.2 11.21 20.12 10.44 20.12 10.44H18.49C14.7164 10.4515 11.2706 12.5862 9.58 15.96C8.35291 14.863 6.76591 14.2546 5.12 14.25H3.91C3.82074 16.5747 5.08341 18.7415 7.15 19.81C7.88878 20.2036 8.71293 20.4096 9.55 20.41H13.72C14.329 20.4187 14.9349 20.3206 15.51 20.12Z"
+				fill={color}
+			/>
+		</svg>
+	);
+};
+
+Icon.MailAccept = function MailAccept2({ width = 24, height = 24, color = "#fff" }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M638-80 468-250l56-56 114 114 226-226 56 56L638-80ZM480-520l320-200H160l320 200Zm0 80L160-640v400h206l80 80H160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v174l-80 80v-174L480-440Zm0 0Zm0-80Zm0 80Z" />
+		</svg>
+	);
+};
+
+Icon.MailReject = function MailReject({ width = 24, height = 24, color = "#EF4444" }: IconProps) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
+			<path d="M383-463Zm194-34ZM791-55 686-160H160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800l80 80h-80v480h446L55-791l57-57 736 736-57 57Zm80-148-71-71v-366L575-499l-49-49 274-172H354l-80-80h526q33 0 56.5 23.5T880-720v480q0 10-2 19.5t-7 17.5Z" />
 		</svg>
 	);
 };

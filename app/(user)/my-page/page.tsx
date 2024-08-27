@@ -3,7 +3,7 @@
 import API from "@/app/_api/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import AccountDeletionModal from "@/app/_components/modal-contents/AccountDeletion";
 import useAuthStore from "@/app/_store/useAuthStore";
@@ -11,6 +11,7 @@ import Form from "@/app/_components/Form";
 import Image from "next/image";
 import ChangePasswordModal from "@/app/_components/modal-contents/ChangePassword";
 import useCookie from "@/app/_hooks/useCookie";
+import toast from "@/app/_utils/Toast";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -20,43 +21,52 @@ export default function Page() {
 	const queryClient = useQueryClient();
 	const { user, setUser } = useAuthStore();
 	const clearUser = useAuthStore((state) => state.clearUser);
-	const [, setAccessToken] = useCookie("accessToken");
+	const [accessToken, setAccessToken] = useCookie("accessToken");
 	const [, setRefreshToken] = useCookie("refreshToken");
+	const [initialNickname, setInitialNickname] = useState(user?.nickname);
 
 	useQuery({
 		queryKey: ["user"],
 		queryFn: async () => {
 			const data = await API["{teamId}/user"].GET({});
 			setUser(data);
+			setInitialNickname(data.nickname);
 			return data;
 		},
+		enabled: !!accessToken,
 	});
 
 	// 이미지 업로드
-	const imageUpload = useCallback(async (file: File): Promise<{ url: string | undefined }> => {
-		if (typeof file === "string") return { url: undefined };
+	const imageUpload = async (file: File | null) => {
+		if (!file) return null;
+		if (typeof file === "string") return { url: file };
 
-		const response = await API["{teamId}/images/upload"].POST({}, file);
-		return response;
-	}, []);
+		return API["{teamId}/images/upload"].POST({}, file);
+	};
 
 	// 프로필 수정
 	const updateProfileMutation = useMutation({
 		mutationFn: async (ctx: FormContext) => {
-			const { file, nickname } = ctx.values as {
-				file: File;
-				nickname: string;
-			};
-			const { url } = await imageUpload(file);
-			const payload: Parameters<(typeof API)["{teamId}/user"]["PATCH"]>[1] = { image: url ?? "", nickname };
+			const file = ctx.values.profileImage as File;
+			const nickname = ctx.values.nickname as string;
+
+			const uploadedImage = await imageUpload(file);
+			const imageUrl = uploadedImage ? uploadedImage.url : (user?.image ?? "");
+
+			const payload: Parameters<(typeof API)["{teamId}/user"]["PATCH"]>[1] = { image: imageUrl };
+			if (nickname !== initialNickname) {
+				payload.nickname = nickname;
+			}
+
 			return API["{teamId}/user"].PATCH({}, payload);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
+			toast.success("프로필 변경이 완료되었습니다.");
 			router.replace(window.location.pathname);
 		},
 		onError: (error) => {
-			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -74,15 +84,17 @@ export default function Page() {
 			await API["{teamId}/user"].DELETE({});
 		},
 		onSuccess: () => {
+			API["api/users/{id}"].DELETE({ id: Number(user?.id) });
+
 			queryClient.setQueriesData({ queryKey: ["user"] }, null);
-			alert("회원 탈퇴가 완료되었습니다.");
+			toast.success("회원 탈퇴가 완료되었습니다.");
 			setAccessToken(null);
 			setRefreshToken(null);
 			clearUser();
 			router.push("/");
 		},
 		onError: (error) => {
-			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
+			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
 			console.error(error);
 		},
 	});
@@ -108,9 +120,9 @@ export default function Page() {
 								{(file) => (
 									<div className="relative flex size-16 cursor-pointer items-center justify-center">
 										<div
-											className={`relative size-full overflow-hidden rounded-full border-border-primary/10 bg-background-secondary ${file ? "border-2" : ""}`}
+											className={`border-border-primary/10 relative size-full overflow-hidden rounded-full bg-background-secondary ${file ? "border-2" : ""}`}
 										>
-											<Image src={file ? (file as string) : "/icons/defaultAvatar.svg"} alt="Profile Image" fill />
+											<Image src={file ? (file as string) : (user?.image ?? "/icons/defaultAvatar.svg")} alt="Profile Image" fill />
 										</div>
 
 										<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute bottom-0 right-0" />
@@ -141,7 +153,7 @@ export default function Page() {
 						</div>
 
 						<div className="mt-[24px] h-12">
-							<Form.Submit>저장하기</Form.Submit>
+							<Form.Submit disabled={updateProfileMutation.isPending}>{updateProfileMutation.isPending ? "저장중..." : "저장하기"}</Form.Submit>
 						</div>
 					</div>
 				</Form>
