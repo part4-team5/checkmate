@@ -193,7 +193,7 @@ export default function Page() {
 									</div>
 									{post.image && (
 										<div
-											className="aspect-square h-full overflow-hidden rounded-[12px] bg-background-secondary bg-cover opacity-75"
+											className="aspect-square h-full overflow-hidden rounded-[12px] bg-background-secondary bg-cover"
 											style={{ backgroundImage: `url("${post.image}")` }}
 										/>
 									)}
