@@ -8,7 +8,7 @@ export default function Page() {
 				<div className="z-10 flex flex-col">
 					<p className="text-3xl font-semibold text-text-primary">함께 만들어가는 할 일 목록</p>
 
-					<p className="text-[130px] font-bold leading-[140px] text-brand-primary text-shadow-primary">
+					<p className="text-[130px] font-bold leading-[140px] text-brand-primary">
 						CHECK,
 						<br />
 						MATE!

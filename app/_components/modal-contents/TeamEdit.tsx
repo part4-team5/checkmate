@@ -100,7 +100,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 											const isEmptyImage = (file ?? imageSrc) === "/icons/emptyImage.svg";
 
 											return (
-												<div className="relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2 border-border-primary/10">
+												<div className="border-border-primary/10 relative flex h-[120px] w-[120px] cursor-pointer items-center justify-center rounded-[12px] border-2">
 													<Image
 														src={(file as string) ?? imageSrc}
 														alt="Profile Preview"
@@ -110,7 +110,6 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 														className={`rounded-[12px] object-cover object-center ${isEmptyImage ? "object-contain" : ""}`}
 													/>
 													<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155]">
-
 														<Icon.Edit width={11} height={11} color="#64748B" />
 													</div>
 													{!isEmptyImage && !file && (
