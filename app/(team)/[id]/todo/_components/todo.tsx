@@ -26,7 +26,7 @@ type ClientTodoProps = {
 
 function CalendarPopoverContent() {
 	return (
-		<div className="shadow-lg rounded">
+		<div className="rounded shadow-lg">
 			<Calendar.Picker />
 		</div>
 	);
@@ -150,7 +150,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				</motion.button>
 			</div>
 
-			<motion.div className="layout layoutRoot flex flex-wrap gap-3 text-lg font-medium">
+			<motion.div className="layout layoutRoot shadow-listPage flex flex-wrap gap-3 rounded-lg p-2 px-8 py-3 text-lg font-medium">
 				{tasks &&
 					tasks.map((task) => (
 						<motion.div layout className="relative cursor-pointer rounded-md p-1" key={task.id} onClick={() => updateSearchParams(task.id)}>
@@ -180,7 +180,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						/* eslint-disable react/no-array-index-key */
 						<motion.div
 							key={i}
-							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3"
+							className="shadow-listPage mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3"
 							initial={{ opacity: 0.2 }}
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0 }}
@@ -196,49 +196,50 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				</div>
 			)}
 
-			{todoItems && (
-				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="pb-56">
-					{todoItems.map((todoItem) => (
-						<Reorder.Item
-							value={todoItem}
-							key={todoItem.id}
-							onDragEnd={() => handleDragEnd(todoItem)}
-							whileHover={{ scale: 1.015 }}
-							whileTap={{ boxShadow: "0px 0px 15px rgba(0,0,0,0.2)" }}
-							dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }}
-							dragConstraints={{
-								top: -150,
-								left: -150,
-								right: 150,
-								bottom: 150,
-							}}
-						>
-							<div className="mt-4 flex flex-col gap-4">
-								<TodoItem
-									key={todoItem.id}
-									todoItem={todoItem}
-									onToggleTodo={handleToggleTodoStatus}
-									onTodoClick={handleTodoClick}
-									onTodoDelete={handleTodoDelete}
-									groupId={groupId}
-									taskId={currentTaskId}
-									currentDate={currentDate}
-								/>
+			<div className="shadow-board mt-6 rounded-lg bg-background-primary px-9 py-8">
+				{todoItems && (
+					<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="mb-44">
+						{todoItems.map((todoItem) => (
+							<Reorder.Item
+								value={todoItem}
+								key={todoItem.id}
+								onDragEnd={() => handleDragEnd(todoItem)}
+								whileHover={{ scale: 1.015 }}
+								whileTap={{ boxShadow: "0px 0px 15px rgba(0,0,0,0.2)" }}
+								dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }}
+								dragConstraints={{
+									top: -150,
+									left: -150,
+									right: 150,
+									bottom: 150,
+								}}
+							>
+								<div className="mt-4 flex flex-col gap-4">
+									<TodoItem
+										key={todoItem.id}
+										todoItem={todoItem}
+										onToggleTodo={handleToggleTodoStatus}
+										onTodoClick={handleTodoClick}
+										onTodoDelete={handleTodoDelete}
+										groupId={groupId}
+										taskId={currentTaskId}
+										currentDate={currentDate}
+									/>
+								</div>
+							</Reorder.Item>
+						))}
+						{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
+							<div className="h-vh mt-40 flex items-center justify-center text-text-default">
+								<div className="text-center">
+									아직 할 일이 없습니다.
+									<br />
+									새로운 할일을 추가해주세요.
+								</div>
 							</div>
-						</Reorder.Item>
-					))}
-				</Reorder.Group>
-			)}
-
-			{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
-				<div className="h-vh flex items-center justify-center text-text-default">
-					<div className="text-center">
-						아직 할 일이 없습니다.
-						<br />
-						새로운 할일을 추가해주세요.
-					</div>
-				</div>
-			)}
+						)}
+					</Reorder.Group>
+				)}
+			</div>
 
 			<AddTodo containerRef={containerRef} />
 		</>
