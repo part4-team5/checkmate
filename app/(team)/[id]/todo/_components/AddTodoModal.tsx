@@ -96,7 +96,7 @@ export default function Modal({ close }: { close: () => void }) {
 							<span className="text-text-emerald"> * </span> 할 일 제목
 						</label>
 						<Form.Input
-							isModal={true}
+							isModal
 							id="name"
 							type="text"
 							placeholder="할 일 제목을 입력해주세요."
@@ -122,7 +122,7 @@ export default function Modal({ close }: { close: () => void }) {
 								{/* <Form.Input id="date" type="date" tests={[{ type: "require", data: true, error: "시작 날짜는 필수입니다" }]} /> */}
 								<button
 									type="button"
-									className="bg-todo-primary shadow-input flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
+									className="flex h-[50px] w-full items-center justify-between rounded-xl border border-border-primary bg-todo-primary px-3 text-lg font-medium text-text-default shadow-input"
 									onClick={() => {
 										setIsCalendarOpened((prev) => !prev);
 									}}
@@ -174,7 +174,7 @@ export default function Modal({ close }: { close: () => void }) {
 						>
 							<button
 								type="button"
-								className="bg-todo-primary shadow-buttonPrimary flex h-[50px] w-full min-w-[110px] items-center justify-between rounded-xl border border-border-primary px-3 text-lg font-medium text-text-default"
+								className="flex h-[50px] w-full min-w-[110px] items-center justify-between rounded-xl border border-border-primary bg-todo-primary px-3 text-lg font-medium text-text-default shadow-buttonPrimary"
 							>
 								{frequency === Frequency.ONCE ? "한 번" : frequency === Frequency.DAILY ? "매일" : frequency === Frequency.WEEKLY ? "매주" : "매월"}
 								<Icon.Toggle width={24} height={24} />
@@ -252,7 +252,7 @@ export default function Modal({ close }: { close: () => void }) {
 							할 일 메모
 						</label>
 
-						<Form.TextArea id="description" placeholder="할 일 메모를 입력해주세요." isModal={true} />
+						<Form.TextArea id="description" placeholder="할 일 메모를 입력해주세요." isModal />
 						<div className="pt-2" />
 
 						<Form.Error htmlFor="description" />

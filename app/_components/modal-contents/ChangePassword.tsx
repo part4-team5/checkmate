@@ -61,7 +61,7 @@ export default function ChangePassword({ close }: ChangePasswordModalProps) {
 					<div className="flex flex-col gap-[8px]">
 						<label htmlFor="password">새 비밀번호</label>
 						<Form.Input
-							isModal={true}
+							isModal
 							id="password"
 							type="password"
 							placeholder="새 비밀번호를 입력해주세요."

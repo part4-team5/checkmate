@@ -41,7 +41,7 @@ export default function AddTaskModal({ close, groupId }: AddTaskModalProps): JSX
 							목록 이름
 						</label>
 						<Form.Input
-							isModal={true}
+							isModal
 							id="task"
 							type="text"
 							tests={[
