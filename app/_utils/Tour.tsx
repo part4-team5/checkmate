@@ -26,9 +26,11 @@ export default class Tour {
 				(this.root ??= ReactDOM.createRoot(this.dom)).render(
 					<Impl
 						steps={steps}
-						onClose={() => {
+						exit={() => {
 							this.root.render(null);
 							this.dom.style.display = "none";
+						}}
+						close={() => {
 							localStorage.setItem(sha256, ":3");
 						}}
 					/>,
@@ -38,9 +40,17 @@ export default class Tour {
 	}
 }
 
-function Impl({ steps, onClose }: { steps: Guide[]; onClose: () => void }) {
+function Impl({ steps, exit, close }: { steps: Guide[]; exit: () => void; close: () => void }) {
 	const [stage, setStage] = useState(0);
 	const [style, setStyle] = useState<React.CSSProperties>({});
+
+	useEffect(() => {
+		function handle() {
+			exit();
+		}
+		window.addEventListener("popstate", handle);
+		return () => window.removeEventListener("popstate", handle);
+	}, [exit]);
 
 	useEffect(() => {
 		const target = document.querySelector(steps[stage].query);
@@ -119,7 +129,15 @@ function Impl({ steps, onClose }: { steps: Guide[]; onClose: () => void }) {
 						<div className="relative flex flex-col gap-[10px] overflow-hidden whitespace-nowrap rounded-[12px] bg-white px-[30px] py-[16px] pt-[38px] text-text-default">
 							<div className="absolute left-0 right-0 top-0 flex h-[24px] items-center bg-interaction-inactive/50 px-[8px]">
 								<div className="grow" />
-								<button type="button" aria-label="prev" className="flex aspect-square w-[16px] items-center rounded-full" onClick={onClose}>
+								<button
+									type="button"
+									aria-label="prev"
+									className="flex aspect-square w-[16px] items-center rounded-full"
+									onClick={() => {
+										exit();
+										close();
+									}}
+								>
 									<Icon.Close width={16} height={16} />
 								</button>
 							</div>
