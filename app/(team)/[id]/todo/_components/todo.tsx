@@ -97,7 +97,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			const item = todoItems[index];
 			// 잡은 요소와 일치하는지
 			if (todoItem.id === item.id) {
-				todoOrderMutation.mutate({ todoId: item.id, displayIndex: index });
+				todoOrderMutation.mutate({ taskListId: currentTaskId, todoId: item.id, displayIndex: index });
 				break; // 일치하는 항목을 찾으면 순회를 종료
 			}
 		}

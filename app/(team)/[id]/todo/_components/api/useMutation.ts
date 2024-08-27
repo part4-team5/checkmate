@@ -55,12 +55,13 @@ const patchTodoEdit = async (todoId: number, name: string, description: string, 
 	);
 };
 
-const patchTodoOrder = async (todoId: number, displayIndex: number) => {
+const patchTodoOrder = async (taskListId: number, todoId: number, displayIndex: number) => {
 	const body = {
 		displayIndex,
 	};
 	return API["{teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/{id}/order"].PATCH(
 		{
+			taskListId,
 			id: todoId,
 		},
 		body,
@@ -214,13 +215,14 @@ export const useEditTodoMutation = (groupId: number, currentTaskId: number, curr
 };
 
 type MutationVariables = {
+	taskListId: number;
 	todoId: number;
 	displayIndex: number;
 };
 
 export const useTodoOrderMutation = () =>
 	useMutation({
-		mutationFn: ({ todoId, displayIndex }: MutationVariables) => patchTodoOrder(todoId, displayIndex),
+		mutationFn: ({ taskListId, todoId, displayIndex }: MutationVariables) => patchTodoOrder(taskListId, todoId, displayIndex),
 	});
 
 export const useCreateTodoMutation = (groupId: number, taskListId: number) => {
