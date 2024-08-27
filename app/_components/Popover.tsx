@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
