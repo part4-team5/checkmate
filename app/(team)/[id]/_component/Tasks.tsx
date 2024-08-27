@@ -8,6 +8,7 @@ import { Reorder } from "framer-motion";
 import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
 import Icon from "@/app/_icons";
 import DropDown from "@/app/_components/Dropdown";
+import Image from "next/image";
 import PostEditTasks from "@/app/_components/modal-contents/PostEditTasks";
 import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import { useRouter } from "next/navigation";
@@ -111,7 +112,7 @@ function TaskItem({
 
 	return (
 		<div
-			className="flex h-[40px] w-full cursor-pointer rounded-[12px] bg-background-quaternary text-text-primary shadow-teamTaskList"
+			className="reorder-item flex h-[40px] w-full cursor-pointer rounded-[12px] bg-background-quaternary text-text-primary shadow-teamTaskList"
 			onMouseDown={handleMouseDown}
 			onMouseUp={handleMouseUp}
 			onContextMenu={(e) => e.preventDefault()} // 우클릭 시 기본 메뉴 차단
