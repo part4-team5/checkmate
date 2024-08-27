@@ -102,16 +102,14 @@ export default function Button({ id, children, variant = "primary", fontSize = "
 
 	if (href) {
 		return (
-
-			<MotionLink id={id}  className={`${btnStyle}`} href={href} whileTap={buttonAnimation.whileTap}>
+			<MotionLink id={id} className={`${btnStyle}`} href={href} whileTap={buttonAnimation.whileTap}>
 				{children}
 			</MotionLink>
 		);
 	}
 
 	return (
-
-		<MotionButton id={id}  type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled} whileTap={buttonAnimation.whileTap}>
+		<MotionButton id={id} type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled} whileTap={buttonAnimation.whileTap}>
 			{children}
 		</MotionButton>
 	);

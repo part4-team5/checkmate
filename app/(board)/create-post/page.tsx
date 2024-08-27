@@ -125,7 +125,7 @@ export default function Page() {
 
 	return (
 		<main className="flex w-full flex-col items-center tablet:px-[60px] tablet:py-[30px] desktop:pt-[60px]">
-			<form className="h-full w-full bg-background-secondary desktop:container tablet:rounded-[10px] tablet:shadow-lg" onSubmit={onSubmit}>
+			<form className="tablet:shadow-lg h-full w-full bg-background-secondary desktop:container tablet:rounded-[10px]" onSubmit={onSubmit}>
 				<label
 					id="thumb"
 					htmlFor="image"

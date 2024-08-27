@@ -26,7 +26,7 @@ type ClientTodoProps = {
 
 function CalendarPopoverContent() {
 	return (
-		<div className="rounded shadow-lg">
+		<div className="shadow-lg rounded">
 			<Calendar.Picker />
 		</div>
 	);
