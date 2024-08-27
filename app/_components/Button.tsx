@@ -40,7 +40,7 @@ export default function Button({ id, children, variant = "primary", fontSize = "
 	switch (variant) {
 		case "primary":
 			btnVariant =
-				"flex items-center justify-center bg-brand-primary font-semibold text-text-inverse hover:bg-interaction-hover active:bg-interaction-pressed disabled:bg-interaction-inactive shadow-loginButton";
+				"flex items-center justify-center bg-brand-primary font-semibold text-text-inverse hover:bg-interaction-hover active:bg-interaction-pressed disabled:bg-interaction-inactive shadow-loginButton disabled:shadow-buttonPrimary";
 			break;
 		case "secondary":
 			btnVariant =
@@ -102,16 +102,14 @@ export default function Button({ id, children, variant = "primary", fontSize = "
 
 	if (href) {
 		return (
-
-			<MotionLink id={id}  className={`${btnStyle}`} href={href} whileTap={buttonAnimation.whileTap}>
+			<MotionLink id={id} className={`${btnStyle}`} href={href} whileTap={buttonAnimation.whileTap}>
 				{children}
 			</MotionLink>
 		);
 	}
 
 	return (
-
-		<MotionButton id={id}  type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled} whileTap={buttonAnimation.whileTap}>
+		<MotionButton id={id} type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled} whileTap={buttonAnimation.whileTap}>
 			{children}
 		</MotionButton>
 	);
