@@ -88,7 +88,7 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 									type="text"
 									onChange={handleEditTitleChange}
 									value={editedTitle}
-									className={`${editedTitle.length > 0 ? "" : "border-status-danger"} shadow-input w-full rounded-lg border border-border-primary bg-background-tertiary p-1 pl-2 focus:outline-none`}
+									className={`${editedTitle.length > 0 ? "" : "border-status-danger"} bg-todo-primary shadow-input w-full rounded-lg border border-border-primary p-1 pl-2 focus:outline-none`}
 								/>
 							) : (
 								<div className={`${isCheck ? "line-through" : ""} text-xl font-bold text-text-primary`}>{todoContent.name}</div>
@@ -131,7 +131,7 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 											handleEditDescriptionChange({ target: { value: `${editedDescription}\n` } } as React.ChangeEvent<HTMLTextAreaElement>);
 										}
 									}}
-									className={`${editedDescription.length > 0 ? "" : "border-status-danger"} shadow-input w-full rounded-lg border border-border-primary bg-background-tertiary pl-2 focus:outline-none`}
+									className={`${editedDescription.length > 0 ? "" : "border-status-danger"} shadow-input bg-todo-primary w-full rounded-lg border border-border-primary pl-2 focus:outline-none`}
 									rows={5}
 								/>
 							) : (

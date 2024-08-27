@@ -222,7 +222,7 @@ Form.Input = function Input({
 	return (
 		<div
 			ref={self}
-			className={`flex w-full gap-[16px] rounded-[12px] border border-border-primary bg-background-secondary px-[16px] ${isModal ? "shadow-input bg-background-tertiary" : ""}`}
+			className={`flex w-full gap-[16px] rounded-[12px] border border-transparent bg-background-secondary px-[16px] ${isModal ? "shadow-input bg-todo-primary" : "shadow-loginInput"}`}
 		>
 			<input
 				id={id}
@@ -233,7 +233,7 @@ Form.Input = function Input({
 				onChange={onChange}
 				placeholder={placeholder}
 				defaultValue={init}
-				className={`h-[48px] grow bg-transparent text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none`}
+				className="h-[48px] grow bg-transparent text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none"
 			/>
 			{type === "password" && (
 				<button type="button" onClick={() => setDisplay(!display)}>
@@ -364,7 +364,7 @@ Form.TextArea = function TextArea({
 			onChange={onChange}
 			placeholder={placeholder}
 			defaultValue={init}
-			className={`${isModal ? "shadow-input bg-background-tertiary" : "bg-background-secondary"} h-auto grow resize-none overflow-hidden rounded-[12px] border border-border-primary px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none`}
+			className={`${isModal ? "bg-todo-primary shadow-input" : "shadow-loginInput bg-background-secondary"} h-auto grow resize-none overflow-hidden rounded-[12px] border border-transparent px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none`}
 		/>
 	);
 };

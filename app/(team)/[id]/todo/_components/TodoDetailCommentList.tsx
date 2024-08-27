@@ -68,7 +68,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 					<div className="flex justify-between">
 						{isCommentEdit ? (
 							<textarea
-								className={`${editedComment.length > 0 ? "" : "border-status-danger"} shadow-modalInput w-full rounded-lg border border-border-primary bg-background-tertiary pl-2 focus:outline-none`}
+								className={`${editedComment.length > 0 ? "" : "border-status-danger"} shadow-modalInput bg-todo-primary w-full rounded-lg border border-border-primary pl-2 focus:outline-none`}
 								onChange={handleEditCommentChange}
 								value={editedComment}
 								onKeyDown={(e) => {
