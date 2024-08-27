@@ -46,7 +46,7 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 					<CloseIcon width={24} height={24} />
 				</button>
 			</div>
-			<div className="px-6 pt-5 text-text-primary" ref={containerRef}>
+			<div className="px-6 pt-9 text-text-primary" ref={containerRef}>
 				<div>
 					<TodoDetailHeader
 						groupId={groupId}
