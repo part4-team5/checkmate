@@ -168,7 +168,7 @@ export default function Page() {
 				</label>
 				<div className="relative mx-[15px] mt-[61px] flex h-[45px] items-center gap-[15px] tablet:mt-[15px]">
 					<input
-						className="h-full w-[100px] grow text-ellipsis rounded-[10px] border border-border-primary bg-transparent px-[10px] text-text-primary shadow-postboard outline-none focus:border-brand-primary z-10"
+						className="z-10 h-full w-[100px] grow text-ellipsis rounded-[10px] border border-border-primary bg-transparent px-[10px] text-text-primary shadow-postboard outline-none focus:border-brand-primary"
 						placeholder="제목을 입력해주세요"
 						onChange={(event) => setTitle(event.target.value)}
 					/>
