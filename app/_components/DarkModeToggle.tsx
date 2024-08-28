@@ -2,16 +2,10 @@
 
 import Icon from "@/app/_icons";
 import Cookie from "@/app/_utils/Cookie";
-import { useLayoutEffect, useState } from "react";
+import { useState } from "react";
 
 export default function DarkModeToggle() {
 	const [isDarkMode, setDarkMode] = useState(Cookie.get("theme") === null ? true : Cookie.get("theme") === "dark");
-
-	useLayoutEffect(() => {
-		if (Cookie.get("theme") === null) {
-			Cookie.set("theme", "dark");
-		}
-	}, []);
 
 	const toggleDarkMode = () => {
 		setDarkMode(!isDarkMode);
