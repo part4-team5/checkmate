@@ -3,7 +3,7 @@
 import API from "@/app/_api/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import AccountDeletionModal from "@/app/_components/modal-contents/AccountDeletion";
 import useAuthStore from "@/app/_store/useAuthStore";
@@ -12,6 +12,7 @@ import Image from "next/image";
 import ChangePasswordModal from "@/app/_components/modal-contents/ChangePassword";
 import useCookie from "@/app/_hooks/useCookie";
 import toast from "@/app/_utils/Toast";
+import Icon from "@/app/_icons";
 // import DarkModeToggle from "@/app/_components/DarkModeToggle";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
@@ -20,26 +21,23 @@ export default function Page() {
 	const router = useRouter();
 	const overlay = useOverlay();
 	const queryClient = useQueryClient();
-	const { user, setUser } = useAuthStore();
+	const { user, setUser } = useAuthStore((state) => state);
 	const clearUser = useAuthStore((state) => state.clearUser);
-	const [accessToken, setAccessToken] = useCookie("accessToken");
+	const [, setAccessToken] = useCookie("accessToken");
 	const [, setRefreshToken] = useCookie("refreshToken");
-	const [initialNickname, setInitialNickname] = useState(user?.nickname);
 
 	useQuery({
 		queryKey: ["user"],
 		queryFn: async () => {
 			const data = await API["{teamId}/user"].GET({});
 			setUser(data);
-			setInitialNickname(data.nickname);
 			return data;
 		},
-		enabled: !!accessToken,
 	});
 
 	// 이미지 업로드
-	const imageUpload = async (file: File | null) => {
-		if (!file) return null;
+	const imageUpload = async (file: File) => {
+		if (!file) return { url: undefined };
 		if (typeof file === "string") return { url: file };
 
 		return API["{teamId}/images/upload"].POST({}, file);
@@ -51,18 +49,20 @@ export default function Page() {
 			const file = ctx.values.profileImage as File;
 			const nickname = ctx.values.nickname as string;
 
-			const uploadedImage = await imageUpload(file);
-			const imageUrl = uploadedImage ? uploadedImage.url : (user?.image ?? "");
+			if (typeof file === "string" && !nickname) throw new Error("변경된 내용이 없습니다.");
 
-			const payload: Parameters<(typeof API)["{teamId}/user"]["PATCH"]>[1] = { image: imageUrl };
-			if (nickname !== initialNickname) {
-				payload.nickname = nickname;
-			}
+			const { url } = await imageUpload(file);
+
+			const payload: Parameters<(typeof API)["{teamId}/groups"]["POST"]>[1] = {
+				image: url,
+				name: !nickname ? undefined : nickname,
+			};
 
 			return API["{teamId}/user"].PATCH({}, payload);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
+
 			toast.success("프로필 변경이 완료되었습니다.");
 			router.replace(window.location.pathname);
 		},
@@ -129,8 +129,9 @@ export default function Page() {
 										>
 											<Image src={file ? (file as string) : (user?.image ?? "/icons/defaultAvatar.svg")} alt="Profile Image" fill />
 										</div>
-
-										<Image src="/icons/edit.svg" alt="Profile Preview" width={20} height={20} className="absolute bottom-0 right-0" />
+										<div className="absolute bottom-0 right-0 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-text-primary bg-dropdown-hover">
+											<Icon.Edit width={11} height={11} color="var(--text-primary)" />
+										</div>
 									</div>
 								)}
 							</Form.ImageInput>
@@ -145,10 +146,7 @@ export default function Page() {
 							type="text"
 							placeholder="이름을 입력해주세요."
 							init={user?.nickname ?? ""}
-							tests={[
-								{ type: "require", data: true, error: "이름을 입력해주세요." },
-								{ type: "maxlength", data: 30, error: "30자 이하로 입력해주세요." },
-							]}
+							tests={[{ type: "maxlength", data: 30, error: "30자 이하로 입력해주세요." }]}
 						/>
 						<Form.Error htmlFor="nickname" />
 
