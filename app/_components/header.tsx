@@ -4,7 +4,6 @@
 "use client";
 
 import API from "@/app/_api";
-import DarkModeToggle from "@/app/_components/DarkModeToggle";
 import DropDown from "@/app/_components/Dropdown";
 import Logout from "@/app/_components/modal-contents/Logout";
 import useCookie from "@/app/_hooks/useCookie";
@@ -151,7 +150,7 @@ export default function Header() {
 								{/* 팀 선택 드롭다운 */}
 								<li>
 									<DropDown options={teamDropdown.length > 0 ? teamDropdown : []} gapY={10} align="LL">
-										<button type="button" className="flex max-h-[40px] items-center gap-[10px] px-2 py-3 text-lg font-medium">
+										<button type="button" className="flex max-h-[40px] max-w-[350px] items-center gap-[10px] px-2 py-3 text-lg font-medium desktop:max-w-none">
 											<Image
 												src={user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image ?? "/icons/emptyImage.svg"}
 												alt="team"
@@ -159,8 +158,12 @@ export default function Header() {
 												height={32}
 												className="size-8 rounded-lg object-cover"
 											/>
-											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
-											<Icon.ArrowDown width={16} height={16} color="var(--text-primary)" />
+											<p className="overflow-x-hidden text-ellipsis whitespace-nowrap">
+												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
+											</p>
+											<div className="size-[16px]">
+												<Icon.ArrowDown width={16} height={16} color="var(--text-primary)" />
+											</div>
 										</button>
 									</DropDown>
 								</li>
@@ -174,11 +177,11 @@ export default function Header() {
 
 						{/* 유저 정보 */}
 						<DropDown options={userDropdown} gapY={10} align="RR">
-							<button type="button" className="flex gap-2 p-2">
-								<div className="size-4 tablet:size-6">
+							<button type="button" className="flex max-w-[300px] gap-2 p-2">
+								<div className="size-6 min-h-6 min-w-6">
 									<Icon.User width="100%" height="100%" color="var(--text-primary)" />
 								</div>
-								<span className="hidden desktop:block">{user?.nickname}</span>
+								<p className="hidden overflow-x-hidden text-ellipsis whitespace-nowrap desktop:block">{user?.nickname}</p>
 							</button>
 						</DropDown>
 					</div>
@@ -191,7 +194,7 @@ export default function Header() {
 				</nav>
 
 				{/* 다크 모드 토글 버튼 */}
-				<DarkModeToggle />
+				{/* <DarkModeToggle /> */}
 
 				<div className="pr-4 tablet:pr-10 desktop:p-0" />
 
