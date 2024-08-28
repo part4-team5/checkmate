@@ -5,6 +5,7 @@ import TeamTitle from "@/app/(team)/[id]/_component/TeamTitle";
 import Report from "@/app/(team)/[id]/_component/Report";
 import Members from "@/app/(team)/[id]/_component/Members";
 import Tasks from "@/app/(team)/[id]/_component/Tasks";
+import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: { id: string } }) {
 	const id = Number(params.id);
@@ -19,12 +20,16 @@ export default async function Page({ params }: { params: { id: string } }) {
 		},
 	});
 
+	// id가 숫자가 아닌 경우 404 페이지를 반환
+	if (Number.isNaN(Number(id)) || queryClient.getQueryData(["groupInfo", { groupId: id }]) === undefined) {
+		notFound();
+	}
+
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
 			<main className="pb-[67px] text-[#F8FAFC]">
 				<TeamTitle id={id} />
 				<section className="flex flex-col gap-[24px] tablet:flex-row">
-					{" "}
 					<section className="flex">
 						<Report id={id} />
 					</section>
