@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
+
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -34,86 +35,82 @@ export default function Popover({
 	const [toggle, setToggle] = useState(init);
 	const pop = useRef<HTMLDivElement>(null);
 	const over = useRef<HTMLDivElement>(null);
-	const [style, setStyle] = useState<React.CSSProperties>({ display: "none" });
+	const [style, setStyle] = useState<React.CSSProperties>({ position: "absolute", visibility: "hidden" });
 
 	const pathname = usePathname();
 
 	useEffect(() => {
 		const resize = new ResizeObserver(() => {
 			const impl: typeof style = { position: "absolute", zIndex: 69 };
+			// :3
+			if (!toggle) impl.visibility = "hidden";
 
-			if (!toggle) {
-				impl.display = "none";
-			} else {
-				impl.display = "block";
-			}
-
-			const popRect = pop.current?.getBoundingClientRect();
-			const overRect = over.current?.getBoundingClientRect();
-
-			if (!popRect || !overRect) {
-				return; // popRect나 overRect가 정의되지 않은 경우 종료
-			}
+			const popRect = pop.current?.getBoundingClientRect()!;
+			const overRect = over.current?.getBoundingClientRect()!;
 
 			// eslint-disable-next-line default-case
 			switch (anchorOrigin.vertical) {
-				case "top":
+				case "top": {
 					impl.top = 0;
 					break;
-				case "center":
+				}
+				case "center": {
 					impl.top = popRect.height * 0.5;
 					break;
-				case "bottom":
-					impl.top = popRect.height;
+				}
+				case "bottom": {
+					impl.top = popRect.height * 1.0;
 					break;
+				}
 			}
-
 			// eslint-disable-next-line default-case
 			switch (anchorOrigin.horizontal) {
-				case "left":
+				case "left": {
 					impl.left = 0;
 					break;
-				case "center":
+				}
+				case "center": {
 					impl.left = popRect.width * 0.5;
 					break;
-				case "right":
-					impl.left = popRect.width;
+				}
+				case "right": {
+					impl.left = popRect.width * 1.0;
 					break;
+				}
 			}
-
 			// eslint-disable-next-line default-case
 			switch (overlayOrigin.vertical) {
-				case "top":
-					impl.top! += gapY;
+				case "top": {
+					impl.top += gapY;
 					break;
-				case "center":
-					impl.top! -= overRect.height * 0.5;
+				}
+				case "center": {
+					impl.top -= overRect.height * 0.5;
 					break;
-				case "bottom":
-					impl.top! -= overRect.height + gapY;
+				}
+				case "bottom": {
+					impl.top -= overRect.height * 1.0 + gapY;
 					break;
+				}
 			}
-
 			// eslint-disable-next-line default-case
 			switch (overlayOrigin.horizontal) {
-				case "left":
-					impl.left! += gapX;
+				case "left": {
+					impl.left += gapX;
 					break;
-				case "center":
-					impl.left! -= overRect.width * 0.5;
+				}
+				case "center": {
+					impl.left -= overRect.width * 0.5;
 					break;
-				case "right":
-					impl.left! -= overRect.width + gapX;
+				}
+				case "right": {
+					impl.left -= overRect.width * 1.0 + gapX;
 					break;
+				}
 			}
-
 			setStyle(impl);
 		});
-
-		if (pop.current) {
-			resize.observe(pop.current);
-		}
-
+		resize.observe(pop.current!);
 		return () => resize.disconnect();
 	}, [toggle, children, gapY, gapX, anchorOrigin, overlayOrigin]);
 
@@ -131,23 +128,23 @@ export default function Popover({
 		}
 	}, [toggle, onOpen, onClose]);
 
-	const handleClickOutside = (event: MouseEvent) => {
-		if (pop.current && !pop.current.contains(event.target as Element)) {
-			setToggle(false);
-		}
-	};
-
 	// eslint-disable-next-line consistent-return
 	useEffect(() => {
 		if (!readonly && toggle) {
-			document.addEventListener("click", handleClickOutside, true);
-			return () => document.removeEventListener("click", handleClickOutside, true);
+			// eslint-disable-next-line no-inner-declarations
+			function handle(event: MouseEvent) {
+				if (pop.current && !pop.current.contains(event.target as Element)) {
+					setToggle(false);
+				}
+			}
+			document.addEventListener("click", handle, true);
+			return () => document.removeEventListener("click", handle, true);
 		}
 	}, [readonly, toggle]);
 
 	const onClick = useCallback(() => {
 		if (!readonly) {
-			setToggle((prev) => !prev);
+			setToggle((_) => !_);
 		}
 	}, [readonly]);
 
@@ -163,21 +160,16 @@ export default function Popover({
 				{children}
 			</div>
 			<AnimatePresence>
-				{toggle && (
-					<motion.div
-						ref={over}
-						style={style}
-						initial={{ opacity: 0, scale: 0.95 }}
-						animate={{ opacity: 1, scale: 1 }}
-						exit={{ opacity: 0, scale: 0.95 }}
-						transition={{ duration: 0.2 }}
-						onAnimationComplete={() => {
-							if (!toggle) setStyle((prevStyle) => ({ ...prevStyle, display: "none" }));
-						}}
-					>
-						{overlay(() => setToggle(false))}
-					</motion.div>
-				)}
+				<motion.div
+					ref={over}
+					style={style}
+					initial={{ opacity: 0, scale: 0.95 }}
+					animate={{ opacity: 1, scale: 1 }}
+					exit={{ opacity: 0, scale: 0.95 }}
+					transition={{ duration: 0.2 }}
+				>
+					{overlay(() => setToggle(false))}
+				</motion.div>
 			</AnimatePresence>
 		</div>
 	);
