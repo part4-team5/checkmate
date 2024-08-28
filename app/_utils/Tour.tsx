@@ -126,7 +126,7 @@ function Impl({ steps, exit, close }: { steps: Guide[]; exit: () => void; close:
 					overlayOrigin={args.overlayOrigin!}
 					// eslint-disable-next-line react/no-unstable-nested-components
 					overlay={() => (
-						<div className="border border-border-primary relative flex flex-col gap-[10px] overflow-hidden whitespace-nowrap rounded-[12px] bg-background-primary px-[30px] py-[16px] pt-[38px] text-text-primary shadow-history">
+						<div className="relative flex flex-col gap-[10px] overflow-hidden whitespace-nowrap rounded-[12px] border border-border-primary bg-background-primary px-[30px] py-[16px] pt-[38px] text-text-primary shadow-history">
 							<div className="absolute left-0 right-0 top-0 flex h-[24px] items-center bg-background-tertiary px-[8px]">
 								<div className="grow" />
 								<button

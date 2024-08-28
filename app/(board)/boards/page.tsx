@@ -171,9 +171,9 @@ export default function Page() {
 									href={`/boards/${post.id}`}
 									className="flex h-[190px] justify-between gap-[24px] rounded-[12px] bg-background-tertiary px-[12px] py-[12px] shadow-bestCard hover:bg-background-quinary"
 								>
-									<div className="flex flex-col justify-between gap-[24px] flex-shrink-0">
+									<div className="flex flex-shrink-0 flex-col justify-between gap-[24px]">
 										<div className="flex flex-col gap-[12px]">
-											<div className="text-xl text-ellipsis">{post.title}</div>
+											<div className="text-ellipsis text-xl">{post.title}</div>
 											<div className="text-md">{new Date(post.createdAt).toLocaleDateString()}</div>
 										</div>
 										<div className="flex items-center gap-[8px] text-nowrap desktop:gap-[16px]">
