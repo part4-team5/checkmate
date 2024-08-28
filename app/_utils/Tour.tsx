@@ -126,8 +126,8 @@ function Impl({ steps, exit, close }: { steps: Guide[]; exit: () => void; close:
 					overlayOrigin={args.overlayOrigin!}
 					// eslint-disable-next-line react/no-unstable-nested-components
 					overlay={() => (
-						<div className="relative flex flex-col gap-[10px] overflow-hidden whitespace-nowrap rounded-[12px] bg-white px-[30px] py-[16px] pt-[38px] text-text-default">
-							<div className="absolute left-0 right-0 top-0 flex h-[24px] items-center bg-interaction-inactive/50 px-[8px]">
+						<div className="border border-border-primary relative flex flex-col gap-[10px] overflow-hidden whitespace-nowrap rounded-[12px] bg-background-primary px-[30px] py-[16px] pt-[38px] text-text-primary shadow-history">
+							<div className="absolute left-0 right-0 top-0 flex h-[24px] items-center bg-background-tertiary px-[8px]">
 								<div className="grow" />
 								<button
 									type="button"
@@ -138,17 +138,17 @@ function Impl({ steps, exit, close }: { steps: Guide[]; exit: () => void; close:
 										close();
 									}}
 								>
-									<Icon.Close width={16} height={16} />
+									<Icon.Close width={16} height={16} color="var(--text-primary)" />
 								</button>
 							</div>
 							{steps[stage].content}
 							<div className="flex items-center justify-evenly">
 								<button type="button" aria-label="prev" onClick={prev}>
-									<Icon.ArrowLeft width={24} height={24} />
+									<Icon.ArrowLeft width={24} height={24} color="var(--text-primary)" />
 								</button>
 								{stage + 1}/{steps.length}
 								<button type="button" aria-label="next" onClick={next}>
-									<Icon.ArrowRight width={24} height={24} />
+									<Icon.ArrowRight width={24} height={24} color="var(--text-primary)" />
 								</button>
 							</div>
 						</div>
