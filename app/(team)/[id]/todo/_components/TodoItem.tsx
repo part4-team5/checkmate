@@ -62,7 +62,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 	const { date } = convertIsoToDateAndTime(todoItem.date); // 날짜 변환
 	return (
 		<div
-			className={`lg:hover:bg-background-tertiary flex w-full justify-between rounded-lg bg-background-tertiary px-[14px] py-3 shadow-listPage ${
+			className={`flex w-full justify-between rounded-lg bg-background-tertiary px-[14px] py-3 shadow-listPage hover:bg-background-tertiary ${
 				isDragging ? "cursor-grabbing" : "cursor-pointer"
 			}`}
 			key={todoItem.id}
@@ -78,6 +78,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 				<div className="flex items-center justify-between">
 					<div className="flex gap-3">
 						<button
+							id="todo-done"
 							className="group relative"
 							type="button"
 							aria-label="todo-done"
@@ -89,7 +90,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 							{todoItem.doneAt ? <Image src="/icons/checkBox.svg" alt="Todo status" width={24} height={24} /> : <Icon.UnCheckBox width={24} height={24} />}
 
 							{/* 호버 시 나타나는 오버레이 */}
-							<div className="lg:group-hover:opacity-90 absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 ease-in-out">
+							<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-90">
 								<Image src="/icons/checkBox.svg" alt="Preview" width={24} height={24} className="opacity-100" />
 							</div>
 						</button>
@@ -99,7 +100,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 							</button>
 
 							{/* 툴팁 */}
-							<div className="pointer-events-none absolute bottom-3/4 left-10 mb-2 w-max -translate-x-1/2 transform rounded bg-background-secondary p-2 text-sm text-white opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-100">
+							<div className="pointer-events-none absolute bottom-3/4 left-10 mb-2 w-max -translate-x-1/2 transform rounded bg-background-secondary p-2 text-sm text-text-primary opacity-0 shadow-board transition-opacity duration-200 ease-in-out group-hover:opacity-100">
 								할일 상세 보기
 							</div>
 						</div>
@@ -113,6 +114,7 @@ export default function TodoItem({ taskId, todoItem, groupId, currentDate, onTog
 				<DateTimeFrequency date={date} frequency={frequency[todoItem.frequency]} />
 			</div>
 			<button
+				id="todo-delete"
 				className="pr-2"
 				aria-label="할 일 삭제"
 				type="submit"

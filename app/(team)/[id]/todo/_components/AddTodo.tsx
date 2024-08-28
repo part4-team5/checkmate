@@ -12,7 +12,12 @@ export default function AddTodo({ containerRef }: { containerRef: React.RefObjec
 	const overlay = useOverlay();
 
 	return (
-		<motion.div drag="x" dragConstraints={containerRef} className="fixed bottom-12 right-7 h-[48px] w-[125px] desktop:right-[calc((100dvw-1200px)/2)]">
+		<motion.div
+			id="addtodo"
+			drag="x"
+			dragConstraints={containerRef}
+			className="fixed bottom-12 right-7 h-[48px] w-[125px] desktop:right-[calc((100dvw-1200px)/2)]"
+		>
 			<Button rounded="full" onClick={useCallback(() => overlay.open((props) => <TodoModal {...props} />), [overlay])}>
 				+할 일 추가
 			</Button>

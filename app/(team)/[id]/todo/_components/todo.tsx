@@ -18,6 +18,7 @@ import { useDeleteTodoMutation, useTodoOrderMutation, useToggleTodoStatusMutatio
 import { Reorder, motion } from "framer-motion";
 import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
 import Icon from "@/app/_icons";
+import Tour from "@/app/_utils/Tour";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -26,7 +27,7 @@ type ClientTodoProps = {
 
 function CalendarPopoverContent() {
 	return (
-		<div className="shadow-lg rounded">
+		<div className="shadow-lg absolute rounded">
 			<Calendar.Picker />
 		</div>
 	);
@@ -45,7 +46,6 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const todoPatchMutation = useToggleTodoStatusMutation(groupId, currentTaskId, currentDate);
 	const todoOrderMutation = useTodoOrderMutation();
 	const todoDeleteMutation = useDeleteTodoMutation(groupId, currentTaskId, currentDate);
-
 	const containerRef = useRef(null);
 	const tasks = groupList?.taskLists;
 
@@ -86,6 +86,46 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		));
 	};
 
+	useEffect(() => {
+		Tour.play([
+			{
+				query: "#daypicker",
+				content: "원하는 날짜를 골라 해당 날짜에 할 일을 볼 수 있어요.",
+				position: "bottom",
+			},
+			{
+				query: "#left",
+				content: "이전 날짜로 이동할 수 있어요.",
+				position: "bottom",
+			},
+			{
+				query: "#right",
+				content: "다음 날짜로 이동할 수 있어요.",
+				position: "bottom",
+			},
+			{
+				query: "#calendar",
+				content: "원하는 날짜를 선택할 수 있는 달력이 있어요.",
+				position: "bottom",
+			},
+			{
+				query: "#addTaskButton",
+				content: "새로운 할 일 목록을 추가할 수 있어요.",
+				position: "bottom",
+			},
+			{
+				query: "#tasks",
+				content: "할 일 목록을 선택할 수 있어요.",
+				position: "bottom",
+			},
+			{
+				query: "#addtodo",
+				content: "할 일을 추가할 수 있어요.",
+				position: "top",
+			},
+		]);
+	}, []);
+
 	const handleReorder = (ReorderItems: TaskListType) => {
 		queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), ReorderItems);
 	};
@@ -116,23 +156,23 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		<>
 			<div className="my-6 flex justify-between" ref={containerRef}>
 				<Calendar onChange={(date) => handleCurrentDate(date)}>
-					<div className="flex gap-3">
+					<div className="flex gap-3" id="daypicker">
 						<div className="flex min-w-[98px] items-center text-lg font-medium text-text-primary">
 							<Calendar.Date>{(date) => convertIsoToDateToKorean(date)}</Calendar.Date>
 						</div>
 						<div className="flex gap-2">
 							<Calendar.Jump to={{ unit: "day", times: -1 }}>
-								<motion.div whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="rounded-full shadow-loginButton">
+								<motion.div id="left" whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="rounded-full shadow-loginButton">
 									<Icon.CalendarLeftArrow width={20} height={20} />
 								</motion.div>
 							</Calendar.Jump>
 							<Calendar.Jump to={{ unit: "day", times: 1 }}>
-								<motion.div whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="rounded-full shadow-loginButton">
+								<motion.div id="right" whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="rounded-full shadow-loginButton">
 									<Icon.CalendarRightArrow width={20} height={20} />
 								</motion.div>
 							</Calendar.Jump>
 						</div>
-						<div className="relative flex items-center">
+						<div className="relative flex h-fit w-fit items-center">
 							<Popover
 								gapX={6} // X축 간격 조절
 								gapY={-3} // Y축 간격 조절
@@ -142,8 +182,13 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 							>
 								<div className="flex items-center">
 									<button type="button" aria-label="Open calendar">
-										<motion.div whileHover={buttonAnimation.hover} whileTap={buttonAnimation.whileTap} className="rounded-full shadow-loginButton">
-											<Icon.CalendarButton width={32} height={32} />
+										<motion.div
+											id="calendar"
+											whileHover={buttonAnimation.hover}
+											whileTap={buttonAnimation.whileTap}
+											className="rounded-full shadow-loginButton"
+										>
+											<Icon.CalendarButton width={24} height={24} />
 										</motion.div>
 									</button>
 								</div>
@@ -151,7 +196,6 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						</div>
 					</div>
 				</Calendar>
-
 				<motion.button
 					onClick={handleAddTaskClick}
 					type="button"
@@ -160,12 +204,17 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					whileHover={{ scale: 1.07 }}
 					whileTap={{ scale: 0.95 }}
 					transition={{ type: "spring", stiffness: 300 }}
+					id="addTaskButton"
 				>
 					+새로운 목록 추가하기
 				</motion.button>
 			</div>
 
-			<motion.div className="layout layoutRoot flex flex-wrap gap-3 rounded-lg bg-background-secondary px-5 py-3 text-lg font-medium shadow-listPage tablet:px-8">
+			<motion.div
+				id="tasks"
+				className="layout layoutRoot flex flex-wrap gap-3 overflow-x-scroll rounded-lg bg-background-secondary px-5 py-3 text-lg font-medium shadow-listPage scrollbar-hide tablet:px-8"
+				style={{ maxHeight: "calc(2 * (2rem + 6px))", flexWrap: "wrap" }} // 2줄까지만 내려갈 수 있도록 maxHeight 설정
+			>
 				{tasks &&
 					tasks.map((task) => (
 						<motion.div
@@ -222,6 +271,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="mb-44">
 						{todoItems.map((todoItem) => (
 							<Reorder.Item
+								id="todoItem"
 								value={todoItem}
 								key={todoItem.id}
 								onDragEnd={() => handleDragEnd(todoItem)}
@@ -261,7 +311,6 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 					</Reorder.Group>
 				</div>
 			)}
-
 			<AddTodo containerRef={containerRef} />
 		</>
 	);
