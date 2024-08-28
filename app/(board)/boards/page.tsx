@@ -161,7 +161,7 @@ export default function Page() {
 						</DropDown>
 					</div>
 				</div>
-				<div className="overflow-auto rounded-[12px] bg-background-secondary px-[12px] py-[12px] shadow-postboard">
+				<div className="overflow-y-auto overflow-x-hidden rounded-[12px] bg-background-secondary px-[12px] py-[12px] shadow-postboard">
 					{display === "card" && (
 						<div className="grid grid-cols-1 gap-[12px] text-text-primary tablet:grid-cols-2">
 							{posts?.map((post) => (
