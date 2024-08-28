@@ -29,6 +29,11 @@
 	z-index: -2;
 }
 
+::-webkit-scrollbar {
+	border-radius: 9999px;
+	background-color: var(--background-tertiary);
+}
+
 @keyframes glitch-color {
 	0% {
 		transform: translate(0);
@@ -61,16 +66,15 @@
 	/* ------ */
 
 	/* landing */
-	--landing-primary: #f5f6f7;
+	--landing-primary: #f3f3f3;
 	--landing-secondary: #eeeeee;
 	--landing-tertiary: #ffffff;
-	--landing-quaternary: #3a3f44;
+	--landing-quaternary: #4a4b4d;
 	--landing-quinary: #ffffff;
 	--landing-Senary: #d9d9d9;
 	--landing-Septenary: #fafafb;
 	--landing-border: #9b9b9b;
 	--landing-inverse: #3f3f3f;
-	--landing-green: #f5fdfa;
 
 	/* background */
 	--background-primary: #f0f0f3;
@@ -99,10 +103,6 @@
 
 	/* todo */
 	--todo-primary: #f0f0f3;
-
-	/* dropdown */
-	--dropdown-hover: #d9d9d9;
-	--dropdown-active: #bdbdbd;
 
 	/* ------- */
 	/* Shadows */
@@ -142,7 +142,8 @@
 	--comment-shadow: -5px 5px 10px rgba(179, 179, 179, 0.2), 5px -5px 10px rgba(179, 179, 179, 0.2), inset 1px 1px 2px rgba(255, 255, 255, 0.3);
 
 	/* teamDropdown */
-	--teamDropdown-shadow: -5px 5px 10px rgba(179, 179, 179, 0.2), 5px -5px 10px rgba(179, 179, 179, 0.2), inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+	--teamDropdown-shadow: -5px 5px 10px rgba(28, 29, 31, 0.2), 5px -5px 10px rgba(28, 29, 31, 0.2), 5px 5px 13px rgba(28, 29, 31, 0.9),
+		inset 1px 1px 2px rgba(58, 61, 67, 0.3), inset -1px -1px 2px rgba(28, 29, 31, 0.5);
 
 	/* postboard */
 
@@ -177,7 +178,6 @@
 	--landing-Septenary: #bfbfbf;
 	--landing-line: #235749;
 	--landing-inverse: #ffffff;
-	--landing-green: #1e1f22;
 
 	/* background */
 	--background-primary: #1e1f22;
@@ -206,10 +206,6 @@
 
 	/* todo */
 	--todo-primary: #383a40;
-
-	/* dropdown */
-	--dropdown-hover: #414347;
-	--dropdown-active: #303236;
 
 	/* ------- */
 	/* Shadows */
@@ -255,8 +251,7 @@
 		inset 1px 1px 2px rgba(42, 43, 46, 0.3), inset -1px -1px 2px rgba(34, 35, 38, 0.5);
 
 	/* teamDropdown */
-	--teamDropdown-shadow: -5px 5px 10px rgba(28, 29, 31, 0.2), 5px -5px 10px rgba(28, 29, 31, 0.2), 5px 5px 13px rgba(28, 29, 31, 0.9),
-		inset 1px 1px 2px rgba(58, 61, 67, 0.3), inset -1px -1px 2px rgba(28, 29, 31, 0.5);
+	--teamDropdown-shadow: -5px 5px 10px rgba(179, 179, 179, 0.2), 5px -5px 10px rgba(179, 179, 179, 0.2), inset 1px 1px 2px rgba(255, 255, 255, 0.3);
 
 	/* postboard */
 	--postboard-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), -5px 5px 10px rgba(25, 26, 28, 0.2), 5px -5px 10px rgba(25, 26, 28, 0.2),
@@ -282,27 +277,27 @@ input:-webkit-autofill {
 
 @layer utilities {
 	.md h1 {
-		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-border-primary py-[8px] text-xl tablet:text-2xl;
 	}
 
 	.md h2 {
-		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-border-primary py-[8px] text-xl tablet:text-2xl;
 	}
 
 	.md h3 {
-		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-border-primary py-[8px] text-xl tablet:text-2xl;
 	}
 
 	.md h4 {
-		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-border-primary py-[8px] text-xl tablet:text-2xl;
 	}
 
 	.md h5 {
-		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-border-primary py-[8px] text-xl tablet:text-2xl;
 	}
 
 	.md h6 {
-		@apply border-b border-brand-primary pb-[8px] pt-[32px] text-xl first-of-type:pt-0 tablet:pt-[64px] tablet:text-2xl;
+		@apply border-b border-border-primary py-[8px] text-xl tablet:text-2xl;
 	}
 
 	.md hr {
@@ -310,7 +305,7 @@ input:-webkit-autofill {
 	}
 
 	.md blockquote {
-		@apply border-l-[5px] border-brand-primary pl-[20px];
+		@apply my-[16px] border-l-[5px] border-border-primary pl-[20px];
 	}
 
 	.md img {
@@ -318,11 +313,11 @@ input:-webkit-autofill {
 	}
 
 	.md ol {
-		@apply list-decimal pl-[20px];
+		@apply my-[16px] list-decimal pl-[20px];
 	}
 
 	.md ul {
-		@apply list-disc pl-[20px];
+		@apply my-[16px] list-disc pl-[20px];
 	}
 
 	.md a {
