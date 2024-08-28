@@ -146,14 +146,14 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 
 					<div className="flex size-full grow items-center justify-center gap-2 pt-3">
 						<button type="button" disabled={currentIndex <= 0} onClick={prevPage} aria-label="prev">
-							<Icon.ArrowLeft width={32} height={32} color={currentIndex <= 0 ? "#64748B" : "#94A3B8"} />
+							<Icon.ArrowLeft width={32} height={32} color={currentIndex <= 0 ? "#777777" : "#adadad"} />
 						</button>
 
 						<p className="w-max text-md text-text-secondary">
 							{currentPage} / {totalPages}
 						</p>
 						<button type="button" disabled={currentIndex >= invites.data.length - itemsPerPage} onClick={nextPage} aria-label="next">
-							<Icon.ArrowRight width={32} height={32} color={currentIndex >= invites.data.length - itemsPerPage ? "#64748B" : "#94A3B8"} />
+							<Icon.ArrowRight width={32} height={32} color={currentIndex >= invites.data.length - itemsPerPage ? "#777777" : "#adadad"} />
 						</button>
 					</div>
 				</div>
