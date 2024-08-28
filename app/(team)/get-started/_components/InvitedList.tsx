@@ -96,17 +96,17 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 			<div className="pt-5" />
 
 			{invites.isPending && (
-				<div className="w-full rounded-xl bg-background-secondary p-4">
+				<div className="w-full rounded-xl bg-background-secondary p-4 shadow-background-secondary">
 					{renderLoadingSkeletons(6, "hidden grid-cols-3 grid-rows-2 desktop:grid")}
 					{renderLoadingSkeletons(4, "hidden grid-cols-2 grid-rows-2 tablet:grid desktop:hidden")}
 					{renderLoadingSkeletons(2, "grid tablet:hidden grid-cols-1 grid-rows-2")}
 
 					<div className="flex size-full h-11 grow items-center justify-center gap-2 pt-4">
-						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary" />
+						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary shadow-teamCard" />
 
-						<p className="size-full max-w-9 animate-pulse rounded-md bg-background-tertiary text-sm" />
+						<p className="size-full max-w-9 animate-pulse rounded-md bg-background-tertiary text-sm shadow-teamCard" />
 
-						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary" />
+						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary shadow-teamCard" />
 					</div>
 				</div>
 			)}
@@ -160,7 +160,7 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 			)}
 
 			{invites.data && invites.data.length === 0 && (
-				<div className="flex h-dvh max-h-[236px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
+				<div className="flex h-dvh max-h-[236px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-background-secondary">
 					<p className="text-center text-text-primary">초대받은 팀이 없습니다.</p>
 				</div>
 			)}
@@ -172,9 +172,9 @@ const renderLoadingSkeletons = (count: number, colClasses: string) => (
 	<ul className={`gap-4 ${colClasses}`}>
 		{Array.from({ length: count }).map((_, index) => (
 			// eslint-disable-next-line react/no-array-index-key
-			<li key={index} className="flex h-[72px] animate-pulse gap-3 rounded-lg bg-background-tertiary px-4 py-3">
-				<div className="size-12 rounded-lg bg-background-quaternary" />
-				<p className="w-full rounded-lg bg-background-quaternary" />
+			<li key={index} className="flex h-[72px] animate-pulse gap-3 rounded-lg bg-background-tertiary px-4 py-3 shadow-teamCard">
+				<div className="size-12 rounded-lg bg-background-quaternary shadow-teamCard" />
+				<p className="w-full rounded-lg bg-background-quaternary shadow-teamCard" />
 			</li>
 		))}
 	</ul>

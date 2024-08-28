@@ -96,6 +96,7 @@ export default function Modal({ close }: { close: () => void }) {
 							<span className="text-text-emerald"> * </span> 할 일 제목
 						</label>
 						<Form.Input
+							isModal
 							id="name"
 							type="text"
 							placeholder="할 일 제목을 입력해주세요."
@@ -251,7 +252,7 @@ export default function Modal({ close }: { close: () => void }) {
 							할 일 메모
 						</label>
 
-						<Form.TextArea id="description" placeholder="할 일 메모를 입력해주세요." />
+						<Form.TextArea id="description" placeholder="할 일 메모를 입력해주세요." isModal />
 						<div className="pt-2" />
 
 						<Form.Error htmlFor="description" />

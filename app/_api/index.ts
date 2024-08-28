@@ -532,8 +532,8 @@ export default abstract class API {
 		 * @param {Object} body - 추가할 Task 정보
 		 * @returns {Promise<Object>} - 응답 객체
 		 */
-		public override PATCH({ teamId = "6-5", id, ...query }: { teamId?: string; id: number }, body: { displayIndex: number }) {
-			return API.PATCH<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/{groupId}/task-lists/{taskListId}/tasks/${id}/order`, query, body);
+		public override PATCH({ teamId = "6-5", taskListId, id, ...query }: { teamId?: string; taskListId: number; id: number }, body: { displayIndex: number }) {
+			return API.PATCH<{}>(MIME.JSON, `${BASE_URL}/${teamId}/groups/{groupId}/task-lists/${taskListId}/tasks/${id}/order`, query, body);
 		}
 	})();
 	// * [ Recurring API ]

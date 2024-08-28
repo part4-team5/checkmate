@@ -5,6 +5,9 @@ import { createContext, useContext, ReactNode, useMemo } from "react";
 import defaultImage from "@/public/images/profile.png";
 import HeartIcon from "@/public/icons/ic_heart";
 import CommentIcon from "@/public/icons/ic_comment";
+import { Markdown, Presets } from "@sombian/markdown";
+
+const CORE = new Markdown(...Presets.NekoNote);
 
 interface MessageData {
 	content?: string;
@@ -38,7 +41,8 @@ function useMessageContext() {
 
 Message.Content = function Content() {
 	const data = useMessageContext();
-	return <div className="text-primary text-md">{data.content}</div>;
+	// eslint-disable-next-line react/no-danger
+	return <div className="text-primary text-md" dangerouslySetInnerHTML={{ __html: `<article class="md">${CORE.run(data.content ?? "")}</article>` }} />;
 };
 
 Message.Date = function Date() {

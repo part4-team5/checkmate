@@ -40,58 +40,60 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 	};
 
 	return (
-		<div className="px-6 text-text-primary" ref={containerRef}>
-			<div className="sticky top-0 flex bg-background-secondary pb-5 pt-6">
+		<div>
+			<div className="sticky top-0 z-50 flex bg-background-secondary pb-3 pl-6 pt-3 shadow-buttonPrimary">
 				<button type="button" onClick={close} aria-label="버튼" className="">
 					<CloseIcon width={24} height={24} />
 				</button>
 			</div>
-			<div>
-				<TodoDetailHeader
-					groupId={groupId}
-					currentTaskId={currentTaskId}
-					currentDate={currentDate}
-					todoId={todoId}
-					todoContent={todoContent}
-					isCheck={isCheck}
-				/>
-				<TodoDetailInput groupId={groupId} currentTaskId={currentTaskId} currentDate={currentDate} todoId={todoId} user={user} />
+			<div className="px-6 pt-9 text-text-primary" ref={containerRef}>
+				<div>
+					<TodoDetailHeader
+						groupId={groupId}
+						currentTaskId={currentTaskId}
+						currentDate={currentDate}
+						todoId={todoId}
+						todoContent={todoContent}
+						isCheck={isCheck}
+					/>
+					<TodoDetailInput groupId={groupId} currentTaskId={currentTaskId} currentDate={currentDate} todoId={todoId} user={user} />
 
-				<div className="flex flex-col gap-4 scrollbar-thumb:bg-background-tertiary">
-					{comments &&
-						comments.map((comment) => (
-							<TodoDetailCommentList
-								key={comment.id}
-								comment={comment}
-								todoId={todoId}
-								groupId={groupId}
-								currentTaskId={currentTaskId}
-								currentDate={currentDate}
-								user={user}
-							/>
-						))}
+					<div className="flex flex-col gap-4 scrollbar-thumb:bg-background-tertiary">
+						{comments &&
+							comments.map((comment) => (
+								<TodoDetailCommentList
+									key={comment.id}
+									comment={comment}
+									todoId={todoId}
+									groupId={groupId}
+									currentTaskId={currentTaskId}
+									currentDate={currentDate}
+									user={user}
+								/>
+							))}
+					</div>
 				</div>
+
+				<motion.div drag="x" className="fixed bottom-10 right-10" dragConstraints={containerRef}>
+					<div className="h-[48px] w-[125px]">
+						{isCheck ? (
+							<Button variant="secondary" rounded="full" onClick={handleCheckButtonClick}>
+								<div className="flex items-center gap-1">
+									<Icon.CheckButton width={16} height={16} color="#10b981" />
+									<div className="text-xs font-semibold text-text-emerald">완료 취소하기</div>
+								</div>
+							</Button>
+						) : (
+							<Button rounded="full" onClick={handleCheckButtonClick}>
+								<div className="flex items-center gap-1">
+									<Icon.CheckButton width={16} height={16} />
+									<div className="text-xs font-semibold">완료하기</div>
+								</div>
+							</Button>
+						)}
+					</div>
+				</motion.div>
 			</div>
-
-			<motion.div drag="x" className="fixed bottom-10 right-10" dragConstraints={containerRef}>
-				<div className="h-[48px] w-[125px]">
-					{isCheck ? (
-						<Button variant="secondary" rounded="full" onClick={handleCheckButtonClick}>
-							<div className="flex items-center gap-1">
-								<Icon.CheckButton width={16} height={16} color="#10b981" />
-								<div className="text-xs font-semibold text-text-emerald">완료 취소하기</div>
-							</div>
-						</Button>
-					) : (
-						<Button rounded="full" onClick={handleCheckButtonClick}>
-							<div className="flex items-center gap-1">
-								<Icon.CheckButton width={16} height={16} />
-								<div className="text-xs font-semibold">완료하기</div>
-							</div>
-						</Button>
-					)}
-				</div>
-			</motion.div>
 		</div>
 	);
 }

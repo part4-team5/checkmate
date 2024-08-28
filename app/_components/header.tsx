@@ -157,16 +157,14 @@ export default function Header() {
 								{/* 팀 선택 드롭다운 */}
 								<li>
 									<DropDown options={teamDropdown.length > 0 ? teamDropdown : []} gapY={10} align="LL">
-										<button type="button" className="flex max-h-[40px] items-center gap-[10px] px-2 py-3 text-md font-medium tablet:text-lg">
-											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image && (
-												<Image
-													src={user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image ?? "/icons/emptyImage.svg"}
-													alt="team"
-													width={32}
-													height={32}
-													className="size-8 rounded-lg object-cover"
-												/>
-											)}
+										<button type="button" className="flex max-h-[40px] items-center gap-[10px] px-2 py-3 text-lg font-medium">
+											<Image
+												src={user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image ?? "/icons/emptyImage.svg"}
+												alt="team"
+												width={32}
+												height={32}
+												className="size-8 rounded-lg object-cover"
+											/>
 											{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
 											<Icon.ArrowDown width={16} height={16} color="var(--text-primary)" />
 										</button>

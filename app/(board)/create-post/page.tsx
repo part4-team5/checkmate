@@ -11,12 +11,20 @@ import Tour from "@/app/_utils/Tour";
 
 const [FILE_SIZE, FILE_NAME] = [1024 * 10000, /^[a-zA-Z0-9._\-\s]+\.(?:gif|png|jpe?g|webp)$/];
 
+const enum Category {
+	ALL = "",
+	NEWS = "[소식]",
+	LIFE = "[일상]",
+	TRADE = "[장터]",
+}
+
 export default function Page() {
 	const router = useRouter();
 
 	const [image, setImage] = useState<string>();
 	const [title, setTitle] = useState<string>();
 	const [content, setContent] = useState<string>();
+	const [category, setCategory] = useState(Category.ALL);
 
 	const outline = useRef<HTMLDivElement>(null);
 
@@ -84,7 +92,7 @@ export default function Page() {
 
 			if (1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0)) {
 				API["{teamId}/articles"]
-					.POST({}, { image, title: title!, content: content! })
+					.POST({}, { image, title: category === Category.ALL ? title! : [category, title!].join("\u0020"), content: content! })
 					.then((response) => {
 						router.push(`boards/${response.id}`);
 					})
@@ -95,7 +103,7 @@ export default function Page() {
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[image, title, content],
+		[image, title, content, category],
 	);
 
 	useEffect(() => {
@@ -125,7 +133,7 @@ export default function Page() {
 
 	return (
 		<main className="flex w-full flex-col items-center tablet:px-[60px] tablet:py-[30px] desktop:pt-[60px]">
-			<form className="tablet:shadow-lg h-full w-full bg-background-secondary desktop:container tablet:rounded-[10px]" onSubmit={onSubmit}>
+			<form className="h-full w-full bg-background-secondary shadow-postboard desktop:container tablet:rounded-[10px]" onSubmit={onSubmit}>
 				<label
 					id="thumb"
 					htmlFor="image"
@@ -149,13 +157,44 @@ export default function Page() {
 					<input id="image" type="file" className="hidden" onChange={onChange} />
 				</label>
 				<div className="mx-[15px] mt-[15px] flex h-[45px] items-center gap-[15px]">
-					<div className="flex h-full grow items-center gap-[10px] overflow-hidden rounded-[10px] border border-white/15 px-[10px] has-[input:focus]:border-brand-primary">
-						<input
-							className="h-full grow bg-transparent text-text-primary outline-none"
-							placeholder="제목을 입력해주세요"
-							onChange={(event) => setTitle(event.target.value)}
-						/>
-					</div>
+					<input
+						className="h-full w-[100px] grow text-ellipsis rounded-[10px] bg-transparent px-[10px] text-text-primary shadow-postboardTitle outline-none focus:border-brand-primary"
+						placeholder="제목을 입력해주세요"
+						onChange={(event) => setTitle(event.target.value)}
+					/>
+					<button
+						type="button"
+						// @ts-ignore
+						style={{ borderColor: category === Category.ALL && "#10b981", backgroundColor: category === Category.ALL && "var(--background-Senary)" }}
+						className="h-full rounded-[10px] border border-transparent bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
+						onClick={() => setCategory(Category.ALL)}
+					>
+						전체
+					</button>
+					<button
+						type="button" // @ts-ignore
+						style={{ borderColor: category === Category.NEWS && "#10b981", backgroundColor: category === Category.NEWS && "var(--background-Senary)" }}
+						className="h-full rounded-[10px] border border-transparent bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
+						onClick={() => setCategory(Category.NEWS)}
+					>
+						소식
+					</button>
+					<button
+						type="button" // @ts-ignore
+						style={{ borderColor: category === Category.LIFE && "#10b981", backgroundColor: category === Category.LIFE && "var(--background-Senary)" }}
+						className="h-full rounded-[10px] border border-transparent bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
+						onClick={() => setCategory(Category.LIFE)}
+					>
+						일상
+					</button>
+					<button
+						type="button" // @ts-ignore
+						style={{ borderColor: category === Category.TRADE && "#10b981", backgroundColor: category === Category.TRADE && "var(--background-Senary)" }}
+						className="h-full rounded-[10px] border border-transparent bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
+						onClick={() => setCategory(Category.TRADE)}
+					>
+						장터
+					</button>
 					<div className="h-full w-[75px]">
 						<Button id="create-post" type="submit" fontSize="md" disabled={!(1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0))}>
 							작성하기
@@ -166,11 +205,6 @@ export default function Page() {
 					<Quill placeholder="본문을 입력해주세요" onChange={(data) => setContent(data)} />
 				</div>
 			</form>
-			<div className="mt-[32px] h-[45px] w-[140px]">
-				<Button href="/boards" variant="outline">
-					목록으로
-				</Button>
-			</div>
 		</main>
 	);
 }
