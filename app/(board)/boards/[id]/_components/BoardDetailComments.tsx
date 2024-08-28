@@ -191,8 +191,8 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 				)}
 				{isFetching && (
 					<div className="rounded-[12px] bg-background-quaternary px-[24px] py-[16px]">
-						<div className="bg-background-secondary h-[16px] w-[60%] animate-pulse rounded-md" />
-						<div className="bg-background-secondary mt-[30px] h-[30px] w-[30%] animate-pulse rounded-md" />
+						<div className="h-[16px] w-[60%] animate-pulse rounded-md bg-background-secondary" />
+						<div className="mt-[30px] h-[30px] w-[30%] animate-pulse rounded-md bg-background-secondary" />
 					</div>
 				)}
 				{comments?.pages.map((comment, index) => {

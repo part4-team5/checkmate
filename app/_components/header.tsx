@@ -119,7 +119,7 @@ export default function Header() {
 	);
 
 	return (
-		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border-b border-header-primary bg-background-quaternary text-text-primary">
+		<header className="fixed top-0 z-[69] h-[60px] w-full min-w-[320px] border-b border-header-primary bg-background-quaternary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
 				<div className="z-50 block pl-4 tablet:hidden">
 					<button type="button" onClick={() => setIsSidebarOpened(!isSidebarOpened)} aria-label="Menu" className="flex size-full items-center justify-center">
