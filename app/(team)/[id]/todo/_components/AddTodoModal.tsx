@@ -93,7 +93,7 @@ export default function Modal({ close }: { close: () => void }) {
 						<div className="pt-6" />
 
 						<label htmlFor="name" className="w-full pb-3 text-start text-text-primary">
-							<span className="text-text-emerald"> * </span> 할 일 제목
+							<span className="text-brand-primary"> * </span> 할 일 제목
 						</label>
 						<Form.Input
 							isModal
@@ -113,7 +113,7 @@ export default function Modal({ close }: { close: () => void }) {
 						<div className="pt-3" />
 
 						<label htmlFor="date" className="w-full pb-3 text-start text-text-primary">
-							<span className="text-text-emerald"> * </span> 시작 날짜 및 시간
+							<span className="text-brand-primary"> * </span> 시작 날짜 및 시간
 						</label>
 
 						{/* 날짜 선택 */}
@@ -139,7 +139,7 @@ export default function Modal({ close }: { close: () => void }) {
 									setIsCalendarOpened(false);
 								}}
 							>
-								<div className="flex size-full items-center justify-center rounded-xl border border-brand-primary">
+								<div className="flex size-full items-center justify-center rounded-xl border-2 border-background-Senary">
 									<Calendar.Picker />
 								</div>
 							</Calendar>
@@ -162,24 +162,26 @@ export default function Modal({ close }: { close: () => void }) {
 							반복 설정
 						</label>
 
-						<DropDown
-							align="CC"
-							options={[
-								{ text: "한 번", onClick: () => setFrequency(Frequency.ONCE) },
-								{ text: "매일", onClick: () => setFrequency(Frequency.DAILY) },
-								{ text: "매주", onClick: () => setFrequency(Frequency.WEEKLY) },
-								{ text: "매월", onClick: () => setFrequency(Frequency.MONTHLY) },
-							]}
-							gapY={4}
-						>
-							<button
-								type="button"
-								className="flex h-[50px] w-full min-w-[110px] items-center justify-between rounded-xl border border-border-primary bg-todo-primary px-3 text-lg font-medium text-text-default shadow-buttonPrimary"
+						<div className="h-full w-[40%]">
+							<DropDown
+								align="CC"
+								options={[
+									{ text: "한 번", onClick: () => setFrequency(Frequency.ONCE) },
+									{ text: "매일", onClick: () => setFrequency(Frequency.DAILY) },
+									{ text: "매주", onClick: () => setFrequency(Frequency.WEEKLY) },
+									{ text: "매월", onClick: () => setFrequency(Frequency.MONTHLY) },
+								]}
+								gapY={4}
 							>
-								{frequency === Frequency.ONCE ? "한 번" : frequency === Frequency.DAILY ? "매일" : frequency === Frequency.WEEKLY ? "매주" : "매월"}
-								<Icon.Toggle width={24} height={24} />
-							</button>
-						</DropDown>
+								<button
+									type="button"
+									className="flex h-[50px] w-full min-w-[110px] items-center justify-between rounded-xl border border-border-primary bg-todo-primary px-3 text-lg font-medium text-text-default shadow-buttonPrimary"
+								>
+									{frequency === Frequency.ONCE ? "한 번" : frequency === Frequency.DAILY ? "매일" : frequency === Frequency.WEEKLY ? "매주" : "매월"}
+									<Icon.Toggle width={24} height={24} />
+								</button>
+							</DropDown>
+						</div>
 
 						<div className="pt-2" />
 
@@ -192,7 +194,7 @@ export default function Modal({ close }: { close: () => void }) {
 									<div />
 
 									<label htmlFor="weekDays" className="w-full text-start text-text-primary">
-										<span className="text-text-emerald"> * </span> 반복 요일
+										<span className="text-brand-primary"> * </span> 반복 요일
 									</label>
 									<div className="flex max-w-full gap-2">
 										{[0, 1, 2, 3, 4, 5, 6].map((day) => (
@@ -227,7 +229,7 @@ export default function Modal({ close }: { close: () => void }) {
 									<div />
 
 									<label htmlFor="monthDays" className="w-full text-start text-text-primary">
-										<span className="text-text-emerald"> * </span> 반복 일
+										<span className="text-brand-primary"> * </span> 반복 일
 									</label>
 
 									<div className="grid grid-cols-7 grid-rows-5 rounded-xl border border-border-primary p-2">
