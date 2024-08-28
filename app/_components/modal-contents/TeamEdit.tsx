@@ -66,7 +66,8 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 		[teamEditMutation],
 	);
 
-	const handleRemoveImage = () => {
+	const handleRemoveImage = (e: { preventDefault: () => void }) => {
+		e.preventDefault();
 		setImageRemoved(true);
 	};
 
@@ -125,7 +126,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 											);
 										}}
 									</Form.ImageInput>
-									{imageSrc !== "/icons/emptyImage.svg" && (
+									{/* {imageSrc !== "/icons/emptyImage.svg" && (
 										<button
 											type="button"
 											onClick={handleRemoveImage}
@@ -134,7 +135,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 										>
 											<Icon.TodoDelete width={18} height={18} color="#ffffff" />
 										</button>
-									)}
+									)} */}
 								</div>
 							</div>
 							<div className="mt-[10px]" />
