@@ -81,7 +81,7 @@ function Members({ id }: ReportProps) {
 					<p className="text-[16px] text-text-primary"> ({members.length}명)</p>
 				</div>
 				{isAdmin && (
-					<button onClick={handleInviteClick} className="text-[14px] font-semibold text-brand-primary" type="button">
+					<button onClick={handleInviteClick} className="add-member text-[14px] font-semibold text-brand-primary" type="button">
 						+새로운 멤버 초대하기
 					</button>
 				)}
@@ -91,7 +91,7 @@ function Members({ id }: ReportProps) {
 					{members.map((member) => (
 						<div
 							key={member.userId}
-							className="flex h-[68px] w-full min-w-[164px] cursor-pointer items-center justify-start rounded-[16px] bg-background-tertiary px-[16px] shadow-teamCard"
+							className="my-member flex h-[68px] w-full min-w-[164px] cursor-pointer items-center justify-start rounded-[16px] bg-background-tertiary px-[16px] shadow-teamCard"
 							role="button"
 							aria-label={`${member.userName}의 프로필 열기`}
 							onClick={() => handleProfileModal(member)}

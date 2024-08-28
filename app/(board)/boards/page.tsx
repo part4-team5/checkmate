@@ -64,7 +64,7 @@ export default function Page() {
 	return (
 		<main className="h-[calc(100dvh-60px)]">
 			<div className="mx-auto flex h-full flex-col gap-[24px] px-[16px] py-[32px] desktop:container tablet:px-[24px] tablet:py-[40px] desktop:px-0">
-				<div className="text-2xl text-text-primary">자유게시판</div>
+				<div className="hidden text-2xl text-text-primary tablet:block">자유게시판</div>
 				<div className="relative mb-[72px] flex items-center justify-between gap-[64px] desktop:mb-0">
 					<div className="flex items-center gap-[18px] text-2lg text-text-primary">
 						<button
@@ -171,9 +171,9 @@ export default function Page() {
 									href={`/boards/${post.id}`}
 									className="flex h-[190px] justify-between gap-[24px] rounded-[12px] bg-background-tertiary px-[12px] py-[12px] shadow-bestCard hover:bg-background-quinary"
 								>
-									<div className="flex flex-col justify-between gap-[24px]">
+									<div className="flex flex-shrink-0 flex-col justify-between gap-[24px]">
 										<div className="flex flex-col gap-[12px]">
-											<div className="text-xl">{post.title}</div>
+											<div className="text-ellipsis text-xl">{post.title}</div>
 											<div className="text-md">{new Date(post.createdAt).toLocaleDateString()}</div>
 										</div>
 										<div className="flex items-center gap-[8px] text-nowrap desktop:gap-[16px]">
@@ -193,7 +193,7 @@ export default function Page() {
 									</div>
 									{post.image && (
 										<div
-											className="aspect-square h-full overflow-hidden rounded-[12px] bg-background-secondary bg-cover opacity-75"
+											className="aspect-square h-full overflow-hidden rounded-[12px] bg-background-secondary bg-cover"
 											style={{ backgroundImage: `url("${post.image}")` }}
 										/>
 									)}

@@ -45,17 +45,17 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 
 				<div className="pt-5" />
 
-				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
+				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-background-secondary">
 					{renderLoadingSkeletons(9, "hidden desktop:grid grid-cols-3 grid-rows-3")}
 					{renderLoadingSkeletons(6, "hidden tablet:grid desktop:hidden grid-cols-2 grid-rows-3")}
 					{renderLoadingSkeletons(4, "grid tablet:hidden grid-cols-1 grid-rows-4")}
 
 					<div className="flex size-full h-11 grow items-center justify-center gap-2 pt-4">
-						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary" />
+						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary shadow-teamCard" />
 
-						<p className="size-full max-w-9 animate-pulse rounded-md bg-background-tertiary text-sm" />
+						<p className="size-full max-w-9 animate-pulse rounded-md bg-background-tertiary text-sm shadow-teamCard" />
 
-						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary" />
+						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary shadow-teamCard" />
 					</div>
 				</div>
 			</section>
@@ -147,11 +147,11 @@ const renderLoadingSkeletons = (count: number, colClasses: string) => (
 	<ul className={`w-full gap-4 ${colClasses}`}>
 		{Array.from({ length: count }).map((_, index) => (
 			// eslint-disable-next-line react/no-array-index-key
-			<li key={index} className="flex animate-pulse gap-3 rounded-md bg-background-tertiary px-4 py-3">
-				<div className="min-h-8 min-w-8 rounded-lg bg-background-quaternary" />
-				<p className="w-full rounded-lg bg-background-quaternary" />
+			<li key={index} className="flex animate-pulse gap-3 rounded-md bg-background-tertiary px-4 py-3 shadow-teamCard">
+				<div className="min-h-8 min-w-8 rounded-lg bg-background-quaternary shadow-teamCard" />
+				<p className="w-full rounded-lg bg-background-quaternary shadow-teamCard" />
 				<div className="flex h-full w-fit items-end justify-end">
-					<div className="h-1/2 w-20 rounded-md bg-background-quaternary" />
+					<div className="h-1/2 w-20 rounded-md bg-background-quaternary shadow-teamCard" />
 				</div>
 			</li>
 		))}
