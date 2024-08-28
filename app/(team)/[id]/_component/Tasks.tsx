@@ -99,36 +99,6 @@ function TaskItem({
 		},
 	];
 
-	useEffect(() => {
-		Tour.play([
-			{
-				query: ".report-me",
-				content: "오늘의 진척도를 확인할 수 있어요",
-				position: "right",
-			},
-			{
-				query: ".add-task",
-				content: "이곳을 눌러서 새로운 할일을 추가할 수 있어요",
-				position: "left",
-			},
-			{
-				query: ".reorder-item",
-				content: "할 일 목록을 Drag & Drop으로 재정렬할 수 있어요.",
-				position: "bottom",
-			},
-			{
-				query: ".my-member",
-				content: "멤버들을 이곳에서 조회할 수 있어요",
-				position: "right",
-			},
-			{
-				query: ".add-member",
-				content: "이곳을 눌러서 새로운 멤버를 초대할 수 있어요",
-				position: "left",
-			},
-		]);
-	}, []);
-
 	return (
 		<div
 			className="reorder-item flex h-[40px] w-full cursor-pointer rounded-[12px] bg-background-quaternary text-text-primary shadow-teamTaskList"
@@ -219,6 +189,38 @@ export default function Tasks({ id }: { id: number }) {
 		}
 	};
 
+	useEffect(() => {
+		if (!isLoading) {
+			Tour.play([
+				{
+					query: ".report-me",
+					content: "오늘의 진척도를 확인할 수 있어요",
+					position: "right",
+				},
+				{
+					query: ".add-task",
+					content: "이곳을 눌러서 새로운 할일을 추가할 수 있어요",
+					position: "left",
+				},
+				{
+					query: ".todo-items",
+					content: "할 일 목록을 Drag & Drop으로 재정렬할 수 있어요.",
+					position: "bottom",
+				},
+				{
+					query: ".my-member",
+					content: "멤버들을 이곳에서 조회할 수 있어요",
+					position: "right",
+				},
+				{
+					query: ".add-member",
+					content: "이곳을 눌러서 새로운 멤버를 초대할 수 있어요",
+					position: "left",
+				},
+			]);
+		}
+	}, [isLoading]);
+
 	if (isLoading) return <div>Loading...</div>;
 
 	return (
@@ -237,7 +239,7 @@ export default function Tasks({ id }: { id: number }) {
 					+ 할 일 목록 추가
 				</button>
 			</section>
-			<section className="mt-[16px] min-h-[427px] rounded-[12px] bg-background-tertiary p-[30px] tablet:w-full">
+			<section className="todo-items mt-[16px] min-h-[427px] rounded-[12px] bg-background-tertiary p-[30px] tablet:w-full">
 				{data?.taskLists?.length === 0 ? (
 					<div className="flex justify-center py-[64px] text-text-primary">
 						<p>아직 할 일 목록이 없습니다.</p>

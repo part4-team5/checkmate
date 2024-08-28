@@ -120,7 +120,7 @@ export default function Header() {
 	);
 
 	return (
-		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border-b border-header-primary bg-background-secondary text-text-primary">
+		<header className="fixed top-0 z-50 h-[60px] w-full min-w-[320px] border-b border-header-primary bg-background-quaternary text-text-primary">
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
 				<div className="z-50 block pl-4 tablet:hidden">
 					<button type="button" onClick={() => setIsSidebarOpened(!isSidebarOpened)} aria-label="Menu" className="flex size-full items-center justify-center">
@@ -219,7 +219,7 @@ export default function Header() {
 							onClick={() => setIsTeamOpened(!isTeamOpened)}
 							className={`w-full items-center gap-3 rounded-md px-4 py-3 text-[18px] font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
 						>
-							<Image src="/icons/team_list.svg" alt="selectArrow" width={28} height={28} />
+							<Image src="/icons/teamList.svg" alt="selectArrow" width={28} height={28} />
 							<p className="grow text-left">팀 목록</p>
 							<div className={`flex size-[20px] items-center duration-300 ${isTeamOpened ? "rotate-90" : ""}`}>
 								<Icon.ArrowRight width={20} height={20} color="#dddddd" />

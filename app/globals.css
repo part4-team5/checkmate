@@ -4,21 +4,73 @@
 @tailwind utilities;
 @tailwind components;
 
+.glitch {
+	position: relative;
+}
+
+.glitch:before,
+.glitch:after {
+	display: block;
+	content: attr(data-glitch);
+	position: absolute;
+	opacity: 0.8;
+	inset: 0;
+}
+
+.glitch:before {
+	animation: glitch-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+	color: #0ff;
+	z-index: -1;
+}
+
+.glitch:after {
+	animation: glitch-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+	color: #ff00ff;
+	z-index: -2;
+}
+
+@keyframes glitch-color {
+	0% {
+		transform: translate(0);
+	}
+
+	20% {
+		transform: translate(-3px, 3px);
+	}
+
+	40% {
+		transform: translate(-3px, -3px);
+	}
+
+	60% {
+		transform: translate(3px, 3px);
+	}
+
+	80% {
+		transform: translate(3px, -3px);
+	}
+
+	to {
+		transform: translate(0);
+	}
+}
+
 :root {
 	/* ------ */
 	/* Colors */
 	/* ------ */
 
 	/* landing */
-	--landing-primary: #f3f3f3;
+	--landing-primary: #f5f6f7;
 	--landing-secondary: #eeeeee;
 	--landing-tertiary: #ffffff;
-	--landing-quaternary: #4a4b4d;
+	--landing-quaternary: #3a3f44;
 	--landing-quinary: #ffffff;
 	--landing-Senary: #d9d9d9;
 	--landing-Septenary: #fafafb;
 	--landing-border: #9b9b9b;
 	--landing-inverse: #3f3f3f;
+	--landing-green: #f5fdfa;
 
 	/* background */
 	--background-primary: #f0f0f3;
@@ -125,6 +177,7 @@
 	--landing-Septenary: #bfbfbf;
 	--landing-line: #235749;
 	--landing-inverse: #ffffff;
+	--landing-green: #1e1f22;
 
 	/* background */
 	--background-primary: #1e1f22;
