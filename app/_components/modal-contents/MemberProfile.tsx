@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Button from "@/app/_components/Button";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
-import CloseIcon from "@/public/icons/ic_close";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
+import Icon from "@/app/_icons";
 
 type MemberProfileProps = {
 	email: string;
@@ -27,7 +27,7 @@ export default function MemberProfile({ email, userName, userProfile, close }: M
 			<div className="mb-[16px] h-[213px] tablet:h-[234px] tablet:min-w-[328px]">
 				<div className="mr-[16px] flex justify-end">
 					<button onClick={close} type="button" aria-label="Close modal">
-						<CloseIcon width={24} height={24} />
+						<Icon.Close width={24} height={24} />
 					</button>
 				</div>
 				<div className="mx-auto mt-[8px] flex w-[280px] flex-col items-center gap-[24px] tablet:h-[186px]">

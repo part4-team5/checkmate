@@ -35,6 +35,7 @@ export default {
 				Septenary: "var(--landing-Septenary)",
 				border: "var(--landing-border)",
 				inverse: "var(--landing-inverse)",
+				green: "var(--landing-green)",
 			},
 			background: {
 				primary: "var(--background-primary)",
@@ -69,7 +70,7 @@ export default {
 				primary: "var(--text-primary)",
 				secondary: "var(--text-secondary)",
 				tertiary: "#E2E8F0",
-				default: "#64748B",
+				default: "#ADADAD",
 				inverse: "#FFFFFF",
 				disabled: "#94A3B8",
 				emerald: "#10B981",
@@ -77,6 +78,10 @@ export default {
 			},
 			todo: {
 				primary: "var(--todo-primary)",
+			},
+			dropdown: {
+				hover: "var(--dropdown-hover)",
+				active: "var(--dropdown-active)",
 			},
 			status: {
 				danger: "#EF4444",
@@ -122,6 +127,7 @@ export default {
 		extend: {
 			backgroundImage: {
 				"conic-gradient": "conic-gradient(from 0deg, #10b981, #cef57e, #10b981)",
+				"custom-gradient": "linear-gradient(315deg, rgb(48, 218, 208) 0%, rgb(13, 204, 140) 43.5%)",
 			},
 			keyframes: {
 				scaleUp: {
@@ -131,7 +137,6 @@ export default {
 			},
 			animation: {
 				scaleUp: "scaleUp 0.2s ease-in-out",
-				sparkle: "sparkle 0.6s ease-in-out",
 			},
 		},
 	},

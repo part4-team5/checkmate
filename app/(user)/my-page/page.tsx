@@ -12,6 +12,7 @@ import Image from "next/image";
 import ChangePasswordModal from "@/app/_components/modal-contents/ChangePassword";
 import useCookie from "@/app/_hooks/useCookie";
 import toast from "@/app/_utils/Toast";
+// import DarkModeToggle from "@/app/_components/DarkModeToggle";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -107,12 +108,16 @@ export default function Page() {
 	// 회원 탈퇴 모달 열기
 	const openAccountDeletionModal = useCallback(() => {
 		overlay.open(({ close }) => <AccountDeletionModal onClick={() => deleteAccountMutation.mutate()} close={close} />);
-	}, [overlay]);
+	}, [deleteAccountMutation, overlay]);
 
 	return (
 		<main className="box-border w-full bg-background-primary p-[40px_0]">
-			<section className="m-[0_16px] w-auto tablet:m-[0_auto] tablet:w-[790px]">
+			<section className="relative m-[0_16px] w-auto tablet:m-[0_auto] tablet:w-[790px]">
 				<h2 className="mb-[24px] text-xl font-bold text-text-primary">계정 설정</h2>
+
+				{/* <div className="absolute right-0 top-0">
+					<DarkModeToggle />
+				</div> */}
 				<Form onSubmit={handleUpdateProfile}>
 					<div className="flex flex-col gap-[12px] text-text-primary">
 						<div className="flex">
@@ -148,7 +153,7 @@ export default function Page() {
 						<Form.Error htmlFor="nickname" />
 
 						<p className="mt-[12px]">이메일</p>
-						<div className="flex h-[48px] w-full items-center rounded-[12px] border border-border-primary bg-background-tertiary px-[16px] text-lg font-normal text-text-disabled">
+						<div className="flex h-[48px] w-full items-center rounded-[12px] border border-border-primary bg-background-tertiary px-[16px] text-lg font-normal text-text-default shadow-input">
 							{user?.email ?? ""}
 						</div>
 
