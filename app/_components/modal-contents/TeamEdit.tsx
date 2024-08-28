@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
-import CloseIcon from "@/public/icons/ic_close";
 import Icon from "@/app/_icons";
 
 import API from "@/app/_api";
@@ -78,7 +77,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 			<section className="flex size-full flex-col items-center justify-center px-[20px] pb-[15px]">
 				<div className="flex w-full justify-end">
 					<button onClick={close} type="button" aria-label="Close modal">
-						<CloseIcon width={24} height={24} />
+						<Icon.Close width={24} height={24} />
 					</button>
 				</div>
 

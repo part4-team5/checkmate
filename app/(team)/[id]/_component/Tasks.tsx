@@ -104,12 +104,12 @@ function TaskItem({
 			{
 				query: ".report-me",
 				content: "오늘의 진척도를 확인할 수 있어요",
-				position: "right"
+				position: "right",
 			},
 			{
 				query: ".add-task",
 				content: "이곳을 눌러서 새로운 할일을 추가할 수 있어요",
-				position: "left"
+				position: "left",
 			},
 			{
 				query: ".reorder-item",
@@ -119,13 +119,13 @@ function TaskItem({
 			{
 				query: ".my-member",
 				content: "멤버들을 이곳에서 조회할 수 있어요",
-				position: "right"
+				position: "right",
 			},
 			{
 				query: ".add-member",
 				content: "이곳을 눌러서 새로운 멤버를 초대할 수 있어요",
-				position: "left"
-			}
+				position: "left",
+			},
 		]);
 	}, []);
 
@@ -228,7 +228,12 @@ export default function Tasks({ id }: { id: number }) {
 					<p className="text-[16px] font-semibold">할 일 목록</p>
 					<p className="text-[16px]">({data?.taskLists?.length ?? 0}개)</p>
 				</div>
-				<button onClick={() => handlePostTasksClick()} type="button" aria-label="Add Task List" className="add-task text-[14px] font-semibold text-brand-primary">
+				<button
+					onClick={() => handlePostTasksClick()}
+					type="button"
+					aria-label="Add Task List"
+					className="add-task text-[14px] font-semibold text-brand-primary"
+				>
 					+ 할 일 목록 추가
 				</button>
 			</section>
