@@ -35,7 +35,7 @@ export default function Popover({
 	const [toggle, setToggle] = useState(init);
 	const pop = useRef<HTMLDivElement>(null);
 	const over = useRef<HTMLDivElement>(null);
-	const [style, setStyle] = useState<React.CSSProperties>({ visibility: "hidden" });
+	const [style, setStyle] = useState<React.CSSProperties>({ position: "absolute", visibility: "hidden" });
 
 	const pathname = usePathname();
 
