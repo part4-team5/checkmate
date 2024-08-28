@@ -668,7 +668,7 @@ export default abstract class API {
 		 * @param {Object} body - 생성할 그룹 정보
 		 * @returns {Promise<Object>} - 그룹 정보
 		 */
-		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { image?: string; name?: string }) {
+		public override POST({ teamId = "6-5", ...query }: { teamId?: string }, body: { image?: string; name: string }) {
 			return API.POST<{ updatedAt: string; createdAt: string; image?: string; name: string; id: number }>(
 				MIME.JSON,
 				`${BASE_URL}/${teamId}/groups`,

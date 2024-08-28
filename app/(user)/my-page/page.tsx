@@ -3,7 +3,7 @@
 import API from "@/app/_api/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import AccountDeletionModal from "@/app/_components/modal-contents/AccountDeletion";
 import useAuthStore from "@/app/_store/useAuthStore";
@@ -26,14 +26,16 @@ export default function Page() {
 	const [, setAccessToken] = useCookie("accessToken");
 	const [, setRefreshToken] = useCookie("refreshToken");
 
-	useQuery({
+	const res = useQuery({
 		queryKey: ["user"],
-		queryFn: async () => {
-			const data = await API["{teamId}/user"].GET({});
-			setUser(data);
-			return data;
-		},
+		queryFn: async () => API["{teamId}/user"].GET({}),
 	});
+
+	useEffect(() => {
+		if (!user) {
+			setUser(res.data as { id: number; email: string; nickname: string; image: string | null });
+		}
+	}, [res.data, setUser, user]);
 
 	// 이미지 업로드
 	const imageUpload = async (file: File) => {
@@ -53,9 +55,9 @@ export default function Page() {
 
 			const { url } = await imageUpload(file);
 
-			const payload: Parameters<(typeof API)["{teamId}/groups"]["POST"]>[1] = {
-				image: url,
-				name: !nickname ? undefined : nickname,
+			const payload: Parameters<(typeof API)["{teamId}/user"]["PATCH"]>[1] = {
+				image: url === "init" ? undefined : url,
+				nickname: !nickname ? undefined : nickname,
 			};
 
 			return API["{teamId}/user"].PATCH({}, payload);
@@ -64,7 +66,6 @@ export default function Page() {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 
 			toast.success("프로필 변경이 완료되었습니다.");
-			router.replace(window.location.pathname);
 		},
 		onError: (error) => {
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
