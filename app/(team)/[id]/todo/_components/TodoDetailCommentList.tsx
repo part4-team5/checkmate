@@ -55,19 +55,20 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 
 	const handleTodoCommentEditSubmit = (e: React.FormEvent<HTMLFormElement>, commentId: number) => {
 		e.preventDefault();
-		if (editedComment.length === 0) return;
+		if (editedComment.trim().length === 0) return;
 		patchTodoCommentEditMutation.mutate({ commentId, content: editedComment });
 	};
 
 	const timeDifference = calculateTimeDifference(comment.createdAt, currentTime);
+
 	return (
-		<div>
+		<div className="border-gray-300 rounded-xl bg-background-list px-3 py-2 drop-shadow-md">
 			{comment && (
 				<form onSubmit={(e) => handleTodoCommentEditSubmit(e, comment.id)} id="test">
 					<div className="flex justify-between">
 						{isCommentEdit ? (
 							<textarea
-								className={`${editedComment.length > 0 ? "border-brand-primary" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-background-secondary pl-2 focus:outline-none`}
+								className={`${editedComment.length > 0 ? "" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-todo-primary p-2 shadow-input focus:outline-none`}
 								onChange={handleEditCommentChange}
 								value={editedComment}
 								onKeyDown={(e) => {
@@ -78,8 +79,10 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 								}}
 							/>
 						) : (
-							<div className="flex w-full justify-between">
-								<div className="whitespace-pre-line text-md font-normal">{comment.content}</div>
+							<div className="flex w-full items-center justify-between">
+								<div style={{ maxWidth: "calc(100% - 24px)" }} className="whitespace-pre-line break-words text-md font-normal">
+									{comment.content}
+								</div>
 								{comment.user?.id === user.id && (
 									<DropDown options={options}>
 										<button type="button" aria-label="dropdown">
@@ -96,7 +99,13 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 							<div className="flex items-center justify-between">
 								{comment.user && (
 									<div className="flex items-center gap-3">
-										{comment.user.image ? "" : <Image src={defaultImage} alt={comment.user.nickname} width={32} height={32} />}
+										{comment.user.image ? (
+											<div className="relative h-8 w-8 overflow-hidden rounded-full">
+												<Image src={comment.user.image} alt={comment.user.nickname} layout="fill" objectFit="cover" />
+											</div>
+										) : (
+											<Image src={defaultImage} alt={comment.user.nickname} width={32} height={32} />
+										)}
 										<div>{comment.user.nickname}</div>
 									</div>
 								)}
@@ -115,7 +124,6 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 							</div>
 						)}
 					</div>
-					<hr className="border-icon-primary" />
 				</form>
 			)}
 		</div>

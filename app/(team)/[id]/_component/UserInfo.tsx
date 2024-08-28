@@ -13,7 +13,7 @@ interface UserInfoProps {
 
 export default function UserInfo({ userProfile, userName, userEmail, isAdmin }: UserInfoProps) {
 	return (
-		<div className="flex items-center gap-[12px]">
+		<div className=" flex items-center gap-[12px]">
 			<div className="hidden tablet:block">
 				<Image src={userProfile || defaultImage} alt={userName} width={32} height={32} />
 			</div>

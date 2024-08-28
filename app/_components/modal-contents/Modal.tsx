@@ -39,7 +39,7 @@ export default function ModalWrapper({ close, children }: ModalProps) {
 				exit={{ opacity: 0 }}
 			>
 				<motion.div
-					className="fixed bottom-0 max-h-full w-full rounded-t-xl bg-background-secondary px-4 pb-8 pt-4 text-text-primary tablet:relative tablet:w-auto tablet:rounded-xl"
+					className="fixed bottom-0 max-h-full w-full rounded-t-xl bg-background-secondary px-4 pb-8 pt-4 text-text-primary shadow-listPage tablet:relative tablet:w-auto tablet:rounded-xl"
 					onClick={(e) => e.stopPropagation()}
 					initial={{ y: "100%" }}
 					animate={{ y: "0%" }}

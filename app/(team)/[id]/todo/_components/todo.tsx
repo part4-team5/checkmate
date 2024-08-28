@@ -3,12 +3,11 @@
 import API from "@/app/_api";
 import Calendar from "@/app/_components/Calendar";
 import { useQueryClient } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import SideBarWrapper from "@/app/_components/sidebar";
 import { convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
-import Image from "next/image";
 import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
 import Popover from "@/app/_components/Popover";
 import TodoItem from "@/app/(team)/[id]/todo/_components/TodoItem";
@@ -18,6 +17,7 @@ import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
 import { useDeleteTodoMutation, useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import { Reorder, motion } from "framer-motion";
 import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
+import Icon from "@/app/_icons";
 
 type ClientTodoProps = {
 	groupId: number;
@@ -38,6 +38,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const [currentTaskId, setCurrentTaskId] = useState<number>(taskListId);
 	const queryClient = useQueryClient();
 	const pathname = usePathname();
+	const searchParams = useSearchParams();
 	const overlay = useOverlay();
 	const { data: groupList } = useGetGroupList(groupId);
 	const { data: todoItems, isLoading: isTodoItemsLoading } = useGetTodoItems(groupId, currentTaskId, currentDate);
@@ -46,10 +47,17 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 	const todoDeleteMutation = useDeleteTodoMutation(groupId, currentTaskId, currentDate);
 
 	const containerRef = useRef(null);
-
 	const tasks = groupList?.taskLists;
 
+	useEffect(() => {
+		const taskIdFromURL = searchParams.get("taskId");
+		if (taskIdFromURL && Number(taskIdFromURL) !== currentTaskId) {
+			setCurrentTaskId(Number(taskIdFromURL));
+		}
+	}, [searchParams]);
+
 	const updateSearchParams = (value: number) => {
+		if (value === currentTaskId) return;
 		setCurrentTaskId(value);
 		window.history.pushState(null, "", `${pathname}?taskId=${value}`);
 	};
@@ -89,10 +97,19 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			const item = todoItems[index];
 			// 잡은 요소와 일치하는지
 			if (todoItem.id === item.id) {
-				todoOrderMutation.mutate({ todoId: item.id, displayIndex: index });
+				todoOrderMutation.mutate({ taskListId: currentTaskId, todoId: item.id, displayIndex: index });
 				break; // 일치하는 항목을 찾으면 순회를 종료
 			}
 		}
+	};
+
+	const buttonAnimation = {
+		whileTap: {
+			scale: 0.8,
+		},
+		hover: {
+			scale: 1.1,
+		},
 	};
 
 	return (
@@ -103,25 +120,31 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						<div className="flex min-w-[98px] items-center text-lg font-medium text-text-primary">
 							<Calendar.Date>{(date) => convertIsoToDateToKorean(date)}</Calendar.Date>
 						</div>
-						<div className="flex gap-1">
+						<div className="flex gap-2">
 							<Calendar.Jump to={{ unit: "day", times: -1 }}>
-								<Image src="/icons/calendarLeftArrow.svg" alt="beforeDate" width={16} height={16} />
+								<motion.div whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="rounded-full shadow-loginButton">
+									<Icon.CalendarLeftArrow width={20} height={20} />
+								</motion.div>
 							</Calendar.Jump>
 							<Calendar.Jump to={{ unit: "day", times: 1 }}>
-								<Image src="/icons/calendarRightArrow.svg" alt="afterDate" width={16} height={16} />
+								<motion.div whileTap={buttonAnimation.whileTap} whileHover={buttonAnimation.hover} className="rounded-full shadow-loginButton">
+									<Icon.CalendarRightArrow width={20} height={20} />
+								</motion.div>
 							</Calendar.Jump>
 						</div>
 						<div className="relative flex items-center">
 							<Popover
-								gapX={-2} // X축 간격 조절
-								gapY={10} // Y축 간격 조절
+								gapX={6} // X축 간격 조절
+								gapY={-3} // Y축 간격 조절
 								anchorOrigin={{ vertical: "top", horizontal: "right" }}
 								overlayOrigin={{ vertical: "top", horizontal: "left" }}
 								overlay={CalendarPopoverContent}
 							>
 								<div className="flex items-center">
 									<button type="button" aria-label="Open calendar">
-										<Image src="/icons/calendarCircle.svg" alt="calendar" width={24} height={24} />
+										<motion.div whileHover={buttonAnimation.hover} whileTap={buttonAnimation.whileTap} className="rounded-full shadow-loginButton">
+											<Icon.CalendarButton width={32} height={32} />
+										</motion.div>
 									</button>
 								</div>
 							</Popover>
@@ -142,11 +165,17 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				</motion.button>
 			</div>
 
-			<motion.div className="layout layoutRoot flex flex-wrap gap-3 text-lg font-medium">
+			<motion.div className="layout layoutRoot flex flex-wrap gap-3 rounded-lg bg-background-secondary px-5 py-3 text-lg font-medium shadow-listPage tablet:px-8">
 				{tasks &&
 					tasks.map((task) => (
-						<motion.div layout className="relative cursor-pointer rounded-md p-1" key={task.id} onClick={() => updateSearchParams(task.id)}>
-							<motion.span className={task.id === currentTaskId ? "text-text-primary" : "text-text-default"}>{task.name}</motion.span>
+						<motion.div
+							whileHover={buttonAnimation.hover}
+							layout
+							className="relative cursor-pointer rounded-md p-1"
+							key={task.id}
+							onClick={() => updateSearchParams(task.id)}
+						>
+							<motion.span className={task.id === currentTaskId ? "text-text-primary" : "text-text-secondary"}>{task.name}</motion.span>
 							{task.id === currentTaskId && (
 								<motion.div
 									layoutId="underline"
@@ -172,7 +201,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 						/* eslint-disable react/no-array-index-key */
 						<motion.div
 							key={i}
-							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3"
+							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 shadow-listPage"
 							initial={{ opacity: 0.2 }}
 							animate={{ opacity: 1, y: 0 }}
 							exit={{ opacity: 0 }}
@@ -189,46 +218,47 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			)}
 
 			{todoItems && (
-				<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="pb-56">
-					{todoItems.map((todoItem) => (
-						<Reorder.Item
-							value={todoItem}
-							key={todoItem.id}
-							onDragEnd={() => handleDragEnd(todoItem)}
-							whileHover={{ scale: 1.015 }}
-							whileTap={{ boxShadow: "0px 0px 15px rgba(0,0,0,0.2)" }}
-							dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }}
-							dragConstraints={{
-								top: -150,
-								left: -150,
-								right: 150,
-								bottom: 150,
-							}}
-						>
-							<div className="mt-4 flex flex-col gap-4">
-								<TodoItem
-									key={todoItem.id}
-									todoItem={todoItem}
-									onToggleTodo={handleToggleTodoStatus}
-									onTodoClick={handleTodoClick}
-									onTodoDelete={handleTodoDelete}
-									groupId={groupId}
-									taskId={currentTaskId}
-									currentDate={currentDate}
-								/>
+				<div className="mt-6 rounded-lg bg-background-secondary px-3 py-2 shadow-board tablet:px-9 tablet:py-8">
+					<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="mb-44">
+						{todoItems.map((todoItem) => (
+							<Reorder.Item
+								value={todoItem}
+								key={todoItem.id}
+								onDragEnd={() => handleDragEnd(todoItem)}
+								whileHover={{ scale: 1.015 }}
+								whileTap={{ boxShadow: "0px 0px 15px rgba(0,0,0,0.2)" }}
+								dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }}
+								dragConstraints={{
+									top: -150,
+									left: -150,
+									right: 150,
+									bottom: 150,
+								}}
+							>
+								<div className="mt-4 flex flex-col gap-4">
+									<TodoItem
+										key={todoItem.id}
+										todoItem={todoItem}
+										onToggleTodo={handleToggleTodoStatus}
+										onTodoClick={handleTodoClick}
+										onTodoDelete={handleTodoDelete}
+										groupId={groupId}
+										taskId={currentTaskId}
+										currentDate={currentDate}
+									/>
+								</div>
+							</Reorder.Item>
+						))}
+						{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
+							<div className="h-vh mt-40 flex items-center justify-center text-text-default">
+								<div className="text-center">
+									아직 할 일이 없습니다.
+									<br />
+									새로운 할일을 추가해주세요.
+								</div>
 							</div>
-						</Reorder.Item>
-					))}
-				</Reorder.Group>
-			)}
-
-			{!isTodoItemsLoading && todoItems && todoItems.length === 0 && (
-				<div className="h-vh flex items-center justify-center text-text-default">
-					<div className="text-center">
-						아직 할 일이 없습니다.
-						<br />
-						새로운 할일을 추가해주세요.
-					</div>
+						)}
+					</Reorder.Group>
 				</div>
 			)}
 

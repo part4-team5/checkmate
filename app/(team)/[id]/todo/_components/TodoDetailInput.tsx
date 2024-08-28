@@ -40,12 +40,10 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 				댓글
 			</label>
 
-			<hr className="border-icon-primary" />
-
-			<div className="flex">
+			<div className="flex gap-3 rounded-md">
 				<input
 					onChange={handleCommentChange}
-					className="h-[50px] w-full bg-background-secondary focus:outline-none"
+					className="h-[50px] w-full rounded-md bg-todo-primary pl-2 shadow-input focus:outline-none"
 					id="add-comment"
 					type="text"
 					value={commentText}
@@ -55,7 +53,7 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 				{addCommentMutation.isPending && <Image src="/icons/loading.svg" alt="spinner" width={24} height={24} className="animate-spin" />}
 				{!addCommentMutation.isPending && (
 					<button type="submit">
-						{commentText.length > 0 ? (
+						{commentText.trim().length > 0 ? (
 							<Image src={addComment} alt="add-comment" width={24} height={24} />
 						) : (
 							<Image src={disabledAddComment} alt="add-comment" width={24} height={24} />
@@ -63,8 +61,6 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 					</button>
 				)}
 			</div>
-
-			<hr className="border-icon-primary" />
 		</form>
 	);
 }
