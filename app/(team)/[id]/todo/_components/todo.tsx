@@ -27,7 +27,7 @@ type ClientTodoProps = {
 
 function CalendarPopoverContent() {
 	return (
-		<div className="shadow-lg rounded">
+		<div className="shadow-lg absolute rounded">
 			<Calendar.Picker />
 		</div>
 	);
@@ -156,7 +156,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 		<>
 			<div className="my-6 flex justify-between" ref={containerRef}>
 				<Calendar onChange={(date) => handleCurrentDate(date)}>
-					<div className="flex max-h-8 gap-3" id="daypicker">
+					<div className="flex gap-3" id="daypicker">
 						<div className="flex min-w-[98px] items-center text-lg font-medium text-text-primary">
 							<Calendar.Date>{(date) => convertIsoToDateToKorean(date)}</Calendar.Date>
 						</div>
@@ -172,7 +172,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 								</motion.div>
 							</Calendar.Jump>
 						</div>
-						<div className="relative flex items-center">
+						<div className="relative flex h-fit w-fit items-center">
 							<Popover
 								gapX={6} // X축 간격 조절
 								gapY={-3} // Y축 간격 조절
@@ -188,7 +188,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 											whileTap={buttonAnimation.whileTap}
 											className="rounded-full shadow-loginButton"
 										>
-											<Icon.CalendarButton width={32} height={32} />
+											<Icon.CalendarButton width={24} height={24} />
 										</motion.div>
 									</button>
 								</div>
