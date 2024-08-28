@@ -15,6 +15,7 @@ import Quill from "@/app/_components/Quill";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/app/_store/useAuthStore";
 import toast from "@/app/_utils/Toast";
+import CommentIcon from "@/public/icons/ic_comment";
 
 export default function BoardDetail({ params }: { params: { id: string } }) {
 	const articleId = Number(params.id);
@@ -68,33 +69,11 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 		},
 	});
 
-	// 수정 버튼 클릭 핸들러
-	const handleEditClick = () => {
-		setIsEditing(true);
-	};
-
 	// 삭제 버튼 클릭 핸들러
 	const handleDeleteClick = () => {
 		if (window.confirm("정말 삭제하시겠습니까?")) {
 			deleteArticleMutation.mutate();
 		}
-	};
-
-	// 저장 버튼 클릭 핸들러
-	const handleSaveClick = async () => {
-		let imageUrl = editArticleData.image;
-		if (selectedImage) {
-			const response = await imageUpload(selectedImage);
-			imageUrl = response.url ?? editArticleData.image;
-		}
-		editArticleMutation.mutate({ ...editArticleData, image: imageUrl });
-	};
-
-	// 취소 버튼 클릭 핸들러
-	const handleCancelClick = () => {
-		setIsEditing(false);
-		setEditArticleData({ title: article?.title ?? "", content: article?.content ?? "", image: article?.image ?? "" });
-		setSelectedImage(null);
 	};
 
 	// 이미지 파일 선택 핸들러
@@ -107,7 +86,50 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 				setEditArticleData((prev) => ({ ...prev, image: reader.result as string }));
 			};
 			reader.readAsDataURL(file);
+		} else {
+			// 이미지 선택이 취소되었을 때
+			setSelectedImage(null);
+			setEditArticleData((prev) => ({ ...prev, image: "" }));
 		}
+	};
+
+	// 수정 버튼 클릭 핸들러
+	const handleEditClick = () => {
+		setEditArticleData({
+			title: article?.title ?? "",
+			content: article?.content ?? "",
+			image: article?.image ?? "",
+		});
+		setIsEditing(true);
+	};
+
+	// 취소 버튼 클릭 핸들러
+	const handleCancelClick = () => {
+		setIsEditing(false);
+		setEditArticleData({
+			title: article?.title ?? "",
+			content: article?.content ?? "",
+			image: article?.image ?? "",
+		});
+		setSelectedImage(null);
+	};
+
+	// 저장 버튼 클릭 핸들러
+	const handleSaveClick = async () => {
+		let imageUrl = editArticleData.image ?? article?.image ?? "";
+
+		if (selectedImage) {
+			const response = await imageUpload(selectedImage);
+			imageUrl = response.url ?? article?.image ?? "";
+		}
+
+		const updatedArticle = {
+			title: editArticleData.title ?? article?.title ?? "",
+			content: editArticleData.content ?? article?.content ?? "",
+			image: imageUrl,
+		};
+
+		editArticleMutation.mutate(updatedArticle);
 	};
 
 	// 좋아요 추가
@@ -161,101 +183,111 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 
 	return (
 		<main className="mx-auto h-full px-[16px] py-[56px] text-text-primary desktop:container tablet:px-[24px] tablet:py-[40px] desktop:px-0">
-			{isArticleLoading ? (
-				<>
-					<div className="bg-border-primary/25 h-[16px] w-[70%] animate-pulse rounded-md" />
-					<div className="bg-border-primary/25 my-4 h-[24px] w-[30%] animate-pulse rounded-md" />
-					<div className="bg-border-primary/25 h-[200px] w-full animate-pulse rounded-md" />
-				</>
-			) : (
-				<section className="mb-8">
-					<div className="flex items-center justify-between border-b border-solid border-border-primary py-[20px]">
-						{isEditing ? (
-							<input
-								className="h-[48px] w-full rounded-[12px] border border-border-primary bg-background-secondary px-[24px] text-lg text-text-primary focus:outline-none"
-								value={article?.title}
-								onChange={(e) => setEditArticleData({ ...editArticleData, title: e.target.value })}
-							/>
-						) : (
-							<>
-								<h2 className="text-[18px] font-medium text-text-secondary">{article?.title}</h2>
-								<div>
-									{article?.writer.id === user?.id && (
-										<DropDown
-											options={[
-												{ text: "수정", onClick: handleEditClick },
-												{ text: "삭제", onClick: handleDeleteClick },
-											]}
-										>
-											<button type="button" aria-label="dropdown">
-												<KebabIcon />
-											</button>
-										</DropDown>
-									)}
-								</div>
-							</>
-						)}
+			<div className="rounded-xl bg-background-secondary shadow-postboard">
+				{isArticleLoading ? (
+					<div className="p-[20px_30px]">
+						<div className="h-[16px] w-[70%] animate-pulse rounded-md bg-background-quaternary" />
+						<div className="my-4 h-[24px] w-[30%] animate-pulse rounded-md bg-background-quaternary" />
+						<div className="h-[200px] w-full animate-pulse rounded-md bg-background-quaternary" />
 					</div>
-					<Message data={detailMessageData}>
-						<div className="m-[16px_0_48px] flex justify-between">
-							<div className="flex items-center">
-								<Message.Author />
-								<div className="flex items-center text-md text-text-primary before:mx-[15px] before:inline-block before:h-[12px] before:w-[1px] before:bg-border-primary">
-									<Message.Date />
-								</div>
-							</div>
-							<div className="flex items-center gap-[15px] text-md text-text-disabled">
-								<p className="flex items-center gap-[7px]">
-									<Image src="/icons/comment.svg" alt="댓글수" width={15} height={15} />
-									{article?.commentCount}
-								</p>
-								<button type="button" onClick={handleLike} className="flex items-center">
-									<span className="flex items-center gap-[7px]">
-										<span className={`transition-transform ${isAnimating ? "animate-scaleUp" : ""}`}>
-											{article?.isLiked ? <Icon.HeartFull width={15} height={15} color="#FF0000" /> : <Icon.Heart width={15} height={15} color="#64748B" />}
-										</span>
-										{article?.likeCount}
-									</span>
-								</button>
-							</div>
-						</div>
+				) : (
+					<section className="mb-8">
 						{isEditing ? (
-							<>
-								<Quill init={article?.content} onChange={(data) => setEditArticleData({ ...editArticleData, content: data })} />
-								<input type="file" accept="image/*" onChange={handleImageChange} className="mt-4" />
-								{editArticleData.image && (
-									<Image src={editArticleData.image} alt="Selected Image" width={100} height={100} objectFit="contain" className="mt-4" />
-								)}
-							</>
+							<div className="mx-[30px] border-b border-solid border-border-primary py-[20px]">
+								<input
+									className="h-[48px] w-full rounded-[12px] border border-border-primary bg-background-secondary px-[24px] text-lg text-text-primary focus:outline-none"
+									value={article?.title}
+									onChange={(e) => setEditArticleData({ ...editArticleData, title: e.target.value })}
+								/>
+							</div>
 						) : (
 							<>
-								<Message.Content />
 								{article?.image && (
-									<div className="relative mt-[20px] min-h-[200px] min-w-[200px] max-w-full">
-										<Image src={article?.image} alt="content Image" layout="fill" objectFit="contain" />
-									</div>
+									<div
+										style={{ backgroundImage: `url("${article?.image}")` }}
+										className="h-[200px] w-full rounded-t-xl bg-background-tertiary bg-cover bg-center"
+									/>
 								)}
+								<div className="mx-[30px] flex items-center justify-between border-b border-solid border-border-primary py-[20px]">
+									<h2 className="text-[18px] font-medium text-landing-inverse">{article?.title}</h2>
+									<div>
+										{article?.writer.id === user?.id && (
+											<DropDown
+												options={[
+													{ text: "수정", onClick: handleEditClick },
+													{ text: "삭제", onClick: handleDeleteClick },
+												]}
+											>
+												<button type="button" aria-label="dropdown">
+													<KebabIcon />
+												</button>
+											</DropDown>
+										)}
+									</div>
+								</div>
 							</>
 						)}
-					</Message>
-
-					{isEditing && (
-						<div className="mt-4 flex justify-end">
-							<div className="flex h-[48px] w-[300px] gap-3">
-								{editArticleMutation.isPending || (
-									<Button type="button" onClick={handleCancelClick} variant="secondary" fontSize="md">
-										취소
-									</Button>
+						<div className="px-[30px]">
+							<Message data={detailMessageData}>
+								<div className="m-[16px_0_48px] flex justify-between">
+									<div className="flex items-center">
+										<Message.Author />
+										<div className="flex items-center text-md text-text-primary before:mx-[15px] before:inline-block before:h-[12px] before:w-[1px] before:bg-border-primary">
+											<Message.Date />
+										</div>
+									</div>
+									<div className="flex items-center gap-[15px] text-md text-landing-inverse">
+										<p className="flex items-center gap-[7px]">
+											<CommentIcon width={15} height={15} color="var(--landing-inverse)" />
+											{article?.commentCount}
+										</p>
+										<button type="button" onClick={handleLike} className="flex items-center">
+											<span className="flex items-center gap-[7px]">
+												<span className={`transition-transform ${isAnimating ? "animate-scaleUp" : ""}`}>
+													{article?.isLiked ? (
+														<Icon.HeartFull width={15} height={15} color="#FF0000" />
+													) : (
+														<Icon.Heart width={15} height={15} color="var(--landing-inverse)" />
+													)}
+												</span>
+												{article?.likeCount}
+											</span>
+										</button>
+									</div>
+								</div>
+								{isEditing ? (
+									<>
+										<Quill init={article?.content} onChange={(data) => setEditArticleData({ ...editArticleData, content: data })} />
+										<input type="file" accept="image/*" onChange={handleImageChange} className="mt-4" />
+										{editArticleData.image && (
+											<Image src={editArticleData.image} alt="Selected Image" width={100} height={100} objectFit="contain" className="mt-4" />
+										)}
+									</>
+								) : (
+									<Message.Content />
 								)}
-								<Button type="button" onClick={handleSaveClick} disabled={editArticleMutation.isPending} fontSize="md">
-									{editArticleMutation.isPending ? "수정중..." : "수정 완료"}
-								</Button>
-							</div>
+							</Message>
+							{isEditing && (
+								<div className="mt-4 flex justify-end">
+									<div className="flex h-[48px] w-[300px] gap-3">
+										{editArticleMutation.isPending || (
+											<Button type="button" onClick={handleCancelClick} variant="secondary" fontSize="md">
+												취소
+											</Button>
+										)}
+										<Button type="button" onClick={handleSaveClick} disabled={editArticleMutation.isPending} fontSize="md">
+											{editArticleMutation.isPending ? "수정중..." : "수정 완료"}
+										</Button>
+									</div>
+								</div>
+							)}
 						</div>
-					)}
-				</section>
-			)}
-			<BoardDetailComments articleId={articleId} />
+					</section>
+				)}
+				<div className="p-[0_30px_30px]">
+					<BoardDetailComments articleId={articleId} />
+				</div>
+			</div>
 		</main>
 	);
 }

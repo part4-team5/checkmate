@@ -4,12 +4,27 @@ import LandingProgressBar from "@/app/_components/LandingProgressBar";
 import Image from "next/image";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import Cookie from "@/app/_utils/Cookie";
 
 export default function Page() {
+	// 초기 다크모드 상태를 undefined로 시작하고, useEffect에서 쿠키 값을 설정함
+	const [darkMode, setDarkMode] = useState<boolean | undefined>(undefined);
+
+	console.log(`darkMode : ${darkMode}`);
+
 	useEffect(() => {
 		AOS.init();
+
+		// 쿠키에서 다크모드 상태 가져오기 (클라이언트 사이드에서만 실행됨)
+		const savedTheme = Cookie.get("theme");
+		setDarkMode(savedTheme === "dark");
 	}, []);
+
+	// 다크모드가 설정되기 전까지는 아무것도 렌더링하지 않음
+	if (darkMode === undefined) {
+		return null;
+	}
 
 	return (
 		<main className="flex size-full min-w-[320px] flex-col items-center bg-landing-primary">
@@ -40,7 +55,7 @@ export default function Page() {
 			<section className="w-full bg-landing-tertiary py-[120px]">
 				<div className="m-[0_auto] flex size-full max-w-screen-desktop items-center gap-28">
 					<div className="relative h-[470px] w-[690px]" data-aos="fade-up">
-						<Image src="/images/point1_light.png" alt="point1" fill className="rounded-[40px]" />
+						<Image src={darkMode ? "/images/point1_dark.png" : "/images/point1_light.png"} alt="point1" fill className="rounded-[30px]" />
 					</div>
 
 					<div className="">
@@ -59,7 +74,7 @@ export default function Page() {
 			<section className="w-full bg-landing-green py-[120px]">
 				<div className="m-[0_auto] flex max-w-screen-desktop flex-row-reverse items-center justify-between gap-28">
 					<div className="relative h-[470px] w-[690px]">
-						<Image src="/images/point2_light.png" alt="point2" fill className="rounded-[40px]" data-aos="fade-up" />
+						<Image src={darkMode ? "/images/point2_dark.png" : "/images/point2_light.png"} alt="point2" fill className="rounded-[30px]" data-aos="fade-up" />
 						<div className="absolute -top-[85px] right-[74px]" data-aos="fade-down">
 							<Image src="/images/point2_icon.png" alt="icon" width={99} height={120} />
 						</div>
@@ -81,7 +96,7 @@ export default function Page() {
 			<section className="w-full bg-landing-tertiary py-[120px]">
 				<div className="m-[0_auto] flex max-w-screen-desktop items-center justify-between gap-28">
 					<div className="relative h-[470px] w-[690px]">
-						<Image src="/images/point3_light.png" alt="point3" fill className="rounded-[40px]" data-aos="fade-up" />
+						<Image src={darkMode ? "/images/point3_dark.png" : "/images/point3_light.png"} alt="point3" fill className="rounded-[30px]" data-aos="fade-up" />
 						<div className="absolute -bottom-[50px] -left-[80px]" data-aos="fade-right">
 							<Image src="/images/point3_icon.png" alt="icon" width={150} height={234} />
 						</div>
