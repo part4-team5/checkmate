@@ -109,14 +109,14 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 														height={isEmptyImage ? 60 : undefined}
 														className={`rounded-[12px] object-cover object-center ${isEmptyImage ? "object-contain" : ""}`}
 													/>
-													<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-[#1E293B] bg-[#334155]">
-														<Icon.Edit width={11} height={11} color="#64748B" />
+													<div className="absolute -bottom-2 -right-2 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-text-primary bg-dropdown-hover">
+														<Icon.Edit width={11} height={11} color="var(--text-primary)" />
 													</div>
 													{!isEmptyImage && !file && (
 														<button
 															type="button"
 															onClick={handleRemoveImage}
-															className="absolute -left-[-6px] top-[6px] flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[#334155] text-white"
+															className="absolute -left-[-6px] top-[6px] flex h-[20px] w-[20px] items-center justify-center rounded-full bg-background-list text-white"
 															aria-label="Remove profile image"
 														>
 															<Icon.TodoDelete width={18} height={18} color="#ffffff" />
