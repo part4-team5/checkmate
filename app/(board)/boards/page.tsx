@@ -65,7 +65,7 @@ export default function Page() {
 		<main className="h-[calc(100dvh-60px)]">
 			<div className="mx-auto flex h-full flex-col gap-[24px] px-[16px] pb-[32px] pt-[4px] desktop:container tablet:px-[24px] tablet:py-[40px] tablet:pt-[32px] desktop:px-0">
 				<div className="hidden text-2xl text-text-primary tablet:block">자유게시판</div>
-				<div className="relative mb-[36px] tablet:mb-[44px] flex items-center justify-between tablet:gap-[64px] desktop:mb-0">
+				<div className="relative mb-[36px] flex items-center justify-between tablet:mb-[44px] tablet:gap-[64px] desktop:mb-0">
 					<div className="flex items-center gap-[4px] text-2lg text-text-primary tablet:gap-[16px]">
 						<button
 							type="button"
@@ -104,7 +104,7 @@ export default function Page() {
 							장터
 						</button>
 					</div>
-					<div className="absolute -bottom-[4px] tablet:-bottom-[8px] left-0 right-0 z-10 flex h-full grow translate-y-full items-center gap-[8px] rounded-[12px] bg-background-secondary px-[16px] shadow-postboard has-[input:focus]:border-brand-primary desktop:static desktop:translate-y-0">
+					<div className="absolute -bottom-[4px] left-0 right-0 z-10 flex h-full grow translate-y-full items-center gap-[8px] rounded-[12px] bg-background-secondary px-[16px] shadow-postboard has-[input:focus]:border-brand-primary tablet:-bottom-[8px] desktop:static desktop:translate-y-0">
 						<Icon.Search width={24} height={24} color="var(--text-primary)" />
 						<input
 							className="h-full grow bg-transparent py-[12px] text-2lg text-text-primary outline-none"
@@ -112,7 +112,7 @@ export default function Page() {
 							onChange={(event) => setKeyword(event.target.value)}
 						/>
 					</div>
-					<div className="z-50 right-0 flex items-center gap-[4px] tablet:gap-[16px] desktop:static desktop:translate-y-0">
+					<div className="right-0 z-50 flex items-center gap-[4px] tablet:gap-[16px] desktop:static desktop:translate-y-0">
 						<button
 							type="button"
 							aria-label="mode"
@@ -262,7 +262,9 @@ export default function Page() {
 				</div>
 			</div>
 			<div className="shadow-lg fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center overflow-hidden rounded-[40px] tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]">
-				<Button href="/create-post" rounded="full">+ 글쓰기</Button>
+				<Button href="/create-post" rounded="full">
+					+ 글쓰기
+				</Button>
 			</div>
 		</main>
 	);
