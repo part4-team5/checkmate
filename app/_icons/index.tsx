@@ -642,8 +642,26 @@ Icon.CalendarButton = function CalendarButton({ width = 24, height = 24, color =
 
 Icon.Pointer = function Pointer({ width = 24, height = 24, color = "#8EDCC3" }: IconProps) {
 	return (
-		<svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24">
-			<path fill={color} d="M4 0l16 12.279-6.951 1.17 4.325 8.817-3.596 1.734-4.35-8.879-5.428 4.702z" />
+		<svg width={width} height={height} viewBox="0 0 63 67" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<g filter="url(#filter0_d_29_317)">
+				<path
+					d="M19.1337 16.3125C19.3723 13.2426 22.8448 11.5822 25.3841 13.3239L45.1006 26.8471C47.6399 28.5888 47.3416 32.4262 44.5636 33.7545L22.9939 44.0679C20.2159 45.3961 17.0418 43.2191 17.2805 40.1491L19.1337 16.3125Z"
+					fill={color}
+				/>
+				<rect x="28.3262" y="36.9863" width="8.17635" height="24.529" rx="4" transform="rotate(-25.5545 28.3262 36.9863)" fill={color} />
+			</g>
+			<defs>
+				<filter id="filter0_d_29_317" x="13.2676" y="8.61731" width="41.5708" height="57.1653" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+					<feFlood flood-opacity="0" result="BackgroundImageFix" />
+					<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+					<feOffset dx="2" dy="2" />
+					<feGaussianBlur stdDeviation="3" />
+					<feComposite in2="hardAlpha" operator="out" />
+					<feColorMatrix type="matrix" values="0 0 0 0 0.364649 0 0 0 0 0.378792 0 0 0 0 0.392936 0 0 0 0.14 0" />
+					<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_29_317" />
+					<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_29_317" result="shape" />
+				</filter>
+			</defs>
 		</svg>
 	);
 };
