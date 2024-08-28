@@ -63,15 +63,15 @@ export default function Page() {
 
 	return (
 		<main className="h-[calc(100dvh-60px)]">
-			<div className="mx-auto flex h-full flex-col gap-[24px] px-[16px] py-[32px] desktop:container tablet:px-[24px] tablet:py-[40px] desktop:px-0">
+			<div className="mx-auto flex h-full flex-col gap-[24px] px-[16px] pb-[32px] pt-[4px] desktop:container tablet:px-[24px] tablet:py-[40px] tablet:pt-[32px] desktop:px-0">
 				<div className="hidden text-2xl text-text-primary tablet:block">자유게시판</div>
-				<div className="relative mb-[72px] flex items-center justify-between gap-[64px] desktop:mb-0">
-					<div className="flex items-center gap-[18px] text-2lg text-text-primary">
+				<div className="relative mb-[36px] flex items-center justify-between tablet:gap-[64px] desktop:mb-0">
+					<div className="flex items-center gap-[4px] text-2lg text-text-primary tablet:gap-[16px]">
 						<button
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.ALL && "#10b981", backgroundColor: category === Category.ALL && "var(--background-Senary)" }}
-							className="rounded-[12px] border border-transparent bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
+							className="whitespace-nowrap rounded-[12px] border border-transparent bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
 							onClick={() => setCategory(Category.ALL)}
 						>
 							전체
@@ -80,7 +80,7 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.NEWS && "#10b981", backgroundColor: category === Category.NEWS && "var(--background-Senary)" }}
-							className="rounded-[12px] border border-transparent bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
+							className="whitespace-nowrap rounded-[12px] border border-transparent bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
 							onClick={() => setCategory(Category.NEWS)}
 						>
 							소식
@@ -89,7 +89,7 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.LIFE && "#10b981", backgroundColor: category === Category.LIFE && "var(--background-Senary)" }}
-							className="rounded-[12px] border border-transparent bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
+							className="whitespace-nowrap rounded-[12px] border border-transparent bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
 							onClick={() => setCategory(Category.LIFE)}
 						>
 							일상
@@ -98,13 +98,13 @@ export default function Page() {
 							type="button"
 							// @ts-ignore
 							style={{ borderColor: category === Category.TRADE && "#10b981", backgroundColor: category === Category.TRADE && "var(--background-Senary)" }}
-							className="rounded-[12px] border border-transparent bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
+							className="whitespace-nowrap rounded-[12px] border border-transparent bg-background-secondary px-[12px] py-[12px] shadow-postboard hover:bg-background-Senary"
 							onClick={() => setCategory(Category.TRADE)}
 						>
 							장터
 						</button>
 					</div>
-					<div className="absolute -bottom-[24px] left-0 right-[128px] flex grow translate-y-full items-center gap-[8px] rounded-[12px] bg-background-secondary px-[16px] shadow-postboard has-[input:focus]:border-brand-primary desktop:static desktop:translate-y-0">
+					<div className="absolute -bottom-[4px] left-0 right-0 z-10 flex h-full grow translate-y-full items-center gap-[8px] rounded-[12px] bg-background-secondary px-[16px] shadow-postboard has-[input:focus]:border-brand-primary desktop:static desktop:translate-y-0">
 						<Icon.Search width={24} height={24} color="var(--text-primary)" />
 						<input
 							className="h-full grow bg-transparent py-[12px] text-2lg text-text-primary outline-none"
@@ -112,7 +112,7 @@ export default function Page() {
 							onChange={(event) => setKeyword(event.target.value)}
 						/>
 					</div>
-					<div className="absolute -bottom-[24px] right-0 flex translate-y-full items-center gap-[16px] desktop:static desktop:translate-y-0">
+					<div className="right-0 flex items-center gap-[4px] tablet:gap-[16px] desktop:static desktop:translate-y-0">
 						<button
 							type="button"
 							aria-label="mode"
@@ -161,7 +161,7 @@ export default function Page() {
 						</DropDown>
 					</div>
 				</div>
-				<div className="overflow-auto rounded-[12px] bg-background-secondary px-[12px] py-[12px] shadow-postboard">
+				<div className="z-10 overflow-y-auto overflow-x-hidden rounded-[12px] bg-background-secondary px-[12px] py-[12px] shadow-postboard scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-primary">
 					{display === "card" && (
 						<div className="grid grid-cols-1 gap-[12px] text-text-primary tablet:grid-cols-2">
 							{posts?.map((post) => (
@@ -169,31 +169,29 @@ export default function Page() {
 									key={post.id}
 									ref={posts.at(-1) === post ? (ref) => setLast(ref!) : undefined}
 									href={`/boards/${post.id}`}
-									className="flex h-[190px] justify-between gap-[24px] rounded-[12px] bg-background-tertiary px-[12px] py-[12px] shadow-bestCard hover:bg-background-quinary"
+									className="relative flex h-[190px] flex-shrink-0 flex-col justify-between gap-[24px] rounded-[12px] bg-background-tertiary px-[12px] py-[12px] shadow-bestCard hover:bg-background-quinary"
 								>
-									<div className="flex flex-shrink-0 flex-col justify-between gap-[24px]">
-										<div className="flex flex-col gap-[12px]">
-											<div className="text-ellipsis text-xl">{post.title}</div>
-											<div className="text-md">{new Date(post.createdAt).toLocaleDateString()}</div>
+									<div className="z-10 flex flex-col gap-[12px]">
+										<div className="text-ellipsis text-xl">{post.title}</div>
+										<div className="text-md">{new Date(post.createdAt).toLocaleDateString()}</div>
+									</div>
+									<div className="z-10 flex w-full items-center gap-[8px] text-nowrap desktop:gap-[16px]">
+										<div className="flex items-center gap-[8px]">
+											<Image src={post.writer.image ?? "/icons/defaultAvatar.svg"} alt="avatar" width={24} height={24} />
+											<div className="max-w-[10ch] grow overflow-hidden text-ellipsis"> {post.writer.nickname}</div>
 										</div>
-										<div className="flex items-center gap-[8px] text-nowrap desktop:gap-[16px]">
-											<div className="flex items-center gap-[8px]">
-												<Image src={post.writer.image ?? "/images/profile.png"} alt="avatar" width={24} height={24} />
-												{post.writer.nickname}
-											</div>
-											<div className="flex items-center gap-[8px]">
-												<Icon.Comment width={16} height={16} color="#828282" />
-												{post.commentCount}
-											</div>
-											<div className="flex items-center gap-[8px]">
-												<Icon.Heart width={16} height={16} color={post.isLiked ? "rose" : "#828282"} />
-												{post.likeCount}
-											</div>
+										<div className="flex items-center gap-[8px]">
+											<Icon.Comment width={16} height={16} color="#828282" />
+											{post.commentCount}
+										</div>
+										<div className="flex items-center gap-[8px]">
+											<Icon.Heart width={16} height={16} color={post.isLiked ? "rose" : "#828282"} />
+											{post.likeCount}
 										</div>
 									</div>
 									{post.image && (
 										<div
-											className="aspect-square h-full overflow-hidden rounded-[12px] bg-background-secondary bg-cover"
+											className="absolute bottom-[8px] right-[8px] top-[8px] aspect-square overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary bg-cover opacity-75 shadow-[inset_0_0_25px_5px_rgba(0,0,0,0.75)]"
 											style={{ backgroundImage: `url("${post.image}")` }}
 										/>
 									)}
@@ -232,9 +230,9 @@ export default function Page() {
 									</div>
 									<div className="flex justify-between text-md">
 										<div className="flex items-center gap-[16px]">
-											<div className="flex items-center gap-[8px]">
-												<Image src={post.writer.image ?? "/images/profile.png"} alt="avatar" width={24} height={24} />
-												{post.writer.nickname}
+											<div className="flex items-center gap-[8px] text-nowrap">
+												<Image src={post.writer.image ?? "/icons/defaultAvatar.svg"} alt="avatar" width={24} height={24} />
+												<div className="max-w-[10ch] grow overflow-hidden text-ellipsis"> {post.writer.nickname}</div>
 											</div>
 											{new Date(post.createdAt).toLocaleDateString()}
 										</div>

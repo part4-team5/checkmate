@@ -19,9 +19,9 @@ export default function Page() {
 	});
 
 	return (
-		<main className="flex h-full justify-center pt-[40px] text-text-primary">
+		<main className="flex h-full justify-center pb-[120px] pt-[40px] text-text-primary">
 			<div className="flex w-full flex-col gap-[24px] px-[16px] desktop:container tablet:px-[24px] desktop:px-0">
-				<div className="text-xl font-bold">마이 히스토리</div>
+				<div className="hidden text-xl font-bold tablet:block">마이 히스토리</div>
 				{/* eslint-disable-next-line react/no-array-index-key */}
 				<div className="relative flex h-full flex-col gap-[40px]">
 					{(() => {
@@ -39,7 +39,7 @@ export default function Page() {
 														<div className="mx-[4px] my-[4px] flex items-center justify-center rounded-[6px] bg-brand-tertiary">
 															<Icon.Check width={16} height={16} color="#FFFFFF" />
 														</div>
-														<div className="grow text-md font-normal line-through">{task.name}</div>
+														<div className="grow overflow-hidden text-ellipsis text-md font-normal line-through">{task.name}</div>
 													</div>
 												))}
 												<div className="absolute top-1/2 h-[15px] w-[15px] -translate-y-1/2 rounded-full bg-brand-primary group-odd:-right-[37.5px] group-even:-left-[37.5px]" />
@@ -48,7 +48,7 @@ export default function Page() {
 										</div>
 									))}
 									<div className="absolute bottom-[0px] left-1/2 h-[15px] w-[15px] -translate-x-1/2 rounded-full bg-brand-primary" />
-									<div className="absolute -bottom-[35px] left-1/2 -translate-x-1/2 translate-y-[35px] rounded-[12px] border-[2.5px] border-dotted border-text-default px-[12px] py-[12px]">
+									<div className="absolute -bottom-[60px] left-1/2 -translate-x-1/2 translate-y-[35px] rounded-[12px] border-[2.5px] border-dotted border-text-default px-[12px] py-[12px]">
 										앞으로의 일정을 완료해보세요!
 									</div>
 								</>
