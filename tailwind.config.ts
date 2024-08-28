@@ -69,7 +69,7 @@ export default {
 				primary: "var(--text-primary)",
 				secondary: "var(--text-secondary)",
 				tertiary: "#E2E8F0",
-				default: "#64748B",
+				default: "#ADADAD",
 				inverse: "#FFFFFF",
 				disabled: "#94A3B8",
 				emerald: "#10B981",

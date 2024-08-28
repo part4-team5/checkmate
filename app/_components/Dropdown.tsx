@@ -146,7 +146,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 		return (
 			<div className="flex w-max min-w-[120px] flex-col rounded-[12px] border border-white border-opacity-5 bg-background-secondary shadow-teamDropdown">
 				<div
-					className={`flex max-h-[308px] flex-col overflow-y-auto shadow-teamDropdown scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary ${items.some((option) => option.image) ? "mt-2 space-y-2 p-[16px]" : ""}`}
+					className={`flex max-h-[308px] flex-col overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary ${items.some((option) => option.image) ? "mt-2 space-y-2 p-[16px]" : ""}`}
 				>
 					{items.map((option, index) => (
 						<div
