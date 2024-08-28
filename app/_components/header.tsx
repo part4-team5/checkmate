@@ -142,8 +142,8 @@ export default function Header() {
 
 				<div className="pr-4 tablet:pr-8 desktop:hidden" />
 
-				<Link href="/" onClick={sideBarClose}>
-					<div className="flex h-5 w-fit items-center gap-2 text-xl font-extrabold text-brand-primary desktop:h-8 desktop:w-[158px]">
+				<Link href="/" onClick={sideBarClose} className="w-max">
+					<div className="flex w-max items-center gap-2 text-xl font-extrabold text-brand-primary desktop:h-8">
 						<Image src="/icons/logo.svg" alt="logo" width={32} height={32} />
 						CHECKMATE
 					</div>
