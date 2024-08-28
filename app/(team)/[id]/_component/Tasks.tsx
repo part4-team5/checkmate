@@ -140,11 +140,11 @@ function TaskItem({
 			<div className="flex h-[40px] w-full flex-1 items-center justify-between">
 				<div className="truncate pl-4 text-text-primary">{taskList.name}</div>
 				<div className="flex w-[78px] items-center justify-center gap-[4px]" onClick={(e) => e.stopPropagation()}>
-					<div className="flex h-[25px] w-[58px] items-center justify-center gap-[4px] rounded-[12px] bg-[#10B981]">
+					<div className="flex h-[25px] w-[60px] items-center justify-center gap-[4px] rounded-[12px] bg-[#10B981] px-2">
 						{completedTasks === totalTasks && totalTasks !== 0 ? (
 							<Icon.DoneCheck height={16} width={16} color="#ffffff" />
 						) : (
-							<CircularProgressBar percent={completionRate} size={10} strokeWidth={2} backgroundColor="#FFFFFF" useGradient={false} strokeColor="#EAB308" />
+							<CircularProgressBar percent={completionRate} size={20} strokeWidth={5} backgroundColor="#FFFFFF" useGradient={false} strokeColor="#EAB308" />
 						)}
 						<p className="text-[12px] text-text-primary">
 							{completedTasks}/{totalTasks}
