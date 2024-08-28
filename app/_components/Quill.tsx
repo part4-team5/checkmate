@@ -9,6 +9,7 @@ import Icon from "@/app/_icons";
 import Switch from "@/app/_components/Switch";
 
 import { Markdown, Presets } from "@sombian/markdown";
+import toast from "@/app/_utils/Toast";
 
 const [CORE, FILE_SIZE, FILE_NAME] = [new Markdown(...Presets.NekoNote), 1024 * 10000, /^[a-zA-Z0-9._\-\s]+\.(?:gif|png|jpe?g|webp)$/];
 
@@ -110,9 +111,18 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 							case "file": {
 								const file = entry.getAsFile();
 
-								if (!file) return null;
-								if (FILE_SIZE < file.size) return null;
-								if (!FILE_NAME.test(file.name)) return null;
+								if (!file) {
+									toast.error("파일을 업로드해주세요.");
+									return null;
+								}
+								if (FILE_SIZE < file.size) {
+									toast.error("최대 파일 크기는 10MB입니다.");
+									return null;
+								}
+								if (!FILE_NAME.test(file.name)) {
+									toast.error("파일의 이름을 확인해주세요.");
+									return null;
+								}
 
 								return file;
 							}
@@ -264,7 +274,7 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 									ref={editor}
 									contentEditable={!readonly}
 									data-placeholder={placeholder}
-									className="space-pre-wrap inline-block h-full min-h-[130px] w-full grow resize-y overflow-auto break-all rounded-[10px] border border-white/15 px-[10px] py-[10px] text-lg text-text-primary outline-none before:text-text-default focus:border-brand-primary [&:not(:focus):empty]:before:content-[attr(data-placeholder)]"
+									className="space-pre-wrap inline-block h-full min-h-[130px] w-full grow resize-y overflow-auto break-all rounded-[10px] border border-white/15 px-[10px] py-[10px] text-lg text-text-primary outline-none before:text-text-default focus:border-brand-primary [&:empty]:before:content-[attr(data-placeholder)]"
 									//
 									// feat: drop & drop
 									//

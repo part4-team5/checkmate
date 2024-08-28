@@ -1,4 +1,3 @@
-import CloseIcon from "@/public/icons/ic_close";
 import Icon from "@/app/_icons/index";
 import { useRef, useState } from "react";
 import Button from "@/app/_components/Button";
@@ -41,9 +40,9 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 
 	return (
 		<div>
-			<div className="sticky top-0 z-50 flex bg-background-secondary pb-3 pl-6 pt-3 shadow-buttonPrimary">
+			<div className="sticky top-0 z-50 flex pb-3 pl-6 pt-3">
 				<button type="button" onClick={close} aria-label="버튼" className="">
-					<CloseIcon width={24} height={24} />
+					<Icon.Close width={24} height={24} />
 				</button>
 			</div>
 			<div className="px-6 pt-9 text-text-primary" ref={containerRef}>

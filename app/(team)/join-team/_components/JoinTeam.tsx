@@ -6,6 +6,7 @@ import Icon from "@/app/_icons";
 import useAuthStore from "@/app/_store/useAuthStore";
 import toast from "@/app/_utils/Toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -98,8 +99,12 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 						</div>
 					) : (
 						<>
-							<div className="my-4 flex size-[60px] min-h-[60px] min-w-[60px] items-center justify-center rounded-lg">
-								<Icon.EmptyImage width={60} height={60} />
+							<div className="relative my-4 flex size-[60px] min-h-[60px] min-w-[60px] items-center justify-center rounded-lg">
+								{inviteGroup?.groupImage ? (
+									<Image src={inviteGroup?.groupImage} alt="groupImage" fill className="rounded-lg" />
+								) : (
+									<Icon.EmptyImage width={60} height={60} />
+								)}
 							</div>
 
 							<div className="size-full">

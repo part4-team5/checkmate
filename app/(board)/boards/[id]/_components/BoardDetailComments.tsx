@@ -170,7 +170,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 									e.preventDefault();
 								}
 							}}
-							className="h-[100px] w-full resize-none overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[24px] py-[16px] text-lg text-text-primary placeholder:text-text-default focus:outline-none"
+							className="h-[100px] w-full resize-none overflow-auto rounded-[12px] border border-border-primary bg-background-secondary px-[24px] py-[16px] text-lg text-text-primary placeholder:text-text-primary focus:outline-none"
 							value={commentText}
 							placeholder="댓글을 입력해주세요"
 						/>
@@ -185,14 +185,14 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 				</form>
 			</div>
 			{/* 댓글 목록 표시 */}
-			<div className="my-[40px] flex flex-col gap-4 border-t border-solid border-border-primary pt-[40px]">
+			<div className="mt-[40px] flex flex-col gap-4 border-t border-solid border-border-primary pt-[40px]">
 				{comments?.pages.length === 0 && !isFetching && (
-					<div className="my-[100px] text-center text-lg font-medium text-text-default">아직 작성된 댓글이 없습니다</div>
+					<div className="my-[100px] text-center text-lg font-medium text-text-primary">아직 작성된 댓글이 없습니다</div>
 				)}
 				{isFetching && (
-					<div className="rounded-[12px] bg-background-secondary px-[24px] py-[16px]">
-						<div className="bg-border-primary/25 h-[16px] w-[60%] animate-pulse rounded-md" />
-						<div className="bg-border-primary/25 mt-[30px] h-[30px] w-[30%] animate-pulse rounded-md" />
+					<div className="rounded-[12px] bg-background-quaternary px-[24px] py-[16px]">
+						<div className="bg-background-secondary h-[16px] w-[60%] animate-pulse rounded-md" />
+						<div className="bg-background-secondary mt-[30px] h-[30px] w-[30%] animate-pulse rounded-md" />
 					</div>
 				)}
 				{comments?.pages.map((comment, index) => {
@@ -207,7 +207,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 						<div
 							key={comment.id}
 							ref={comments.pages.length - 1 === index ? viewportRef : null}
-							className="rounded-[12px] bg-background-secondary px-[24px] py-[16px]"
+							className="rounded-[12px] bg-background-quaternary px-[24px] py-[16px]"
 						>
 							{editingCommentId === comment.id ? (
 								<div className="flex flex-col gap-4">
