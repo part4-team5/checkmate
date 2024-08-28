@@ -2,14 +2,20 @@
 
 import Icon from "@/app/_icons";
 import Cookie from "@/app/_utils/Cookie";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 export default function DarkModeToggle() {
-	const [darkMode, setDarkMode] = useState(Cookie.get("theme") === "dark");
+	const [isDarkMode, setDarkMode] = useState(Cookie.get("theme") === null ? true : Cookie.get("theme") === "dark");
+
+	useLayoutEffect(() => {
+		if (Cookie.get("theme") === null) {
+			Cookie.set("theme", "dark");
+		}
+	}, []);
 
 	const toggleDarkMode = () => {
-		setDarkMode(!darkMode);
-		if (darkMode) {
+		setDarkMode(!isDarkMode);
+		if (isDarkMode) {
 			document.documentElement.classList.remove("dark");
 			Cookie.set("theme", "light");
 		} else {
@@ -20,7 +26,7 @@ export default function DarkModeToggle() {
 
 	return (
 		<button type="button" onClick={toggleDarkMode} aria-label="DarkMode" className="ml-2 rounded-full bg-background-tertiary p-2 text-lg font-medium">
-			{!darkMode ? <Icon.Light width={24} height={24} /> : <Icon.Dark width={24} height={24} />}
+			{!isDarkMode ? <Icon.Light width={24} height={24} /> : <Icon.Dark width={24} height={24} />}
 		</button>
 	);
 }

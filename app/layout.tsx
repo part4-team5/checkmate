@@ -9,7 +9,7 @@ import Toaster from "@/app/_components/Toaster";
 import Cookie from "@/app/_utils/Cookie";
 
 export default function Layout({ children }: Readonly<React.PropsWithChildren>) {
-	const themeClass = Cookie.get("theme") === "dark" ? "dark" : "";
+	const themeClass = Cookie.get("theme") === null ? "dark" : Cookie.get("theme") === "dark" ? "dark" : "";
 
 	return (
 		<html lang="ko" className={`scrollbar-hide ${themeClass}`}>
