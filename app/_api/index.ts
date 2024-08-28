@@ -1259,7 +1259,7 @@ const enum Frequency {
 
 interface UpdateUserBody {
 	nickname?: string;
-	image: string;
+	image?: string;
 }
 
 interface SendResetPasswordEmailRequest {
