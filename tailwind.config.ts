@@ -133,7 +133,6 @@ export default {
 			},
 			animation: {
 				scaleUp: "scaleUp 0.2s ease-in-out",
-				sparkle: "sparkle 0.6s ease-in-out",
 			},
 		},
 	},

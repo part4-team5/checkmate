@@ -154,7 +154,10 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 		userName: article?.writer.nickname,
 	};
 
-	if (articleError) return <div>Error loading article</div>;
+	if (articleError) {
+		console.error("Article Fetch Error:", articleError);
+		return <div>Error loading article</div>;
+	}
 
 	return (
 		<main className="mx-auto h-full px-[16px] py-[56px] text-text-primary desktop:container tablet:px-[24px] tablet:py-[40px] desktop:px-0">
