@@ -87,7 +87,7 @@ function Toaster() {
 						exit={animation(toast.type).exit}
 						transition={{ duration: 0.3 }}
 						onClick={() => removeToast(toast.id)}
-						className="shadow-lg w-fit cursor-pointer justify-end rounded-lg bg-white p-4 text-lg font-medium text-black"
+						className="shadow-lg w-fit cursor-pointer justify-end rounded-lg bg-background-primary p-4 text-lg font-medium text-text-primary"
 					>
 						<div className="flex items-center justify-between gap-2">
 							{icon(toast.type)}
