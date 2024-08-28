@@ -8,6 +8,7 @@ import Quill from "@/app/_components/Quill";
 import Button from "@/app/_components/Button";
 import { useRouter } from "next/navigation";
 import Tour from "@/app/_utils/Tour";
+import toast from "@/app/_utils/Toast";
 
 const [FILE_SIZE, FILE_NAME] = [1024 * 10000, /^[a-zA-Z0-9._\-\s]+\.(?:gif|png|jpe?g|webp)$/];
 
@@ -29,9 +30,18 @@ export default function Page() {
 	const outline = useRef<HTMLDivElement>(null);
 
 	const upload = useCallback((file?: File | null) => {
-		if (!file) return;
-		if (FILE_SIZE < file.size) return;
-		if (!FILE_NAME.test(file.name)) return;
+		if (!file) {
+			toast.error("파일을 업로드해주세요.");
+			return;
+		}
+		if (FILE_SIZE < file.size) {
+			toast.error("최대 파일 크기는 10MB입니다.");
+			return;
+		}
+		if (!FILE_NAME.test(file.name)) {
+			toast.error("파일의 이름을 확인해주세요.");
+			return;
+		}
 
 		API["{teamId}/images/upload"].POST({}, file).then((response) => {
 			setImage(response.url);
@@ -43,7 +53,7 @@ export default function Page() {
 		event.preventDefault();
 		event.stopPropagation();
 
-		outline.current?.style.setProperty("border-color", "black");
+		outline.current?.style.setProperty("border-color", "#8F95B2");
 	}, []);
 
 	const onDragLeave = useCallback((event: React.DragEvent) => {
@@ -158,7 +168,7 @@ export default function Page() {
 				</label>
 				<div className="mx-[15px] mt-[15px] flex h-[45px] items-center gap-[15px]">
 					<input
-						className="h-full w-[100px] grow text-ellipsis rounded-[10px] bg-transparent px-[10px] text-text-primary shadow-postboardTitle outline-none focus:border-brand-primary"
+						className="h-full w-[100px] grow text-ellipsis rounded-[10px] border border-border-primary bg-transparent px-[10px] text-text-primary shadow-postboardTitle outline-none focus:border-brand-primary"
 						placeholder="제목을 입력해주세요"
 						onChange={(event) => setTitle(event.target.value)}
 					/>
@@ -166,7 +176,7 @@ export default function Page() {
 						type="button"
 						// @ts-ignore
 						style={{ borderColor: category === Category.ALL && "#10b981", backgroundColor: category === Category.ALL && "var(--background-Senary)" }}
-						className="h-full rounded-[10px] border border-transparent bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
+						className="h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
 						onClick={() => setCategory(Category.ALL)}
 					>
 						전체
@@ -174,7 +184,7 @@ export default function Page() {
 					<button
 						type="button" // @ts-ignore
 						style={{ borderColor: category === Category.NEWS && "#10b981", backgroundColor: category === Category.NEWS && "var(--background-Senary)" }}
-						className="h-full rounded-[10px] border border-transparent bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
+						className="h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
 						onClick={() => setCategory(Category.NEWS)}
 					>
 						소식
@@ -182,7 +192,7 @@ export default function Page() {
 					<button
 						type="button" // @ts-ignore
 						style={{ borderColor: category === Category.LIFE && "#10b981", backgroundColor: category === Category.LIFE && "var(--background-Senary)" }}
-						className="h-full rounded-[10px] border border-transparent bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
+						className="h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
 						onClick={() => setCategory(Category.LIFE)}
 					>
 						일상
@@ -190,7 +200,7 @@ export default function Page() {
 					<button
 						type="button" // @ts-ignore
 						style={{ borderColor: category === Category.TRADE && "#10b981", backgroundColor: category === Category.TRADE && "var(--background-Senary)" }}
-						className="h-full rounded-[10px] border border-transparent bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
+						className="h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary"
 						onClick={() => setCategory(Category.TRADE)}
 					>
 						장터
