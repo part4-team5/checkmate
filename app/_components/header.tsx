@@ -92,13 +92,6 @@ export default function Header() {
 				},
 			},
 			{
-				text: "팀 참여",
-				onClick: () => {
-					router.push("/join-team");
-					sideBarClose();
-				},
-			},
-			{
 				text: "로그아웃",
 				onClick: () => {
 					overlay.open(({ close }) => (
