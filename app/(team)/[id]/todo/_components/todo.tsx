@@ -212,7 +212,8 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 
 			<motion.div
 				id="tasks"
-				className="layout layoutRoot flex flex-wrap gap-3 rounded-lg bg-background-secondary px-5 py-3 text-lg font-medium shadow-listPage tablet:px-8"
+				className="layout layoutRoot flex flex-wrap gap-3 overflow-x-scroll rounded-lg bg-background-secondary px-5 py-3 text-lg font-medium shadow-listPage scrollbar-hide tablet:px-8"
+				style={{ maxHeight: "calc(2 * (2rem + 6px))", flexWrap: "wrap" }} // 2줄까지만 내려갈 수 있도록 maxHeight 설정
 			>
 				{tasks &&
 					tasks.map((task) => (
