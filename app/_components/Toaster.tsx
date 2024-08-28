@@ -77,7 +77,7 @@ function Toaster() {
 	};
 
 	return (
-		<div className="fixed right-1/2 top-10 z-50 flex w-max translate-x-1/2 flex-col items-center justify-center space-y-2 transition-all">
+		<div className="fixed right-1/2 top-10 z-[100] flex w-max translate-x-1/2 flex-col items-center justify-center space-y-2 transition-all">
 			<AnimatePresence>
 				{toasts.map((toast) => (
 					<motion.div
