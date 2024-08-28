@@ -151,7 +151,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 					{items.map((option, index) => (
 						<div
 							key={`${option.text} ${index}` || index}
-							className={`flex size-full h-[46px] items-center rounded-[8px] hover:bg-background-quaternary focus:bg-[#475569] focus:outline-none ${
+							className={`flex size-full h-[46px] cursor-pointer items-center rounded-[8px] hover:bg-background-quaternary focus:bg-[#475569] focus:outline-none ${
 								option.groupId === currentId && currentId ? "bg-background-quaternary" : "bg-background-secondary"
 							}`} // 배경색 변경
 							tabIndex={0}
@@ -163,8 +163,8 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 							<div className={`flex size-full items-center ${option.image ? "justify-start" : "justify-center"} gap-[12px]`}>
 								<button type="button" className="flex max-w-[220px] cursor-pointer items-center justify-start gap-2 p-[8px]">
 									{option.image && (
-										<div className="h-[32px] w-[32px] flex-shrink-0">
-											<Image src={option.image} alt={option.text || "empty"} width={32} height={32} />
+										<div className="relative size-[32px] flex-shrink-0">
+											<Image src={option.image} alt={option.text || "empty"} fill className="rounded-lg object-cover" />
 										</div>
 									)}
 									<p className="flex-grow truncate text-left font-semibold text-text-primary">{option.text}</p>

@@ -4,7 +4,7 @@
 "use client";
 
 import API from "@/app/_api";
-import DarkModeToggle from "@/app/_components/DarkModeToggle";
+// import DarkModeToggle from "@/app/_components/DarkModeToggle";
 import DropDown from "@/app/_components/Dropdown";
 import Logout from "@/app/_components/modal-contents/Logout";
 import useCookie from "@/app/_hooks/useCookie";
@@ -191,7 +191,7 @@ export default function Header() {
 				</nav>
 
 				{/* 다크 모드 토글 버튼 */}
-				<DarkModeToggle />
+				{/* <DarkModeToggle /> */}
 
 				<div className="pr-4 tablet:pr-10 desktop:p-0" />
 
