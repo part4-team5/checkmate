@@ -164,7 +164,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 								<button type="button" className="flex max-w-[220px] cursor-pointer items-center justify-start gap-2 p-[8px]">
 									{option.image && (
 										<div className="relative size-[32px] flex-shrink-0">
-											<Image src={option.image} alt={option.text || "empty"} fill className="rounded-lg object-cover" />
+											<Image src={option.image} alt={option.text || "empty"} fill sizes="32px" className="rounded-lg object-cover" />
 										</div>
 									)}
 									<p className="flex-grow truncate text-left font-semibold text-text-primary">{option.text}</p>
