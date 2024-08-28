@@ -156,7 +156,7 @@ export default function Header() {
 												alt="team"
 												width={32}
 												height={32}
-												className="size-8 rounded-lg object-cover"
+												className="size-8 min-h-8 min-w-8 rounded-lg object-cover"
 											/>
 											<p className="overflow-x-hidden text-ellipsis whitespace-nowrap">
 												{user?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.name ?? "팀 선택"}
