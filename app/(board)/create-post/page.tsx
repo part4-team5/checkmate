@@ -166,9 +166,9 @@ export default function Page() {
 					</div>
 					<input id="image" type="file" className="hidden" onChange={onChange} />
 				</label>
-				<div className="relative mx-[15px] mt-[65px] flex h-[45px] items-center gap-[15px] tablet:mt-[15px]">
+				<div className="relative mx-[15px] mt-[61px] flex h-[45px] items-center gap-[15px] tablet:mt-[15px]">
 					<input
-						className="h-full w-[100px] grow text-ellipsis rounded-[10px] border border-border-primary bg-transparent px-[10px] text-text-primary shadow-postboardTitle outline-none focus:border-brand-primary"
+						className="h-full w-[100px] grow text-ellipsis rounded-[10px] border border-border-primary bg-transparent px-[10px] text-text-primary shadow-postboard outline-none focus:border-brand-primary z-10"
 						placeholder="제목을 입력해주세요"
 						onChange={(event) => setTitle(event.target.value)}
 					/>
@@ -176,7 +176,7 @@ export default function Page() {
 						type="button"
 						// @ts-ignore
 						style={{ borderColor: category === Category.ALL && "#10b981", backgroundColor: category === Category.ALL && "var(--background-Senary)" }}
-						className="absolute -top-[55px] h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary tablet:static"
+						className="absolute -top-[53px] h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary tablet:static"
 						onClick={() => setCategory(Category.ALL)}
 					>
 						전체
@@ -184,7 +184,7 @@ export default function Page() {
 					<button
 						type="button" // @ts-ignore
 						style={{ borderColor: category === Category.NEWS && "#10b981", backgroundColor: category === Category.NEWS && "var(--background-Senary)" }}
-						className="absolute -top-[55px] left-[60px] h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary tablet:static"
+						className="absolute -top-[53px] left-[60px] h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary tablet:static"
 						onClick={() => setCategory(Category.NEWS)}
 					>
 						소식
@@ -192,7 +192,7 @@ export default function Page() {
 					<button
 						type="button" // @ts-ignore
 						style={{ borderColor: category === Category.LIFE && "#10b981", backgroundColor: category === Category.LIFE && "var(--background-Senary)" }}
-						className="absolute -top-[55px] left-[120px] h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary tablet:static"
+						className="absolute -top-[53px] left-[120px] h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary tablet:static"
 						onClick={() => setCategory(Category.LIFE)}
 					>
 						일상
@@ -200,18 +200,18 @@ export default function Page() {
 					<button
 						type="button" // @ts-ignore
 						style={{ borderColor: category === Category.TRADE && "#10b981", backgroundColor: category === Category.TRADE && "var(--background-Senary)" }}
-						className="absolute -top-[55px] left-[180px] h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary tablet:static"
+						className="absolute -top-[53px] left-[180px] h-full rounded-[10px] border border-border-primary bg-background-tertiary px-[12px] text-text-primary shadow-postboard hover:bg-background-Senary tablet:static"
 						onClick={() => setCategory(Category.TRADE)}
 					>
 						장터
 					</button>
-					<div className="absolute -top-[55px] right-0 h-full w-[75px] tablet:static">
+					<div className="absolute -top-[53px] right-0 h-full w-[75px] tablet:static">
 						<Button id="create-post" type="submit" fontSize="md" disabled={!(1 <= (title?.length ?? 0) && 1 <= (content?.length ?? 0))}>
 							작성하기
 						</Button>
 					</div>
 				</div>
-				<div className="px-[15px] py-[15px]">
+				<div className="px-[15px] pb-[15px] pt-[8px] tablet:pt-[15px]">
 					<Quill placeholder="본문을 입력해주세요" onChange={(data) => setContent(data)} />
 				</div>
 			</form>

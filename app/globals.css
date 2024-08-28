@@ -29,6 +29,11 @@
 	z-index: -2;
 }
 
+::-webkit-scrollbar {
+	border-radius: 9999px;
+	background-color: var(--background-tertiary);
+}
+
 @keyframes glitch-color {
 	0% {
 		transform: translate(0);
@@ -300,7 +305,7 @@ input:-webkit-autofill {
 	}
 
 	.md blockquote {
-		@apply border-l-[5px] border-border-primary my-[16px] pl-[20px];
+		@apply my-[16px] border-l-[5px] border-border-primary pl-[20px];
 	}
 
 	.md img {
@@ -308,11 +313,11 @@ input:-webkit-autofill {
 	}
 
 	.md ol {
-		@apply list-decimal pl-[20px] my-[16px];
+		@apply my-[16px] list-decimal pl-[20px];
 	}
 
 	.md ul {
-		@apply list-disc pl-[20px] my-[16px];
+		@apply my-[16px] list-disc pl-[20px];
 	}
 
 	.md a {
