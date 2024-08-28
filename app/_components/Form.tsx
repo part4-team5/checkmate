@@ -222,7 +222,7 @@ Form.Input = function Input({
 	return (
 		<div
 			ref={self}
-			className={`flex w-full gap-[16px] rounded-[12px] border border-transparent bg-background-secondary px-[16px] ${isModal ? "bg-todo-primary shadow-input" : "shadow-loginInput"}`}
+			className={`flex w-full gap-[16px] rounded-[12px] border border-border-primary bg-background-tertiary px-[16px] ${isModal ? "bg-todo-primary shadow-input" : "shadow-input"}`}
 		>
 			<input
 				id={id}
@@ -364,7 +364,7 @@ Form.TextArea = function TextArea({
 			onChange={onChange}
 			placeholder={placeholder}
 			defaultValue={init}
-			className={`${isModal ? "bg-todo-primary shadow-input" : "bg-background-secondary shadow-loginInput"} h-auto grow resize-none overflow-hidden rounded-[12px] border border-transparent px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none`}
+			className={`${isModal ? "bg-todo-primary shadow-input" : "bg-background-tertiary shadow-input"} h-auto grow resize-none overflow-hidden rounded-[12px] border border-transparent px-[16px] py-[16px] text-lg font-normal text-text-primary placeholder:text-text-default focus:outline-none`}
 		/>
 	);
 };

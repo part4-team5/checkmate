@@ -115,7 +115,9 @@ export default function CreateTeamPage() {
 
 							<div className="pt-10" />
 
-							<div className="h-12">{createTeamMutation.isPending ? <Button disabled>팀 생성 중</Button> : <Form.Submit>생성하기</Form.Submit>}</div>
+							<div className="h-12">
+								{createTeamMutation.isPending || createTeamMutation.isSuccess ? <Button disabled>팀 생성 중</Button> : <Form.Submit>생성하기</Form.Submit>}
+							</div>
 						</div>
 					</Form>
 				</div>

@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
-import CloseIcon from "@/public/icons/ic_close";
 import Icon from "@/app/_icons";
 
 import API from "@/app/_api";
@@ -67,7 +66,8 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 		[teamEditMutation],
 	);
 
-	const handleRemoveImage = () => {
+	const handleRemoveImage = (e: { preventDefault: () => void }) => {
+		e.preventDefault();
 		setImageRemoved(true);
 	};
 
@@ -78,7 +78,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 			<section className="flex size-full flex-col items-center justify-center px-[20px] pb-[15px]">
 				<div className="flex w-full justify-end">
 					<button onClick={close} type="button" aria-label="Close modal">
-						<CloseIcon width={24} height={24} />
+						<Icon.Close width={24} height={24} />
 					</button>
 				</div>
 
@@ -126,7 +126,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 											);
 										}}
 									</Form.ImageInput>
-									{imageSrc !== "/icons/emptyImage.svg" && (
+									{/* {imageSrc !== "/icons/emptyImage.svg" && (
 										<button
 											type="button"
 											onClick={handleRemoveImage}
@@ -135,7 +135,7 @@ export default function TeamEdit({ close, id, initialTeamName }: TeamEditProps):
 										>
 											<Icon.TodoDelete width={18} height={18} color="#ffffff" />
 										</button>
-									)}
+									)} */}
 								</div>
 							</div>
 							<div className="mt-[10px]" />

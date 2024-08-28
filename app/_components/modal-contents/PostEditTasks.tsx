@@ -7,8 +7,8 @@ import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import Form from "@/app/_components/Form";
 import API from "@/app/_api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import CloseIcon from "@/public/icons/ic_close";
 import toast from "@/app/_utils/Toast";
+import Icon from "@/app/_icons";
 
 type PostEditTasksProps = {
 	initialTasksName?: string;
@@ -158,7 +158,7 @@ export default function PostEditTasks({ initialTasksName, close, groupId, taskId
 		<ModalWrapper close={close}>
 			<div className="flex w-full justify-end">
 				<button onClick={close} type="button" aria-label="Close modal">
-					<CloseIcon width={24} height={24} />
+					<Icon.Close width={24} height={24} />
 				</button>
 			</div>
 			<Form onSubmit={handlePostOrEditTasks}>

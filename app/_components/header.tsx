@@ -92,13 +92,6 @@ export default function Header() {
 				},
 			},
 			{
-				text: "팀 참여",
-				onClick: () => {
-					router.push("/join-team");
-					sideBarClose();
-				},
-			},
-			{
 				text: "로그아웃",
 				onClick: () => {
 					overlay.open(({ close }) => (
@@ -131,10 +124,10 @@ export default function Header() {
 			<div className="mx-auto flex size-full max-w-screen-desktop items-center">
 				<div className="z-50 block pl-4 tablet:hidden">
 					<button type="button" onClick={() => setIsSidebarOpened(!isSidebarOpened)} aria-label="Menu" className="flex size-full items-center justify-center">
-						<div className={`${isSidebarOpened ? "hidden" : "flex"}`}>
+						<div className={isSidebarOpened ? "hidden" : "flex"}>
 							<Icon.Hamburger width={24} height={24} />
 						</div>
-						<div className={`${isSidebarOpened ? "flex" : "hidden"}`}>
+						<div className={isSidebarOpened ? "flex" : "hidden"}>
 							<Icon.Close width={24} height={24} />
 						</div>
 					</button>
@@ -142,9 +135,10 @@ export default function Header() {
 
 				<div className="pr-4 tablet:pr-8 desktop:hidden" />
 
-				<Link href="/" onClick={sideBarClose}>
-					<div className="h-5 w-[102px] desktop:h-8 desktop:w-[158px]">
-						<Icon.LogoTypo width="100%" height="100%" />
+				<Link href="/" onClick={sideBarClose} className="w-max">
+					<div className="flex w-max items-center gap-2 text-xl font-extrabold text-brand-primary desktop:h-8">
+						<Image src="/icons/logo.svg" alt="logo" width={32} height={32} />
+						CHECKMATE
 					</div>
 				</Link>
 
