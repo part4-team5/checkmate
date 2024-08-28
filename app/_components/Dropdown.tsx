@@ -131,7 +131,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 					type="button"
 					ref={addButtonRef}
 					tabIndex={0}
-					className="mt-[16px] flex h-[48px] w-[186px] cursor-pointer items-center justify-center rounded-[12px] border text-[16px] hover:bg-background-quaternary focus:bg-[#475569] focus:outline-none"
+					className="mt-[16px] flex h-[48px] w-[186px] cursor-pointer items-center justify-center rounded-[12px] border text-[16px] hover:bg-dropdown-hover focus:bg-dropdown-active focus:outline-none"
 					onClick={() => {
 						router.push("/create-team");
 					}}
@@ -151,7 +151,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 					{items.map((option, index) => (
 						<div
 							key={`${option.text} ${index}` || index}
-							className={`flex size-full h-[46px] cursor-pointer items-center rounded-[8px] hover:bg-background-quaternary focus:bg-[#475569] focus:outline-none ${
+							className={`flex size-full h-[46px] cursor-pointer items-center rounded-[8px] hover:bg-dropdown-hover focus:bg-dropdown-active focus:outline-none ${
 								option.groupId === currentId && currentId ? "bg-background-quaternary" : "bg-background-secondary"
 							}`} // 배경색 변경
 							tabIndex={0}
@@ -198,7 +198,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 							type="button"
 							ref={addButtonRef}
 							tabIndex={0}
-							className="mx-[16px] mb-[16px] flex size-full h-[48px] cursor-pointer items-center justify-center rounded-[12px] border px-[47px] text-[16px] font-semibold text-text-primary hover:bg-background-quaternary focus:bg-[#475569] focus:outline-none"
+							className="mx-[16px] mb-[16px] flex size-full h-[48px] cursor-pointer items-center justify-center rounded-[12px] border px-[47px] text-[16px] font-semibold text-text-primary hover:bg-dropdown-hover focus:bg-dropdown-active focus:outline-none"
 							onClick={() => {
 								router.push("/create-team");
 							}}

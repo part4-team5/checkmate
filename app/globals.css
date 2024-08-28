@@ -48,6 +48,10 @@
 	/* todo */
 	--todo-primary: #f0f0f3;
 
+	/* dropdown */
+	--dropdown-hover: #d9d9d9;
+	--dropdown-active: #828282;
+
 	/* ------- */
 	/* Shadows */
 	/* ------- */
@@ -149,6 +153,10 @@
 
 	/* todo */
 	--todo-primary: #383a40;
+
+	/* dropdown */
+	--dropdown-hover: #414347;
+	--dropdown-active: #303236;
 
 	/* ------- */
 	/* Shadows */

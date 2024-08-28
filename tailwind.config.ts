@@ -78,6 +78,10 @@ export default {
 			todo: {
 				primary: "var(--todo-primary)",
 			},
+			dropdown: {
+				hover: "var(--dropdown-hover)",
+				active: "var(--dropdown-active)",
+			},
 			status: {
 				danger: "#EF4444",
 			},
