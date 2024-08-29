@@ -211,6 +211,11 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 		[data, setData],
 	);
 
+	useEffect(() => {
+		editor.current!.innerHTML = data;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<div className="relative flex h-full min-h-max w-full rounded-[10px] border border-white/15 bg-background-secondary drop-shadow-sm">
 			<Switch init="editor">

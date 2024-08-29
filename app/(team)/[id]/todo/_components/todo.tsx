@@ -262,7 +262,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			)}
 
 			{todoItems && (
-				<div id="my-list"  className="mt-6 rounded-lg bg-background-secondary px-3 py-2 shadow-board tablet:px-9 tablet:py-8">
+				<div id="my-list" className="mt-6 rounded-lg bg-background-secondary px-3 py-2 shadow-board tablet:px-9 tablet:py-8">
 					<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="mb-44">
 						{todoItems.map((todoItem) => (
 							<Reorder.Item
