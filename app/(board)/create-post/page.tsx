@@ -7,7 +7,6 @@ import API from "@/app/_api";
 import Quill from "@/app/_components/Quill";
 import Button from "@/app/_components/Button";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import Tour from "@/app/_utils/Tour";
 import toast from "@/app/_utils/Toast";
 
@@ -22,7 +21,6 @@ const enum Category {
 
 export default function Page() {
 	const router = useRouter();
-	const queryClient = useQueryClient();
 
 	const [image, setImage] = useState<string>();
 	const [title, setTitle] = useState<string>();
@@ -106,7 +104,6 @@ export default function Page() {
 				API["{teamId}/articles"]
 					.POST({}, { image, title: category === Category.ALL ? title! : [category, title!].join("\u0020"), content: content! })
 					.then((response) => {
-						queryClient.invalidateQueries({ queryKey: ["articles", category] });
 						router.push(`boards/${response.id}`);
 					})
 					.finally(() => {
