@@ -4,7 +4,7 @@ import InviteModel from "@/app/_utils/_models/Invite.model";
 
 function encodeBase64(uuid: string) {
 	// UUID를 Buffer로 변환한 후 Base64로 인코딩
-	return Buffer.from(uuid).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+	return Buffer.from(uuid).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_").slice(0, 8);
 }
 
 export async function POST(req: NextRequest) {
