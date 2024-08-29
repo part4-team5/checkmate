@@ -13,7 +13,8 @@ export async function DELETE(req: NextRequest) {
 		const groupId = parts[parts.indexOf("groupId") + 1]; // 경로에서 [groupId] 추출
 
 		// 유저를 ID로 찾기
-		const user = await UserModel.findById(userId);
+		const user = await UserModel.findOne({ id: userId });
+
 		if (!user) {
 			return NextResponse.json({ error: "User Not Found", message: "유저를 찾을 수 없습니다." }, { status: 404 });
 		}

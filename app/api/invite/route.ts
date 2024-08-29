@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 		}
 
 		// 이미 해당 그룹에 대한 초대장이 있는지 확인
-		const existingInvite = await InviteModel.findOne({ email: body.email, groupId: body.groupId });
+		const existingInvite = await InviteModel.exists({ email: body.email, groupId: body.groupId });
 		if (existingInvite) {
 			return NextResponse.json({ error: "Invite Already Exists", message: "이미 초대장이 존재합니다." }, { status: 400 });
 		}

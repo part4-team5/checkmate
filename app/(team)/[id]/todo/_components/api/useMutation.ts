@@ -125,6 +125,7 @@ export const useToggleTodoStatusMutation = (groupId: number, currentTaskId: numb
 			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId }] });
 			queryClient.invalidateQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 			queryClient.invalidateQueries({ queryKey: ["tasks", { taskId: currentTaskId }] });
+			queryClient.invalidateQueries({ queryKey: ["my-history"] });
 		},
 	});
 };
