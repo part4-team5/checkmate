@@ -111,7 +111,7 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 								<p className="text-center text-2xl text-text-primary">&quot;{inviteGroup?.groupName}&quot;</p>
 								<div className="pt-3" />
 
-								{groups?.memberships.find((membership) => membership.groupId === inviteGroup?.groupId) ? (
+								{groups?.memberships.find((membership) => membership.groupId === inviteGroup?.groupId && !joinTeamMutation.isSuccess) ? (
 									<div className="flex flex-col items-center justify-center">
 										<p className="text-center text-xl text-text-primary">이미 참여 중인 팀입니다.</p>
 
@@ -127,14 +127,22 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 										<p className="text-center text-xl text-text-primary">팀에서 당신을 초대했습니다.</p>
 
 										<div className="pt-8" />
-										<div className="flex h-12 items-center justify-center gap-10">
-											<Button onClick={handleAccept} fontSize="xl">
-												참여
-											</Button>
-											<Button variant="outline" fontSize="xl" onClick={handleReject}>
-												거절
-											</Button>
-										</div>
+										{!joinTeamMutation.isPending ? (
+											<div className="flex h-12 items-center justify-center">
+												<Button disabled fontSize="xl">
+													참여중...
+												</Button>
+											</div>
+										) : (
+											<div className="flex h-12 items-center justify-center gap-10">
+												<Button onClick={handleAccept} fontSize="xl">
+													참여
+												</Button>
+												<Button variant="outline" fontSize="xl" onClick={handleReject}>
+													거절
+												</Button>
+											</div>
+										)}
 									</>
 								)}
 							</div>
