@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 	try {
 		const body = await req.json();
 
-		if (await UserModel.findOne({ email: body.email })) {
+		if (await UserModel.exists({ email: body.email })) {
 			return NextResponse.json({ error: "User Already Exists", message: "이미 존재하는 유저입니다." }, { status: 400 });
 		}
 

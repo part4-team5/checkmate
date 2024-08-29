@@ -1,10 +1,21 @@
+/* eslint-disable no-await-in-loop */
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/app/_utils/dbConnect";
 import InviteModel from "@/app/_utils/_models/Invite.model";
+import crypto from "crypto";
 
-function encodeBase64(uuid: string) {
-	// UUID를 Buffer로 변환한 후 Base64로 인코딩
-	return Buffer.from(uuid).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_").slice(0, 8);
+async function generateShortKey(): Promise<string> {
+	let key: string;
+
+	do {
+		// UUID 생성
+		const uuid = crypto.randomUUID();
+
+		// SHA-256 해시 생성
+		key = crypto.createHash("sha256").update(uuid).digest("hex").slice(0, 8);
+	} while (await InviteModel.exists({ key }));
+
+	return key;
 }
 
 export async function POST(req: NextRequest) {
@@ -17,8 +28,8 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Token is required", message: "토큰이 필요합니다." }, { status: 400 });
 		}
 
-		const uuid = crypto.randomUUID();
-		const key = encodeBase64(uuid);
+		// const uuid = crypto.randomUUID();
+		const key = await generateShortKey();
 
 		// 초대 생성 및 저장
 		await InviteModel.create({
