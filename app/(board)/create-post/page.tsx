@@ -9,6 +9,7 @@ import Button from "@/app/_components/Button";
 import { useRouter } from "next/navigation";
 import Tour from "@/app/_utils/Tour";
 import toast from "@/app/_utils/Toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const [FILE_SIZE, FILE_NAME] = [1024 * 10000, /^[a-zA-Z0-9._\-\s]+\.(?:gif|png|jpe?g|webp)$/];
 
@@ -20,6 +21,8 @@ const enum Category {
 }
 
 export default function Page() {
+	const queryClient = useQueryClient();
+
 	const router = useRouter();
 
 	const [image, setImage] = useState<string>();
@@ -104,7 +107,9 @@ export default function Page() {
 				API["{teamId}/articles"]
 					.POST({}, { image, title: category === Category.ALL ? title! : [category, title!].join("\u0020"), content: content! })
 					.then((response) => {
-						router.push(`boards/${response.id}`);
+						queryClient.invalidateQueries({ queryKey: ["articles", category] }).then(() => {
+							router.push(`boards/${response.id}`);
+						});
 					})
 					.finally(() => {
 						ongoing.current = false;
