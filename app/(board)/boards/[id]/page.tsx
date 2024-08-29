@@ -116,11 +116,11 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 
 	// 저장 버튼 클릭 핸들러
 	const handleSaveClick = async () => {
-		let imageUrl = editArticleData.image ?? article?.image ?? "";
+		let imageUrl: string | null = article?.image ?? null;
 
 		if (selectedImage) {
 			const response = await imageUpload(selectedImage);
-			imageUrl = response.url ?? article?.image ?? "";
+			imageUrl = response.url ?? null;
 		}
 
 		const updatedArticle = {
@@ -129,7 +129,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 			image: imageUrl,
 		};
 
-		editArticleMutation.mutate(updatedArticle);
+		editArticleMutation.mutate(updatedArticle as { title: string; content: string; image: string });
 	};
 
 	// 좋아요 추가
@@ -196,8 +196,9 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 							<div className="mx-[30px] border-b border-solid border-border-primary py-[20px]">
 								<input
 									className="h-[48px] w-full rounded-[12px] border border-border-primary bg-background-secondary px-[24px] text-lg text-text-primary focus:outline-none"
-									value={article?.title}
+									value={editArticleData.title}
 									onChange={(e) => setEditArticleData({ ...editArticleData, title: e.target.value })}
+									type="text"
 								/>
 							</div>
 						) : (
@@ -257,7 +258,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 								</div>
 								{isEditing ? (
 									<>
-										<Quill init={article?.content} onChange={(data) => setEditArticleData({ ...editArticleData, content: data })} />
+										<Quill init={editArticleData.content} onChange={(data) => setEditArticleData({ ...editArticleData, content: data })} />
 										<input type="file" accept="image/*" onChange={handleImageChange} className="mt-4" />
 										{editArticleData.image && (
 											<Image src={editArticleData.image} alt="Selected Image" width={100} height={100} objectFit="contain" className="mt-4" />
