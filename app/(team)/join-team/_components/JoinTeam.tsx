@@ -127,7 +127,7 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 										<p className="text-center text-xl text-text-primary">팀에서 당신을 초대했습니다.</p>
 
 										<div className="pt-8" />
-										{!joinTeamMutation.isPending ? (
+										{joinTeamMutation.isPending ? (
 											<div className="flex h-12 items-center justify-center">
 												<Button disabled fontSize="xl">
 													참여중...
