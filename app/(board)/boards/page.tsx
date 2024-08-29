@@ -198,7 +198,7 @@ export default function Page() {
 								</Link>
 							))}
 							{/* eslint-disable-next-line no-nested-ternary */}
-							{new Array(isFetching ? (data ? Math.min(data.totalCount - data.pages.length, 10) : 10) : 0).fill(null).map((_, index) => (
+							{new Array(hasNextPage ? (data ? Math.min(data.totalCount - data.pages.length, 10) : 10) : 0).fill(null).map((_, index) => (
 								<div
 									// eslint-disable-next-line react/no-array-index-key
 									key={index}
@@ -244,7 +244,7 @@ export default function Page() {
 								</Link>
 							))}
 							{/* eslint-disable-next-line no-nested-ternary */}
-							{new Array(isFetching ? (data ? Math.min(data.totalCount - data.pages.length, 10) : 10) : 0).fill(null).map((_, index) => (
+							{new Array(hasNextPage ? (data ? Math.min(data.totalCount - data.pages.length, 10) : 10) : 0).fill(null).map((_, index) => (
 								<div
 									// eslint-disable-next-line react/no-array-index-key
 									key={index}

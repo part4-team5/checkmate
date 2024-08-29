@@ -94,28 +94,23 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 				position: "bottom",
 			},
 			{
-				query: "#left",
-				content: "이전 날짜로 이동할 수 있어요.",
-				position: "bottom",
-			},
-			{
-				query: "#right",
-				content: "다음 날짜로 이동할 수 있어요.",
-				position: "bottom",
-			},
-			{
 				query: "#calendar",
 				content: "원하는 날짜를 선택할 수 있는 달력이 있어요.",
-				position: "bottom",
+				position: "right",
 			},
 			{
 				query: "#addTaskButton",
 				content: "새로운 할 일 목록을 추가할 수 있어요.",
-				position: "bottom",
+				position: "left",
 			},
 			{
 				query: "#tasks",
 				content: "할 일 목록을 선택할 수 있어요.",
+				position: "bottom",
+			},
+			{
+				query: "#my-list",
+				content: "Drag & Drop 으로 순서를 변경할 수 있어요",
 				position: "bottom",
 			},
 			{
@@ -267,7 +262,7 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			)}
 
 			{todoItems && (
-				<div className="mt-6 rounded-lg bg-background-secondary px-3 py-2 shadow-board tablet:px-9 tablet:py-8">
+				<div id="my-list" className="mt-6 rounded-lg bg-background-secondary px-3 py-2 shadow-board tablet:px-9 tablet:py-8">
 					<Reorder.Group values={todoItems} onReorder={(e) => handleReorder(e)} className="mb-44">
 						{todoItems.map((todoItem) => (
 							<Reorder.Item
