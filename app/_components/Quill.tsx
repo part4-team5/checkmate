@@ -290,7 +290,7 @@ export default function Quill({ init, placeholder, onChange }: EditorProps) {
 										// fuck off
 										event.preventDefault();
 										// get raw data
-										const raw = event.clipboardData.getData("Text");
+										const raw = event.clipboardData.getData("Text").replace(/https?:\/\/[^\s/$.?#].[^\s]*/g, (url) => `![](${url})`);
 										// inset raw data
 										document.execCommand("insertHTML", false, raw.replace(/\r?\n/g, "<br>"));
 									}}
