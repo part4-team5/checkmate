@@ -107,7 +107,7 @@ export default function Page() {
 				API["{teamId}/articles"]
 					.POST({}, { image, title: category === Category.ALL ? title! : [category, title!].join("\u0020"), content: content! })
 					.then((response) => {
-						queryClient.invalidateQueries({ queryKey: ["articles", category] }).then(() => {
+						queryClient.invalidateQueries({ queryKey: ["articles"] }).then(() => {
 							router.push(`boards/${response.id}`);
 						});
 					})
