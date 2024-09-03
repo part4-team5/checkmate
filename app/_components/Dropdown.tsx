@@ -5,15 +5,12 @@
 
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import KebabIcon from "@/public/icons/KebabIcon";
 import Popover from "./Popover";
 
-/**
- * 드롭다운 옵션을 정의하는 타입
- */
 type Option = {
 	text?: string;
 	onClick?: () => void;
@@ -29,53 +26,57 @@ export interface DropDownProps {
 	align?: "LR" | "CC" | "RL" | "LL" | "RR";
 	gapX?: number;
 	gapY?: number;
-	groupId?: string; // groupId 추가
+	groupId?: string;
 }
 
 export default function DropDown({ options, children, align = "LR", gapX = 0, gapY = 0, groupId }: DropDownProps) {
 	const menuRefs = useRef<HTMLDivElement[]>([]); // 메뉴 항목 참조 배열
 	const addButtonRef = useRef<HTMLButtonElement>(null); // 팀 추가 버튼 참조
+	const dropdownButtonRef = useRef<HTMLDivElement>(null); // 드롭다운 버튼 참조
 	const router = useRouter();
 	const { id: currentGroupId } = useParams(); // 현재 그룹 ID 가져오기
-
-	// groupId가 전달되지 않으면 currentGroupId를 사용
 	const currentId = groupId || currentGroupId;
 
-	// 키보드 이동 기능 추가
-	useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
-			const currentIndex = menuRefs.current.findIndex((ref) => ref === document.activeElement);
-
-			if (event.key === "ArrowDown") {
-				// 아래로 이동
-				event.preventDefault();
-				if (currentIndex === menuRefs.current.length - 1) {
-					addButtonRef.current?.focus(); // 마지막 메뉴에서 버튼으로 이동
-				} else {
-					const nextIndex = (currentIndex + 1) % menuRefs.current.length;
-					menuRefs.current[nextIndex]?.focus();
-				}
-			} else if (event.key === "ArrowUp") {
-				// 위로 이동
-				event.preventDefault();
-				if (document.activeElement === addButtonRef.current) {
-					menuRefs.current[menuRefs.current.length - 1]?.focus(); // 버튼에서 마지막 메뉴로 이동
-				} else {
-					const prevIndex = (currentIndex - 1 + menuRefs.current.length) % menuRefs.current.length;
-					menuRefs.current[prevIndex]?.focus();
-				}
-			} else if (event.key === "Escape") {
-				// Escape 키로 메뉴 닫기
-				event.preventDefault();
-				menuRefs.current[currentIndex]?.blur();
+	// 키보드 이동 및 선택 기능 추가
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, index: number) => {
+		if (event.key === "ArrowDown") {
+			event.preventDefault();
+			if (index === menuRefs.current.length - 1) {
+				addButtonRef.current?.focus(); // 마지막 항목에서 버튼으로 이동
+			} else {
+				const nextIndex = index + 1;
+				menuRefs.current[nextIndex]?.focus();
 			}
-		};
+		} else if (event.key === "ArrowUp") {
+			event.preventDefault();
+			if (document.activeElement === addButtonRef.current) {
+				menuRefs.current[menuRefs.current.length - 1]?.focus(); // 버튼에서 마지막 항목으로 이동
+			} else {
+				const prevIndex = index === 0 ? menuRefs.current.length - 1 : index - 1;
+				menuRefs.current[prevIndex]?.focus();
+			}
+		} else if (event.key === "Enter") {
+			event.preventDefault();
+			menuRefs.current[index]?.click();
+		}
+	};
 
-		document.addEventListener("keydown", handleKeyDown);
-		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
-		};
-	}, []);
+	const handleButtonKeyDown = (event: React.KeyboardEvent) => {
+		if (event.key === "ArrowDown") {
+			event.preventDefault();
+			if (menuRefs.current.length > 0) {
+				menuRefs.current[0]?.focus(); // 첫 번째 항목으로 포커스 이동
+			}
+		}
+	};
+
+	const handleFocus = (index: number) => {
+		menuRefs.current[index]?.addEventListener("keydown", (event) => handleKeyDown(event as any, index));
+	};
+
+	const handleBlur = (index: number) => {
+		menuRefs.current[index]?.removeEventListener("keydown", (event) => handleKeyDown(event as any, index));
+	};
 
 	function handleOptionClick(e: React.MouseEvent, onClick?: () => void, close?: () => void) {
 		if (onClick) {
@@ -146,18 +147,23 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 		return (
 			<div className="flex w-max min-w-[120px] flex-col rounded-[12px] border border-white border-opacity-5 bg-background-secondary shadow-teamDropdown">
 				<div
-					className={`flex max-h-[308px] flex-col overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary ${items.some((option) => option.image) ? "mt-2 space-y-2 p-[16px]" : ""}`}
+					className={`flex max-h-[308px] flex-col overflow-y-auto scrollbar:w-2 scrollbar:bg-background-primary scrollbar-thumb:bg-background-tertiary ${
+						items.some((option) => option.image) ? "mt-2 space-y-2 p-[16px]" : ""
+					}`}
 				>
 					{items.map((option, index) => (
 						<div
 							key={`${option.text} ${index}` || index}
 							className={`flex size-full h-[46px] cursor-pointer items-center rounded-[8px] hover:bg-dropdown-hover focus:bg-dropdown-active focus:outline-none ${
 								option.groupId === currentId && currentId ? "bg-background-quaternary" : "bg-background-secondary"
-							}`} // 배경색 변경
-							tabIndex={0}
+							}`}
+							tabIndex={-1}
 							ref={(el) => {
 								menuRefs.current[index] = el!; // index에 DOM 요소 참조를 저장
 							}}
+							onFocus={() => handleFocus(index)} // 포커스가 잡히면 이벤트 리스너 추가
+							onBlur={() => handleBlur(index)} // 포커스를 잃으면 이벤트 리스너 제거
+							onKeyDown={(event) => handleKeyDown(event, index)}
 							onClick={(e) => handleOptionClick(e, option.onClick, close)}
 						>
 							<div className={`flex size-full items-center ${option.image ? "justify-start" : "justify-center"} gap-[12px]`}>
@@ -190,8 +196,6 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 						</div>
 					))}
 				</div>
-
-				{/* 배열의 끝에 이미지를 가진 옵션이 있을 경우, 스크롤 영역 바깥에 추가 버튼을 렌더링 */}
 				{items.some((option) => option.image) && (
 					<div className="flex size-full items-center justify-center gap-[12px]">
 						<button
@@ -214,7 +218,14 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 	return (
 		<div className="flex" onMouseUp={(event) => event.stopPropagation()} onMouseDown={(event) => event.stopPropagation()}>
 			<Popover overlay={(close) => (options.length > 0 ? recursive(options, close) : renderEmptyState())} {...getPopoverOrigins()} gapX={gapX} gapY={gapY}>
-				<div className="cursor-pointer">{children}</div>
+				<div
+					className="cursor-pointer"
+					ref={dropdownButtonRef}
+					tabIndex={0} // 드롭다운 버튼에 포커스가 가도록 설정
+					onKeyDown={handleButtonKeyDown} // 드롭다운 버튼에서 화살표 키 이벤트 처리
+				>
+					{children}
+				</div>
 			</Popover>
 		</div>
 	);
