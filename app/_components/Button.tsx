@@ -73,7 +73,7 @@ export default function Button({
 
 	btnVariant += fontSize === "xl" ? " text-xl" : fontSize === "md" ? " text-md" : " text-lg";
 
-	const btnStyle = `${btnVariant} py-2 px-4 transition-all duration-150 size-full`;
+	const btnStyle = `${btnVariant} py-2 transition-all duration-150 size-full`;
 
 	const MotionLink = motion(Link);
 
