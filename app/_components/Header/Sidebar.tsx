@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -19,8 +17,8 @@ interface SidebarProps {
 
 export default function Sidebar({ isSidebarOpened, isTeamOpened, setIsTeamOpened, sideBarClose, user, accessToken }: SidebarProps) {
 	return (
-		<div className={`fixed inset-0 left-0 top-[60px] z-30 cursor-default tablet:hidden ${isSidebarOpened ? "block" : "hidden"}`} onClick={sideBarClose}>
-			<div className="z-40 h-full bg-background-secondary px-4 py-5 pr-5" onClick={(event) => event.stopPropagation()}>
+		<div className={`fixed inset-0 left-0 top-[60px] z-30 cursor-default tablet:hidden ${isSidebarOpened ? "block" : "hidden"}`}>
+			<div className="z-40 h-full bg-background-secondary px-4 py-5 pr-5">
 				<Link
 					href="/get-started"
 					className={`flex flex-col items-center justify-center rounded-md text-[18px] font-medium hover:bg-background-tertiary ${accessToken ? "flex" : "hidden"}`}
