@@ -6,7 +6,24 @@ export async function GET() {
 	await dbConnect();
 
 	try {
-		const users = await UserModel.find().populate("invite");
+		const users = await UserModel.aggregate([
+			{
+				$lookup: {
+					from: "invites",
+					localField: "invite",
+					foreignField: "_id",
+					as: "invite",
+				},
+			},
+			{
+				$lookup: {
+					from: "groups",
+					localField: "groups",
+					foreignField: "_id",
+					as: "groups",
+				},
+			},
+		]);
 
 		return NextResponse.json(users, { status: 200 });
 	} catch (error) {

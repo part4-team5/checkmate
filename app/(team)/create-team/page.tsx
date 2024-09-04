@@ -24,6 +24,22 @@ export default function CreateTeamPage() {
 		return API["{teamId}/images/upload"].POST({}, file);
 	};
 
+	const createTeamMongoMutation = useMutation<{}, Error, { id: number; name: string; image?: string }>({
+		mutationFn: async (data) => {
+			const user = queryClient.getQueryData<{ id: number; email: string }>(["user"]);
+
+			return API["api/group"].POST(
+				{},
+				{
+					groupId: data.id,
+					name: data.name,
+					image: data.image,
+					members: [{ userId: user?.id as number, userEmail: user?.email as string }],
+				},
+			);
+		},
+	});
+
 	const createTeamMutation = useMutation<Awaited<ReturnType<(typeof API)["{teamId}/groups"]["POST"]>>, Error, FormContext>({
 		mutationFn: async (ctx: FormContext): Promise<Awaited<ReturnType<(typeof API)["{teamId}/groups"]["POST"]>>> => {
 			const file = ctx.values.profileImage as File;
@@ -39,10 +55,8 @@ export default function CreateTeamPage() {
 			return API["{teamId}/groups"].POST({}, payload);
 		},
 		onSuccess: (data) => {
-			const user = queryClient.getQueryData<{ id: number }>(["user"]) ?? { id: 0 };
-
-			// 몽고 DB에서 사용자 그룹 정보 업데이트
-			API["api/users/{id}"].PATCH({ id: user.id }, { groupId: data.id });
+			// 몽고 DB에서 그룹 정보 업데이트
+			createTeamMongoMutation.mutate(data);
 
 			toast.success("팀이 생성되었습니다.");
 

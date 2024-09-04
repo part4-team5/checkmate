@@ -1,6 +1,7 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 
+import GroupModel from "@/app/_utils/_models/Group.model";
 import InviteModel from "@/app/_utils/_models/Invite.model";
 import Token from "@/app/_utils/Token";
 
@@ -1098,7 +1099,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 유저 정보
 		 */
 		public override GET({ ...query }) {
-			return API.GET<{ id: number; email: string; groups: { groupId: number }[]; invite: InviteType[] }>(MIME.JSON, `${SITE_URL}/api/users`, query);
+			return API.GET<MongoUser>(MIME.JSON, `${SITE_URL}/api/users`, query);
 		}
 
 		/**
@@ -1109,7 +1110,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 추가된 유저 정보
 		 */
 		public override POST({ ...query }, body: { id: number; email: string }) {
-			return API.POST<{ id: number; email: string; groups: { groupId: number }[]; invite: InviteType[] }>(MIME.JSON, `${SITE_URL}/api/users`, query, body);
+			return API.POST<MongoUser>(MIME.JSON, `${SITE_URL}/api/users`, query, body);
 		}
 	})();
 
@@ -1117,23 +1118,6 @@ export default abstract class API {
 	 * 몽고 DB 유저 정보 수정, 삭제 API
 	 */
 	public static readonly ["api/users/{id}"] = new (class extends API {
-		/**
-		 * 몽고 DB 유저 정보 수정
-		 * @param {Object}
-		 * @param {number} id - 유저 ID
-		 * @param {Object} query - 쿼리 파라미터
-		 * @param {Object} body - 수정할 유저 정보
-		 * @returns {Promise<Object>} - 수정된 유저 정보
-		 */
-		public override PATCH({ id, ...query }: { id: number }, body: { groupId: number }) {
-			return API.PATCH<{ id: number; email: string; groups: { groupId: number }[]; invite: InviteType[] }>(
-				MIME.JSON,
-				`${SITE_URL}/api/users/${id}`,
-				query,
-				body,
-			);
-		}
-
 		/**
 		 * 몽고 DB 유저 정보 삭제
 		 * @param {Object}
@@ -1174,8 +1158,8 @@ export default abstract class API {
 		 * @param {Object} body - 추가할 초대 정보
 		 * @returns {Promise<Object>} - 추가된 초대 정보
 		 */
-		public override POST({ ...query }, body: { email: string; groupId: number; groupName: string; groupImage?: string; token: string }) {
-			return API.POST<InstanceType<typeof InviteModel>>(MIME.JSON, `${SITE_URL}/api/invite`, query, body);
+		public override POST({ ...query }, body: { email: string; groupId: number; groupName: string; groupImage?: string; token: string; key?: string }) {
+			return API.POST<InviteType>(MIME.JSON, `${SITE_URL}/api/invite`, query, body);
 		}
 	})();
 
@@ -1191,7 +1175,7 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 초대 정보
 		 */
 		public override GET({ id, ...query }: { id: number }) {
-			return API.GET<InstanceType<typeof InviteModel>[]>(MIME.JSON, `${SITE_URL}/api/invite/${id}`, query);
+			return API.GET<InviteType[]>(MIME.JSON, `${SITE_URL}/api/invite/${id}`, query);
 		}
 	})();
 
@@ -1240,7 +1224,42 @@ export default abstract class API {
 		 * @returns {Promise<Object>} - 초대 정보
 		 */
 		public override GET({ key, ...query }: { key: string }) {
-			return API.GET<InstanceType<typeof InviteModel>>(MIME.JSON, `${SITE_URL}/api/invite/link/${key}`, query);
+			return API.GET<InviteType>(MIME.JSON, `${SITE_URL}/api/invite/link/${key}`, query);
+		}
+	})();
+
+	public static readonly ["api/group"] = new (class extends API {
+		/**
+		 * 그룹 정보 확인
+		 * @param {Object}
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 그룹 정보
+		 */
+		public override POST({ ...query }, body: { groupId: number; name: string; image?: string; members: { userId: number; userEmail: string }[] }) {
+			return API.POST<GroupType[]>(MIME.JSON, `${SITE_URL}/api/group`, query, body);
+		}
+	})();
+
+	public static readonly ["api/group/{groupId}"] = new (class extends API {
+		/**
+		 * 그룹 정보 확인
+		 * @param {Object}
+		 * @param {number} groupId - 그룹 ID
+		 * @param {Object} query - 쿼리 파라미터
+		 * @returns {Promise<Object>} - 그룹 정보
+		 */
+		public override POST({ groupId, ...query }: { groupId: number }, body: { userId: number; userEmail: string }) {
+			return API.POST<GroupType>(MIME.JSON, `${SITE_URL}/api/group/${groupId}`, query, body);
+		}
+
+		public override DELETE({ groupId, ...query }: { groupId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/group/${groupId}`, query);
+		}
+	})();
+
+	public static readonly ["api/group/{groupId}/userId/{userId}"] = new (class extends API {
+		public override DELETE({ groupId, userId, ...query }: { groupId: number; userId: number }) {
+			return API.DELETE<{}>(MIME.JSON, `${SITE_URL}/api/group/${groupId}/userId/${userId}`, query);
 		}
 	})();
 }
@@ -1436,3 +1455,11 @@ interface CursorBasedPaginationResponse<T> {
 }
 
 type InviteType = InstanceType<typeof InviteModel>;
+type GroupType = InstanceType<typeof GroupModel>;
+
+interface MongoUser {
+	id: number;
+	email: string;
+	groups: GroupType[];
+	invite: InviteType[];
+}

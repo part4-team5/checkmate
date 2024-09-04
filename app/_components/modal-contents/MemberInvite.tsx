@@ -2,7 +2,6 @@ import ModalWrapper from "@/app/_components/modal-contents/Modal";
 import Form from "@/app/_components/Form";
 import API from "@/app/_api";
 import { useMutation } from "@tanstack/react-query";
-import useAuthStore from "@/app/_store/useAuthStore";
 import Icon from "@/app/_icons";
 import toast from "@/app/_utils/Toast";
 import Button from "@/app/_components/Button";
@@ -15,8 +14,6 @@ type MemberInviteProps = {
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
 export default function MemberInvite({ close, onCopy, groupId }: MemberInviteProps): JSX.Element {
-	const { user } = useAuthStore.getState();
-
 	const inviteMemberMutation = useMutation<Awaited<ReturnType<(typeof API)["api/invite/{id}"]["POST"]>>, Error, FormContext>({
 		mutationFn: async (ctx: FormContext) => {
 			const [token, group] = await Promise.all([API["{teamId}/groups/{id}/invitation"].GET({ id: groupId }), API["{teamId}/groups/{id}"].GET({ id: groupId })]);
@@ -29,7 +26,7 @@ export default function MemberInvite({ close, onCopy, groupId }: MemberInvitePro
 				token,
 			};
 
-			const response = await API["api/invite"].POST({ id: Number(user?.id) }, payload);
+			const response = await API["api/invite"].POST({}, payload);
 
 			return response;
 		},

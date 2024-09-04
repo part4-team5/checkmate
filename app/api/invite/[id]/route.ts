@@ -16,13 +16,13 @@ export async function GET(req: NextRequest) {
 			return NextResponse.json({ error: "User not found", message: "유저를 찾을 수 없습니다." }, { status: 404 });
 		}
 
-		const invite = await InviteModel.find({ email: user.email });
+		const invites = await InviteModel.find({ email: user.email });
 
-		if (!invite) {
+		if (invites.length === 0) {
 			return NextResponse.json({ error: "Invite not found", message: "초대장을 찾을 수 없습니다." }, { status: 404 });
 		}
 
-		return NextResponse.json(invite, { status: 200 });
+		return NextResponse.json(invites, { status: 200 });
 	} catch (error) {
 		return NextResponse.json({ error: "Server Error", message: "서버 에러" }, { status: 500 });
 	}
