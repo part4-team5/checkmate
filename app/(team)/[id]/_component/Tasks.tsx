@@ -274,7 +274,7 @@ export default function Tasks({ id }: { id: number }) {
 	}, [isLoading]);
 
 	return (
-		<main>
+		<section>
 			<section className="mt-[24px] flex max-h-[425px] w-full justify-between text-text-primary tablet:w-full">
 				<div className="flex justify-between gap-[8px]">
 					<p className="text-[16px] font-semibold">할 일 목록</p>
@@ -318,6 +318,6 @@ export default function Tasks({ id }: { id: number }) {
 					</Reorder.Group>
 				)}
 			</section>
-		</main>
+		</section>
 	);
 }

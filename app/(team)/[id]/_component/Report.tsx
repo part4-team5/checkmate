@@ -49,7 +49,7 @@ function Report({ id }: ReportProps) {
 	const percent = totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
 
 	return (
-		<main className="report-me mt-[24px] w-full text-text-primary desktop:w-[383px]">
+		<section className="report-me mt-[24px] w-full text-text-primary desktop:w-[383px]">
 			<p className="mb-[16px] text-[16px] font-semibold text-text-primary">리포트</p>
 			<div className="flex w-full flex-col items-center justify-between rounded-[12px]">
 				<section className="flex h-[217px] w-full items-center justify-center gap-[45px] rounded-[12px] bg-background-tertiary shadow-teamCard">
@@ -80,7 +80,7 @@ function Report({ id }: ReportProps) {
 					</div>
 				</section>
 			</div>
-		</main>
+		</section>
 	);
 }
 

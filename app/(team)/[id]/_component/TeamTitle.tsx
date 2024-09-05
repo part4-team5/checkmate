@@ -96,7 +96,7 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 		);
 
 	return (
-		<main>
+		<section>
 			<section className="mt-[24px] flex h-[64px] w-full items-center justify-between rounded-[12px] bg-background-tertiary px-[24px] py-[20px] shadow-teamCard">
 				<p className="text-[20px] font-bold text-text-primary">{teamName}</p>
 				{isAdmin && (
@@ -105,6 +105,6 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 					</DropDown>
 				)}
 			</section>
-		</main>
+		</section>
 	);
 }

@@ -94,7 +94,7 @@ function Members({ id }: ReportProps) {
 	const isAdmin = user?.memberships.some((membership) => membership.groupId === id && membership.role === "ADMIN");
 
 	return (
-		<main className="mt-[48px] text-text-primary">
+		<section className="mt-[48px] text-text-primary">
 			<section className="flex justify-between">
 				<div className="flex gap-[8px]">
 					<p className="text-[16px] font-medium">멤버</p>
@@ -151,7 +151,7 @@ function Members({ id }: ReportProps) {
 					})}
 				</div>
 			</section>
-		</main>
+		</section>
 	);
 }
 
