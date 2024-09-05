@@ -14,10 +14,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "@/app/_utils/Toast";
 import dynamic from "next/dynamic";
 
+import { useGroupInfo, useDeleteTaskList, useReorderTaskLists, TaskListType } from "./useTaskList";
+
 const PostEditTasks = dynamic(() => import("@/app/_components/modal-contents/PostEditTasks"), {});
 const DeleteModal = dynamic(() => import("@/app/_components/modal-contents/DeleteModal"), {});
-
-import { useGroupInfo, useDeleteTaskList, useReorderTaskLists, TaskListType } from "./useTaskList";
 
 function TaskItem({
 	taskList,
