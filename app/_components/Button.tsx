@@ -1,7 +1,4 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable react/button-has-type */
-/* eslint-disable indent */
-/* eslint-disable react/require-default-props */
 
 "use client";
 
@@ -26,15 +23,25 @@ export interface ButtonProps extends PropsWithChildren {
  * @param {ButtonProps} props - 버튼 컴포넌트의 속성들.
  * @param {*} props.children - 버튼 내부에 표시될 내용.
  * @param {("primary" | "secondary" | "white" | "outline" | "danger")} [props.variant="primary"] - 버튼의 종류.
- * @param {("lg" | "md")} [props.fontSize="lg"] - 버튼 텍스트의 폰트 크기.
+ * @param {("lg" | "md" | "xl")} [props.fontSize="lg"] - 버튼 텍스트의 폰트 크기.
  * @param {("full" | "xl")} [props.rounded="xl"] - 버튼의 테두리 반경.
  * @param {string} [props.href] - 버튼이 링크로 사용될 경우의 URL.
  * @param {("button" | "submit" | "reset")} [props.type="button"] - 버튼의 타입.
- * @param {(e: MouseEvent<HTMLButtonElement>) => void} [props.onClick=() => {}] - 버튼 클릭 이벤트 핸들러.
+ * @param {(e: MouseEvent<HTMLButtonElement>) => void} [props.onClick] - 버튼 클릭 이벤트 핸들러.
  * @param {boolean} [props.disabled=false] - 버튼 비활성화 여부.
  * @returns {JSX.Element} 주어진 속성에 따라 스타일링된 버튼 또는 링크 엘리먼트를 반환합니다.
  */
-export default function Button({ id, children, variant = "primary", fontSize = "lg", rounded = "xl", href, type = "button", onClick, disabled }: ButtonProps) {
+export default function Button({
+	id,
+	children,
+	variant = "primary",
+	fontSize = "lg",
+	rounded = "xl",
+	href,
+	type = "button",
+	onClick,
+	disabled = false,
+}: ButtonProps) {
 	let btnVariant = "";
 
 	switch (variant) {
@@ -62,55 +69,25 @@ export default function Button({ id, children, variant = "primary", fontSize = "
 			break;
 	}
 
-	switch (rounded) {
-		case "full":
-			btnVariant += " rounded-full ";
-			break;
-		case "xl":
-			btnVariant += " rounded-xl ";
-			break;
-		default:
-			btnVariant += " rounded-full ";
-			break;
-	}
+	btnVariant += rounded === "full" ? " rounded-full" : " rounded-xl";
 
-	switch (fontSize) {
-		case "lg":
-			btnVariant += " text-lg ";
-			break;
-		case "xl":
-			btnVariant += " text-xl ";
-			break;
-		case "md":
-			btnVariant += " text-md ";
-			break;
-		default:
-			btnVariant += " text-lg ";
-			break;
-	}
+	btnVariant += fontSize === "xl" ? " text-xl" : fontSize === "md" ? " text-md" : " text-lg";
 
-	const btnStyle = `${btnVariant} size-full py-[6px] `;
+	const btnStyle = `${btnVariant} py-2 transition-all duration-150 size-full`;
 
-	const MotionButton = motion.button;
 	const MotionLink = motion(Link);
-
-	const buttonAnimation = {
-		whileTap: {
-			scale: 0.8,
-		},
-	};
 
 	if (href) {
 		return (
-			<MotionLink id={id} className={`${btnStyle}`} href={href} whileTap={buttonAnimation.whileTap}>
+			<MotionLink id={id} className={btnStyle} href={href} whileTap={{ scale: 0.8 }}>
 				{children}
 			</MotionLink>
 		);
 	}
 
 	return (
-		<MotionButton id={id} type={type} className={`${btnStyle}`} onClick={onClick} disabled={disabled} whileTap={buttonAnimation.whileTap}>
+		<motion.button id={id} type={type} className={btnStyle} onClick={onClick} disabled={disabled} whileTap={{ scale: 0.8 }}>
 			{children}
-		</MotionButton>
+		</motion.button>
 	);
 }

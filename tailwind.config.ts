@@ -143,6 +143,7 @@ export default {
 	content: ["./pages/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}", "./stories/**/*.{js,ts,jsx,tsx}"],
 	plugins: [
 		plugin(({ addUtilities, addVariant }) => {
+			// 스크롤바 숨김
 			addUtilities({
 				".scrollbar-hide": {
 					"scrollbar-width": "none",
@@ -152,8 +153,44 @@ export default {
 					},
 				},
 			});
+
+			// 스크롤바 커스텀
 			addVariant("scrollbar", "&::-webkit-scrollbar");
 			addVariant("scrollbar-thumb", "&::-webkit-scrollbar-thumb");
+
+			// 애니메이션 효과
+			addUtilities({
+				".animate-fade-shake": {
+					animation: "fadeIn 0.3s ease-in-out forwards, shake 0.3s ease-in-out 0.3s forwards",
+				},
+
+				".animate-fade-in": {
+					animation: "fadeIn 0.3s ease-in-out forwards",
+				},
+
+				"@keyframes fadeIn": {
+					"0%": {
+						opacity: "0",
+						transform: "translateY(-20px)",
+					},
+					"100%": {
+						opacity: "1",
+						transform: "translateY(0)",
+					},
+				},
+
+				"@keyframes shake": {
+					"0%, 100%": {
+						transform: "translateX(0)",
+					},
+					"20%, 60%": {
+						transform: "translateX(-5px)",
+					},
+					"40%, 80%": {
+						transform: "translateX(5px)",
+					},
+				},
+			});
 		}),
 	],
 };

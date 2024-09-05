@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
 import useToastStore from "@/app/_store/toastStore";
 import Icon from "@/app/_icons";
 import { useShallow } from "zustand/react/shallow";
@@ -16,30 +15,12 @@ function Toaster() {
 	const animation = (type: string) => {
 		switch (type) {
 			case "error":
-				return {
-					initial: { opacity: 0, y: -20 },
-					animate: {
-						opacity: 1,
-						y: 0,
-						x: [0, -10, 10, -10, 10, -10, 10, 0],
-						transition: { duration: 0.6, ease: "easeInOut" },
-					},
-					exit: { opacity: 0, y: -20 },
-				};
+				return "animate-fade-shake";
 			case "success":
 			case "info":
 			case "warning":
-				return {
-					initial: { opacity: 0, y: -20 },
-					animate: { opacity: 1, y: 0 },
-					exit: { opacity: 0, y: -20 },
-				};
 			default:
-				return {
-					initial: { opacity: 0, y: -20 },
-					animate: { opacity: 1, y: 0 },
-					exit: { opacity: 0, y: -20 },
-				};
+				return "animate-fade-in";
 		}
 	};
 
@@ -78,24 +59,19 @@ function Toaster() {
 
 	return (
 		<div className="fixed right-1/2 top-10 z-[100] flex w-max translate-x-1/2 flex-col items-center justify-center space-y-2 transition-all">
-			<AnimatePresence>
-				{toasts.map((toast) => (
-					<motion.div
-						key={toast.id}
-						initial={animation(toast.type).initial}
-						animate={animation(toast.type).animate}
-						exit={animation(toast.type).exit}
-						transition={{ duration: 0.3 }}
-						onClick={() => removeToast(toast.id)}
-						className="shadow-lg w-fit cursor-pointer justify-end rounded-lg bg-background-primary p-4 text-lg font-medium text-text-primary"
-					>
-						<div className="flex items-center justify-between gap-2">
-							{icon(toast.type)}
-							<div>{toast.message}</div>
-						</div>
-					</motion.div>
-				))}
-			</AnimatePresence>
+			{toasts.map((toast) => (
+				<button
+					type="button"
+					key={toast.id}
+					onClick={() => removeToast(toast.id)}
+					className={`shadow-lg w-fit cursor-pointer justify-end rounded-lg bg-background-primary p-4 text-lg font-medium text-text-primary transition-all ${animation(toast.type)}`}
+				>
+					<div className="flex items-center justify-between gap-2">
+						{icon(toast.type)}
+						<div>{toast.message}</div>
+					</div>
+				</button>
+			))}
 		</div>
 	);
 }
