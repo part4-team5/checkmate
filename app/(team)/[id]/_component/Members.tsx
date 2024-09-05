@@ -14,9 +14,9 @@ import MemberInvite from "@/app/_components/modal-contents/MemberInvite";
 import MemberProfile from "@/app/_components/modal-contents/MemberProfile";
 import toast from "@/app/_utils/Toast";
 import DropDown from "@/app/_components/Dropdown";
-import { ReportProps } from "./Report";
 import Icon from "@/app/_icons";
 import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
+import { ReportProps } from "./Report";
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
 
@@ -66,11 +66,15 @@ function Members({ id }: ReportProps) {
 		if (invitationToken) {
 			const invitationUrl = await API["api/invite/link"].POST(
 				{},
-				{ groupId: id, groupName: data?.name as string, groupImage: data?.image, token: invitationToken },
+				{
+					groupId: id,
+					groupName: data?.name as string,
+					groupImage: data?.image,
+					token: invitationToken,
+				},
 			);
 
 			await navigator.clipboard.writeText(invitationUrl.shortURL);
-
 			toast.success("초대 링크가 복사되었습니다!");
 		}
 	};
