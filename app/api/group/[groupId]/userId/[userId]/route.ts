@@ -14,7 +14,7 @@ export async function DELETE(req: NextRequest) {
 	const userId = parts[parts.indexOf("userId") + 1];
 
 	try {
-		const group = await GroupModel.findOne({ groupId });
+		const group = await GroupModel.findOne({ groupId }).lean().exec();
 		if (!group) {
 			return NextResponse.json({ error: "Group Not Found", message: "그룹을 찾을 수 없습니다." }, { status: 404 });
 		}

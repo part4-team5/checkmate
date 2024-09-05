@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
 		const createGroup = await GroupModel.create(body);
 
-		const user = await UserModel.findOne({ email: body.members[0].userEmail });
+		const user = await UserModel.findOne({ email: body.members[0].userEmail }).lean().exec();
 		if (!user) {
 			return NextResponse.json({ error: "User Not Found", message: "유저를 찾을 수 없습니다." }, { status: 404 });
 		}

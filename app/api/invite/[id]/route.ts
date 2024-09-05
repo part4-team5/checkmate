@@ -10,17 +10,13 @@ export async function GET(req: NextRequest) {
 	const id = url.pathname.split("/").pop();
 
 	try {
-		const user = await UserModel.findOne({ id });
+		const user = await UserModel.findOne({ id }).lean().exec();
 
 		if (!user) {
 			return NextResponse.json({ error: "User not found", message: "유저를 찾을 수 없습니다." }, { status: 404 });
 		}
 
-		const invites = await InviteModel.find({ email: user.email });
-
-		if (invites.length === 0) {
-			return NextResponse.json({ error: "Invite not found", message: "초대장을 찾을 수 없습니다." }, { status: 404 });
-		}
+		const invites = await InviteModel.find({ email: user.email }).lean().exec();
 
 		return NextResponse.json(invites, { status: 200 });
 	} catch (error) {
