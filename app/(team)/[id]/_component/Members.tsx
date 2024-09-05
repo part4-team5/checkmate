@@ -116,12 +116,14 @@ function Members({ id }: ReportProps) {
 			<section className="mt-[24px]">
 				<div className="grid grid-cols-2 gap-[22px] text-[14px] font-medium tablet:grid-cols-3">
 					{members.map((member) => {
+						const isCurrentUser = user?.id === member.userId;
+
 						const memberEdit = [
 							{
 								text: "이메일 복사하기",
 								onClick: () => handleProfileModal(member),
 							},
-							...(member.role !== "ADMIN"
+							...(isAdmin || isCurrentUser
 								? [
 										{
 											text: "멤버 삭제하기",
