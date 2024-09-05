@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 		const body = await req.json();
 		const { userId, userEmail } = body;
 
-		const group = await GroupModel.findOne({ groupId }).lean();
+		const group = await GroupModel.findOne({ groupId }).lean().exec();
 		if (!group) {
 			return NextResponse.json({ error: "Group Not Found", message: "그룹을 찾을 수 없습니다." }, { status: 404 });
 		}
