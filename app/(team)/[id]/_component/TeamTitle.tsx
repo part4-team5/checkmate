@@ -3,13 +3,15 @@
 import { useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
 import API from "@/app/_api";
 import DropDown from "@/app/_components/Dropdown";
 import useOverlay from "@/app/_hooks/useOverlay";
-import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import Icon from "@/app/_icons";
-import TeamEdit from "@/app/_components/modal-contents/TeamEdit";
 import toast from "@/app/_utils/Toast";
+
+const DeleteModal = dynamic(() => import("@/app/_components/modal-contents/DeleteModal"), {});
+const TeamEdit = dynamic(() => import("@/app/_components/modal-contents/TeamEdit"), {});
 
 type TeamTitleProps = {
 	id: number;
@@ -96,7 +98,7 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 		);
 
 	return (
-		<main>
+		<section>
 			<section className="mt-[24px] flex h-[64px] w-full items-center justify-between rounded-[12px] bg-background-tertiary px-[24px] py-[20px] shadow-teamCard">
 				<p className="text-[20px] font-bold text-text-primary">{teamName}</p>
 				{isAdmin && (
@@ -105,6 +107,6 @@ export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
 					</DropDown>
 				)}
 			</section>
-		</main>
+		</section>
 	);
 }

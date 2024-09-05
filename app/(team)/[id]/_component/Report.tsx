@@ -49,7 +49,7 @@ function Report({ id }: ReportProps) {
 	const percent = totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
 
 	return (
-		<main className="report-me mt-[24px] w-full text-text-primary tablet:w-[383px]">
+		<section className="report-me mt-[24px] w-full text-text-primary desktop:w-[383px]">
 			<p className="mb-[16px] text-[16px] font-semibold text-text-primary">리포트</p>
 			<div className="flex w-full flex-col items-center justify-between rounded-[12px]">
 				<section className="flex h-[217px] w-full items-center justify-center gap-[45px] rounded-[12px] bg-background-tertiary shadow-teamCard">
@@ -63,7 +63,7 @@ function Report({ id }: ReportProps) {
 						<p className="h-[48px] text-[40px] font-bold text-[#10B981]">{percent.toFixed(0)}%</p>
 					</div>
 				</section>
-				<section className="mt-[21px] flex h-[84px] w-full flex-col gap-[21px] tablet:max-w-[385px]">
+				<section className="mt-[21px] flex h-[84px] w-full flex-col gap-[21px] desktop:max-w-[385px]">
 					<div className="flex items-center justify-between rounded-[12px] bg-background-tertiary p-[16px] shadow-teamCard">
 						<div className="bg-background-tertiary">
 							<p className="text-[12px] font-semibold">오늘의 할 일</p>
@@ -71,7 +71,7 @@ function Report({ id }: ReportProps) {
 						</div>
 						<Image src={TodoIcon} alt="todo" width={40} height={40} />
 					</div>
-					<div className="mb-[10px] flex h-[84px] w-full items-center justify-between rounded-[12px] bg-background-tertiary p-[16px] shadow-teamCard tablet:max-w-[385px]">
+					<div className="mb-[10px] flex h-[84px] w-full items-center justify-between rounded-[12px] bg-background-tertiary p-[16px] shadow-teamCard desktop:max-w-[385px]">
 						<div>
 							<p className="text-[12px] font-semibold">한 일</p>
 							<p className="text-[24px] font-bold text-text-lime">{doneTasks}개</p>
@@ -80,7 +80,7 @@ function Report({ id }: ReportProps) {
 					</div>
 				</section>
 			</div>
-		</main>
+		</section>
 	);
 }
 

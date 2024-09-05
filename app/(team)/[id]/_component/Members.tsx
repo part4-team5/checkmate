@@ -2,22 +2,29 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
 /* eslint-disable no-nested-ternary */
+/* eslint-disable */
 
 "use client";
 
 import { useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import UserInfo from "@/app/(team)/[id]/_component/UserInfo";
 import API from "@/app/_api";
 import useOverlay from "@/app/_hooks/useOverlay";
-import MemberInvite from "@/app/_components/modal-contents/MemberInvite";
-import MemberProfile from "@/app/_components/modal-contents/MemberProfile";
 import toast from "@/app/_utils/Toast";
+import DropDown from "@/app/_components/Dropdown";
+import Icon from "@/app/_icons";
 import { ReportProps } from "./Report";
+import dynamic from "next/dynamic";
+
+const MemberInvite = dynamic(() => import("@/app/_components/modal-contents/MemberInvite"), {});
+const MemberProfile = dynamic(() => import("@/app/_components/modal-contents/MemberProfile"), {});
+const DeleteModal = dynamic(() => import("@/app/_components/modal-contents/DeleteModal"), {});
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
 
 function Members({ id }: ReportProps) {
+	const queryClient = useQueryClient();
 	const overlay = useOverlay();
 
 	const fetchGroupInfo = useCallback((): Promise<Team> => API["{teamId}/groups/{id}"].GET({ id }), [id]);
@@ -38,6 +45,22 @@ function Members({ id }: ReportProps) {
 		queryFn: async () => API["{teamId}/user"].GET({}),
 	});
 
+	const deleteUser = useMutation({
+		mutationFn: async ({ memberUserId }: { memberUserId: number }) => API["{teamId}/groups/{id}/member/{memberUserId}"].DELETE({ id, memberUserId }),
+		onSuccess: (_, { memberUserId }) => {
+			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId: id }] });
+
+			if (memberUserId === user?.id) {
+				window.location.href = "/get-started";
+			} else {
+				toast.success("멤버가 성공적으로 삭제되었습니다.");
+			}
+		},
+		onError: () => {
+			toast.error("삭제에 실패했습니다. 다시 시도해주세요.");
+		},
+	});
+
 	const handleProfileModal = useCallback(
 		(member: { userName: string; userEmail: string; userImage?: string }) => {
 			overlay.open(({ close }) => <MemberProfile userName={member.userName} email={member.userEmail} close={close} userProfile={member.userImage || ""} />);
@@ -51,11 +74,15 @@ function Members({ id }: ReportProps) {
 		if (invitationToken) {
 			const invitationUrl = await API["api/invite/link"].POST(
 				{},
-				{ groupId: id, groupName: data?.name as string, groupImage: data?.image, token: invitationToken },
+				{
+					groupId: id,
+					groupName: data?.name as string,
+					groupImage: data?.image,
+					token: invitationToken,
+				},
 			);
 
 			await navigator.clipboard.writeText(invitationUrl.shortURL);
-
 			toast.success("초대 링크가 복사되었습니다!");
 		}
 	};
@@ -74,7 +101,7 @@ function Members({ id }: ReportProps) {
 	const isAdmin = user?.memberships.some((membership) => membership.groupId === id && membership.role === "ADMIN");
 
 	return (
-		<main className="mt-[48px] text-text-primary">
+		<section className="mt-[48px] text-text-primary">
 			<section className="flex justify-between">
 				<div className="flex gap-[8px]">
 					<p className="text-[16px] font-medium">멤버</p>
@@ -87,21 +114,52 @@ function Members({ id }: ReportProps) {
 				)}
 			</section>
 			<section className="mt-[24px]">
-				<div className="grid grid-cols-2 gap-[22px] tablet:grid-cols-3">
-					{members.map((member) => (
-						<div
-							key={member.userId}
-							className="my-member flex h-[68px] w-full min-w-[164px] cursor-pointer items-center justify-start rounded-[16px] bg-background-tertiary px-[16px] shadow-teamCard"
-							role="button"
-							aria-label={`${member.userName}의 프로필 열기`}
-							onClick={() => handleProfileModal(member)}
-						>
-							<UserInfo userName={member.userName} userEmail={member.userEmail} userProfile={member.userImage ?? ""} isAdmin={member.role === "ADMIN"} />
-						</div>
-					))}
+				<div className="grid grid-cols-2 gap-[22px] text-[14px] font-medium tablet:grid-cols-3">
+					{members.map((member) => {
+						const isCurrentUser = user?.id === member.userId;
+
+						const memberEdit = [
+							{
+								text: "이메일 복사하기",
+								onClick: () => handleProfileModal(member),
+							},
+							...(isAdmin || isCurrentUser
+								? [
+										{
+											text: "멤버 삭제하기",
+											onClick: () => {
+												overlay.open(({ close }) => (
+													<DeleteModal
+														modalContent="멤버를 삭제하시겠어요?"
+														close={close}
+														onClick={() => {
+															deleteUser.mutate({ memberUserId: member.userId });
+															close();
+														}}
+													/>
+												));
+											},
+										},
+									]
+								: []),
+						];
+
+						return (
+							<div
+								key={member.userId}
+								className="my-member flex h-[68px] w-full min-w-[164px] items-center justify-between rounded-[16px] bg-background-tertiary px-[16px] shadow-teamCard"
+								aria-label={`${member.userName}의 프로필 열기`}
+							>
+								<UserInfo userName={member.userName} userEmail={member.userEmail} userProfile={member.userImage ?? ""} isAdmin={member.role === "ADMIN"} />
+								<DropDown options={memberEdit} gapX={5} gapY={5} align="RR">
+									<Icon.Kebab width={24} height={24} />
+								</DropDown>
+							</div>
+						);
+					})}
 				</div>
 			</section>
-		</main>
+		</section>
 	);
 }
 

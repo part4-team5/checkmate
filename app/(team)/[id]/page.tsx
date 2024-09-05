@@ -29,11 +29,11 @@ export default async function Page({ params }: { params: { id: string } }) {
 		<HydrationBoundary state={dehydrate(queryClient)}>
 			<main className="pb-[67px] text-[#F8FAFC]">
 				<TeamTitle id={id} />
-				<section className="flex flex-col gap-[24px] tablet:flex-row">
+				<section className="flex flex-col gap-[24px] desktop:flex-row">
 					<section className="flex">
 						<Report id={id} />
 					</section>
-					<section className="tablet:flex-grow-1 mt-[80px] w-full flex-grow-0 tablet:mt-0">
+					<section className="desktop:flex-grow-1 mt-[80px] w-full flex-grow-0 desktop:mt-0">
 						<Tasks id={id} />
 					</section>
 				</section>
