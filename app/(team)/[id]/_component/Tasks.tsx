@@ -8,12 +8,15 @@ import { Reorder, AnimatePresence, motion } from "framer-motion";
 import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
 import Icon from "@/app/_icons";
 import Tour from "@/app/_utils/Tour";
-import PostEditTasks from "@/app/_components/modal-contents/PostEditTasks";
-import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import { useRouter } from "next/navigation";
 import useOverlay from "@/app/_hooks/useOverlay";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "@/app/_utils/Toast";
+import dynamic from "next/dynamic";
+
+const PostEditTasks = dynamic(() => import("@/app/_components/modal-contents/PostEditTasks"), {});
+const DeleteModal = dynamic(() => import("@/app/_components/modal-contents/DeleteModal"), {});
+
 import { useGroupInfo, useDeleteTaskList, useReorderTaskLists, TaskListType } from "./useTaskList";
 
 function TaskItem({
@@ -37,11 +40,11 @@ function TaskItem({
 
 	const deleteTaskListMutation = useDeleteTaskList(groupId);
 
-	const [isKebabOpen, setIsKebabOpen] = useState(false); // 케밥 메뉴 상태 관리
-	const kebabRef = useRef<HTMLDivElement>(null); // 케밥 메뉴 참조
+	const [isKebabOpen, setIsKebabOpen] = useState(false);
+	const kebabRef = useRef<HTMLDivElement>(null);
 
 	const handleMouseDown = (event: React.MouseEvent) => {
-		if (event.button === 2) return; // 우클릭 방지
+		if (event.button === 2) return;
 		isLongPress.current = false;
 		timerId.current = setTimeout(() => {
 			isLongPress.current = true;
@@ -49,7 +52,7 @@ function TaskItem({
 	};
 
 	const handleMouseUp = (event: React.MouseEvent) => {
-		if (event.button === 2) return; // 우클릭 방지
+		if (event.button === 2) return;
 		clearTimeout(timerId.current);
 		if (!isLongPress.current && event.button === 0) {
 			const target = event.target as HTMLElement;
@@ -58,7 +61,6 @@ function TaskItem({
 		}
 	};
 
-	// 케밥 메뉴 열고 닫기
 	const handleKebabClick = useCallback((event: React.MouseEvent) => {
 		event.stopPropagation();
 		setIsKebabOpen((prev) => !prev);
@@ -99,25 +101,24 @@ function TaskItem({
 		});
 	}, [deleteTaskListMutation, taskList.id]);
 
-	// 케밥 메뉴 외부 클릭 시 메뉴 닫기
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (kebabRef.current && !kebabRef.current.contains(event.target as Node)) {
-				setIsKebabOpen(false); // 외부 클릭 시 메뉴 닫기
+				setIsKebabOpen(false);
 			}
 		};
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
-			document.removeEventListener("mousedown", handleClickOutside); // 이벤트 리스너 정리
+			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, [kebabRef]);
 
 	return (
 		<div
-			className="reorder-item flex h-[50px] w-full cursor-pointer items-center justify-center rounded-[12px] bg-background-quaternary pr-[10px] text-text-primary shadow-teamTaskList"
+			className="reorder-item flex h-[50px] w-full cursor-pointer items-center justify-center rounded-[12px] bg-background-quaternary pr-[10px] text-text-primary shadow-teamTaskList hover:bg-dropdown-hover"
 			onMouseDown={handleMouseDown}
 			onMouseUp={handleMouseUp}
-			onContextMenu={(e) => e.preventDefault()} // 우클릭 방지
+			onContextMenu={(e) => e.preventDefault()}
 			onDrag={onDrag}
 		>
 			<div className="flex h-[40px] w-full flex-1 items-center justify-between">
@@ -134,10 +135,9 @@ function TaskItem({
 						</p>
 					</div>
 
-					{/* 케밥 아이콘 클릭 시 애니메이션으로 수정/삭제 버튼 나타나기 */}
 					<div className="no-navigation flex items-center justify-center">
 						{!isKebabOpen ? (
-							<div onClick={handleKebabClick} className="rounded-[4px] hover:bg-[#3F4752]">
+							<div onClick={handleKebabClick} className="rounded-[4px] transition-transform duration-300 hover:scale-150">
 								<Icon.Kebab color="var(--text-primary)" width={16} height={16} />
 							</div>
 						) : (
@@ -149,11 +149,11 @@ function TaskItem({
 									transition={{ duration: 0.2 }}
 									className="flex items-center justify-center gap-[8px]"
 								>
-									<div onClick={handleEditClick} className="cursor-pointer rounded-[4px] pl-[5px]">
-										<Icon.Pencil width={16} height={16} color="var(--text-primary)" /> {/* 수정 아이콘 */}
+									<div onClick={handleEditClick} className="cursor-pointer rounded-[4px] pl-[5px] transition-transform duration-300 hover:scale-110">
+										<Icon.Pencil width={16} height={16} color="var(--text-primary)" />
 									</div>
-									<div onClick={handleDeleteClick} className="cursor-pointer rounded-[4px]">
-										<Icon.TrashCan width={16} height={16} color="var(--text-primary)" /> {/* 삭제 아이콘 */}
+									<div onClick={handleDeleteClick} className="cursor-pointer rounded-[4px] transition-transform duration-300 hover:scale-110">
+										<Icon.TrashCan width={16} height={16} color="var(--text-primary)" />
 									</div>
 								</motion.div>
 							</AnimatePresence>
@@ -181,7 +181,6 @@ export default function Tasks({ id }: { id: number }) {
 		overlay.open(({ close }) => <PostEditTasks groupId={id} close={close} initialTasksName={taskName} taskId={taskId} />);
 	};
 
-	// 드래그 중 스크롤 처리
 	const handleDrag = (e: any) => {
 		const scrollContainer = e.target.closest(".scroll-container");
 		if (!scrollContainer) return;
@@ -193,7 +192,6 @@ export default function Tasks({ id }: { id: number }) {
 
 		const startScroll = (direction: "up" | "down") => {
 			if (scrollIntervalRef.current) return; // 이미 스크롤 중일 때 중복 실행 방지
-
 			scrollIntervalRef.current = window.setInterval(() => {
 				if (direction === "up") {
 					scrollContainer.scrollBy({
@@ -206,13 +204,13 @@ export default function Tasks({ id }: { id: number }) {
 						behavior: "smooth",
 					});
 				}
-			}, 100); // 100ms마다 스크롤
+			}, 100);
 		};
 
 		if (elementTop < containerTop) {
-			startScroll("up"); // 위로 스크롤
+			startScroll("up");
 		} else if (elementBottom > containerBottom) {
-			startScroll("down"); // 아래로 스크롤
+			startScroll("down");
 		} else if (scrollIntervalRef.current) {
 			// 범위를 벗어나지 않으면 스크롤 중단
 			clearInterval(scrollIntervalRef.current);

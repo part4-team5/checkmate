@@ -11,13 +11,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import UserInfo from "@/app/(team)/[id]/_component/UserInfo";
 import API from "@/app/_api";
 import useOverlay from "@/app/_hooks/useOverlay";
-import MemberInvite from "@/app/_components/modal-contents/MemberInvite";
-import MemberProfile from "@/app/_components/modal-contents/MemberProfile";
 import toast from "@/app/_utils/Toast";
 import DropDown from "@/app/_components/Dropdown";
 import Icon from "@/app/_icons";
-import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
 import { ReportProps } from "./Report";
+import dynamic from "next/dynamic";
+
+const MemberInvite = dynamic(() => import("@/app/_components/modal-contents/MemberInvite"), {});
+const MemberProfile = dynamic(() => import("@/app/_components/modal-contents/MemberProfile"), {});
+const DeleteModal = dynamic(() => import("@/app/_components/modal-contents/DeleteModal"), {});
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
 
@@ -138,12 +140,11 @@ function Members({ id }: ReportProps) {
 						return (
 							<div
 								key={member.userId}
-								className="my-member flex h-[68px] w-full min-w-[164px] cursor-pointer items-center justify-between rounded-[16px] bg-background-tertiary px-[16px] shadow-teamCard"
-								role="button"
+								className="my-member flex h-[68px] w-full min-w-[164px] items-center justify-between rounded-[16px] bg-background-tertiary px-[16px] shadow-teamCard"
 								aria-label={`${member.userName}의 프로필 열기`}
 							>
 								<UserInfo userName={member.userName} userEmail={member.userEmail} userProfile={member.userImage ?? ""} isAdmin={member.role === "ADMIN"} />
-								<DropDown options={memberEdit} gapX={20} gapY={-30} align="RR">
+								<DropDown options={memberEdit} gapX={5} gapY={5} align="RR">
 									<Icon.Kebab width={24} height={24} />
 								</DropDown>
 							</div>
