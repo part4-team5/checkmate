@@ -47,9 +47,14 @@ function Members({ id }: ReportProps) {
 
 	const deleteUser = useMutation({
 		mutationFn: async ({ memberUserId }: { memberUserId: number }) => API["{teamId}/groups/{id}/member/{memberUserId}"].DELETE({ id, memberUserId }),
-		onSuccess: () => {
+		onSuccess: (_, { memberUserId }) => {
 			queryClient.invalidateQueries({ queryKey: ["groupInfo", { groupId: id }] });
-			toast.success("멤버가 성공적으로 삭제되었습니다.");
+
+			if (memberUserId === user?.id) {
+				window.location.href = "/get-started";
+			} else {
+				toast.success("멤버가 성공적으로 삭제되었습니다.");
+			}
 		},
 		onError: () => {
 			toast.error("삭제에 실패했습니다. 다시 시도해주세요.");
