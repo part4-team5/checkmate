@@ -47,7 +47,7 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 			toast.success("팀 초대를 수락했습니다.");
 
 			// 몽고 DB에서 사용자 그룹 정보 업데이트
-			API["api/users/{id}"].PATCH({ id: Number(user?.id) }, { groupId });
+			API["api/group/{groupId}"].POST({ groupId }, { userId: Number(user?.id), userEmail: user?.email as string });
 
 			rejectInviteMutation.mutate({ id: Number(user?.id), groupId });
 

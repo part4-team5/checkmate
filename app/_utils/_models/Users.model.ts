@@ -1,14 +1,10 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import mongoose, { Schema, Model, Document } from "mongoose";
-import InviteModel from "@/app/_utils/_models/Invite.model";
-
-type InviteType = InstanceType<typeof InviteModel>;
 
 interface IUser extends Document {
 	id: number;
 	email: string;
-	groups: { groupId: number }[];
-	invite: InviteType[];
+	groups: mongoose.Types.ObjectId[]; // ObjectId 배열로 사용
+	invite: mongoose.Types.ObjectId[]; // ObjectId 배열로 사용
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -24,10 +20,8 @@ const UserSchema: Schema<IUser> = new Schema({
 	},
 	groups: [
 		{
-			groupId: {
-				type: Number,
-				required: true,
-			},
+			type: Schema.Types.ObjectId,
+			ref: "Group",
 		},
 	],
 	invite: [

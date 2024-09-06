@@ -11,9 +11,9 @@ async function generateShortKey(): Promise<string> {
 		// UUID 생성
 		const uuid = crypto.randomUUID();
 
-		// SHA-256 해시 생성
+		// SHA-256 해시 생성 후 8자리로 잘라서 키 생성
 		key = crypto.createHash("sha256").update(uuid).digest("hex").slice(0, 8);
-	} while (await InviteModel.exists({ key }));
+	} while (await InviteModel.exists({ key })); // 키가 중복되는지 검사
 
 	return key;
 }
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Token is required", message: "토큰이 필요합니다." }, { status: 400 });
 		}
 
-		// const uuid = crypto.randomUUID();
+		// 중복되지 않는 초대 키 생성
 		const key = await generateShortKey();
 
 		// 초대 생성 및 저장

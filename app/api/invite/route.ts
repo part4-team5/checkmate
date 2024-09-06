@@ -8,20 +8,40 @@ export async function POST(req: NextRequest) {
 
 	try {
 		const body = await req.json();
+		const { email, groupId } = body;
 
-		// 유저를 이메일로 찾기
-		const user = await UserModel.findOne({ email: body.email });
+		// 이메일로 유저 찾기
+		const user = await UserModel.aggregate([
+			{ $match: { email } },
+			{
+				$lookup: {
+					from: "groups",
+					localField: "groups",
+					foreignField: "_id",
+					as: "groups",
+				},
+			},
+			{
+				$lookup: {
+					from: "invites",
+					localField: "invite",
+					foreignField: "_id",
+					as: "invite",
+				},
+			},
+		]).then((result) => result[0]); // aggregate 결과는 배열이므로 첫 번째 요소만 사용
 		if (!user) {
 			return NextResponse.json({ error: "User Not Found", message: "유저를 찾을 수 없습니다." }, { status: 404 });
 		}
 
-		const member = user.groups.find((group) => group.groupId === body.groupId);
-		if (member) {
+		// 유저가 이미 해당 그룹의 멤버인지 확인
+		const isMember = user.groups.some((group: { groupId: number }) => group.groupId === groupId);
+		if (isMember) {
 			return NextResponse.json({ error: "Already Member", message: "이미 해당 그룹에 속해있습니다." }, { status: 400 });
 		}
 
-		// 이미 해당 그룹에 대한 초대장이 있는지 확인
-		const existingInvite = await InviteModel.exists({ email: body.email, groupId: body.groupId });
+		// 해당 그룹에 대한 초대장이 이미 존재하는지 확인
+		const existingInvite = await InviteModel.exists({ email, groupId }).lean().exec();
 		if (existingInvite) {
 			return NextResponse.json({ error: "Invite Already Exists", message: "이미 초대장이 존재합니다." }, { status: 400 });
 		}
@@ -29,11 +49,7 @@ export async function POST(req: NextRequest) {
 		// 초대장 생성
 		const invite = await InviteModel.create(body);
 
-		// 유저의 invite 배열에 새로 생성된 초대장 ID 추가
-		// eslint-disable-next-line no-underscore-dangle
-		await UserModel.findByIdAndUpdate(user._id, { $push: { invite: invite._id } });
-
-		return NextResponse.json(invite, { status: 201 });
+		return NextResponse.json({ invite, message: "초대장이 성공적으로 생성되었습니다." }, { status: 201 });
 	} catch (error) {
 		return NextResponse.json({ error, message: "초대에 실패했습니다." }, { status: 500 });
 	}

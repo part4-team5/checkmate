@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 		}
 
 		// key를 사용하여 초대 정보 조회
-		const invite = await InviteModel.findOne({ key });
+		const invite = await InviteModel.findOne({ key }).lean().exec();
 
 		if (!invite) {
 			return NextResponse.json({ error: "Invalid Key", message: "유효하지 않은 초대입니다." }, { status: 404 });
