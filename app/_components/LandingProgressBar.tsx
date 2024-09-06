@@ -1,7 +1,6 @@
 "use client";
 
 import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
-import Image from "next/image";
 import { motion, useMotionValue } from "framer-motion";
 import { useState, useRef } from "react";
 import Icon from "@/app/_icons";
@@ -56,7 +55,7 @@ export default function LandingProgressBar() {
 			</div>
 
 			<div className="flex flex-col items-center justify-center gap-[30px] py-[80px]">
-				<CircularProgressBar percent={progress * 100} useGradient size={260} strokeWidth={60} strokeColor="#10b981" backgroundColor="#F4F5F6" />
+				<CircularProgressBar percent={progress * 100} useGradient size={260} strokeWidth={60} strokeColor="#10b981" backgroundColor="#d1d1d1" />
 
 				<div className="mt-[10px] text-lg font-medium text-text-secondary">
 					오늘 할 일을 <b className="text-brand-primary">체크</b>해보세요!
@@ -74,7 +73,7 @@ export default function LandingProgressBar() {
 						>
 							{isVisible && (
 								<div className="absolute inset-0">
-									<Image src="/icons/mvCheck.svg" alt="check" width={42} height={42} />
+									<Icon.Check width={40} height={40} color="#10b981" />
 								</div>
 							)}
 							{/* {index === 2 && !buttonStates[2] && (

@@ -178,7 +178,7 @@ export default function Modal({ close }: { close: () => void }) {
 									className="flex h-[50px] w-full min-w-[110px] items-center justify-between rounded-xl border border-border-primary bg-todo-primary px-3 text-lg font-medium text-text-default shadow-buttonPrimary"
 								>
 									{frequency === Frequency.ONCE ? "한 번" : frequency === Frequency.DAILY ? "매일" : frequency === Frequency.WEEKLY ? "매주" : "매월"}
-									<Icon.Toggle width={24} height={24} />
+									<Icon.Dropdown width={24} height={24} />
 								</button>
 							</DropDown>
 						</div>

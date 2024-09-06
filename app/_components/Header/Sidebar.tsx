@@ -45,13 +45,13 @@ export default function Sidebar({ isSidebarOpened, isTeamOpened, setIsTeamOpened
 				<div className={`overflow-hidden duration-500 ease-in-out ${isTeamOpened ? "max-h-[calc(100dvh-340px)]" : "max-h-0"}`}>
 					<ul className="mx-4 mt-2 max-h-[calc(100dvh-348px)] max-w-full overflow-y-auto rounded-md scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-Senary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-primary">
 						{user?.memberships.map((membership) => (
-							<li key={membership.groupId} className="size-full pb-2">
+							<li key={membership.groupId} className="size-full pb-1">
 								<Link
 									href={`/${membership.groupId}`}
 									className="mr-2 flex items-center gap-3 whitespace-nowrap rounded-md px-3 py-2 text-lg font-medium hover:bg-background-tertiary"
 									onClick={sideBarClose}
 								>
-									<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={28} height={28} className="size-8" />
+									<Image src={membership.group.image ?? "/icons/emptyImage.svg"} alt="image" width={28} height={28} className="size-8 rounded-lg" />
 									<p className="w-fit grow overflow-x-hidden text-ellipsis">{membership.group.name}</p>
 								</Link>
 							</li>

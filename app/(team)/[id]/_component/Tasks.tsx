@@ -150,7 +150,7 @@ function TaskItem({
 									className="flex items-center justify-center gap-[8px]"
 								>
 									<div onClick={handleEditClick} className="cursor-pointer rounded-[4px] pl-[5px] transition-transform duration-300 hover:scale-110">
-										<Icon.Pencil width={16} height={16} color="var(--text-primary)" />
+										<Icon.Edit width={16} height={16} color="var(--text-primary)" />
 									</div>
 									<div onClick={handleDeleteClick} className="cursor-pointer rounded-[4px] transition-transform duration-300 hover:scale-110">
 										<Icon.TrashCan width={16} height={16} color="var(--text-primary)" />

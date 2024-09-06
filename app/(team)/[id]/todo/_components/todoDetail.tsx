@@ -78,15 +78,15 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 						{isCheck ? (
 							<Button variant="secondary" rounded="full" onClick={handleCheckButtonClick}>
 								<div className="flex items-center gap-1">
-									<Icon.CheckButton width={16} height={16} color="#10b981" />
-									<div className="text-xs font-semibold text-text-emerald">완료 취소하기</div>
+									<Icon.Check width={24} height={24} color="#10b981" />
+									<div className="text-md font-semibold text-text-emerald">완료 취소하기</div>
 								</div>
 							</Button>
 						) : (
 							<Button rounded="full" onClick={handleCheckButtonClick}>
 								<div className="flex items-center gap-1">
-									<Icon.CheckButton width={16} height={16} />
-									<div className="text-xs font-semibold">완료하기</div>
+									<Icon.Check width={24} height={24} color="#fff" />
+									<div className="text-md font-semibold">완료하기</div>
 								</div>
 							</Button>
 						)}

@@ -8,7 +8,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
-import KebabIcon from "@/public/icons/KebabIcon";
+import Icon from "@/app/_icons";
 import Popover from "./Popover";
 
 type Option = {
@@ -189,7 +189,7 @@ export default function DropDown({ options, children, align = "LR", gapX = 0, ga
 									gapY={gapY}
 								>
 									<div className={`cursor-pointer ${option.options && option.options.length > 0 ? "block" : "hidden"}`}>
-										<KebabIcon />
+										<Icon.Kebab width={16} height={16} />
 									</div>
 								</Popover>
 							)}

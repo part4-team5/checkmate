@@ -3,7 +3,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
-import KebabIcon from "@/public/icons/KebabIcon";
 import Message from "@/app/_components/Message";
 import DropDown from "@/app/_components/Dropdown";
 import API from "@/app/_api";
@@ -15,7 +14,6 @@ import Quill from "@/app/_components/Quill";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/app/_store/useAuthStore";
 import toast from "@/app/_utils/Toast";
-import CommentIcon from "@/public/icons/ic_comment";
 
 export default function BoardDetail({ params }: { params: { id: string } }) {
 	const articleId = Number(params.id);
@@ -220,7 +218,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 												]}
 											>
 												<button type="button" aria-label="dropdown">
-													<KebabIcon />
+													<Icon.Kebab width={16} height={16} />
 												</button>
 											</DropDown>
 										)}
@@ -239,14 +237,14 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 									</div>
 									<div className="flex items-center gap-[15px] text-md text-landing-inverse">
 										<p className="flex items-center gap-[7px]">
-											<CommentIcon width={15} height={15} color="var(--landing-inverse)" />
+											<Icon.Comment width={15} height={15} color="var(--landing-inverse)" />
 											{article?.commentCount}
 										</p>
 										<button type="button" onClick={handleLike} className="flex items-center">
 											<span className="flex items-center gap-[7px]">
 												<span className={`transition-transform ${isAnimating ? "animate-scaleUp" : ""}`}>
 													{article?.isLiked ? (
-														<Icon.HeartFull width={15} height={15} color="#FF0000" />
+														<Icon.HeartFill width={15} height={15} color="#FF0000" />
 													) : (
 														<Icon.Heart width={15} height={15} color="var(--landing-inverse)" />
 													)}

@@ -3,9 +3,8 @@
 import Image from "next/image";
 import { createContext, useContext, ReactNode, useMemo } from "react";
 import defaultImage from "@/public/images/profile.png";
-import HeartIcon from "@/public/icons/ic_heart";
-import CommentIcon from "@/public/icons/ic_comment";
 import { Markdown, Presets } from "@sombian/markdown";
+import Icon from "@/app/_icons";
 
 const CORE = new Markdown(...Presets.NekoNote);
 
@@ -67,11 +66,11 @@ Message.Reaction = function Reaction() {
 	return (
 		<div className="flex items-center gap-[8px] text-md">
 			<div className="flex gap-[4px]">
-				<HeartIcon width={16} height={16} />
+				<Icon.Heart width={16} height={16} />
 				{data.commentCount ?? 0}
 			</div>
 			<div className="flex gap-[4px]">
-				<CommentIcon width={16} height={16} />
+				<Icon.Comment width={16} height={16} />
 				{data.likeCount ?? 0}
 			</div>
 		</div>

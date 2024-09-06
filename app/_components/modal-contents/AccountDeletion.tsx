@@ -1,6 +1,5 @@
 import Button from "@/app/_components/Button";
 import ModalWrapper from "@/app/_components/modal-contents/Modal";
-import WarningIcon from "@/public/icons/ic_warning";
 
 type AccountDeletionProps = {
 	onClick: () => void;
@@ -12,7 +11,7 @@ export default function AccountDeletion({ onClick, close }: AccountDeletionProps
 			<div className="min-w-[352px] font-medium tablet:mx-auto">
 				<div className="px-9">
 					<div className="mb-4 mt-6 flex justify-center">
-						<WarningIcon width={24} height={24} />
+						<div className="flex size-7 items-center justify-center rounded-full bg-status-danger pb-[2px] text-xl">!</div>
 					</div>
 					<h1 className="mt-2 text-center text-lg">회원 탈퇴를 진행하시겠어요?</h1>
 					<p className="mt-2 text-center text-md text-text-secondary">

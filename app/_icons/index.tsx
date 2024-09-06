@@ -20,7 +20,7 @@ Icon.Close = function Close({ width, height, color = "#adadad" }: IconProps) {
 	);
 };
 
-Icon.Toggle = function Toggle({ width, height, color = "#adadad" }: IconProps) {
+Icon.Dropdown = function Toggle({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -31,7 +31,7 @@ Icon.Toggle = function Toggle({ width, height, color = "#adadad" }: IconProps) {
 	);
 };
 
-Icon.Visible = function Visible({ width, height, color }: IconProps) {
+Icon.Visible = function Visible({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -42,7 +42,7 @@ Icon.Visible = function Visible({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.Invisible = function Invisible({ width, height, color }: IconProps) {
+Icon.Invisible = function Invisible({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -57,22 +57,6 @@ Icon.Check = function Check({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M4 7.14286L6.90909 10L12 5" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-		</svg>
-	);
-};
-
-Icon.Alert = function Alert({ width, height, color }: IconProps) {
-	return (
-		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<path
-				d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-				stroke={color}
-				strokeWidth="2"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			/>
-			<path d="M12 8V12" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-			<path d="M12 16H12.01" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 		</svg>
 	);
 };
@@ -121,7 +105,7 @@ Icon.User = function User({ width, height, color = "#F8FAFC" }: IconProps) {
 	);
 };
 
-Icon.Search = function Search({ width, height, color }: IconProps) {
+Icon.Search = function Search({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<g clipPath="url(#clip0_2562_48083)">
@@ -164,7 +148,7 @@ Icon.ArrowDown = function ArrowDown({ width, height, color = "#F8FAFC" }: IconPr
 	);
 };
 
-Icon.Kebab = function Kebab({ width, height, color = "#F8FAFC" }: IconProps) {
+Icon.Kebab = function Kebab({ width = 16, height = 16, color = "#F8FAFC" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<circle cx="12" cy="7.5" r="1.5" fill={color} />
@@ -174,7 +158,7 @@ Icon.Kebab = function Kebab({ width, height, color = "#F8FAFC" }: IconProps) {
 	);
 };
 
-Icon.Bold = function Bold({ width, height, color }: IconProps) {
+Icon.Bold = function Bold({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
 			<path d="M272-200v-560h221q65 0 120 40t55 111q0 51-23 78.5T602-491q25 11 55.5 41t30.5 90q0 89-65 124.5T501-200H272Zm121-112h104q48 0 58.5-24.5T566-372q0-11-10.5-35.5T494-432H393v120Zm0-228h93q33 0 48-17t15-38q0-24-17-39t-44-15h-95v109Z" />
@@ -182,7 +166,7 @@ Icon.Bold = function Bold({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.Italic = function Italic({ width, height, color }: IconProps) {
+Icon.Italic = function Italic({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
 			<path d="M200-200v-100h160l120-360H320v-100h400v100H580L460-300h140v100H200Z" />
@@ -190,7 +174,7 @@ Icon.Italic = function Italic({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.Underline = function Underline({ width, height, color }: IconProps) {
+Icon.Underline = function Underline({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
 			<path d="M200-120v-80h560v80H200Zm280-160q-101 0-157-63t-56-167v-330h103v336q0 56 28 91t82 35q54 0 82-35t28-91v-336h103v330q0 104-56 167t-157 63Z" />
@@ -198,7 +182,7 @@ Icon.Underline = function Underline({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.StrikeThrough = function StrikeThrough({ width, height, color }: IconProps) {
+Icon.StrikeThrough = function StrikeThrough({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -960 960 960" width={width} fill={color}>
 			<path d="M80-400v-80h800v80H80Zm340-160v-120H200v-120h560v120H540v120H420Zm0 400v-160h120v160H420Z" />
@@ -206,35 +190,10 @@ Icon.StrikeThrough = function StrikeThrough({ width, height, color }: IconProps)
 	);
 };
 
-Icon.TodoCheck = function TodoCheck({ width = 16, height = 16, color = "none" }: IconProps) {
-	return (
-		<svg width={width} height={height} viewBox="0 0 16 16" fill={color} xmlns="http://www.w3.org/2000/svg">
-			<path d="M3 8.5L7.11349 11.7908C7.25974 11.9078 7.47219 11.8889 7.59553 11.748L13.5 5" stroke="#A3E635" strokeWidth="2" strokeLinecap="round" />
-		</svg>
-	);
-};
-
-Icon.CheckButton = function CheckButton({ width, height, color = "#F8FAFC" }: IconProps) {
+Icon.TodoCheck = function TodoCheck({ width = 16, height = 16, color = "#A3E635" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<path d="M4 7.14286L6.90909 10L12 5" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-		</svg>
-	);
-};
-
-Icon.LogoTypo = function LogoTypo({ width, height, color = "#10B981" }: IconProps) {
-	return (
-		<svg width={width} height={height} viewBox="0 0 163 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<path
-				fillRule="evenodd"
-				clipRule="evenodd"
-				d="M4.93517 15.9652C2.98255 17.9178 2.98255 21.0837 4.93517 23.0363C6.88779 24.9889 10.0536 24.9889 12.0062 23.0363L12.0064 23.0362L12.0065 23.0363C13.9591 24.9889 17.1249 24.9889 19.0776 23.0363C21.0302 21.0837 21.0302 17.9178 19.0776 15.9652L19.0774 15.9651C21.0299 14.0125 21.0299 10.8467 19.0773 8.89415C17.1247 6.94157 13.959 6.94153 12.0064 8.89403C10.0537 6.94153 6.888 6.94157 4.93542 8.89415C2.98284 10.8467 2.98279 14.0125 4.93529 15.9651L4.93517 15.9652Z"
-				fill={color}
-			/>
-			<path
-				d="M40.5609 13.5469H37.4501C37.3933 13.1444 37.2773 12.7869 37.1021 12.4744C36.9269 12.1572 36.702 11.8873 36.4274 11.6648C36.1528 11.4422 35.8355 11.2718 35.4757 11.1534C35.1206 11.035 34.7347 10.9759 34.318 10.9759C33.5652 10.9759 32.9094 11.1629 32.3507 11.5369C31.792 11.9062 31.3587 12.446 31.051 13.1562C30.7432 13.8617 30.5893 14.7187 30.5893 15.7273C30.5893 16.7642 30.7432 17.6354 31.051 18.3409C31.3635 19.0464 31.7991 19.5791 32.3578 19.9389C32.9165 20.2988 33.5628 20.4787 34.2967 20.4787C34.7086 20.4787 35.0898 20.4242 35.4402 20.3153C35.7953 20.2064 36.1101 20.0478 36.3848 19.8395C36.6594 19.6264 36.8867 19.3684 37.0666 19.0653C37.2512 18.7623 37.3791 18.4167 37.4501 18.0284L40.5609 18.0426C40.4804 18.7102 40.2792 19.3542 39.9572 19.9744C39.64 20.59 39.2115 21.1416 38.6717 21.6293C38.1367 22.1122 37.4975 22.4957 36.7541 22.7798C36.0154 23.0592 35.1797 23.1989 34.247 23.1989C32.9496 23.1989 31.7896 22.9053 30.7669 22.3182C29.7489 21.7311 28.944 20.8812 28.3521 19.7685C27.765 18.6558 27.4714 17.3087 27.4714 15.7273C27.4714 14.1411 27.7697 12.7917 28.3663 11.679C28.9629 10.5663 29.7725 9.71875 30.7953 9.13636C31.818 8.54924 32.9686 8.25568 34.247 8.25568C35.0898 8.25568 35.871 8.37405 36.5907 8.6108C37.3152 8.84754 37.9567 9.19318 38.5154 9.64773C39.0742 10.0975 39.5287 10.6491 39.8791 11.3026C40.2342 11.956 40.4615 12.7041 40.5609 13.5469ZM56.1326 15.7273C56.1326 17.3134 55.832 18.6629 55.2306 19.7756C54.6341 20.8883 53.8197 21.7382 52.7875 22.3253C51.76 22.9077 50.6047 23.1989 49.3216 23.1989C48.0289 23.1989 46.8689 22.9053 45.8414 22.3182C44.814 21.7311 44.002 20.8812 43.4054 19.7685C42.8088 18.6558 42.5105 17.3087 42.5105 15.7273C42.5105 14.1411 42.8088 12.7917 43.4054 11.679C44.002 10.5663 44.814 9.71875 45.8414 9.13636C46.8689 8.54924 48.0289 8.25568 49.3216 8.25568C50.6047 8.25568 51.76 8.54924 52.7875 9.13636C53.8197 9.71875 54.6341 10.5663 55.2306 11.679C55.832 12.7917 56.1326 14.1411 56.1326 15.7273ZM53.0147 15.7273C53.0147 14.6998 52.8609 13.8333 52.5531 13.1278C52.2501 12.4223 51.8216 11.8873 51.2676 11.5227C50.7136 11.1581 50.0649 10.9759 49.3216 10.9759C48.5782 10.9759 47.9295 11.1581 47.3755 11.5227C46.8216 11.8873 46.3907 12.4223 46.0829 13.1278C45.7799 13.8333 45.6284 14.6998 45.6284 15.7273C45.6284 16.7547 45.7799 17.6212 46.0829 18.3267C46.3907 19.0322 46.8216 19.5672 47.3755 19.9318C47.9295 20.2964 48.5782 20.4787 49.3216 20.4787C50.0649 20.4787 50.7136 20.2964 51.2676 19.9318C51.8216 19.5672 52.2501 19.0322 52.5531 18.3267C52.8609 17.6212 53.0147 16.7547 53.0147 15.7273ZM61.138 23L56.976 8.45455H60.3354L62.7431 18.5611H62.8638L65.5201 8.45455H68.3965L71.0456 18.5824H71.1735L73.5811 8.45455H76.9405L72.7786 23H69.7814L67.0115 13.4901H66.8979L64.1351 23H61.138ZM91.1326 15.7273C91.1326 17.3134 90.832 18.6629 90.2306 19.7756C89.6341 20.8883 88.8197 21.7382 87.7875 22.3253C86.76 22.9077 85.6047 23.1989 84.3216 23.1989C83.0289 23.1989 81.8689 22.9053 80.8414 22.3182C79.814 21.7311 79.002 20.8812 78.4054 19.7685C77.8088 18.6558 77.5105 17.3087 77.5105 15.7273C77.5105 14.1411 77.8088 12.7917 78.4054 11.679C79.002 10.5663 79.814 9.71875 80.8414 9.13636C81.8689 8.54924 83.0289 8.25568 84.3216 8.25568C85.6047 8.25568 86.76 8.54924 87.7875 9.13636C88.8197 9.71875 89.6341 10.5663 90.2306 11.679C90.832 12.7917 91.1326 14.1411 91.1326 15.7273ZM88.0147 15.7273C88.0147 14.6998 87.8609 13.8333 87.5531 13.1278C87.2501 12.4223 86.8216 11.8873 86.2676 11.5227C85.7136 11.1581 85.0649 10.9759 84.3216 10.9759C83.5782 10.9759 82.9295 11.1581 82.3755 11.5227C81.8216 11.8873 81.3907 12.4223 81.0829 13.1278C80.7799 13.8333 80.6284 14.6998 80.6284 15.7273C80.6284 16.7547 80.7799 17.6212 81.0829 18.3267C81.3907 19.0322 81.8216 19.5672 82.3755 19.9318C82.9295 20.2964 83.5782 20.4787 84.3216 20.4787C85.0649 20.4787 85.7136 20.2964 86.2676 19.9318C86.8216 19.5672 87.2501 19.0322 87.5531 18.3267C87.8609 17.6212 88.0147 16.7547 88.0147 15.7273ZM93.4107 23V8.45455H99.1493C100.248 8.45455 101.185 8.65104 101.962 9.04403C102.743 9.43229 103.337 9.9839 103.744 10.6989C104.156 11.4091 104.362 12.2448 104.362 13.206C104.362 14.1719 104.154 15.0028 103.737 15.6989C103.321 16.3902 102.717 16.9205 101.926 17.2898C101.14 17.6591 100.189 17.8438 99.0712 17.8438H95.2289V15.3722H98.574C99.1612 15.3722 99.6489 15.2917 100.037 15.1307C100.425 14.9697 100.714 14.7282 100.904 14.4062C101.098 14.0843 101.195 13.6842 101.195 13.206C101.195 12.723 101.098 12.3158 100.904 11.9844C100.714 11.6529 100.423 11.402 100.03 11.2315C99.6417 11.0563 99.1517 10.9688 98.5598 10.9688H96.486V23H93.4107ZM101.266 16.3807L104.881 23H101.486L97.949 16.3807H101.266ZM106.536 23V8.45455H109.611V14.8679H109.803L115.037 8.45455H118.723L113.325 14.9673L118.787 23H115.108L111.124 17.0199L109.611 18.8665V23H106.536ZM120.325 23V8.45455H130.126V10.9901H123.4V14.456H129.622V16.9915H123.4V20.4645H130.154V23H120.325ZM132.571 23V8.45455H138.309C139.408 8.45455 140.345 8.65104 141.122 9.04403C141.903 9.43229 142.497 9.9839 142.905 10.6989C143.317 11.4091 143.523 12.2448 143.523 13.206C143.523 14.1719 143.314 15.0028 142.898 15.6989C142.481 16.3902 141.877 16.9205 141.086 17.2898C140.3 17.6591 139.349 17.8438 138.231 17.8438H134.389V15.3722H137.734C138.321 15.3722 138.809 15.2917 139.197 15.1307C139.586 14.9697 139.874 14.7282 140.064 14.4062C140.258 14.0843 140.355 13.6842 140.355 13.206C140.355 12.723 140.258 12.3158 140.064 11.9844C139.874 11.6529 139.583 11.402 139.19 11.2315C138.802 11.0563 138.312 10.9688 137.72 10.9688H135.646V23H132.571ZM140.426 16.3807L144.041 23H140.646L137.109 16.3807H140.426ZM153.586 12.6378C153.53 12.0649 153.286 11.6198 152.855 11.3026C152.424 10.9853 151.839 10.8267 151.101 10.8267C150.599 10.8267 150.175 10.8977 149.829 11.0398C149.484 11.1771 149.219 11.3688 149.034 11.6151C148.854 11.8613 148.764 12.1406 148.764 12.4531C148.755 12.7135 148.809 12.9408 148.927 13.1349C149.05 13.3291 149.219 13.4972 149.432 13.6392C149.645 13.7765 149.891 13.8973 150.17 14.0014C150.45 14.1009 150.748 14.1861 151.065 14.2571L152.372 14.5696C153.006 14.7116 153.589 14.901 154.119 15.1378C154.649 15.3745 155.109 15.6657 155.497 16.0114C155.885 16.357 156.186 16.7642 156.399 17.233C156.617 17.7017 156.728 18.2391 156.733 18.8452C156.728 19.7353 156.501 20.5071 156.051 21.1605C155.606 21.8092 154.962 22.3134 154.119 22.6733C153.281 23.0284 152.27 23.206 151.086 23.206C149.912 23.206 148.89 23.026 148.018 22.6662C147.152 22.3063 146.475 21.7737 145.987 21.0682C145.504 20.358 145.251 19.4796 145.227 18.4332H148.203C148.236 18.9209 148.376 19.3281 148.622 19.6548C148.873 19.9768 149.207 20.2206 149.623 20.3864C150.045 20.5473 150.521 20.6278 151.051 20.6278C151.572 20.6278 152.024 20.5521 152.407 20.4006C152.796 20.2491 153.096 20.0384 153.309 19.7685C153.523 19.4986 153.629 19.1884 153.629 18.8381C153.629 18.5114 153.532 18.2367 153.338 18.0142C153.148 17.7917 152.869 17.6023 152.5 17.446C152.135 17.2898 151.688 17.1477 151.157 17.0199L149.574 16.6222C148.347 16.3239 147.379 15.8575 146.669 15.223C145.959 14.5885 145.606 13.7339 145.611 12.6591C145.606 11.7784 145.84 11.009 146.314 10.3509C146.792 9.69271 147.448 9.17898 148.281 8.80966C149.114 8.44034 150.061 8.25568 151.122 8.25568C152.202 8.25568 153.144 8.44034 153.949 8.80966C154.758 9.17898 155.388 9.69271 155.838 10.3509C156.288 11.009 156.52 11.7713 156.534 12.6378H153.586Z"
-				fill={color}
-			/>
+			<path d="M3 8.5L7.11349 11.7908C7.25974 11.9078 7.47219 11.8889 7.59553 11.748L13.5 5" stroke={color} strokeWidth="2" strokeLinecap="round" />
 		</svg>
 	);
 };
@@ -286,7 +245,7 @@ m-488 -2116 c95 -95 173 -177 173 -183 0 -6 -115 -125 -255 -265 -140 -140
 	);
 };
 
-Icon.Heart = function Heart({ width, height, color }: IconProps) {
+Icon.Heart = function Heart({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -298,7 +257,7 @@ Icon.Heart = function Heart({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.HeartFull = function Heart({ width, height, color }: IconProps) {
+Icon.HeartFill = function HeartFill({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -327,8 +286,7 @@ Icon.TodoDelete = function TodoDelete({ width = 16, height = 16, color = "#ff000
 			fill="none"
 			color="#000000"
 		>
-			{" "}
-			<title id="removeIconTitle">Remove</title> <path d="M17,12 L7,12" /> <circle cx="12" cy="12" r="10" />{" "}
+			<title id="removeIconTitle">Remove</title> <path d="M17,12 L7,12" /> <circle cx="12" cy="12" r="10" />
 		</svg>
 	);
 };
@@ -398,7 +356,7 @@ Icon.CheckAnimation = function CheckAnimation({ width = 14, height = 14, primary
 	);
 };
 
-Icon.Info = function Info({ width = 24, height = 24, color = "#6B7280" }: IconProps) {
+Icon.Info = function Info({ width = 24, height = 24, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 			<path d="M12 2C6.48 2 2 6.48 2 12c0 5.52 4.48 10 10 10 5.52 0 10-4.48 10-10 0-5.52-4.48-10-10-10zM11 7h2v2h-2V7zm0 4h2v6h-2V11z" fill={color} />
@@ -411,18 +369,6 @@ Icon.Loading = function Loading({ width = 24, height = 24, color = "#10B981" }: 
 		<svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 			<circle cx="12" cy="12" r="10" stroke="#00000040" strokeWidth="4" />
 			<path fill={color} d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-		</svg>
-	);
-};
-
-Icon.Enter = function Enter({ width = 24, height = 24, color = "#fff" }: IconProps) {
-	return (
-		<svg viewBox="0 0 24 24" width={width} height={height} fill="none" xmlns="http://www.w3.org/2000/svg">
-			<g id="SVGRepo_bgCarrier" strokeWidth="0" />
-			<g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
-			<g id="SVGRepo_iconCarrier">
-				<path d="M4 4V20M8 12H20M20 12L16 8M20 12L16 16" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-			</g>
 		</svg>
 	);
 };
@@ -443,30 +389,6 @@ Icon.Star = function Star({
 			<g fill={secondary}>
 				<path fill={primary} d="M30 33.5l-2.3-7.1 6.1-4.4h-7.5L24 14.9 21.7 22h-7.5l6.1 4.4-2.3 7.1 6-4.4z" />
 				<path d="M24 8.5l2.9 8.8c.5 1.7 2.1 2.8 3.8 2.8H40l-7.5 5.4c-1.4 1-2 2.8-1.5 4.5l2.9 8.8-7.5-5.4c-.7-.5-1.5-.8-2.4-.8-.9 0-1.7.3-2.4.8l-7.5 5.4L17 30c.5-1.7 0-3.5-1.5-4.5L8.1 20h9.3c1.7 0 3.3-1.1 3.8-2.8L24 8.5m0-2c-.8 0-1.6.5-1.9 1.4l-2.9 8.8c-.3.8-1 1.4-1.9 1.4H8.1c-1.9 0-2.7 2.5-1.2 3.6l7.5 5.4c.7.5 1 1.4.7 2.2l-2.9 8.8c-.5 1.4.7 2.6 1.9 2.6.4 0 .8-.1 1.2-.4l7.5-5.4c.4-.3.8-.4 1.2-.4s.8.1 1.2.4l7.5 5.4c.4.3.8.4 1.2.4 1.2 0 2.4-1.2 1.9-2.6l-2.9-8.8c-.3-.8 0-1.7.7-2.2l7.5-5.4c1.6-1.1.8-3.6-1.2-3.6h-9.3c-.9 0-1.6-.6-1.9-1.4l-2.9-8.8c-.2-1-1-1.4-1.8-1.4z" />
-			</g>
-		</svg>
-	);
-};
-
-Icon.Add = function Add({
-	width = 24,
-	height = 24,
-	primary = "#10B981",
-	secondary = "#fff",
-}: {
-	width?: number;
-	height?: number;
-	primary?: string;
-	secondary?: string;
-}) {
-	return (
-		<svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 48 48">
-			<g fill={secondary}>
-				<path d="M24 8c8.8 0 16 7.2 16 16s-7.2 16-16 16S8 32.8 8 24 15.2 8 24 8m0-2C14.1 6 6 14.1 6 24s8.1 18 18 18 18-8.1 18-18S33.9 6 24 6z" />
-				<path
-					fill={primary}
-					d="M33 22h-7v-7c0-1.1-.9-2-2-2s-2 .9-2 2v7h-7c-1.1 0-2 .9-2 2s.9 2 2 2h7v7c0 1.1.9 2 2 2s2-.9 2-2v-7h7c1.1 0 2-.9 2-2s-.9-2-2-2z"
-				/>
 			</g>
 		</svg>
 	);
@@ -593,10 +515,10 @@ Icon.CalendarLeftArrow = function CalendarLeftArrow({ width = 24, height = 24, c
 Icon.DoneCheck = function DoneCheck({ width = 24, height = 24, color = "#EF4444" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<g clip-path="url(#clip0_1996_78592)">
+			<g clipPath="url(#clip0_1996_78592)">
 				<path
-					fill-rule="evenodd"
-					clip-rule="evenodd"
+					fillRule="evenodd"
+					clipRule="evenodd"
 					d="M9.66462 2.4487C8.77555 1.68377 7.46081 1.68377 6.57174 2.4487C6.18771 2.77912 5.70794 2.97784 5.20275 3.01576C4.03319 3.10353 3.10353 4.03319 3.01576 5.20275C2.97784 5.70794 2.77912 6.18771 2.4487 6.57174C1.68377 7.46081 1.68377 8.77555 2.4487 9.66462C2.77912 10.0486 2.97784 10.5284 3.01576 11.0336C3.10353 12.2032 4.03319 13.1328 5.20275 13.2206C5.70794 13.2585 6.18771 13.4572 6.57174 13.7877C7.46081 14.5526 8.77555 14.5526 9.66462 13.7877C10.0486 13.4572 10.5284 13.2585 11.0336 13.2206C12.2032 13.1328 13.1328 12.2032 13.2206 11.0336C13.2585 10.5284 13.4572 10.0486 13.7877 9.66462C14.5526 8.77555 14.5526 7.46081 13.7877 6.57174C13.4572 6.18771 13.2585 5.70794 13.2206 5.20275C13.1328 4.03319 12.2032 3.10353 11.0336 3.01576C10.5284 2.97784 10.0486 2.77912 9.66462 2.4487ZM11.231 6.80719C11.4734 6.53779 11.4516 6.12285 11.1822 5.8804C10.9128 5.63794 10.4979 5.65978 10.2554 5.92918L7.52801 8.95962L5.91332 7.61404C5.63488 7.38201 5.22108 7.41963 4.98905 7.69806C4.75702 7.97649 4.79464 8.3903 5.07307 8.62233L7.04366 10.2645C7.38688 10.5505 7.8948 10.5141 8.19368 10.182L11.231 6.80719Z"
 					fill={color}
 				/>
@@ -651,8 +573,8 @@ Icon.Pointer = function Pointer({ width = 24, height = 24, color = "#8EDCC3" }: 
 				<rect x="28.3262" y="36.9863" width="8.17635" height="24.529" rx="4" transform="rotate(-25.5545 28.3262 36.9863)" fill={color} />
 			</g>
 			<defs>
-				<filter id="filter0_d_29_317" x="13.2676" y="8.61731" width="41.5708" height="57.1653" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-					<feFlood flood-opacity="0" result="BackgroundImageFix" />
+				<filter id="filter0_d_29_317" x="13.2676" y="8.61731" width="41.5708" height="57.1653" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+					<feFlood floodOpacity="0" result="BackgroundImageFix" />
 					<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
 					<feOffset dx="2" dy="2" />
 					<feGaussianBlur stdDeviation="3" />
@@ -666,7 +588,7 @@ Icon.Pointer = function Pointer({ width = 24, height = 24, color = "#8EDCC3" }: 
 	);
 };
 
-Icon.Mode = function Mode({ width, height, color }: IconProps) {
+Icon.Grid = function Grid({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -680,7 +602,7 @@ Icon.Mode = function Mode({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.Sort = function Sort({ width, height, color }: IconProps) {
+Icon.Sort = function Sort({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -694,7 +616,7 @@ Icon.Sort = function Sort({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.Comment = function Comment({ width, height, color }: IconProps) {
+Icon.Comment = function Comment({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path
@@ -707,18 +629,7 @@ Icon.Comment = function Comment({ width, height, color }: IconProps) {
 	);
 };
 
-Icon.Pencil = function Pencil({ width, height, color }: IconProps) {
-	return (
-		<svg width={width} height={height} viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<path
-				d="M3.541 13.4582H4.43458L11.6855 6.20725L10.7919 5.31367L3.541 12.5646V13.4582ZM3.11874 14.5206C2.93735 14.5206 2.7853 14.4593 2.66259 14.3366C2.53987 14.2139 2.47852 14.0618 2.47852 13.8804V12.6531C2.47852 12.4804 2.51167 12.3157 2.57797 12.1592C2.64425 12.0026 2.73552 11.8662 2.85175 11.75L11.8217 2.78414C11.9288 2.68685 12.0471 2.61167 12.1765 2.5586C12.3059 2.50554 12.4417 2.479 12.5837 2.479C12.7257 2.479 12.8633 2.50421 12.9964 2.55462C13.1295 2.60502 13.2474 2.68515 13.35 2.79503L14.215 3.6709C14.3249 3.77351 14.4032 3.89159 14.45 4.02514C14.4968 4.15867 14.5201 4.2922 14.5201 4.42574C14.5201 4.56817 14.4958 4.7041 14.4472 4.83352C14.3985 4.96296 14.3211 5.08123 14.215 5.18834L5.24914 14.1474C5.13291 14.2636 4.99652 14.3549 4.83998 14.4212C4.68342 14.4875 4.51878 14.5206 4.34604 14.5206H3.11874ZM11.2309 5.76829L10.7919 5.31367L11.6855 6.20725L11.2309 5.76829Z"
-				fill={color}
-			/>
-		</svg>
-	);
-};
-
-Icon.TrashCan = function TrashCan({ width, height, color }: IconProps) {
+Icon.TrashCan = function TrashCan({ width, height, color = "#adadad" }: IconProps) {
 	return (
 		<svg width={width} height={height} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path

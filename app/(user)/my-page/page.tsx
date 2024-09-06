@@ -128,7 +128,7 @@ export default function Page() {
 										<div
 											className={`border-border-primary/10 relative size-full overflow-hidden rounded-full bg-background-secondary ${file ? "border-2" : ""}`}
 										>
-											<Image src={file ? (file as string) : (user?.image ?? "/icons/defaultAvatar.svg")} alt="Profile Image" fill />
+											<Image src={file ? (file as string) : (user?.image ?? "/icons/defaultAvatar.svg")} alt="Profile Image" fill className="object-cover" />
 										</div>
 										<div className="absolute bottom-0 right-0 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-text-primary bg-dropdown-hover">
 											<Icon.Edit width={11} height={11} color="var(--text-primary)" />
@@ -163,7 +163,7 @@ export default function Page() {
 				</Form>
 				<div className="align-center mt-[24px] flex justify-between font-medium">
 					<button type="button" onClick={openAccountDeletionModal} className="flex gap-[8px] text-status-danger">
-						<Image src="/icons/ic_delete.svg" alt="탈퇴하기" width={24} height={24} />
+						<Image src="/icons/delete.svg" alt="탈퇴하기" width={24} height={24} />
 						탈퇴하기
 					</button>
 					<button type="button" onClick={openChangePasswordModal} className="flex gap-[8px] text-text-emerald">
