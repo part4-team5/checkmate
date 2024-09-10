@@ -3,8 +3,8 @@
 import React, { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import TodoIcon from "@/public/icons/TodoIcon.svg";
-import DoneIcon from "@/public/icons/DoneIcon.svg";
+import TodoIcon from "@/public/icons/todo.svg";
+import DoneIcon from "@/public/icons/done.svg";
 import API from "@/app/_api";
 import CircularProgressBar from "./CircularProgressBar";
 

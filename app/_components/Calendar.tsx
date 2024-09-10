@@ -1,7 +1,6 @@
 "use client";
 
-import ArrowLeftIcon from "@/public/icons/ArrowLeftIcon";
-import ArrowRightIcon from "@/public/icons/ArrowRightIcon";
+import Icon from "@/app/_icons";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 interface CalendarProps extends React.PropsWithChildren {
@@ -145,13 +144,13 @@ Calendar.Picker = function Picker() {
 		<div className="inline-block rounded-[24px] bg-background-secondary px-[16px] py-[16px] text-text-primary">
 			<div className="flex h-[34px] items-center justify-between">
 				<button type="button" aria-label="prev" onClick={prev} className="mx-[4px] aspect-square rounded-[6px] hover:bg-background-tertiary">
-					<ArrowLeftIcon width={24} height={24} color="white" />
+					<Icon.ArrowLeft width={24} height={24} color="white" />
 				</button>
 				<div>
 					{date.getFullYear()}년 {date.getMonth() + 1}월
 				</div>
 				<button type="button" aria-label="next" onClick={next} className="mx-[4px] aspect-square rounded-[6px] hover:bg-background-tertiary">
-					<ArrowRightIcon width={24} height={24} color="white" />
+					<Icon.ArrowRight width={24} height={24} color="white" />
 				</button>
 			</div>
 			<table className="table-auto">

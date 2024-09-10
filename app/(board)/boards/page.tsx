@@ -131,7 +131,7 @@ export default function Page() {
 								}
 							}}
 						>
-							<Icon.Mode width={24} height={24} color="var(--text-primary)" />
+							<Icon.Grid width={24} height={24} color="var(--text-primary)" />
 						</button>
 						<DropDown
 							options={[

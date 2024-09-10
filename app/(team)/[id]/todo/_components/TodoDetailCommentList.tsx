@@ -1,12 +1,12 @@
 import DropDown from "@/app/_components/Dropdown";
 import { calculateTimeDifference } from "@/app/_utils/IsoToFriendlyDate";
-import KebabIcon from "@/public/icons/KebabIcon";
 import Image from "next/image";
 import { useState } from "react";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import Button from "@/app/_components/Button";
 import API from "@/app/_api";
 import { useDeleteTodoCommentMutation, usePatchTodoCommentEditMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import Icon from "@/app/_icons";
 
 type CommnetListType = Awaited<ReturnType<(typeof API)["{teamId}/tasks/{taskId}/comments"]["GET"]>>;
 type CommentType = CommnetListType[number];
@@ -86,7 +86,7 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 								{comment.user?.id === user.id && (
 									<DropDown options={options}>
 										<button type="button" aria-label="dropdown">
-											<KebabIcon />
+											<Icon.Kebab width={16} height={16} />
 										</button>
 									</DropDown>
 								)}

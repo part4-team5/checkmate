@@ -10,5 +10,5 @@
 	"editor.formatOnPaste": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"typescript.preferences.importModuleSpecifier": "non-relative",
-	"cSpell.words": ["sombian"]
+	"cSpell.words": ["Bento", "sombian"]
 }

@@ -14,9 +14,9 @@ import { debounce } from "@/app/_utils/DelayManager";
 import toast from "@/app/_utils/Toast";
 import useAuthStore from "@/app/_store/useAuthStore";
 import dynamic from "next/dynamic";
+import Dropdown from "@/app/_components/Dropdown";
 
 // 지연 로딩 컴포넌트
-const Dropdown = dynamic(() => import("@/app/_components/Dropdown"), { ssr: false });
 const LogoutModal = dynamic(() => import("@/app/_components/modal-contents/Logout"), { ssr: false });
 const Sidebar = dynamic(() => import("@/app/_components/Header/Sidebar"), { ssr: false });
 
@@ -84,6 +84,13 @@ export default function Header() {
 	const userDropdown = useMemo(
 		() => [
 			{
+				text: "내 대시보드",
+				onClick: () => {
+					router.push("/get-started");
+					onSideBarClose();
+				},
+			},
+			{
 				text: "마이 히스토리",
 				onClick: () => {
 					router.push("/my-history");
@@ -94,13 +101,6 @@ export default function Header() {
 				text: "계정 설정",
 				onClick: () => {
 					router.push("/my-page");
-					onSideBarClose();
-				},
-			},
-			{
-				text: "내 대시보드",
-				onClick: () => {
-					router.push("/get-started");
 					onSideBarClose();
 				},
 			},
@@ -134,7 +134,7 @@ export default function Header() {
 
 	return (
 		<header className="fixed top-0 z-[69] h-[60px] w-full min-w-[320px] border-b border-header-primary bg-background-quaternary text-text-primary">
-			<div className="mx-auto flex size-full max-w-screen-desktop items-center gap-2 tablet:max-w-screen-tablet tablet:gap-4 desktop:max-w-screen-desktop">
+			<div className="mx-auto flex size-full max-w-screen-desktop items-center gap-2 tablet:gap-4 tablet:px-4 desktop:max-w-screen-desktop">
 				{/* 햄버거 버튼 */}
 				<button type="button" onClick={() => setIsSidebarOpened(!isSidebarOpened)} aria-label="Menu" className="z-50 block p-4 tablet:hidden">
 					{isSidebarOpened ? <Icon.Close width={24} height={24} /> : <Icon.Hamburger width={24} height={24} />}
@@ -154,7 +154,7 @@ export default function Header() {
 						<nav className="hidden tablet:flex">
 							<ul className="flex items-center gap-5">
 								<li>
-									<Dropdown options={teamDropdown.length > 0 ? teamDropdown : []} gapY={10} align="LL">
+									<Dropdown options={teamDropdown} gapY={10} align="LL">
 										<button type="button" className="flex max-h-[40px] max-w-[350px] items-center gap-[10px] px-2 py-3 text-lg font-medium desktop:max-w-none">
 											<Image
 												src={userData?.memberships.find((membership) => membership.groupId === Number(params.id))?.group.image ?? "/icons/emptyImage.svg"}
@@ -181,11 +181,15 @@ export default function Header() {
 						</nav>
 
 						<Dropdown options={userDropdown} gapY={10} align="RR">
-							<button type="button" className="flex max-w-[300px] gap-2 p-2">
-								<div className="size-6 min-h-6 min-w-6">
-									<Icon.User width="100%" height="100%" color="var(--text-primary)" />
+							<button type="button" className="mr-3 flex max-w-[300px] items-center gap-2 p-2 tablet:m-0">
+								<div className="relative size-6 min-h-6 min-w-6">
+									{userData?.image ? (
+										<Image src={userData.image} alt="Avatar" fill className="rounded-full object-cover" />
+									) : (
+										<Icon.User width="100%" height="100%" color="var(--text-primary)" />
+									)}
 								</div>
-								<p className="hidden overflow-x-hidden text-ellipsis whitespace-nowrap desktop:block">{userData?.nickname}</p>
+								<p className="hidden overflow-x-hidden text-ellipsis whitespace-nowrap text-lg font-medium desktop:block">{userData?.nickname}</p>
 							</button>
 						</Dropdown>
 					</div>

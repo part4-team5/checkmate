@@ -6,12 +6,16 @@ import LandingProgressBar from "@/app/_components/LandingProgressBar";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Cookie from "@/app/_utils/Cookie";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 export default function Page() {
 	// 초기 다크모드 상태를 true로 설정
 	const [isDarkMode, setIsDarkMode] = useState<boolean>(Cookie.get("theme") === null ? true : Cookie.get("theme") === "dark");
 
 	useEffect(() => {
+		Aos.init();
+
 		// 다크모드 클래스 변경 감지를 위한 MutationObserver 설정
 		const observer = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {

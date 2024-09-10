@@ -4,12 +4,12 @@ import { useState, useCallback, useLayoutEffect, useRef } from "react";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "@/app/_store/useAuthStore";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
-import KebabIcon from "@/public/icons/KebabIcon";
 import Message from "@/app/_components/Message";
 import DropDown from "@/app/_components/Dropdown";
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import toast from "@/app/_utils/Toast";
+import Icon from "@/app/_icons";
 
 type CommentsProps = {
 	articleId: number;
@@ -259,7 +259,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 											]}
 										>
 											<button type="button" aria-label="dropdown">
-												<KebabIcon />
+												<Icon.Kebab width={16} height={16} />
 											</button>
 										</DropDown>
 									)}
