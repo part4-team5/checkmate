@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 
-import Header from "@/app/_components/header";
+import Header from "@/app/_components/header-temp";
 import "./globals.css";
 
 import GlobalModals from "@/app/_components/modals/GlobalModals";

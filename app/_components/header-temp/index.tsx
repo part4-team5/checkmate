@@ -23,7 +23,7 @@ import useAuthStore from "@/app/_store/AuthStore";
 
 // 지연 로딩 컴포넌트
 const LogoutModal = dynamic(() => import("@/app/_components/modals/modal-containers/Logout"), { ssr: false });
-const Sidebar = dynamic(() => import("@/app/_components/header/Sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("./Sidebar"), { ssr: false });
 
 export default function Header() {
 	const router = useRouter();
