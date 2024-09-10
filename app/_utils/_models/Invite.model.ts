@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 import UserModel from "@/app/_utils/_models/Users.model";
 import mongoose, { Schema, Model, Document } from "mongoose";

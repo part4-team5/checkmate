@@ -1,8 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Icon from "@/app/_icons";
+
 import API from "@/app/_api";
+
+import Icon from "@/app/_icons";
 
 type UserType = Awaited<ReturnType<(typeof API)["{teamId}/user"]["GET"]>>;
 

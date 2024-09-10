@@ -2,6 +2,7 @@
 
 import InvitedList from "@/app/(team)/get-started/_components/InvitedList";
 import TeamList from "@/app/(team)/get-started/_components/TeamLists";
+
 import useBreakPoint from "@/app/_hooks/useBreakPoint";
 
 export default function GetStartedPage() {

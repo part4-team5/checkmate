@@ -1,13 +1,15 @@
-import Button from "@/app/_components/Button";
-import ModalWrapper from "@/app/_components/modal-contents/Modal";
-import Form from "@/app/_components/Form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import Icon from "@/app/_icons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import API from "@/app/_api";
+
+import Icon from "@/app/_icons";
+
+import ModalWrapper from "@/app/_components/modals/ModalWrapper";
+import Button from "@/app/_components/Button";
+import Form from "@/app/_components/Form";
 
 type TeamEditProps = {
 	close: () => void;

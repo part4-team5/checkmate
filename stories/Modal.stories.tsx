@@ -2,12 +2,12 @@
 /* eslint-disable react/function-component-definition */
 import React from "react";
 import { Meta, StoryFn } from "@storybook/react";
-import MemberInvite from "@/app/_components/modal-contents/MemberInvite";
-import AccountDeletion from "@/app/_components/modal-contents/AccountDeletion";
-import Logout from "@/app/_components/modal-contents/Logout";
 import useOverlay from "@/app/_hooks/useOverlay";
 import Button from "@/app/_components/Button";
-import useModalStore from "@/app/_store/modalStore";
+import useModalStore from "@/app/_store/ModalStore";
+import MemberInvite from "@/app/_components/modals/modal-containers/MemberInvite";
+import AccountDeletion from "@/app/_components/modals/modal-containers/AccountDeletion";
+import Logout from "@/app/_components/modals/modal-containers/Logout";
 
 export default {
 	title: "ModalContents",

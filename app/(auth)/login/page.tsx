@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useCallback } from "react";
-import useAuthStore from "@/app/_store/useAuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 import Oauth from "@/app/(auth)/_components/Oauth";
 import toast from "@/app/_utils/Toast";
 import Image from "next/image";
@@ -58,7 +58,6 @@ export default function LoginPage() {
 		onError: (error) => {
 			// alert(`${error.message ?? "알 수 없는 오류 발생"}`);
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
 		},
 	});
 

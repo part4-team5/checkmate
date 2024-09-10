@@ -1,12 +1,17 @@
-import { useMutation } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
-import ModalWrapper from "@/app/_components/modal-contents/Modal";
+import { useMutation } from "@tanstack/react-query";
+
+import API from "@/app/_api";
+
 import Form from "@/app/_components/Form";
 import Button from "@/app/_components/Button";
-import { useCallback } from "react";
-import API from "@/app/_api";
-import useAuthStore from "@/app/_store/useAuthStore";
+import ModalWrapper from "@/app/_components/modals/ModalWrapper";
+
 import useCookie from "@/app/_hooks/useCookie";
+
+import useAuthStore from "@/app/_store/AuthStore";
+import toast from "@/app/_utils/Toast";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -29,15 +34,14 @@ export default function ChangePassword({ close }: ChangePasswordModalProps) {
 			return API["{teamId}/user/password"].PATCH({}, { password, passwordConfirmation });
 		},
 		onSuccess: () => {
-			alert("비밀번호가 변경되었습니다. 로그인을 다시 시도해주세요.");
+			toast.success("비밀번호가 변경되었습니다. 로그인을 다시 시도해주세요.");
 			setAccessToken(null);
 			setRefreshToken(null);
 			clearUser();
 			router.push("/login");
 		},
 		onError: (error) => {
-			alert(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
+			toast.error(error.message ?? "알 수 없는 오류 발생");
 		},
 	});
 

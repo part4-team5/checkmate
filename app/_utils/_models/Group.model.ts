@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-await-in-loop */
 import mongoose, { Schema, Model, Document } from "mongoose";

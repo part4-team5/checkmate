@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { createContext, useContext, ReactNode, useMemo } from "react";
-import defaultImage from "@/public/images/profile.png";
 import { Markdown, Presets } from "@sombian/markdown";
+
 import Icon from "@/app/_icons";
+import defaultImage from "@/public/images/profile.png";
 
 const CORE = new Markdown(...Presets.NekoNote);
 

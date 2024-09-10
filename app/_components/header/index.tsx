@@ -5,20 +5,25 @@ import { useRouter, useParams, usePathname } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+import Icon from "@/app/_icons";
 
 import API from "@/app/_api";
-import Icon from "@/app/_icons";
-import useCookie from "@/app/_hooks/useCookie";
-import useOverlay from "@/app/_hooks/useOverlay";
-import { debounce } from "@/app/_utils/DelayManager";
+
 import toast from "@/app/_utils/Toast";
-import useAuthStore from "@/app/_store/useAuthStore";
-import dynamic from "next/dynamic";
+import { debounce } from "@/app/_utils/DelayManager";
+
 import Dropdown from "@/app/_components/Dropdown";
 
+import useCookie from "@/app/_hooks/useCookie";
+import useOverlay from "@/app/_hooks/useOverlay";
+
+import useAuthStore from "@/app/_store/AuthStore";
+
 // 지연 로딩 컴포넌트
-const LogoutModal = dynamic(() => import("@/app/_components/modal-contents/Logout"), { ssr: false });
-const Sidebar = dynamic(() => import("@/app/_components/Header/Sidebar"), { ssr: false });
+const LogoutModal = dynamic(() => import("@/app/_components/modals/modal-containers/Logout"), { ssr: false });
+const Sidebar = dynamic(() => import("./Sidebar"), { ssr: false });
 
 export default function Header() {
 	const router = useRouter();

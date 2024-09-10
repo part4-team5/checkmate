@@ -1,8 +1,10 @@
 "use client";
 
-import useToastStore from "@/app/_store/toastStore";
-import Icon from "@/app/_icons";
 import { useShallow } from "zustand/react/shallow";
+
+import Icon from "@/app/_icons";
+
+import useToastStore from "@/app/_store/ToastStore";
 
 function Toaster() {
 	const { toasts, removeToast } = useToastStore(

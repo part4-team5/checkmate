@@ -1,24 +1,32 @@
 "use client";
 
-import API from "@/app/_api";
-import Calendar from "@/app/_components/Calendar";
-import { useQueryClient } from "@tanstack/react-query";
-import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import useOverlay from "@/app/_hooks/useOverlay";
-import SideBarWrapper from "@/app/_components/sidebar";
-import { convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
-import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
-import Popover from "@/app/_components/Popover";
-import TodoItem from "@/app/(team)/[id]/todo/_components/TodoItem";
-import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_components/api/useQuery";
-import AddTaskModal from "@/app/(team)/[id]/todo/_components/AddTask";
-import TodoDetail from "@/app/(team)/[id]/todo/_components/todoDetail";
-import { useDeleteTodoMutation, useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Reorder, motion } from "framer-motion";
-import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
+
+import API from "@/app/_api";
+
 import Icon from "@/app/_icons";
+
+import { convertIsoToDateToKorean } from "@/app/_utils/IsoToFriendlyDate";
 import Tour from "@/app/_utils/Tour";
+
+import Calendar from "@/app/_components/Calendar";
+import SideBarWrapper from "@/app/_components/Sidebar";
+import Popover from "@/app/_components/Popover";
+
+import useOverlay from "@/app/_hooks/useOverlay";
+
+import { useDeleteTodoMutation, useTodoOrderMutation, useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
+import { useGetGroupList, useGetTodoItems } from "@/app/(team)/[id]/todo/_components/api/useQuery";
+
+import tasksKey from "@/app/(team)/[id]/todo/_components/api/queryFactory";
+
+import TodoItem from "@/app/(team)/[id]/todo/_components/TodoItem";
+import AddTaskModal from "@/app/(team)/[id]/todo/_components/AddTaskModal";
+import AddTodo from "@/app/(team)/[id]/todo/_components/AddTodo";
+import TodoDetail from "@/app/(team)/[id]/todo/_components/TodoDetail";
 
 type ClientTodoProps = {
 	groupId: number;

@@ -8,8 +8,8 @@ import API from "@/app/_api";
 import { useDeleteTodoCommentMutation, usePatchTodoCommentEditMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import Icon from "@/app/_icons";
 
-type CommnetListType = Awaited<ReturnType<(typeof API)["{teamId}/tasks/{taskId}/comments"]["GET"]>>;
-type CommentType = CommnetListType[number];
+type CommentListType = Awaited<ReturnType<(typeof API)["{teamId}/tasks/{taskId}/comments"]["GET"]>>;
+type CommentType = CommentListType[number];
 
 type User = {
 	id: number;

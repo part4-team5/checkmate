@@ -57,17 +57,6 @@ WithImage.args = {
 			text: "반가워요",
 			image: "https://via.placeholder.com/150",
 		},
-		{
-			content: (
-				<button
-					type="button"
-					className="h-[46px] w-[186px] rounded-[12px] border border-[#F8FAFC] text-[#F8FAFC] hover:bg-[#63748D]"
-					onClick={() => alert("팀 추가하기 클릭됨")}
-				>
-					팀 추가하기
-				</button>
-			),
-		},
 	],
 	align: "RL",
 	gapX: 0,
@@ -112,17 +101,6 @@ WithSubOptionsAndImage.args = {
 					},
 				},
 			],
-		},
-		{
-			content: (
-				<button
-					type="button"
-					className="h-[46px] w-[186px] rounded-[12px] border border-[#F8FAFC] text-[#F8FAFC] hover:bg-[#63748D]"
-					onClick={() => alert("팀 추가하기 클릭됨")}
-				>
-					팀 추가하기
-				</button>
-			),
 		},
 	],
 	align: "RL",

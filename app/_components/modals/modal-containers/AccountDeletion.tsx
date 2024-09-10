@@ -1,5 +1,5 @@
 import Button from "@/app/_components/Button";
-import ModalWrapper from "@/app/_components/modal-contents/Modal";
+import ModalWrapper from "@/app/_components/modals/ModalWrapper";
 
 type AccountDeletionProps = {
 	onClick: () => void;

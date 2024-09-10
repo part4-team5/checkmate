@@ -1,7 +1,7 @@
 import Icon from "@/app/_icons/index";
 import { useRef, useState } from "react";
 import Button from "@/app/_components/Button";
-import useAuthStore from "@/app/_store/useAuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 import { useGetComments, useGetTodoContent } from "@/app/(team)/[id]/todo/_components/api/useQuery";
 import TodoDetailCommentList from "@/app/(team)/[id]/todo/_components/TodoDetailCommentList";
 import { useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";

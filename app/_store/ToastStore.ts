@@ -8,7 +8,7 @@ interface Toast {
 	type: ToastType;
 }
 
-interface ToastStore {
+interface ToastStoreType {
 	toasts: Toast[];
 	addToast: (message: string, type: ToastType, duration?: number) => number;
 	updateToast: (id: number, message: string, type: ToastType, duration?: number) => void;
@@ -18,7 +18,7 @@ interface ToastStore {
 
 let toastId = 1;
 
-const useToastStore = create<ToastStore>((set) => ({
+const useToastStore = create<ToastStoreType>((set) => ({
 	toasts: [],
 	addToast: (message, type, duration?: number) => {
 		// eslint-disable-next-line no-plusplus

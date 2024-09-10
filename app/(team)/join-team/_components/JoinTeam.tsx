@@ -3,7 +3,7 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Icon from "@/app/_icons";
-import useAuthStore from "@/app/_store/useAuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 import toast from "@/app/_utils/Toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";

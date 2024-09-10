@@ -1,4 +1,4 @@
-import useToastStore, { ToastType } from "@/app/_store/toastStore";
+import useToastStore, { ToastType } from "@/app/_store/ToastStore";
 
 const toast = {
 	success: (message: string, duration: number = 2000) => useToastStore.getState().addToast(message, "success", duration),

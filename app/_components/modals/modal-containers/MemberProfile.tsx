@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import Button from "@/app/_components/Button";
-import ModalWrapper from "@/app/_components/modal-contents/Modal";
-import defaultImage from "@/public/icons/defaultAvatar.svg";
+
 import Icon from "@/app/_icons";
+import defaultImage from "@/public/icons/defaultAvatar.svg";
+
+import ModalWrapper from "@/app/_components/modals/ModalWrapper";
+import Button from "@/app/_components/Button";
 
 type MemberProfileProps = {
 	email: string;

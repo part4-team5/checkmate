@@ -1,9 +1,11 @@
 "use client";
 
-import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
-import { motion, useMotionValue } from "framer-motion";
 import { useState, useRef } from "react";
+import { motion, useMotionValue } from "framer-motion";
+
 import Icon from "@/app/_icons";
+
+import CircularProgressBar from "@/app/(team)/[id]/_components/CircularProgressBar";
 
 export default function LandingProgressBar() {
 	const [isHovered, setIsHovered] = useState(false);

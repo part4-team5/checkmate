@@ -25,7 +25,6 @@ function Kakao() {
 	});
 
 	const handleKakaoApps = () => {
-		// TODO: 카카오 앱 등록 한번 실행하면 더 이상 실행하지 않도록 수정
 		if (!kakaoAppsMutation.isPending) kakaoAppsMutation.mutate();
 	};
 
@@ -56,7 +55,6 @@ function Google() {
 	});
 
 	const handleGoogleApps = () => {
-		// TODO: 구글 앱 등록 한번 실행하면 더 이상 실행하지 않도록 수정
 		if (!googleAppsMutation.isPending) googleAppsMutation.mutate();
 	};
 

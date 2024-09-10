@@ -1,6 +1,6 @@
 "use client";
 
-import useModalStore from "@/app/_store/modalStore";
+import useModalStore from "@/app/_store/ModalStore";
 import { useCallback } from "react";
 
 // 모달을 열고 닫는 함수

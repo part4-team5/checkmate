@@ -1,13 +1,26 @@
-import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFrequency";
-import API from "@/app/_api";
-import DeleteModal from "@/app/_components/modal-contents/DeleteModal";
-import useOverlay from "@/app/_hooks/useOverlay";
-import Icon from "@/app/_icons";
-import { convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useState } from "react";
 
+import API from "@/app/_api";
+
+import Icon from "@/app/_icons";
+
+import useOverlay from "@/app/_hooks/useOverlay";
+
+import { convertIsoToDateAndTime } from "@/app/_utils/IsoToFriendlyDate";
+
+import DateTimeFrequency from "@/app/(team)/[id]/todo/_components/DateTimeFrequency";
+
+const DeleteModal = dynamic(() => import("@/app/_components/modals/modal-containers/Delete"));
+
 type FrequencyType = "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
+
 const frequency: Record<FrequencyType, string> = {
 	DAILY: "매일 반복",
 	WEEKLY: "매주 반복",
@@ -26,11 +39,6 @@ type TodoItemProps = {
 	onTodoClick: (groupId: number, taskId: number, todoId: number, date: Date, doneAt: string) => void;
 	onTodoDelete: (todoId: number) => void;
 };
-
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/interactive-supports-focus */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 
 export default function TodoItem({ taskId, todoItem, groupId, currentDate, onToggleTodo, onTodoClick, onTodoDelete }: TodoItemProps) {
 	const [isLongPress, setIsLongPress] = useState(false);
