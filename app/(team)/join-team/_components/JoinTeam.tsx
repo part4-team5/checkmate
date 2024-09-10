@@ -3,7 +3,7 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Icon from "@/app/_icons";
-import useAuthStore from "@/app/_store/useAuthStore";
+import AuthStore from "@/app/_store/AuthStore";
 import toast from "@/app/_utils/Toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -13,7 +13,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 type InviteType = Awaited<ReturnType<(typeof API)["api/invite/link/{key}"]["GET"]>>;
 
 export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
-	const user = useAuthStore((state) => state.user);
+	const user = AuthStore((state) => state.user);
 	const userEmail = user?.email as string;
 
 	const [inviteGroup, setInviteGroup] = useState<InviteType>();

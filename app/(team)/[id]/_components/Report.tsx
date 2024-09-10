@@ -39,8 +39,6 @@ function Report({ id }: ReportProps) {
 				total += tasks.length;
 				done += tasks.filter((task) => task.doneAt !== null).length;
 			});
-		} else {
-			console.warn("Unexpected data structure:", data);
 		}
 
 		return { totalTasks: total, doneTasks: done };

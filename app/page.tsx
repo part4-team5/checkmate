@@ -2,12 +2,15 @@
 
 "use client";
 
-import LandingProgressBar from "@/app/_components/LandingProgressBar";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import Cookie from "@/app/_utils/Cookie";
 import Aos from "aos";
+
 import "aos/dist/aos.css";
+
+import Cookie from "@/app/_utils/Cookie";
+
+import LandingProgressBar from "@/app/_components/LandingProgressBar";
 
 export default function Page() {
 	// 초기 다크모드 상태를 true로 설정

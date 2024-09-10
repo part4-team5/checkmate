@@ -3,12 +3,16 @@
 "use client";
 
 import { useCallback } from "react";
-import ModalWrapper from "@/app/_components/modal-contents/Modal";
-import Form from "@/app/_components/Form";
-import API from "@/app/_api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "@/app/_utils/Toast";
+
+import API from "@/app/_api";
+
 import Icon from "@/app/_icons";
+
+import toast from "@/app/_utils/Toast";
+
+import ModalWrapper from "@/app/_components/modals/ModalWrapper";
+import Form from "@/app/_components/Form";
 
 type PostEditTasksProps = {
 	initialTasksName?: string;

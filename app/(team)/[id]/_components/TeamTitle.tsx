@@ -4,20 +4,21 @@ import { useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
+
 import API from "@/app/_api";
-import DropDown from "@/app/_components/Dropdown";
-import useOverlay from "@/app/_hooks/useOverlay";
+
 import Icon from "@/app/_icons";
+
 import toast from "@/app/_utils/Toast";
 
-const DeleteModal = dynamic(() => import("@/app/_components/modal-contents/DeleteModal"), {});
-const TeamEdit = dynamic(() => import("@/app/_components/modal-contents/TeamEdit"), {});
+import DropDown from "@/app/_components/Dropdown";
 
-type TeamTitleProps = {
-	id: number;
-};
+import useOverlay from "@/app/_hooks/useOverlay";
 
-export default function TeamTitle({ id }: TeamTitleProps): JSX.Element {
+const DeleteModal = dynamic(() => import("@/app/_components/modals/modal-containers/Delete"), { ssr: false });
+const TeamEdit = dynamic(() => import("@/app/_components/modals/modal-containers/TeamEdit"), { ssr: false });
+
+export default function TeamTitle({ id }: { id: number }): JSX.Element {
 	const overlay = useOverlay();
 	const router = useRouter();
 	const params = useParams();

@@ -1,8 +1,10 @@
 "use client";
 
-import Icon from "@/app/_icons";
-import Cookie from "@/app/_utils/Cookie";
 import { useState } from "react";
+
+import Icon from "@/app/_icons";
+
+import Cookie from "@/app/_utils/Cookie";
 
 export default function DarkModeToggle() {
 	const [isDarkMode, setDarkMode] = useState(Cookie.get("theme") === null ? true : Cookie.get("theme") === "dark");

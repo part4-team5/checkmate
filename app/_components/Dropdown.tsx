@@ -8,14 +8,15 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
+
 import Icon from "@/app/_icons";
+
 import Popover from "./Popover";
 
 type Option = {
 	text?: string;
 	onClick?: () => void;
 	image?: string;
-	content?: React.ReactNode;
 	options?: Option[];
 	groupId?: string;
 };

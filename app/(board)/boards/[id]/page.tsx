@@ -12,18 +12,23 @@ import { useState, ChangeEvent } from "react";
 import Button from "@/app/_components/Button";
 import Quill from "@/app/_components/Quill";
 import { useRouter } from "next/navigation";
-import useAuthStore from "@/app/_store/useAuthStore";
+import AuthStore from "@/app/_store/AuthStore";
 import toast from "@/app/_utils/Toast";
+import dynamic from "next/dynamic";
+import useOverlay from "@/app/_hooks/useOverlay";
+
+const DeleteModal = dynamic(() => import("@/app/_components/modals/modal-containers/Delete"), { ssr: false });
 
 export default function BoardDetail({ params }: { params: { id: string } }) {
 	const articleId = Number(params.id);
 	const router = useRouter();
 	const queryClient = useQueryClient();
-	const { user } = useAuthStore();
+	const { user } = AuthStore();
 	const [isEditing, setIsEditing] = useState(false);
 	const [editArticleData, setEditArticleData] = useState({ title: "", content: "", image: "" });
 	const [isAnimating, setIsAnimating] = useState(false);
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
+	const overlay = useOverlay();
 
 	// 이미지 업로드
 	const imageUpload = async (file: File) => {
@@ -69,9 +74,16 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 
 	// 삭제 버튼 클릭 핸들러
 	const handleDeleteClick = () => {
-		if (window.confirm("정말 삭제하시겠습니까?")) {
-			deleteArticleMutation.mutate();
-		}
+		overlay.open(({ close }) => (
+			<DeleteModal
+				modalContent="정말 게시글을 삭제하시겠습니까?"
+				close={close}
+				onClick={() => {
+					deleteArticleMutation.mutate();
+					close();
+				}}
+			/>
+		));
 	};
 
 	// 이미지 파일 선택 핸들러
@@ -140,7 +152,6 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 		},
 		onError: (error) => {
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
 		},
 	});
 
@@ -154,7 +165,6 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 		},
 		onError: (error) => {
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
 		},
 	});
 
@@ -175,7 +185,6 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 	};
 
 	if (articleError) {
-		console.error("Article Fetch Error:", articleError);
 		return <div>Error loading article</div>;
 	}
 

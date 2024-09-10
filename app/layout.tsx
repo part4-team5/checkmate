@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary */
 
-import Header from "@/app/_components/Header";
+import Header from "@/app/_components/header";
 import "./globals.css";
 
-import GlobalModals from "@/app/_components/GlobalModals";
+import GlobalModals from "@/app/_components/modals/GlobalModals";
 import QueryProvider from "@/app/_components/QueryProvider";
 import Toaster from "@/app/_components/Toaster";
 import Cookie from "@/app/_utils/Cookie";

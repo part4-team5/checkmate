@@ -1,10 +1,12 @@
 "use client";
 
 import React from "react";
-import ModalWrapper from "@/app/_components/modal-contents/Modal";
+
 import Form from "@/app/_components/Form";
-import { useAddTaskMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import Button from "@/app/_components/Button";
+import ModalWrapper from "@/app/_components/modals/ModalWrapper";
+
+import { useAddTaskMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 
 type AddTaskModalProps = {
 	groupId: number;

@@ -1,11 +1,14 @@
-import getQueryClient from "@/app/_components/GetQueryClient";
-import API from "@/app/_api";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import TeamTitle from "@/app/(team)/[id]/_component/TeamTitle";
-import Report from "@/app/(team)/[id]/_component/Report";
-import Members from "@/app/(team)/[id]/_component/Members";
-import Tasks from "@/app/(team)/[id]/_component/Tasks";
 import { notFound } from "next/navigation";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+
+import API from "@/app/_api";
+
+import getQueryClient from "@/app/_utils/QueryClient";
+
+import TeamTitle from "@/app/(team)/[id]/_components/TeamTitle";
+import Report from "@/app/(team)/[id]/_components/Report";
+import Members from "@/app/(team)/[id]/_components/Members";
+import Tasks from "@/app/(team)/[id]/_components/Tasks";
 
 export default async function Page({ params }: { params: { id: string } }) {
 	const id = Number(params.id);

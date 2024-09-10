@@ -4,20 +4,24 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
-import { Reorder, AnimatePresence, motion } from "framer-motion";
-import CircularProgressBar from "@/app/(team)/[id]/_component/CircularProgressBar";
-import Icon from "@/app/_icons";
-import Tour from "@/app/_utils/Tour";
-import { useRouter } from "next/navigation";
-import useOverlay from "@/app/_hooks/useOverlay";
-import { useQueryClient } from "@tanstack/react-query";
-import toast from "@/app/_utils/Toast";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { Reorder, AnimatePresence, motion } from "framer-motion";
 
-import { useGroupInfo, useDeleteTaskList, useReorderTaskLists, TaskListType } from "./useTaskList";
+import Icon from "@/app/_icons";
 
-const PostEditTasks = dynamic(() => import("@/app/_components/modal-contents/PostEditTasks"), {});
-const DeleteModal = dynamic(() => import("@/app/_components/modal-contents/DeleteModal"), {});
+import Tour from "@/app/_utils/Tour";
+import toast from "@/app/_utils/Toast";
+
+import CircularProgressBar from "@/app/(team)/[id]/_components/CircularProgressBar";
+
+import useOverlay from "@/app/_hooks/useOverlay";
+
+import { useGroupInfo, useDeleteTaskList, useReorderTaskLists, TaskListType } from "../_hooks/useTaskList";
+
+const PostEditTasks = dynamic(() => import("@/app/_components/modals/modal-containers/PostEditTasks"), { ssr: false });
+const DeleteModal = dynamic(() => import("@/app/_components/modals/modal-containers/Delete"), { ssr: false });
 
 function TaskItem({
 	taskList,

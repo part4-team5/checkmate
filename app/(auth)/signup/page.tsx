@@ -1,15 +1,20 @@
 "use client";
 
-import Form from "@/app/_components/Form";
-import useCookie from "@/app/_hooks/useCookie";
-import API from "@/app/_api/index";
+import { useCallback } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCallback } from "react";
-import useAuthStore from "@/app/_store/useAuthStore";
-import Oauth from "@/app/(auth)/_components/Oauth";
+
+import API from "@/app/_api/index";
+
 import toast from "@/app/_utils/Toast";
-import Image from "next/image";
+
+import Form from "@/app/_components/Form";
+import Oauth from "@/app/(auth)/_components/Oauth";
+
+import useCookie from "@/app/_hooks/useCookie";
+
+import AuthStore from "@/app/_store/AuthStore";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -17,7 +22,7 @@ export default function SignupPage() {
 	const router = useRouter();
 	const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
-	const setUser = useAuthStore((state) => state.setUser);
+	const setUser = AuthStore((state) => state.setUser);
 
 	const queryClient = useQueryClient();
 
@@ -56,7 +61,6 @@ export default function SignupPage() {
 		},
 		onError: (error) => {
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
 		},
 	});
 

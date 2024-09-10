@@ -2,15 +2,19 @@
 
 "use client";
 
-import API from "@/app/_api";
-import Button from "@/app/_components/Button";
-import Form from "@/app/_components/Form";
-import Icon from "@/app/_icons";
-import toast from "@/app/_utils/Toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+
+import API from "@/app/_api";
+
+import Icon from "@/app/_icons";
+
+import toast from "@/app/_utils/Toast";
+
+import Button from "@/app/_components/Button";
+import Form from "@/app/_components/Form";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -58,8 +62,6 @@ export default function CreateTeamPage() {
 			// 몽고 DB에서 그룹 정보 업데이트
 			createTeamMongoMutation.mutate(data);
 
-			toast.success("팀이 생성되었습니다.");
-
 			// 쿼리 무효화
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 
@@ -73,8 +75,11 @@ export default function CreateTeamPage() {
 	const handleTeamCreation = useCallback(
 		(ctx: FormContext) => {
 			if (createTeamMutation.isPending) return;
-
-			createTeamMutation.mutate(ctx);
+			toast.promise(createTeamMutation.mutateAsync(ctx), {
+				loading: "팀 생성 중...",
+				success: "팀이 생성되었습니다.",
+				error: "팀 생성에 실패했습니다.",
+			});
 		},
 		[createTeamMutation],
 	);

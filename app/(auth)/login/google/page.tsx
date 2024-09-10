@@ -2,7 +2,7 @@
 
 import API from "@/app/_api";
 import useCookie from "@/app/_hooks/useCookie";
-import useAuthStore from "@/app/_store/useAuthStore";
+import AuthStore from "@/app/_store/AuthStore";
 import toast from "@/app/_utils/Toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -15,7 +15,7 @@ export default function GoogleLogin() {
 
 	const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
-	const setUser = useAuthStore((state) => state.setUser);
+	const setUser = AuthStore((state) => state.setUser);
 
 	const queryClient = useQueryClient();
 

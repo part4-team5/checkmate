@@ -265,7 +265,6 @@ export const useDeleteTodoMutation = (groupId: number, currentTaskId: number, cu
 		onMutate: async (todoId) => {
 			await queryClient.cancelQueries({ queryKey: tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")) });
 			const oldData = queryClient.getQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")));
-			console.log(oldData);
 			const newData = oldData?.filter((todo) => todo.id !== todoId);
 			queryClient.setQueryData<TaskListType>(tasksKey.detail(groupId, currentTaskId, currentDate.toLocaleDateString("ko-KR")), newData);
 			return { oldData };

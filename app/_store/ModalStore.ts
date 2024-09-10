@@ -15,7 +15,7 @@ type ModalState = {
 };
 
 // 전역으로 모달 관리
-const useModalStore = create<ModalState>((set, get) => ({
+const ModalStore = create<ModalState>((set, get) => ({
 	modalElements: [],
 	addOverlay: (modal: ModalElement) =>
 		set((state) => {
@@ -30,4 +30,4 @@ const useModalStore = create<ModalState>((set, get) => ({
 	isArrEmpty: () => get().modalElements.length === 0,
 }));
 
-export default useModalStore;
+export default ModalStore;

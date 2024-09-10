@@ -7,19 +7,24 @@
 "use client";
 
 import { useCallback } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import UserInfo from "@/app/(team)/[id]/_component/UserInfo";
-import API from "@/app/_api";
-import useOverlay from "@/app/_hooks/useOverlay";
-import toast from "@/app/_utils/Toast";
-import DropDown from "@/app/_components/Dropdown";
-import Icon from "@/app/_icons";
-import { ReportProps } from "./Report";
 import dynamic from "next/dynamic";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-const MemberInvite = dynamic(() => import("@/app/_components/modal-contents/MemberInvite"), {});
-const MemberProfile = dynamic(() => import("@/app/_components/modal-contents/MemberProfile"), {});
-const DeleteModal = dynamic(() => import("@/app/_components/modal-contents/DeleteModal"), {});
+import API from "@/app/_api";
+
+import Icon from "@/app/_icons";
+
+import toast from "@/app/_utils/Toast";
+
+import DropDown from "@/app/_components/Dropdown";
+import UserInfo from "@/app/(team)/[id]/_components/UserInfo";
+import { ReportProps } from "./Report";
+
+import useOverlay from "@/app/_hooks/useOverlay";
+
+const MemberInvite = dynamic(() => import("@/app/_components/modals/modal-containers/MemberInvite"), { ssr: false });
+const MemberProfile = dynamic(() => import("@/app/_components/modals/modal-containers/MemberProfile"), { ssr: false });
+const DeleteModal = dynamic(() => import("@/app/_components/modals/modal-containers/Delete"), { ssr: false });
 
 type Team = Awaited<ReturnType<(typeof API)["{teamId}/groups/{id}"]["GET"]>>;
 

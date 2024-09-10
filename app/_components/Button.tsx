@@ -2,9 +2,9 @@
 
 "use client";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
 import { MouseEvent, PropsWithChildren } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 export interface ButtonProps extends PropsWithChildren {
 	id?: string;

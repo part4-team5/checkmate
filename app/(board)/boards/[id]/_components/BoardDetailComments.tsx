@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useLayoutEffect, useRef } from "react";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import useAuthStore from "@/app/_store/useAuthStore";
+import AuthStore from "@/app/_store/AuthStore";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import Message from "@/app/_components/Message";
 import DropDown from "@/app/_components/Dropdown";
@@ -10,6 +10,10 @@ import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import toast from "@/app/_utils/Toast";
 import Icon from "@/app/_icons";
+import useOverlay from "@/app/_hooks/useOverlay";
+import dynamic from "next/dynamic";
+
+const DeleteModal = dynamic(() => import("@/app/_components/modals/modal-containers/Delete"));
 
 type CommentsProps = {
 	articleId: number;
@@ -21,7 +25,8 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const [editingCommentText, setEditingCommentText] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const queryClient = useQueryClient();
-	const { user } = useAuthStore();
+	const { user } = AuthStore();
+	const overlay = useOverlay();
 
 	// 댓글 목록
 	const {
@@ -73,7 +78,6 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 		},
 		onError: (error) => {
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
 			setIsSubmitting(false);
 		},
 	});
@@ -88,7 +92,6 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 		},
 		onError: (error) => {
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
 		},
 	});
 
@@ -100,7 +103,6 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 		},
 		onError: (error) => {
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
 		},
 	});
 
@@ -128,9 +130,16 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	// 댓글 삭제 핸들러
 	const handleDeleteComment = useCallback(
 		(commentId: number) => {
-			if (window.confirm("댓글을 삭제하시겠습니까?")) {
-				deleteCommentMutation.mutate(commentId);
-			}
+			overlay.open(({ close }) => (
+				<DeleteModal
+					modalContent="정말 댓글을 삭제하시겠습니까?"
+					close={close}
+					onClick={() => {
+						deleteCommentMutation.mutate(commentId);
+						close();
+					}}
+				/>
+			));
 		},
 		[deleteCommentMutation],
 	);

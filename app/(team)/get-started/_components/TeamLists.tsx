@@ -1,12 +1,15 @@
 "use client";
 
-import API from "@/app/_api";
-import Button from "@/app/_components/Button";
-import Icon from "@/app/_icons";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
+import API from "@/app/_api";
+
+import Icon from "@/app/_icons";
+
+import Button from "@/app/_components/Button";
 
 export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; isTablet: boolean }) {
 	const [currentIndex, setCurrentIndex] = useState(0);

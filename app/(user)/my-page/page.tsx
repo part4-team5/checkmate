@@ -1,19 +1,28 @@
 "use client";
 
-import API from "@/app/_api/index";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
-import useOverlay from "@/app/_hooks/useOverlay";
-import AccountDeletionModal from "@/app/_components/modal-contents/AccountDeletion";
-import useAuthStore from "@/app/_store/useAuthStore";
-import Form from "@/app/_components/Form";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import ChangePasswordModal from "@/app/_components/modal-contents/ChangePassword";
-import useCookie from "@/app/_hooks/useCookie";
-import toast from "@/app/_utils/Toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import API from "@/app/_api/index";
+
 import Icon from "@/app/_icons";
+
+import AuthStore from "@/app/_store/AuthStore";
+
+import toast from "@/app/_utils/Toast";
+
+import Form from "@/app/_components/Form";
+
+import useCookie from "@/app/_hooks/useCookie";
+import useOverlay from "@/app/_hooks/useOverlay";
+
 // import DarkModeToggle from "@/app/_components/DarkModeToggle";
+
+const ChangePasswordModal = dynamic(() => import("@/app/_components/modals/modal-containers/ChangePassword"), { ssr: false });
+const AccountDeletionModal = dynamic(() => import("@/app/_components/modals/modal-containers/AccountDeletion"), { ssr: false });
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -21,8 +30,8 @@ export default function Page() {
 	const router = useRouter();
 	const overlay = useOverlay();
 	const queryClient = useQueryClient();
-	const { user, setUser } = useAuthStore((state) => state);
-	const clearUser = useAuthStore((state) => state.clearUser);
+	const { user, setUser } = AuthStore((state) => state);
+	const clearUser = AuthStore((state) => state.clearUser);
 	const [, setAccessToken] = useCookie("accessToken");
 	const [, setRefreshToken] = useCookie("refreshToken");
 
@@ -69,7 +78,6 @@ export default function Page() {
 		},
 		onError: (error) => {
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
 		},
 	});
 
@@ -97,7 +105,6 @@ export default function Page() {
 		},
 		onError: (error) => {
 			toast.error(`${error.message ?? "알 수 없는 오류 발생"}`);
-			console.error(error);
 		},
 	});
 

@@ -5,7 +5,7 @@
 import API from "@/app/_api";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
-import ModalWrapper from "@/app/_components/modal-contents/Modal";
+import ModalWrapper from "@/app/_components/modals/ModalWrapper";
 import useOverlay from "@/app/_hooks/useOverlay";
 import toast from "@/app/_utils/Toast";
 import { useMutation } from "@tanstack/react-query";
