@@ -61,7 +61,7 @@ export default function Modal({ close }: { close: () => void }) {
 				monthDay,
 			}),
 			{
-				loading: "생성 중...",
+				loading: "할 일 생성 중...",
 				success: "할 일이 생성되었습니다.",
 				error: "할 일 생성 중 문제가 발생했습니다.",
 			},
@@ -136,6 +136,7 @@ export default function Modal({ close }: { close: () => void }) {
 							</div>
 						</div>
 
+						{/* 캘린더 */}
 						<div className={`size-full pt-2 ${!isCalendarOpened ? "hidden" : "flex"}`}>
 							<Calendar
 								onChange={(date) => {
