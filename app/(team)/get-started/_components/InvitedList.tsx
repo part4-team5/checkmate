@@ -13,12 +13,12 @@ import toast from "@/app/_utils/Toast";
 
 import Button from "@/app/_components/Button";
 
-import AuthStore from "@/app/_store/AuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 
 export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean; isTablet: boolean }) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
-	const user = AuthStore((state) => state.user);
+	const user = useAuthStore((state) => state.user);
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 

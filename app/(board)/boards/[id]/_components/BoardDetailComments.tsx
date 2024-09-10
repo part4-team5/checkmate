@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useLayoutEffect, useRef } from "react";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import AuthStore from "@/app/_store/AuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import Message from "@/app/_components/Message";
 import DropDown from "@/app/_components/Dropdown";
@@ -25,7 +25,7 @@ export default function BoardDetailComments({ articleId }: CommentsProps) {
 	const [editingCommentText, setEditingCommentText] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const queryClient = useQueryClient();
-	const { user } = AuthStore();
+	const { user } = useAuthStore();
 	const overlay = useOverlay();
 
 	// 댓글 목록

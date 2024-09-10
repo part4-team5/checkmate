@@ -4,7 +4,7 @@ import React from "react";
 import { Meta, StoryFn } from "@storybook/react";
 import useOverlay from "@/app/_hooks/useOverlay";
 import Button from "@/app/_components/Button";
-import ModalStore from "@/app/_store/ModalStore";
+import useModalStore from "@/app/_store/ModalStore";
 import MemberInvite from "@/app/_components/modals/modal-containers/MemberInvite";
 import AccountDeletion from "@/app/_components/modals/modal-containers/AccountDeletion";
 import Logout from "@/app/_components/modals/modal-containers/Logout";
@@ -15,7 +15,7 @@ export default {
 
 // Example component to demonstrate modals
 const ModalExample: React.FC = () => {
-	const { modalElements } = ModalStore();
+	const { modalElements } = useModalStore();
 
 	const overlay = useOverlay();
 

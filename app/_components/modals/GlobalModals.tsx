@@ -2,11 +2,11 @@
 
 import { useEffect } from "react";
 
-import ModalStore from "@/app/_store/ModalStore";
+import useModalStore from "@/app/_store/ModalStore";
 
 // 외부에서 모달을 랜더링하는 컴포넌트
 export default function GlobalModals() {
-	const { modalElements, isArrEmpty } = ModalStore();
+	const { modalElements, isArrEmpty } = useModalStore();
 	useEffect(() => {
 		if (isArrEmpty()) {
 			document.body.style.overflow = "unset";

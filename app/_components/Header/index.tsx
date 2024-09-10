@@ -19,7 +19,7 @@ import Dropdown from "@/app/_components/Dropdown";
 import useCookie from "@/app/_hooks/useCookie";
 import useOverlay from "@/app/_hooks/useOverlay";
 
-import AuthStore from "@/app/_store/AuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 
 // 지연 로딩 컴포넌트
 const LogoutModal = dynamic(() => import("@/app/_components/modals/modal-containers/Logout"), { ssr: false });
@@ -119,7 +119,7 @@ export default function Header() {
 
 								setRefreshToken(null);
 								setAccessToken(null);
-								AuthStore.persist.clearStorage();
+								useAuthStore.persist.clearStorage();
 
 								queryClient.clear();
 

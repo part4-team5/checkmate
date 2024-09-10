@@ -4,10 +4,10 @@ import { useShallow } from "zustand/react/shallow";
 
 import Icon from "@/app/_icons";
 
-import ToastStore from "@/app/_store/ToastStore";
+import useToastStore from "@/app/_store/ToastStore";
 
 function Toaster() {
-	const { toasts, removeToast } = ToastStore(
+	const { toasts, removeToast } = useToastStore(
 		useShallow((state) => ({
 			toasts: state.toasts,
 			removeToast: state.removeToast,

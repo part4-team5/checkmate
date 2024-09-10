@@ -1,7 +1,7 @@
 import Icon from "@/app/_icons/index";
 import { useRef, useState } from "react";
 import Button from "@/app/_components/Button";
-import AuthStore from "@/app/_store/AuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 import { useGetComments, useGetTodoContent } from "@/app/(team)/[id]/todo/_components/api/useQuery";
 import TodoDetailCommentList from "@/app/(team)/[id]/todo/_components/TodoDetailCommentList";
 import { useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
@@ -26,7 +26,7 @@ type User = {
 };
 
 export default function TodoDetail({ todoId, close, groupId, currentTaskId, currentDate, doneAt }: TodoDetailProps) {
-	const user = AuthStore((state) => state.user) as User;
+	const user = useAuthStore((state) => state.user) as User;
 	const [isCheck, setIsCheck] = useState(!!doneAt);
 	const { data: todoContent } = useGetTodoContent(todoId);
 	const { data: comments } = useGetComments(todoId);

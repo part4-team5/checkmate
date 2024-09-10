@@ -10,7 +10,7 @@ import ModalWrapper from "@/app/_components/modals/ModalWrapper";
 
 import useCookie from "@/app/_hooks/useCookie";
 
-import AuthStore from "@/app/_store/AuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 import toast from "@/app/_utils/Toast";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
@@ -21,7 +21,7 @@ interface ChangePasswordModalProps {
 
 export default function ChangePassword({ close }: ChangePasswordModalProps) {
 	const router = useRouter();
-	const clearUser = AuthStore((state) => state.clearUser);
+	const clearUser = useAuthStore((state) => state.clearUser);
 	const [, setAccessToken] = useCookie("accessToken");
 	const [, setRefreshToken] = useCookie("refreshToken");
 

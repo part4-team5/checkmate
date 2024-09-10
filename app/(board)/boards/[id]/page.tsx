@@ -12,7 +12,7 @@ import { useState, ChangeEvent } from "react";
 import Button from "@/app/_components/Button";
 import Quill from "@/app/_components/Quill";
 import { useRouter } from "next/navigation";
-import AuthStore from "@/app/_store/AuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 import toast from "@/app/_utils/Toast";
 import dynamic from "next/dynamic";
 import useOverlay from "@/app/_hooks/useOverlay";
@@ -23,7 +23,7 @@ export default function BoardDetail({ params }: { params: { id: string } }) {
 	const articleId = Number(params.id);
 	const router = useRouter();
 	const queryClient = useQueryClient();
-	const { user } = AuthStore();
+	const { user } = useAuthStore();
 	const [isEditing, setIsEditing] = useState(false);
 	const [editArticleData, setEditArticleData] = useState({ title: "", content: "", image: "" });
 	const [isAnimating, setIsAnimating] = useState(false);

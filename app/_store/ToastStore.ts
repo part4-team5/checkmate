@@ -18,7 +18,7 @@ interface ToastStoreType {
 
 let toastId = 1;
 
-const ToastStore = create<ToastStoreType>((set) => ({
+const useToastStore = create<ToastStoreType>((set) => ({
 	toasts: [],
 	addToast: (message, type, duration?: number) => {
 		// eslint-disable-next-line no-plusplus
@@ -60,4 +60,4 @@ const ToastStore = create<ToastStoreType>((set) => ({
 		})),
 }));
 
-export default ToastStore;
+export default useToastStore;

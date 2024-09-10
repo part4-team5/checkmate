@@ -10,7 +10,7 @@ import API from "@/app/_api/index";
 
 import Icon from "@/app/_icons";
 
-import AuthStore from "@/app/_store/AuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 
 import toast from "@/app/_utils/Toast";
 
@@ -30,8 +30,8 @@ export default function Page() {
 	const router = useRouter();
 	const overlay = useOverlay();
 	const queryClient = useQueryClient();
-	const { user, setUser } = AuthStore((state) => state);
-	const clearUser = AuthStore((state) => state.clearUser);
+	const { user, setUser } = useAuthStore((state) => state);
+	const clearUser = useAuthStore((state) => state.clearUser);
 	const [, setAccessToken] = useCookie("accessToken");
 	const [, setRefreshToken] = useCookie("refreshToken");
 

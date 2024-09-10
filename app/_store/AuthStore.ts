@@ -14,7 +14,7 @@ type AuthState = {
 	clearUser: () => void;
 };
 
-const AuthStore = create<AuthState>()(
+const useAuthStore = create<AuthState>()(
 	persist(
 		(set) => ({
 			user: null,
@@ -27,4 +27,4 @@ const AuthStore = create<AuthState>()(
 	),
 );
 
-export default AuthStore;
+export default useAuthStore;

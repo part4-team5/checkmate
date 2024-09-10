@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useCallback } from "react";
-import AuthStore from "@/app/_store/AuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 import Oauth from "@/app/(auth)/_components/Oauth";
 import toast from "@/app/_utils/Toast";
 import Image from "next/image";
@@ -22,7 +22,7 @@ export default function LoginPage() {
 	const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
 
-	const setUser = AuthStore((state) => state.setUser);
+	const setUser = useAuthStore((state) => state.setUser);
 
 	const userUploadMutation = useMutation({
 		mutationFn: async ({ id, email }: { id: number; email: string }) => API["api/users"].POST({}, { id, email }),

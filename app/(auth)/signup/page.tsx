@@ -14,7 +14,7 @@ import Oauth from "@/app/(auth)/_components/Oauth";
 
 import useCookie from "@/app/_hooks/useCookie";
 
-import AuthStore from "@/app/_store/AuthStore";
+import useAuthStore from "@/app/_store/AuthStore";
 
 type FormContext = Parameters<Parameters<typeof Form>[0]["onSubmit"]>[0];
 
@@ -22,7 +22,7 @@ export default function SignupPage() {
 	const router = useRouter();
 	const [, setAccessToken] = useCookie<string>("accessToken");
 	const [, setRefreshToken] = useCookie<string>("refreshToken");
-	const setUser = AuthStore((state) => state.setUser);
+	const setUser = useAuthStore((state) => state.setUser);
 
 	const queryClient = useQueryClient();
 

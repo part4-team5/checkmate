@@ -1,13 +1,13 @@
-import ToastStore, { ToastType } from "@/app/_store/ToastStore";
+import useToastStore, { ToastType } from "@/app/_store/ToastStore";
 
 const toast = {
-	success: (message: string, duration: number = 2000) => ToastStore.getState().addToast(message, "success", duration),
-	error: (message: string, duration: number = 2000) => ToastStore.getState().addToast(message, "error", duration),
-	warning: (message: string, duration: number = 2000) => ToastStore.getState().addToast(message, "warning", duration),
-	info: (message: string, duration: number = 2000) => ToastStore.getState().addToast(message, "info", duration),
-	loading: (message: string) => ToastStore.getState().addToast(message, "loading"),
-	remove: (id: number) => ToastStore.getState().removeToast(id),
-	updateToast: (id: number, message: string, type: ToastType, duration?: number) => ToastStore.getState().updateToast(id, message, type, duration),
+	success: (message: string, duration: number = 2000) => useToastStore.getState().addToast(message, "success", duration),
+	error: (message: string, duration: number = 2000) => useToastStore.getState().addToast(message, "error", duration),
+	warning: (message: string, duration: number = 2000) => useToastStore.getState().addToast(message, "warning", duration),
+	info: (message: string, duration: number = 2000) => useToastStore.getState().addToast(message, "info", duration),
+	loading: (message: string) => useToastStore.getState().addToast(message, "loading"),
+	remove: (id: number) => useToastStore.getState().removeToast(id),
+	updateToast: (id: number, message: string, type: ToastType, duration?: number) => useToastStore.getState().updateToast(id, message, type, duration),
 
 	/**
 	 * Promise를 받아와서 로딩, 성공, 에러 메시지를 토스트로 띄웁니다.

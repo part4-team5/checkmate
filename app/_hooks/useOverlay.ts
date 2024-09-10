@@ -1,11 +1,11 @@
 "use client";
 
-import ModalStore from "@/app/_store/ModalStore";
+import useModalStore from "@/app/_store/ModalStore";
 import { useCallback } from "react";
 
 // 모달을 열고 닫는 함수
 const useOverlay = () => {
-	const { addOverlay, removeOverlay, isArrEmpty, modalElements } = ModalStore();
+	const { addOverlay, removeOverlay, isArrEmpty, modalElements } = useModalStore();
 
 	const open = useCallback(
 		(render: ({ isOpen, close }: { isOpen: boolean; close: () => void }) => JSX.Element) => {
