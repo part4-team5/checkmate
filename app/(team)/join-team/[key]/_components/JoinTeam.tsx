@@ -1,23 +1,31 @@
 "use client";
 
-import API from "@/app/_api";
-import Button from "@/app/_components/Button";
-import Icon from "@/app/_icons";
-import useAuthStore from "@/app/_store/AuthStore";
-import toast from "@/app/_utils/Toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import API from "@/app/_api";
+
+import Icon from "@/app/_icons";
+
+import toast from "@/app/_utils/Toast";
+
+import Button from "@/app/_components/Button";
+
+import useAuthStore from "@/app/_store/AuthStore";
+
 type InviteType = Awaited<ReturnType<(typeof API)["api/invite/link/{key}"]["GET"]>>;
 
 export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
+	// 사용자 정보
 	const user = useAuthStore((state) => state.user);
 	const userEmail = user?.email as string;
 
+	// 초대된 팀 정보
 	const [inviteGroup, setInviteGroup] = useState<InviteType>();
 
+	// 사용자가 속한 팀 정보
 	const { data: groups } = useQuery({
 		queryKey: ["user"],
 		queryFn: async () => API["{teamId}/user"].GET({}),
@@ -31,17 +39,22 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 	const router = useRouter();
 
 	// 팀 참여 요청을 보내는 mutation
-	const joinTeamMutation = useMutation<{ groupId: number }, Error, { token: string }>({
+	const joinTeamMutation = useMutation<{ groupId: number }, Error, { token: string }, { toastId: number }>({
 		mutationFn: async ({ token }: { token: string }) => API["{teamId}/groups/accept-invitation"].POST({}, { token, userEmail }),
-		onSuccess: (data) => {
+		onMutate: () => {
+			const id = toast.loading("참여 요청 중입니다.");
+			return { toastId: id };
+		},
+		onSuccess: (data, variables, context) => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 
-			toast.success("팀에 참여했습니다.");
+			if (context?.toastId) toast.updateToast(context.toastId, "팀에 참여했습니다.", "success", 2000);
 
 			router.replace(`/${data.groupId}`);
 		},
-		onError: (error) => {
-			toast.error(error.message);
+		onError: (error, variables, context) => {
+			if (context?.toastId) toast.updateToast(context.toastId, error.message, "success", 2000);
+
 			router.replace("/");
 		},
 	});
@@ -127,7 +140,7 @@ export default function JoinTeam({ inviteKey }: { inviteKey: string }) {
 										<p className="text-center text-xl text-text-primary">팀에서 당신을 초대했습니다.</p>
 
 										<div className="pt-8" />
-										{joinTeamMutation.isPending ? (
+										{joinTeamMutation.isPending || joinTeamMutation.isSuccess ? (
 											<div className="flex h-12 items-center justify-center">
 												<Button disabled fontSize="xl">
 													참여중...
