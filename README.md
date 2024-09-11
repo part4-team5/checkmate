@@ -159,15 +159,15 @@ checkmate
 
 | 랜딩페이지 |
 | :--------: |
-||
+|![image](https://github.com/user-attachments/assets/7b56d54c-35d7-4ff6-9aae-30b16f9bf4be)|
 
 | 회원가입 | 로그인 |
 | :------: | :----: |
-|||
+|![image](https://github.com/user-attachments/assets/fab3f801-b40c-4518-a11d-0fc8b6d419b2)|![image](https://github.com/user-attachments/assets/5ab72886-ae48-4e3f-a0c2-7053a447ebec)|
 
 | 비밀번호 재설정 | 계정관리 |
 | :-------------: | :------: |
-|||
+|![image](https://github.com/user-attachments/assets/88c0f3ed-1952-4948-bd3d-8fd3c5c44f76)|![image](https://github.com/user-attachments/assets/19ce6900-b264-491a-ba61-8a18c5897595)|
 
 | 내 대시보드 | 마이 히스토리 |
 | :---------: | :-----------: |
