@@ -6,8 +6,8 @@ const toast = {
 	warning: (message: string, duration: number = 2000) => useToastStore.getState().addToast(message, "warning", duration),
 	info: (message: string, duration: number = 2000) => useToastStore.getState().addToast(message, "info", duration),
 	loading: (message: string) => useToastStore.getState().addToast(message, "loading"),
+	updateToast: (id: number, message: string, type: ToastType, duration: number = 2000) => useToastStore.getState().updateToast(id, message, type, duration),
 	remove: (id: number) => useToastStore.getState().removeToast(id),
-	updateToast: (id: number, message: string, type: ToastType, duration?: number) => useToastStore.getState().updateToast(id, message, type, duration),
 
 	/**
 	 * Promise를 받아와서 로딩, 성공, 에러 메시지를 토스트로 띄웁니다.

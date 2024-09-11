@@ -17,37 +17,48 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 	// eslint-disable-next-line no-nested-ternary
 	const itemsPerPage = isMobile ? 4 : isTablet ? 6 : 9;
 
-	const { data: user, isLoading } = useQuery({
+	// 팀 목록 가져오기
+	const { data: userData, isLoading } = useQuery({
 		queryKey: ["user"],
 		queryFn: async () => API["{teamId}/user"].GET({}),
 	});
 
-	const nextPage = () => {
-		if (user && currentIndex < user.memberships.length - itemsPerPage) {
-			setCurrentIndex((prevIndex) => prevIndex + itemsPerPage);
+	const pagination = (isNext: boolean) => {
+		// 다음 페이지
+		if (isNext) {
+			if (userData && currentIndex < userData.memberships.length - itemsPerPage) {
+				setCurrentIndex((prevIndex) => prevIndex + itemsPerPage);
+			}
 		}
-	};
-
-	const prevPage = () => {
-		if (currentIndex > 0) {
+		// 이전 페이지
+		else if (currentIndex > 0) {
 			setCurrentIndex((prevIndex) => prevIndex - itemsPerPage);
 		}
 	};
 
-	const totalPages = Math.ceil((user?.memberships.length ?? 0) / itemsPerPage) || 1;
+	// 팀 목록 페이지네이션
+	const paginatedTeams = userData?.memberships.slice(currentIndex, currentIndex + itemsPerPage) ?? [];
+	const totalPages = Math.ceil((userData?.memberships.length ?? 0) / itemsPerPage) || 1;
 	const currentPage = Math.ceil((currentIndex + itemsPerPage) / itemsPerPage);
 
+	// 화면 크기 변화에 따라 현재 페이지 초기화
 	useEffect(() => {
 		setCurrentIndex(0);
 	}, [isMobile, isTablet]);
 
-	if (isLoading)
-		return (
-			<section className="w-full px-4">
-				<Header />
+	return (
+		<section className="w-full px-4">
+			<div className="flex size-full max-h-[40px] items-center justify-center">
+				<p className="w-full grow text-xl font-semibold text-text-primary">참여 중인 팀</p>
+				<div className="h-10 w-full max-w-[220px]">
+					<Button href="/create-team">생성하기</Button>
+				</div>
+			</div>
 
-				<div className="pt-5" />
+			<div className="pt-5" />
 
+			{/* 팀 목록 로딩 중 */}
+			{isLoading && (
 				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-background-secondary">
 					{renderLoadingSkeletons(9, "hidden desktop:grid grid-cols-3 grid-rows-3")}
 					{renderLoadingSkeletons(6, "hidden tablet:grid desktop:hidden grid-cols-2 grid-rows-3")}
@@ -61,18 +72,10 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 						<div className="size-full max-w-5 animate-pulse rounded-md bg-background-tertiary shadow-teamCard" />
 					</div>
 				</div>
-			</section>
-		);
+			)}
 
-	if (user?.memberships.length) {
-		const paginatedTeams = user.memberships.slice(currentIndex, currentIndex + itemsPerPage);
-
-		return (
-			<section className="w-full px-4">
-				<Header />
-
-				<div className="pt-5" />
-
+			{/* 팀 목록 */}
+			{userData && userData?.memberships.length > 0 && (
 				<div className="flex w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-background-secondary">
 					<ul className="grid w-full grid-rows-4 gap-4 tablet:grid-cols-2 tablet:grid-rows-3 desktop:grid-cols-3">
 						{paginatedTeams.map((team) => (
@@ -106,43 +109,27 @@ export default function TeamList({ isMobile, isTablet }: { isMobile: boolean; is
 					</ul>
 
 					<div className="flex size-full grow items-center justify-center gap-2 pt-3">
-						<button type="button" disabled={currentIndex <= 0} onClick={prevPage} aria-label="prev">
+						<button type="button" disabled={currentIndex <= 0} onClick={() => pagination(false)} aria-label="prev">
 							<Icon.ArrowLeft width={32} height={32} color={currentIndex <= 0 ? "#777777" : "#adadad"} />
 						</button>
 
 						<p className="w-max text-md text-text-secondary">
 							{currentPage} / {totalPages}
 						</p>
-						<button type="button" disabled={currentIndex >= user.memberships.length - itemsPerPage} onClick={nextPage} aria-label="next">
-							<Icon.ArrowRight width={32} height={32} color={currentIndex >= user.memberships.length - itemsPerPage ? "#777777" : "#adadad"} />
+						<button type="button" disabled={currentIndex >= userData.memberships.length - itemsPerPage} onClick={() => pagination(true)} aria-label="next">
+							<Icon.ArrowRight width={32} height={32} color={currentIndex >= userData.memberships.length - itemsPerPage ? "#777777" : "#adadad"} />
 						</button>
 					</div>
 				</div>
-			</section>
-		);
-	}
+			)}
 
-	return (
-		<section className="w-full px-4">
-			<Header />
-
-			<div className="pt-5" />
-
-			<div className="flex h-dvh max-h-[292px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
-				<p className="text-center text-text-primary">아직 참여 중인 팀이 없습니다.</p>
-			</div>
+			{/* 팀 목록이 없을 때 */}
+			{userData?.memberships && userData.memberships.length < 1 && (
+				<div className="flex h-dvh max-h-[292px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8">
+					<p className="text-center text-text-primary">아직 참여 중인 팀이 없습니다.</p>
+				</div>
+			)}
 		</section>
-	);
-}
-
-function Header() {
-	return (
-		<div className="flex size-full max-h-[40px] items-center justify-center">
-			<p className="w-full grow text-xl font-semibold text-text-primary">참여 중인 팀</p>
-			<div className="h-10 w-full max-w-[220px]">
-				<Button href="/create-team">생성하기</Button>
-			</div>
-		</div>
 	);
 }
 

@@ -25,24 +25,32 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 	// eslint-disable-next-line no-nested-ternary
 	const itemsPerPage = isMobile ? 2 : isTablet ? 4 : 6;
 
-	const invites = useQuery({
+	// 초대 목록 가져오기
+	const { data: inviteData, isPending } = useQuery({
 		queryKey: ["invited"],
 		queryFn: async () => API["api/invite/{id}"].GET({ id: Number(user?.id) }),
 		enabled: !!user,
 	});
 
-	const nextPage = () => {
-		if (user && invites.data && currentIndex < invites.data.length - itemsPerPage) {
-			setCurrentIndex((prevIndex) => prevIndex + itemsPerPage);
+	const pagination = (isNext: boolean) => {
+		// 다음 페이지
+		if (isNext) {
+			if (user && inviteData && currentIndex < inviteData.length - itemsPerPage) {
+				setCurrentIndex((prevIndex) => prevIndex + itemsPerPage);
+			}
 		}
-	};
-
-	const prevPage = () => {
-		if (currentIndex > 0) {
+		// 이전 페이지
+		else if (currentIndex > 0) {
 			setCurrentIndex((prevIndex) => prevIndex - itemsPerPage);
 		}
 	};
 
+	// 초대 목록 페이지네이션
+	const paginatedInvites = inviteData?.slice(currentIndex, currentIndex + itemsPerPage) ?? [];
+	const totalPages = Math.ceil((inviteData?.length ?? 0) / itemsPerPage);
+	const currentPage = Math.ceil((currentIndex + itemsPerPage) / itemsPerPage);
+
+	// 초대 수락 Mutation
 	const acceptInviteMutation = useMutation<{}, Error, { groupId: number; token: string }>({
 		mutationFn: useCallback(
 			async ({ token }: { token: string }) => API["{teamId}/groups/accept-invitation"].POST({}, { userEmail: user?.email as string, token }),
@@ -51,10 +59,10 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 		onSuccess: (data, { groupId }) => {
 			toast.success("팀 초대를 수락했습니다.");
 
+			rejectInviteMutation.mutate({ id: Number(user?.id), groupId });
+
 			// 몽고 DB에서 사용자 그룹 정보 업데이트
 			API["api/group/{groupId}"].POST({ groupId }, { userId: Number(user?.id), userEmail: user?.email as string });
-
-			rejectInviteMutation.mutate({ id: Number(user?.id), groupId });
 
 			queryClient.invalidateQueries({ queryKey: ["invited"] });
 			queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -63,6 +71,7 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 		},
 	});
 
+	// 초대 거절 Mutation
 	const rejectInviteMutation = useMutation<{}, Error, { id: number; groupId: number }>({
 		mutationFn: useCallback(
 			async ({ groupId }: { groupId: number }) => API["api/invite/{id}/groupId/{groupId}"].DELETE({ id: Number(user?.id), groupId }),
@@ -86,13 +95,10 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 		});
 	};
 
+	// 화면 크기 변화에 따라 현재 페이지 초기화
 	useEffect(() => {
 		setCurrentIndex(0);
 	}, [isMobile, isTablet]);
-
-	const paginatedInvites = invites.data?.slice(currentIndex, currentIndex + itemsPerPage) ?? [];
-	const totalPages = Math.ceil((invites.data?.length ?? 0) / itemsPerPage);
-	const currentPage = Math.ceil((currentIndex + itemsPerPage) / itemsPerPage);
 
 	return (
 		<section className="w-full px-4">
@@ -100,7 +106,8 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 
 			<div className="pt-5" />
 
-			{invites.isPending && (
+			{/* 초대 목록 로딩 중 */}
+			{isPending && (
 				<div className="w-full rounded-xl bg-background-secondary p-4 shadow-background-secondary">
 					{renderLoadingSkeletons(6, "hidden grid-cols-3 grid-rows-2 desktop:grid")}
 					{renderLoadingSkeletons(4, "hidden grid-cols-2 grid-rows-2 tablet:grid desktop:hidden")}
@@ -116,7 +123,8 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 				</div>
 			)}
 
-			{invites.data && invites.data.length > 0 && (
+			{/* 초대 목록 */}
+			{inviteData && inviteData.length > 0 && (
 				<div className="w-full rounded-xl bg-background-secondary p-4 shadow-background-secondary">
 					<ul className="grid grid-cols-1 grid-rows-2 gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
 						{paginatedInvites.map((invite) => (
@@ -150,21 +158,22 @@ export default function InvitedList({ isMobile, isTablet }: { isMobile: boolean;
 					</ul>
 
 					<div className="flex size-full grow items-center justify-center gap-2 pt-3">
-						<button type="button" disabled={currentIndex <= 0} onClick={prevPage} aria-label="prev">
+						<button type="button" disabled={currentIndex <= 0} onClick={() => pagination(false)} aria-label="prev">
 							<Icon.ArrowLeft width={32} height={32} color={currentIndex <= 0 ? "#777777" : "#adadad"} />
 						</button>
 
 						<p className="w-max text-md text-text-secondary">
 							{currentPage} / {totalPages}
 						</p>
-						<button type="button" disabled={currentIndex >= invites.data.length - itemsPerPage} onClick={nextPage} aria-label="next">
-							<Icon.ArrowRight width={32} height={32} color={currentIndex >= invites.data.length - itemsPerPage ? "#777777" : "#adadad"} />
+						<button type="button" disabled={currentIndex >= inviteData.length - itemsPerPage} onClick={() => pagination(true)} aria-label="next">
+							<Icon.ArrowRight width={32} height={32} color={currentIndex >= inviteData.length - itemsPerPage ? "#777777" : "#adadad"} />
 						</button>
 					</div>
 				</div>
 			)}
 
-			{invites.data && invites.data.length === 0 && (
+			{/* 초대 목록이 없을 때 */}
+			{inviteData && inviteData.length === 0 && (
 				<div className="flex h-dvh max-h-[236px] w-full flex-col items-center justify-center rounded-xl bg-background-secondary px-6 pb-4 pt-8 shadow-background-secondary">
 					<p className="text-center text-text-primary">초대받은 팀이 없습니다.</p>
 				</div>

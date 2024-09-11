@@ -85,10 +85,10 @@ export default function CreateTeamPage() {
 	);
 
 	return (
-		<main className="size-full min-w-[20rem] pt-20">
+		<main className="size-full min-w-[20rem] px-3 pt-20">
 			<section className="flex size-full flex-col items-center justify-center">
-				<div className="pb-20">
-					<h1 className="text-[2.5rem] font-medium leading-[3rem] text-brand-primary">팀 생성하기</h1>
+				<div className="pb-16">
+					<h1 className="text-[2.5rem] font-semibold leading-[3rem] text-brand-primary">팀 생성하기</h1>
 				</div>
 
 				<div className="w-full">
@@ -99,7 +99,7 @@ export default function CreateTeamPage() {
 								<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 4 * 1048576, error: "이미지 파일 크기는 4MB 이하여야 합니다" }]}>
 									{(file) => (
 										// eslint-disable-next-line react/jsx-no-useless-fragment
-										<div className="flex w-full items-center justify-center">
+										<div className="flex w-full cursor-pointer items-center justify-center">
 											{file ? (
 												<div className="relative flex size-[140px] min-h-[140px] min-w-[140px] items-center justify-center rounded-[.75rem] border-2 border-brand-primary bg-background-secondary shadow-loginInput">
 													<Image src={file as string} alt="Profile Preview" fill className="rounded-[.75rem] object-cover object-center" />

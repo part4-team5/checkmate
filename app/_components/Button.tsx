@@ -79,14 +79,14 @@ export default function Button({
 
 	if (href) {
 		return (
-			<MotionLink id={id} className={btnStyle} href={href} whileTap={{ scale: 0.8 }}>
+			<MotionLink id={id} className={btnStyle} href={href} whileTap={disabled ? {} : { scale: 0.8 }}>
 				{children}
 			</MotionLink>
 		);
 	}
 
 	return (
-		<motion.button id={id} type={type} className={btnStyle} onClick={onClick} disabled={disabled} whileTap={{ scale: 0.8 }}>
+		<motion.button id={id} type={type} className={btnStyle} onClick={onClick} disabled={disabled} whileTap={disabled ? {} : { scale: 0.8 }}>
 			{children}
 		</motion.button>
 	);

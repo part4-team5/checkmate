@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 		});
 
 		// 단축 링크 생성
-		const shortURL = `${process.env.NEXT_PUBLIC_REDIRECT_URL}/join-team?key=${key}`;
+		const shortURL = `${process.env.NEXT_PUBLIC_REDIRECT_URL}/join-team/${key}`;
 
 		return NextResponse.json({ shortURL }, { status: 201 });
 	} catch (error) {
