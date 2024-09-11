@@ -1,3 +1,4 @@
+# Checkmate
 
 ![Screenshot 2024-09-11 at 15 47 09](https://github.com/user-attachments/assets/3496eb75-e6cb-4851-a3a7-8884aa7edb54)
 
@@ -114,7 +115,7 @@
 
 ## 프로젝트 폴더 구조
 
-```json
+```
 checkmate
 ├─ app/
 │  ├─ (auth)/               // 인증 관련 페이지
