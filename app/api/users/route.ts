@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import UserModel from "@/app/_utils/_models/Users.model";
+import UserModel from "@/app/_api/_models/Users.model";
 import dbConnect from "@/app/_utils/dbConnect";
 
 export async function GET() {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import UserModel from "@/app/_utils/_models/Users.model";
+import UserModel from "@/app/_api/_models/Users.model";
 import dbConnect from "@/app/_utils/dbConnect";
-import InviteModel from "@/app/_utils/_models/Invite.model";
+import InviteModel from "@/app/_api/_models/Invite.model";
 
 export async function GET(req: NextRequest) {
 	await dbConnect();

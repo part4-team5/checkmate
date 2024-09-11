@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 
-import GroupModel from "@/app/_utils/_models/Group.model";
-import InviteModel from "@/app/_utils/_models/Invite.model";
+import GroupModel from "@/app/_api/_models/Group.model";
+import InviteModel from "@/app/_api/_models/Invite.model";
 import Token from "@/app/_utils/Token";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;

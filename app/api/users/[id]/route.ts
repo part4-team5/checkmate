@@ -1,9 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 import { NextRequest, NextResponse } from "next/server";
-import UserModel from "@/app/_utils/_models/Users.model";
+import UserModel from "@/app/_api/_models/Users.model";
 import dbConnect from "@/app/_utils/dbConnect";
-import GroupModel from "@/app/_utils/_models/Group.model";
-import InviteModel from "@/app/_utils/_models/Invite.model";
+import GroupModel from "@/app/_api/_models/Group.model";
+import InviteModel from "@/app/_api/_models/Invite.model";
 
 export async function DELETE(req: NextRequest) {
 	await dbConnect();

@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-await-in-loop */
+import UserModel from "@/app/_api/_models/Users.model";
 import mongoose, { Schema, Model, Document } from "mongoose";
-import UserModel from "@/app/_utils/_models/Users.model"; // 유저 모델을 불러옴
 
 interface IGroup extends Document {
 	groupId: number;
