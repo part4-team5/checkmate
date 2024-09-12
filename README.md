@@ -261,64 +261,11 @@ checkmate
 
 ## 팀원 소개
 
-<table style="width: 100%;">
-  <tr>
-    <td style="text-align: center;">
-      <img src="https://github.com/user-attachments/assets/6634fb50-ed04-4315-ac85-231a80352ed3" width="160" height="160" />
-    </td>
-    <td style="text-align: center;">
-      <img src="https://github.com/user-attachments/assets/814dc111-20bd-43af-8ecd-65bb9d01eb00" width="160" height="160" />
-    </td>
-    <td style="text-align: center;">
-      <img src="https://github.com/user-attachments/assets/7ecb6f7d-892c-4597-a795-9ecad61d33e1" width="160" height="160" />
-    </td>
-    <td style="text-align: center;">
-      <img src="https://github.com/user-attachments/assets/c7a6e078-d851-4976-b457-616ed0f55fbe" width="160" height="160" />
-    </td>
-    <td style="text-align: center;">
-      <img src="https://github.com/user-attachments/assets/d4014af2-2052-407d-aafa-0f2bc911458d" width="160" height="160" />
-    </td>
-  </tr>
-  <tr>
-    <td style="text-align: center;">유예하</td>
-    <td style="text-align: center;">정민재</td>
-    <td style="text-align: center;">김유정</td>
-    <td style="text-align: center;">임진조</td>
-    <td style="text-align: center;">최건</td>
-  </tr>
-  <tr>
-    <td style="text-align: center;"><a href="https://github.com/YehaYoo">@YehaYoo</a></td>
-    <td style="text-align: center;"><a href="https://github.com/wjsdncl">@wjsdncl</a></td>
-    <td style="text-align: center;"><a href="https://github.com/Kimyu94">@Kimyu94</a></td>
-    <td style="text-align: center;"><a href="https://github.com/Sparrowlim">@Sparrowlim</a></td>
-    <td style="text-align: center;"><a href="https://github.com/Sombian">@Sombian</a></td>
-  </tr>
-  <tr>
-    <td style="text-align: center;">팀 대시보드</td>
-    <td style="text-align: center;">소셜 로그인</td>
-    <td style="text-align: center;">로그인, 회원가입</td>
-    <td style="text-align: center;">Darg & Drop</td>
-    <td style="text-align: center;">마이 히스토리</td>
-  </tr>
-  <tr>
-    <td style="text-align: center;">(Tasks /Report /Members)</td>
-    <td style="text-align: center;">비밀번호 재설정</td>
-    <td style="text-align: center;">계정관리</td>
-    <td style="text-align: center;">리스트 페이지</td>
-    <td style="text-align: center;">자유게시판 / 게시글 등록</td>
-  </tr>
-  <tr>
-    <td style="text-align: center;">Dropdown</td>
-    <td style="text-align: center;">버튼/헤더 컴포넌트</td>
-    <td style="text-align: center;">자유 게시판 상세</td>
-    <td style="text-align: center;">Sidebar</td>
-    <td style="text-align: center;">DatePicker /Popover /Form /API</td>
-  </tr>
-  <tr>
-    <td style="text-align: center;">컨셉 및 디자인 변경</td>
-    <td style="text-align: center;">초대 기능 개선</td>
-    <td style="text-align: center;">Message 컴포넌트</td>
-    <td style="text-align: center;">Modal</td>
-    <td style="text-align: center;">튜토리얼</td>
-  </tr>
-</table>
+| <img src="https://github.com/user-attachments/assets/6634fb50-ed04-4315-ac85-231a80352ed3" alt="y" width="150" height="150"> | <img src="https://github.com/user-attachments/assets/814dc111-20bd-43af-8ecd-65bb9d01eb00" alt="KakaoTalk_20240827_220338667_02" width="150" height="150"> | <img src="https://github.com/user-attachments/assets/7ecb6f7d-892c-4597-a795-9ecad61d33e1" alt="KakaoTalk_20240827_220338667_03" width="150" height="150"> | <img src="https://github.com/user-attachments/assets/c7a6e078-d851-4976-b457-616ed0f55fbe" alt="KakaoTalk_20240827_220338667_01" width="150" height="150"> | <img src="https://github.com/user-attachments/assets/d4014af2-2052-407d-aafa-0f2bc911458d" alt="KakaoTalk_20240827_220338667_04" width="150" height="150"> |
+| :------------------------------------: | :------------------------------------: | :------------------------------------: | :------------------------------------------: | :------------------------------------: |
+|                 유예하                 |                 정민재                 |                 김유정                 |                    임진조                    |                  최건                  |
+| [@YehaYoo](https://github.com/YehaYoo) | [@wjsdncl](https://github.com/wjsdncl) | [@Kimyu94](https://github.com/Kimyu94) | [@Sparrowlim](https://github.com/Sparrowlim) | [@Sombian](https://github.com/Sombian) |
+|              팀 대시보드               |              소셜 로그인               |            로그인, 회원가입            |                 Drag & Drop                  |             마이 히스토리              |
+|         (Tasks / Report / Members)         |            비밀번호 재설정             |                계정관리                |                리스트 페이지                 |        자유게시판 / 게시글 등록        |
+|                Dropdown                |           버튼 / 헤더 컴포넌트           |            자유 게시판 상세            |                   Sidebar                    |      DatePicker / Popover / Form / API       |
+|          컨셉 및 디자인 변경           |             초대 기능 개선             |            Message 컴포넌트            |                    Modal                     |                튜토리얼                |
