@@ -15,11 +15,15 @@ export default function UserInfo({ userProfile, userName, userEmail, isAdmin }: 
 	return (
 		<div className="flex items-center gap-[12px]">
 			<div className="hidden tablet:block">
-				<Image src={userProfile || defaultImage} alt={userName} width={32} height={32} />
+				<div className="relative size-[32px]">
+					<Image src={userProfile || defaultImage} alt={userName} className="rounded-md object-cover" fill sizes="32px" />
+				</div>
 			</div>
 			<div className="flex flex-col gap-[6px]">
 				<div className="flex items-center justify-start gap-[6px] tablet:hidden">
-					<Image src={userProfile || defaultImage} alt={userName} width={32} height={32} />
+					<div className="relative size-[32px]">
+						<Image src={userProfile || defaultImage} alt={userName} fill sizes="32px" className="rounded-md" />
+					</div>
 					<div className="text-primary text-md font-medium">{userName}</div>
 					{isAdmin && <Icon.Crown width={11} height={11} />}
 				</div>

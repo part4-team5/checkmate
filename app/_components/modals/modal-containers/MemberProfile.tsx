@@ -34,7 +34,9 @@ export default function MemberProfile({ email, userName, userProfile, close }: M
 				</div>
 				<div className="mx-auto mt-[8px] flex w-[280px] flex-col items-center gap-[24px] tablet:h-[186px]">
 					<div className="flex flex-col items-center justify-center">
-						<Image src={userProfile || defaultImage} alt={userName} width={52} height={52} />
+						<div className="relative size-[52px]">
+							<Image src={userProfile || defaultImage} alt={userName} fill sizes="52px" className="rounded-md object-cover" />
+						</div>
 						<div className="text-primary mt-[24px] text-[#CBD5E1]">{userName}</div>
 						<p className="mt-2 text-center text-[12px] font-normal text-[#CBD5E1]"> {email}</p>
 					</div>
