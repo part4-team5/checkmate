@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { NextRequest, NextResponse } from "next/server";
-import GroupModel from "@/app/_utils/_models/Group.model";
+import GroupModel from "@/app/_api/_models/Group.model";
 import dbConnect from "@/app/_utils/dbConnect";
 
 // 그룹 멤버 제거

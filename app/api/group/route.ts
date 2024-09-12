@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import { NextRequest, NextResponse } from "next/server";
-import GroupModel from "@/app/_utils/_models/Group.model";
+import GroupModel from "@/app/_api/_models/Group.model";
 import dbConnect from "@/app/_utils/dbConnect";
-import UserModel from "@/app/_utils/_models/Users.model";
+import UserModel from "@/app/_api/_models/Users.model";
 
 export async function POST(req: NextRequest) {
 	await dbConnect();

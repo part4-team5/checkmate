@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/app/_utils/dbConnect";
-import GroupModel from "@/app/_utils/_models/Group.model";
+import GroupModel from "@/app/_api/_models/Group.model";
 
 // 그룹 멤버 추가
 export async function POST(req: NextRequest) {
