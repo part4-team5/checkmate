@@ -188,7 +188,7 @@ checkmate
 #### 1. 랜딩페이지
 
 - 서비스에서 제공하는 기능을 소개합니다.
-- 상호작용 가능한 요소를 추가하여 할 일 완성도를 시각적으로 보여줍니다.
+- 상호작용 가능한 요소를 추가하여 체크메이트가 할 일 완성도를 시각화하는 방식을 보여줍니다.
 
 #### 2. 회원가입/로그인 페이지
 
@@ -208,7 +208,7 @@ checkmate
 
 #### 6. 마이 히스토리 페이지
 
-- 현재까지 완료한 할 일을 시각적으로 볼 수 있습니다.
+- 현재까지 완료한 할 일을 타임라인 형식으로 볼 수 있습니다.
 
 #### 7. 팀 대시보드 페이지
 
@@ -232,9 +232,12 @@ checkmate
 
 #### 10. 게시글 작성 페이지
 
-- @sombian/markdown 팀원이 제작, 배포한 마크다운 라이브러리를 사용하여 게시글 작성 페이지를 제작했습니다.
+- @sombian/markdown [팀원](https://github.com/Sombian)이 제작, 배포한 마크다운 라이브러리를 사용하여 게시글 작성 페이지를 제작했습니다.
 
 #### 11. 게시글 상세 페이지
+
+- 작성한 글의 내용을 확인 가능하며 게시글에 댓글을 달 수 있습니다.
+- 글과 댓글을 수정 / 삭제할 수 있는 기능이 있습니다.
 
 <br/>
 
@@ -280,7 +283,7 @@ checkmate
     <td style="text-align: center;">마이 히스토리</td>
   </tr>
   <tr>
-    <td style="text-align: center;">(Tasks/Report/Members)</td>
+    <td style="text-align: center;">(Tasks /Report /Members)</td>
     <td style="text-align: center;">비밀번호 재설정</td>
     <td style="text-align: center;">계정관리</td>
     <td style="text-align: center;">리스트 페이지</td>
@@ -291,7 +294,7 @@ checkmate
     <td style="text-align: center;">버튼/헤더 컴포넌트</td>
     <td style="text-align: center;">자유 게시판 상세</td>
     <td style="text-align: center;">Sidebar</td>
-    <td style="text-align: center;">DatePicker/Popover/Form/API</td>
+    <td style="text-align: center;">DatePicker /Popover /Form /API</td>
   </tr>
   <tr>
     <td style="text-align: center;">컨셉 및 디자인 변경</td>
