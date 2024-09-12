@@ -1,7 +1,7 @@
 # 같은 속도 같은 방향으로 나아가는 방법 <br/> ![CHECKMATE (2)](https://github.com/user-attachments/assets/998d6239-d1e7-4e4d-a7af-60671f9b585f)
 
 
-![Screenshot 2024-09-12 at 14 08 53](https://github.com/user-attachments/assets/f488587b-9b2b-4748-bb09-677d9d799f07)
+![Screenshot 2024-09-12 at 17 06 15](https://github.com/user-attachments/assets/a1b10e99-b0e3-42bc-b724-6a54c3a4cbf2)
 
 <br />
 
