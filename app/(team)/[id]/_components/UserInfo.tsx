@@ -16,7 +16,7 @@ export default function UserInfo({ userProfile, userName, userEmail, isAdmin }: 
 		<div className="flex items-center gap-[12px]">
 			<div className="hidden tablet:block">
 				<div className="relative size-[32px]">
-					<Image src={userProfile || defaultImage} alt={userName} fill sizes="32px" className="rounded-md" />
+					<Image src={userProfile || defaultImage} alt={userName} className="rounded-md object-cover" fill sizes="32px" />
 				</div>
 			</div>
 			<div className="flex flex-col gap-[6px]">
