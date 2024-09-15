@@ -19,6 +19,8 @@ import useOverlay from "@/app/_hooks/useOverlay";
 
 const DeleteModal = dynamic(() => import("@/app/_components/modals/modal-containers/Delete"), { ssr: false });
 
+export const runtime = "edge";
+
 export default function BoardDetail({ params }: { params: { id: string } }) {
 	const articleId = Number(params.id);
 	const router = useRouter();
