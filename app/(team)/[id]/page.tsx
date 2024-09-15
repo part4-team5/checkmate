@@ -10,8 +10,6 @@ import Report from "@/app/(team)/[id]/_components/Report";
 import Members from "@/app/(team)/[id]/_components/Members";
 import Tasks from "@/app/(team)/[id]/_components/Tasks";
 
-export const runtime = "edge";
-
 export default async function Page({ params }: { params: { id: string } }) {
 	const id = Number(params.id);
 
