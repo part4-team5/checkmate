@@ -5,8 +5,12 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
-		"export": "next export",
 		"start": "next start",
+		"lint": "next lint",
+		"pages:build": "npx @cloudflare/next-on-pages",
+		"pages:deploy": "npm run pages:build && wrangler pages deploy .vercel/output/static",
+		"pages:watch": "npx @cloudflare/next-on-pages --watch",
+		"pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat",
 		"prepare": "husky",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"

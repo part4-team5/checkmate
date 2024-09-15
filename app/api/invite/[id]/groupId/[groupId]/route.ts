@@ -3,6 +3,8 @@ import dbConnect from "@/app/_utils/dbConnect";
 import InviteModel from "@/app/_api/_models/Invite.model";
 import UserModel from "@/app/_api/_models/Users.model";
 
+export const runtime = "edge";
+
 export async function DELETE(req: NextRequest) {
 	await dbConnect();
 

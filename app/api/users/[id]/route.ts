@@ -5,6 +5,8 @@ import dbConnect from "@/app/_utils/dbConnect";
 import GroupModel from "@/app/_api/_models/Group.model";
 import InviteModel from "@/app/_api/_models/Invite.model";
 
+export const runtime = "edge";
+
 export async function DELETE(req: NextRequest) {
 	await dbConnect();
 
