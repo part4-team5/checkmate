@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 export default function Page() {
 	return (
 		<main className="flex h-[calc(100dvh-60px)] w-full flex-col items-center justify-center text-text-primary">
