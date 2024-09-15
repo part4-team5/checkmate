@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/app/_utils/dbConnect";
 import GroupModel from "@/app/_api/_models/Group.model";
 
-export const runtime = "edge";
-
 // 그룹 멤버 추가
 export async function POST(req: NextRequest) {
 	await dbConnect();

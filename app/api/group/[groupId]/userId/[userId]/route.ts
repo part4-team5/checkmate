@@ -3,8 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import GroupModel from "@/app/_api/_models/Group.model";
 import dbConnect from "@/app/_utils/dbConnect";
 
-export const runtime = "edge";
-
 // 그룹 멤버 제거
 export async function DELETE(req: NextRequest) {
 	await dbConnect();

@@ -4,8 +4,6 @@ import dbConnect from "@/app/_utils/dbConnect";
 import InviteModel from "@/app/_api/_models/Invite.model";
 import crypto from "crypto";
 
-export const runtime = "edge";
-
 async function generateShortKey(): Promise<string> {
 	let key: string;
 

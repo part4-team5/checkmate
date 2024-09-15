@@ -4,8 +4,6 @@ import GroupModel from "@/app/_api/_models/Group.model";
 import dbConnect from "@/app/_utils/dbConnect";
 import UserModel from "@/app/_api/_models/Users.model";
 
-export const runtime = "edge";
-
 export async function POST(req: NextRequest) {
 	await dbConnect();
 

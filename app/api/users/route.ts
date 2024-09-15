@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import UserModel from "@/app/_api/_models/Users.model";
 import dbConnect from "@/app/_utils/dbConnect";
 
-export const runtime = "edge";
-
 export async function GET() {
 	await dbConnect();
 
