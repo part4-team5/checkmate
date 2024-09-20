@@ -1,6 +1,7 @@
 import ClientTodo from "@/app/(team)/[id]/todo/_components/Todo";
 import API from "@/app/_api";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 
 type PageProps = {
 	params: {
@@ -27,6 +28,10 @@ export default async function Page({ params, searchParams }: PageProps) {
 
 	return (
 		<div className="pt-10">
+			<Link href={`/${groupId}`} className="text-text-primary">
+				← 팀으로 돌아가기
+			</Link>
+			<div className="pt-3" />
 			<h1 className="text-xl font-bold text-text-primary">할 일</h1>
 			<HydrationBoundary state={dehydrate(queryClient)}>
 				<ClientTodo groupId={groupId} taskListId={taskId} />

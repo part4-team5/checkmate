@@ -248,23 +248,17 @@ export default function ClientTodo({ groupId, taskListId }: ClientTodoProps) {
 			</motion.div>
 
 			{isTodoItemsLoading && (
-				<div>
+				<div className="mt-6 rounded-lg bg-background-secondary px-3 py-2 shadow-board tablet:px-9 tablet:py-8">
 					{Array.from({ length: 5 }).map((_, i) => (
 						/* eslint-disable react/no-array-index-key */
-						<motion.div
-							key={i}
-							className="mt-4 flex h-[75px] w-full flex-col gap-[11px] rounded-lg bg-background-secondary px-[14px] py-3 shadow-listPage"
-							initial={{ opacity: 0.2 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0 }}
-							transition={{
-								duration: 0.2, // 빠르고 간결한 애니메이션 속도
-								ease: "easeInOut",
-							}}
-						>
-							<div className="h-3 w-28 rounded-sm bg-background-tertiary" />
-							<div className="h-3 w-48 rounded-sm bg-background-tertiary" />
-						</motion.div>
+						<div key={i} className="mt-4 flex flex-col gap-4">
+							<div className="h-[75px] w-full rounded-lg bg-background-tertiary px-[14px] py-3 shadow-listPage">
+								<div className="flex size-full flex-col justify-center gap-3">
+									<div className="h-5 w-full max-w-[700px] animate-pulse rounded-md bg-background-Senary" />
+									<div className="h-5 w-48 animate-pulse rounded-md bg-background-Senary" />
+								</div>
+							</div>
+						</div>
 					))}
 				</div>
 			)}
