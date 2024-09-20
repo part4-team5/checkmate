@@ -1,7 +1,7 @@
 import DropDown from "@/app/_components/Dropdown";
 import { calculateTimeDifference } from "@/app/_utils/IsoToFriendlyDate";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import defaultImage from "@/public/icons/defaultAvatar.svg";
 import Button from "@/app/_components/Button";
 import API from "@/app/_api";
@@ -31,6 +31,7 @@ type TodoDetailCommentListProps = {
 export default function TodoDetailCommentList({ comment, todoId, groupId, currentDate, currentTaskId, user }: TodoDetailCommentListProps) {
 	const [isCommentEdit, setIsCommentEdit] = useState(false);
 	const [editedComment, setEditedComment] = useState(comment.content);
+	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 	const patchTodoCommentEditMutation = usePatchTodoCommentEditMutation(setIsCommentEdit, todoId);
 	const deleteTodoCommentMutation = useDeleteTodoCommentMutation(todoId, groupId, currentTaskId, currentDate);
 
@@ -52,6 +53,10 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 
 	const handleEditCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setEditedComment(e.target.value);
+		if (textareaRef.current) {
+			textareaRef.current.style.height = "auto";
+			textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+		}
 	};
 
 	const handleTodoCommentEditSubmit = (e: React.FormEvent<HTMLFormElement>, commentId: number) => {
@@ -74,9 +79,11 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 					<div className="flex justify-between">
 						{isCommentEdit ? (
 							<textarea
-								className={`${editedComment.length > 0 ? "" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-todo-primary p-2 shadow-input focus:outline-none`}
+								ref={textareaRef}
+								className={`${editedComment.length > 0 ? "" : "border-status-danger"} max-h[200px] w-full resize-none rounded-lg bg-todo-primary p-2 shadow-input focus:outline-none scrollbar:w-2 scrollbar:rounded-full scrollbar:bg-background-secondary scrollbar-thumb:rounded-full scrollbar-thumb:bg-background-primary`}
 								onChange={handleEditCommentChange}
 								value={editedComment}
+								style={{ height: `${Math.min(textareaRef.current?.scrollHeight || 200, 200)}px` }}
 							/>
 						) : (
 							<div className="flex w-full justify-between">
