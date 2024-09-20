@@ -119,7 +119,7 @@ export default function Page() {
 	}, [deleteAccountMutation, overlay]);
 
 	return (
-		<main className="box-border w-full bg-background-primary p-[40px_0]">
+		<main className="box-border w-full bg-background-primary p-[120px_0]">
 			<section className="relative m-[0_16px] w-auto tablet:m-[0_auto] tablet:w-[790px]">
 				<h2 className="mb-[24px] text-xl font-bold text-text-primary">계정 설정</h2>
 
@@ -131,14 +131,18 @@ export default function Page() {
 						<div className="flex">
 							<Form.ImageInput id="profileImage" tests={[{ type: "file_size", data: 1048576, error: "이미지 파일 크기는 1MB 이하여야 합니다" }]}>
 								{(file) => (
-									<div className="relative flex size-16 cursor-pointer items-center justify-center">
-										<div
-											className={`border-border-primary/10 relative size-full overflow-hidden rounded-full bg-background-secondary ${file ? "border-2" : ""}`}
-										>
-											<Image src={file ? (file as string) : (user?.image ?? "/icons/defaultAvatar.svg")} alt="Profile Image" fill className="object-cover" />
+									<div className="relative flex size-32 cursor-pointer items-center justify-center rounded-lg outline outline-[2px] outline-brand-primary">
+										<div className={`border-border-primary/10 relative size-full overflow-hidden rounded-lg bg-background-secondary ${file ? "border-2" : ""}`}>
+											{file ? (
+												<Image src={file as string} alt="Profile Image" fill className="object-cover" />
+											) : (
+												<div className="flex size-full items-center justify-center">
+													<Icon.EmptyImage width={56} height={56} />
+												</div>
+											)}
 										</div>
-										<div className="absolute bottom-0 right-0 flex h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-text-primary bg-dropdown-hover">
-											<Icon.Edit width={11} height={11} color="var(--text-primary)" />
+										<div className="absolute -bottom-2 -right-2 flex items-center justify-center rounded-full border-2 border-brand-primary bg-dropdown-hover p-1">
+											<Icon.Edit width={16} height={16} color="var(--text-primary)" />
 										</div>
 									</div>
 								)}

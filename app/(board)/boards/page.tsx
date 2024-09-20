@@ -169,10 +169,10 @@ export default function Page() {
 									key={post.id}
 									ref={posts.at(-1) === post ? (ref) => setLast(ref!) : undefined}
 									href={`/boards/${post.id}`}
-									className="relative flex h-[190px] flex-shrink-0 flex-col justify-between gap-[24px] rounded-[12px] bg-background-tertiary px-[12px] py-[12px] shadow-bestCard hover:bg-background-quinary"
+									className="relative flex h-[190px] flex-shrink-0 flex-col justify-between gap-[24px] rounded-[12px] bg-background-tertiary px-[12px] pb-[12px] pt-[18px] shadow-bestCard hover:bg-background-quinary"
 								>
 									<div className="z-10 flex flex-col gap-[12px]">
-										<div className="text-ellipsis text-xl">{post.title}</div>
+										<div className="text-ellipsis text-xl font-medium">{post.title}</div>
 										<div className="text-md">{new Date(post.createdAt).toLocaleDateString()}</div>
 									</div>
 									<div className="z-10 flex w-full items-center gap-[8px] text-nowrap desktop:gap-[16px]">
@@ -191,7 +191,7 @@ export default function Page() {
 									</div>
 									{post.image && (
 										<div
-											className="absolute bottom-[8px] right-[8px] top-[8px] aspect-square overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary bg-cover opacity-75 shadow-[inset_0_0_25px_5px_rgba(0,0,0,0.75)]"
+											className="absolute bottom-[8px] right-[8px] top-[8px] aspect-square overflow-hidden rounded-[12px] border border-border-primary bg-background-secondary bg-cover opacity-75 shadow-[inset_0_0_25px_5px_rgba(0,0,0,0.75)] brightness-[60%]"
 											style={{ backgroundImage: `url("${post.image}")` }}
 										/>
 									)}
@@ -258,7 +258,7 @@ export default function Page() {
 							))}
 						</div>
 					)}
-					{!isFetching && (posts?.length ?? 0) === 0 && <div className="text-center text-text-primary">없어요...</div>}
+					{!isFetching && (posts?.length ?? 0) === 0 && <div className="text-center text-text-primary">게시글이 없습니다.</div>}
 				</div>
 			</div>
 			<div className="shadow-lg fixed bottom-[45px] right-[16px] z-40 flex h-[48px] w-[104px] items-center justify-center overflow-hidden rounded-[40px] tablet:right-[24px] desktop:right-[calc((100%-1200px)/2)]">
