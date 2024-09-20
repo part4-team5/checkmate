@@ -94,9 +94,7 @@ export default function ChangePassword({ close }: ChangePasswordModalProps) {
 						<Button variant="secondary" onClick={close}>
 							닫기
 						</Button>
-						<Button variant="primary" type="submit">
-							변경하기
-						</Button>
+						<Form.Submit>변경하기</Form.Submit>
 					</div>
 				</Form>
 			</div>
