@@ -32,7 +32,8 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 		}
 	};
 
-	const handleCommentSubmit = () => {
+	const handleCommentSubmit = (e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
+		e.preventDefault();
 		if (commentText.trim().length === 0) return;
 		if (addCommentMutation.isPending) return;
 		if (textareaRef.current) textareaRef.current.style.height = "auto";
@@ -42,7 +43,7 @@ export default function TodoDetailInput({ groupId, currentTaskId, currentDate, t
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		if (e.key === "Enter" && !e.shiftKey) {
 			e.preventDefault();
-			handleCommentSubmit();
+			handleCommentSubmit(e);
 		}
 	};
 
