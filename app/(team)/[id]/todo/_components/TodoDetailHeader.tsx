@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useEditTodoMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import API from "@/app/_api";
 import { motion } from "framer-motion";
+import toast from "@/app/_utils/Toast";
 
 type FrequencyType = "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
 const frequency: Record<FrequencyType, string> = {
@@ -55,7 +56,16 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 	const handleTodoEditSubmit = (e: React.FormEvent<HTMLFormElement>, done: string | null) => {
 		e.preventDefault();
 		if (!todoContent) return;
-		if (editedTitle.length === 0 || editedDescription.length === 0) return;
+		if (editedTitle.length === 0) {
+			toast.error("할 일 제목을 입력해주세요.");
+			return;
+		}
+
+		if (editedTitle === todoContent.name && editedDescription === todoContent.description) {
+			toast.error("수정된 내용이 없습니다.");
+			return;
+		}
+
 		todoEditMutation.mutate({
 			todoId,
 			name: editedTitle,
@@ -70,7 +80,7 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 			scale: 0.8,
 		},
 		hover: {
-			scale: 1.2,
+			scale: 1.1,
 		},
 	};
 
@@ -132,15 +142,15 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 									type="button"
 									onClick={handleEditButtonClick}
 									aria-label="todo-edit"
-									className="h-fit w-fit rounded-full bg-background-Senary p-3 shadow-buttonPrimary"
+									className="h-fit w-fit rounded-full bg-background-Senary p-2 shadow-buttonPrimary"
 								>
-									<Icon.Edit width={24} height={24} />
+									<Icon.Edit width={16} height={16} />
 								</motion.button>
 							)}
 						</div>
 						<div className="my-4 flex justify-between">
 							<div className="flex items-center gap-3">
-								<Image src={defaultImage} alt={todoContent.name} width={32} height={32} />
+								<Image src={todoContent.writer.image ?? defaultImage} alt={todoContent.name} width={32} height={32} className="rounded-full object-cover" />
 								<div className="text-md font-medium">{todoContent.writer.nickname}</div>
 							</div>
 							{/**
@@ -156,12 +166,7 @@ export default function TodoDetailHeader({ groupId, currentTaskId, currentDate, 
 								<textarea
 									onChange={handleEditDescriptionChange}
 									value={editedDescription}
-									onKeyDown={(e) => {
-										if (e.key === "Enter") {
-											handleEditDescriptionChange({ target: { value: `${editedDescription}\n` } } as React.ChangeEvent<HTMLTextAreaElement>);
-										}
-									}}
-									className={`${editedDescription.length > 0 ? "" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-todo-primary p-2 shadow-input focus:outline-none`}
+									className="w-full resize-none rounded-lg border border-border-primary bg-todo-primary p-2 shadow-input focus:outline-none"
 									rows={5}
 								/>
 							) : (

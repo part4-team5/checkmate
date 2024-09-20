@@ -3,10 +3,10 @@ import { useRef, useState } from "react";
 import Button from "@/app/_components/Button";
 import useAuthStore from "@/app/_store/AuthStore";
 import { useGetComments, useGetTodoContent } from "@/app/(team)/[id]/todo/_components/api/useQuery";
-import TodoDetailCommentList from "@/app/(team)/[id]/todo/_components/TodoDetailCommentList";
 import { useToggleTodoStatusMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import TodoDetailHeader from "@/app/(team)/[id]/todo/_components/TodoDetailHeader";
-import TodoDetailInput from "@/app/(team)/[id]/todo/_components/TodoDetailInput";
+import TodoDetailCommentInput from "@/app/(team)/[id]/todo/_components/TodoDetailCommentInput";
+import TodoDetailCommentItem from "@/app/(team)/[id]/todo/_components/TodoDetailCommentItem";
 import { motion } from "framer-motion";
 
 type TodoDetailProps = {
@@ -55,12 +55,12 @@ export default function TodoDetail({ todoId, close, groupId, currentTaskId, curr
 						todoContent={todoContent}
 						isCheck={isCheck}
 					/>
-					<TodoDetailInput groupId={groupId} currentTaskId={currentTaskId} currentDate={currentDate} todoId={todoId} user={user} />
+					<TodoDetailCommentInput groupId={groupId} currentTaskId={currentTaskId} currentDate={currentDate} todoId={todoId} user={user} />
 
-					<div className="flex flex-col gap-4">
+					<div className="flex flex-col gap-6">
 						{comments &&
 							comments.map((comment) => (
-								<TodoDetailCommentList
+								<TodoDetailCommentItem
 									key={comment.id}
 									comment={comment}
 									todoId={todoId}

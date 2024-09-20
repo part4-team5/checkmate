@@ -7,6 +7,7 @@ import Button from "@/app/_components/Button";
 import API from "@/app/_api";
 import { useDeleteTodoCommentMutation, usePatchTodoCommentEditMutation } from "@/app/(team)/[id]/todo/_components/api/useMutation";
 import Icon from "@/app/_icons";
+import toast from "@/app/_utils/Toast";
 
 type CommentListType = Awaited<ReturnType<(typeof API)["{teamId}/tasks/{taskId}/comments"]["GET"]>>;
 type CommentType = CommentListType[number];
@@ -56,49 +57,52 @@ export default function TodoDetailCommentList({ comment, todoId, groupId, curren
 	const handleTodoCommentEditSubmit = (e: React.FormEvent<HTMLFormElement>, commentId: number) => {
 		e.preventDefault();
 		if (editedComment.trim().length === 0) return;
+
+		if (editedComment === comment.content) {
+			toast.error("수정된 내용이 없습니다.");
+			return;
+		}
 		patchTodoCommentEditMutation.mutate({ commentId, content: editedComment });
 	};
 
 	const timeDifference = calculateTimeDifference(comment.createdAt, currentTime);
 
 	return (
-		<div className="border-gray-300 min-h-28 rounded-xl bg-background-list px-3 py-2 drop-shadow-md">
+		<div className="border-gray-300 flex min-h-28 items-center rounded-xl bg-background-list px-5 py-4 drop-shadow-md">
 			{comment && (
-				<form onSubmit={(e) => handleTodoCommentEditSubmit(e, comment.id)} id="test">
+				<form onSubmit={(e) => handleTodoCommentEditSubmit(e, comment.id)} id="test" className="w-full">
 					<div className="flex justify-between">
 						{isCommentEdit ? (
 							<textarea
 								className={`${editedComment.length > 0 ? "" : "border-status-danger"} w-full rounded-lg border border-border-primary bg-todo-primary p-2 shadow-input focus:outline-none`}
 								onChange={handleEditCommentChange}
 								value={editedComment}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") {
-										e.preventDefault();
-										handleEditCommentChange({ target: { value: `${`${editedComment}\n`}` } } as React.ChangeEvent<HTMLTextAreaElement>);
-									}
-								}}
 							/>
 						) : (
-							<div className="flex w-full items-center justify-between">
-								<div style={{ maxWidth: "calc(100% - 24px)" }} className="whitespace-pre-line break-words text-md font-normal">
+							<div className="flex w-full justify-between">
+								<div style={{ maxWidth: "calc(100% - 24px)" }} className="min-h-14 whitespace-pre-line break-words text-md font-normal">
 									{comment.content}
 								</div>
-								{comment.user?.id === user.id && (
-									<DropDown options={options}>
-										<button type="button" aria-label="dropdown">
-											<Icon.Kebab width={16} height={16} />
-										</button>
-									</DropDown>
-								)}
+								<div className="flex size-[20px] items-center justify-center">
+									{comment.user?.id === user.id && (
+										<DropDown options={options} align="RR">
+											<button type="button" aria-label="dropdown" className="">
+												<Icon.Kebab width={16} height={16} />
+											</button>
+										</DropDown>
+									)}
+								</div>
 							</div>
 						)}
 					</div>
 
-					<div className="my-4">
+					<div className="pt-2" />
+
+					<div>
 						{!isCommentEdit ? (
 							<div className="flex items-center justify-between">
 								{comment.user && (
-									<div className="flex items-center gap-3">
+									<div className="flex items-center gap-2">
 										{comment.user.image ? (
 											<div className="relative h-8 w-8 overflow-hidden rounded-full">
 												<Image src={comment.user.image} alt={comment.user.nickname} layout="fill" objectFit="cover" />
