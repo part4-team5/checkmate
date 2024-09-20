@@ -9,8 +9,8 @@ import CircularProgressBar from "@/app/(team)/[id]/_components/CircularProgressB
 
 export default function LandingProgressBar() {
 	const [isHovered, setIsHovered] = useState(false);
-	const [buttonStates, setButtonStates] = useState([true, true, false, false, false, false]);
-	const [progress, setProgress] = useState(2 / 6);
+	const [buttonStates, setButtonStates] = useState([true, true, false, false, false]);
+	const [progress, setProgress] = useState(2 / 5);
 
 	const mouseX = useMotionValue(0);
 	const mouseY = useMotionValue(0);
@@ -43,7 +43,7 @@ export default function LandingProgressBar() {
 
 	return (
 		<motion.div
-			className="relative grow cursor-none rounded-[20px] bg-landing-quinary"
+			className="relative w-full grow rounded-[20px] bg-landing-quinary tablet:max-w-[695px] desktop:max-w-none desktop:cursor-none"
 			style={{ boxShadow: "12px 12px 16px 0px rgba(93, 97, 100, 0.02)" }}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
@@ -56,21 +56,21 @@ export default function LandingProgressBar() {
 				<div className="size-3 rounded-full bg-brand-primary" />
 			</div>
 
-			<div className="flex flex-col items-center justify-center gap-[30px] py-[80px]">
+			<div className="flex flex-col items-center justify-center gap-[30px] py-[40px] tablet:py-[80px]">
 				<CircularProgressBar percent={progress * 100} useGradient size={260} strokeWidth={60} strokeColor="#10b981" backgroundColor="#d1d1d1" />
 
 				<div className="mt-[10px] text-lg font-medium text-text-secondary">
 					오늘 할 일을 <b className="text-brand-primary">체크</b>해보세요!
 				</div>
 
-				<div className="flex gap-6">
+				<div className="flex gap-3 tablet:gap-6">
 					{buttonStates.map((isVisible, index) => (
 						<button
 							// eslint-disable-next-line react/no-array-index-key
 							key={index}
 							type="button"
 							aria-label={`check-${index}`}
-							className={`${isVisible ? "border-brand-primary" : "border-landing-Senary"} relative h-[42px] w-[42px] cursor-none rounded-[10px] border-2`}
+							className={`${isVisible ? "border-brand-primary" : "border-landing-Senary"} relative h-[42px] w-[42px] rounded-[10px] border-2 desktop:cursor-none`}
 							onClick={() => handleClick(index)}
 						>
 							{isVisible && (
@@ -94,7 +94,7 @@ export default function LandingProgressBar() {
 			</div>
 			{isHovered && (
 				<motion.div
-					className="pointer-events-none absolute"
+					className="absolute hidden desktop:pointer-events-none desktop:block"
 					style={{
 						x: mouseX,
 						y: mouseY,
