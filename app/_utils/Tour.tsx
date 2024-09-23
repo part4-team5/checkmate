@@ -3,11 +3,8 @@
 "use client";
 
 import ReactDOM from "react-dom/client";
-
 import { useCallback, useState, useEffect } from "react";
-
 import Icon from "@/app/_icons";
-
 import Popover from "@/app/_components/Popover";
 
 export default class Tour {
@@ -57,7 +54,7 @@ function Impl({ steps, exit, close }: { steps: Guide[]; exit: () => void; close:
 
 		if (!target) throw new Error();
 
-		target.scrollIntoView();
+		target.scrollIntoView({ block: "center" });
 
 		const observer = new ResizeObserver(() => {
 			const a = target.getBoundingClientRect();
@@ -86,33 +83,51 @@ function Impl({ steps, exit, close }: { steps: Guide[]; exit: () => void; close:
 		if (0 <= stage - 1) {
 			setStage(stage - 1);
 		}
-	}, [steps, stage]);
+	}, [stage]);
 
 	const next = useCallback(() => {
 		if (stage + 1 < steps.length) {
 			setStage(stage + 1);
 		}
-	}, [steps, stage]);
+	}, [stage, steps.length]);
 
-	const args: Partial<Parameters<typeof Popover>[0]> = (() => {
-		switch (steps[stage].position) {
-			case "top": {
-				return { gapX: 10, anchorOrigin: { vertical: "top", horizontal: "left" }, overlayOrigin: { vertical: "bottom", horizontal: "left" } };
-			}
-			case "left": {
-				return { gapY: 10, anchorOrigin: { vertical: "top", horizontal: "left" }, overlayOrigin: { vertical: "top", horizontal: "right" } };
-			}
-			case "right": {
-				return { gapY: 10, anchorOrigin: { vertical: "top", horizontal: "right" }, overlayOrigin: { vertical: "top", horizontal: "left" } };
-			}
-			case "bottom": {
-				return { gapX: 10, anchorOrigin: { vertical: "bottom", horizontal: "left" }, overlayOrigin: { vertical: "top", horizontal: "left" } };
-			}
-			default: {
-				throw new Error();
-			}
+	// 반환 타입을 명시적으로 Position으로 지정
+	const getPositionConfig = (position: "top" | "left" | "right" | "bottom"): Position => {
+		switch (position) {
+			case "top":
+				return {
+					anchorOrigin: { vertical: "top", horizontal: "left" },
+					overlayOrigin: { vertical: "bottom", horizontal: "left" },
+				};
+			case "left":
+				return {
+					anchorOrigin: { vertical: "top", horizontal: "left" },
+					overlayOrigin: { vertical: "top", horizontal: "right" },
+				};
+			case "right":
+				return {
+					anchorOrigin: { vertical: "top", horizontal: "right" },
+					overlayOrigin: { vertical: "top", horizontal: "left" },
+				};
+			case "bottom":
+				return {
+					anchorOrigin: { vertical: "bottom", horizontal: "left" },
+					overlayOrigin: { vertical: "top", horizontal: "left" },
+				};
+			default:
+				throw new Error("Invalid position");
 		}
-	})();
+	};
+
+	const gapX = steps[stage].position === "left" || steps[stage].position === "right" ? 0 : 10;
+	const gapY = steps[stage].position === "top" || steps[stage].position === "bottom" ? 0 : 10;
+
+	const args: Partial<Parameters<typeof Popover>[0]> = {
+		gapX,
+		gapY,
+		...getPositionConfig(steps[stage].position),
+		secondaryPosition: steps[stage].secondaryPosition ? getPositionConfig(steps[stage].secondaryPosition) : undefined,
+	};
 
 	return (
 		<div className="fixed inset-0 z-[69] h-screen w-screen bg-black/75">
@@ -124,6 +139,7 @@ function Impl({ steps, exit, close }: { steps: Guide[]; exit: () => void; close:
 					gapY={args.gapX}
 					anchorOrigin={args.anchorOrigin!}
 					overlayOrigin={args.overlayOrigin!}
+					secondaryPosition={args.secondaryPosition}
 					// eslint-disable-next-line react/no-unstable-nested-components
 					overlay={() => (
 						<div className="relative flex flex-col gap-[10px] overflow-hidden whitespace-nowrap rounded-[12px] border border-border-primary bg-background-primary px-[30px] py-[16px] pt-[38px] text-text-primary shadow-history">
@@ -165,6 +181,17 @@ interface Guide {
 	query: string;
 	content: string;
 	position: "top" | "left" | "right" | "bottom";
+	secondaryPosition?: "top" | "left" | "right" | "bottom";
+}
+
+interface Position {
+	anchorOrigin: Origin;
+	overlayOrigin: Origin;
+}
+
+interface Origin {
+	vertical: "top" | "center" | "bottom";
+	horizontal: "left" | "center" | "right";
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest */
