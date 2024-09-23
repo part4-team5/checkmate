@@ -96,8 +96,8 @@ function Impl({ steps, exit, close }: { steps: Guide[]; exit: () => void; close:
 		switch (position) {
 			case "top":
 				return {
-					anchorOrigin: { vertical: "top", horizontal: "left" },
-					overlayOrigin: { vertical: "bottom", horizontal: "left" },
+					anchorOrigin: { vertical: "top", horizontal: "right" },
+					overlayOrigin: { vertical: "bottom", horizontal: "right" },
 				};
 			case "left":
 				return {
