@@ -36,7 +36,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 					<section className="flex">
 						<Report id={id} />
 					</section>
-					<section className="desktop:flex-grow-1 mt-[80px] w-full flex-grow-0 desktop:mt-0">
+					<section className="desktop:flex-grow-1 w-full flex-grow-0">
 						<Tasks id={id} />
 					</section>
 				</section>

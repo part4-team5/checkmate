@@ -61,7 +61,7 @@ function Report({ id }: ReportProps) {
 						<p className="h-[48px] text-[40px] font-bold text-[#10B981]">{percent.toFixed(0)}%</p>
 					</div>
 				</section>
-				<section className="mt-[21px] flex h-[84px] w-full flex-col gap-[21px] desktop:max-w-[385px]">
+				<section className="mt-[21px] flex w-full flex-col gap-[21px] desktop:h-[84px] desktop:max-w-[385px]">
 					<div className="flex items-center justify-between rounded-[12px] bg-background-tertiary p-[16px] shadow-teamCard">
 						<div className="bg-background-tertiary">
 							<p className="text-[12px] font-semibold">오늘의 할 일</p>

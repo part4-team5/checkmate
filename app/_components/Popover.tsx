@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import { useEffect, useState, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,11 +13,17 @@ export interface PopoverProps extends React.PropsWithChildren {
 	readonly?: boolean;
 	anchorOrigin: Origin;
 	overlayOrigin: Origin;
+	secondaryPosition?: Position; // 2번 위치를 프롭으로 옵셔널하게 받음
 }
 
 interface Origin {
 	vertical: "top" | "center" | "bottom";
 	horizontal: "left" | "center" | "right";
+}
+
+interface Position {
+	anchorOrigin: Origin;
+	overlayOrigin: Origin;
 }
 
 export default function Popover({
@@ -29,6 +36,7 @@ export default function Popover({
 	readonly,
 	anchorOrigin,
 	overlayOrigin,
+	secondaryPosition,
 	children,
 }: Readonly<PopoverProps>) {
 	const [toggle, setToggle] = useState(init);
@@ -41,77 +49,131 @@ export default function Popover({
 	useEffect(() => {
 		const resize = new ResizeObserver(() => {
 			const impl: typeof style = { position: "absolute", zIndex: 69 };
-			// :3
 			if (!toggle) impl.visibility = "hidden";
 
 			const popRect = pop.current?.getBoundingClientRect()!;
 			const overRect = over.current?.getBoundingClientRect()!;
 
-			// eslint-disable-next-line default-case
-			switch (anchorOrigin.vertical) {
-				case "top": {
-					impl.top = 0;
+			// 기본 위치 설정
+			let top = 0;
+			let left = 0;
+			let adjustedAnchorOrigin = anchorOrigin;
+			let adjustedOverlayOrigin = overlayOrigin;
+
+			// 기본 anchorOrigin 처리
+			switch (adjustedAnchorOrigin.vertical) {
+				case "top":
+					top = 0;
 					break;
+				case "center":
+					top = popRect.height * 0.5;
+					break;
+				case "bottom":
+					top = popRect.height;
+					break;
+			}
+			switch (adjustedAnchorOrigin.horizontal) {
+				case "left":
+					left = 0;
+					break;
+				case "center":
+					left = popRect.width * 0.5;
+					break;
+				case "right":
+					left = popRect.width;
+					break;
+			}
+
+			// 기본 overlayOrigin 처리
+			switch (adjustedOverlayOrigin.vertical) {
+				case "top":
+					top += gapY;
+					break;
+				case "center":
+					top -= overRect.height * 0.5;
+					break;
+				case "bottom":
+					top -= overRect.height + gapY;
+					break;
+			}
+			switch (adjustedOverlayOrigin.horizontal) {
+				case "left":
+					left += gapX;
+					break;
+				case "center":
+					left -= overRect.width * 0.5;
+					break;
+				case "right":
+					left -= overRect.width + gapX;
+					break;
+			}
+
+			// 화면 밖으로 나가는지 체크
+			const isOutOfBounds = top < 0 || left < 0 || top + overRect.height > window.innerHeight || left + overRect.width > window.innerWidth;
+
+			// 위치가 화면 밖으로 나가고 secondaryPosition이 있는 경우에만 대체 위치로 이동
+			if (isOutOfBounds && secondaryPosition) {
+				adjustedAnchorOrigin = secondaryPosition.anchorOrigin;
+				adjustedOverlayOrigin = secondaryPosition.overlayOrigin;
+
+				// 대체 위치로 다시 설정
+				switch (adjustedAnchorOrigin.vertical) {
+					case "top":
+						top = 0;
+						break;
+					case "center":
+						top = popRect.height * 0.5;
+						break;
+					case "bottom":
+						top = popRect.height;
+						break;
 				}
-				case "center": {
-					impl.top = popRect.height * 0.5;
-					break;
+				switch (adjustedAnchorOrigin.horizontal) {
+					case "left":
+						left = 0;
+						break;
+					case "center":
+						left = popRect.width * 0.5;
+						break;
+					case "right":
+						left = popRect.width;
+						break;
 				}
-				case "bottom": {
-					impl.top = popRect.height * 1.0;
-					break;
+
+				// 대체 overlayOrigin 처리
+				switch (adjustedOverlayOrigin.vertical) {
+					case "top":
+						top += gapX;
+						break;
+					case "center":
+						top -= overRect.height * 0.5;
+						break;
+					case "bottom":
+						top -= overRect.height + gapX;
+						break;
+				}
+				switch (adjustedOverlayOrigin.horizontal) {
+					case "left":
+						left += gapY;
+						break;
+					case "center":
+						left -= overRect.width * 0.5;
+						break;
+					case "right":
+						left -= overRect.width + gapY;
+						break;
 				}
 			}
-			// eslint-disable-next-line default-case
-			switch (anchorOrigin.horizontal) {
-				case "left": {
-					impl.left = 0;
-					break;
-				}
-				case "center": {
-					impl.left = popRect.width * 0.5;
-					break;
-				}
-				case "right": {
-					impl.left = popRect.width * 1.0;
-					break;
-				}
-			}
-			// eslint-disable-next-line default-case
-			switch (overlayOrigin.vertical) {
-				case "top": {
-					impl.top += gapY;
-					break;
-				}
-				case "center": {
-					impl.top -= overRect.height * 0.5;
-					break;
-				}
-				case "bottom": {
-					impl.top -= overRect.height * 1.0 + gapY;
-					break;
-				}
-			}
-			// eslint-disable-next-line default-case
-			switch (overlayOrigin.horizontal) {
-				case "left": {
-					impl.left += gapX;
-					break;
-				}
-				case "center": {
-					impl.left -= overRect.width * 0.5;
-					break;
-				}
-				case "right": {
-					impl.left -= overRect.width * 1.0 + gapX;
-					break;
-				}
-			}
+
+			impl.top = top;
+			impl.left = left;
+
 			setStyle(impl);
 		});
+
 		resize.observe(pop.current!);
 		return () => resize.disconnect();
-	}, [toggle, children, gapY, gapX, anchorOrigin, overlayOrigin]);
+	}, [toggle, children, gapY, gapX, anchorOrigin, overlayOrigin, secondaryPosition]);
 
 	useEffect(() => {
 		if (!readonly) {
@@ -143,7 +205,7 @@ export default function Popover({
 
 	const onClick = useCallback(() => {
 		if (!readonly) {
-			setToggle((_) => !_);
+			setToggle((prev) => !prev);
 		}
 	}, [readonly]);
 

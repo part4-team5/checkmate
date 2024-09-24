@@ -250,6 +250,7 @@ export default function Tasks({ id }: { id: number }) {
 					query: ".report-me",
 					content: "오늘의 진척도를 확인할 수 있어요",
 					position: "right",
+					secondaryPosition: "bottom",
 				},
 				{
 					query: ".add-task",
@@ -277,7 +278,7 @@ export default function Tasks({ id }: { id: number }) {
 
 	return (
 		<section>
-			<section className="mt-[24px] flex max-h-[425px] w-full justify-between text-text-primary tablet:w-full">
+			<section className="flex max-h-[425px] w-full justify-between text-text-primary tablet:w-full desktop:mt-[24px]">
 				<div className="flex justify-between gap-[8px]">
 					<p className="text-[16px] font-semibold">할 일 목록</p>
 					<p className="text-[16px]">({data?.taskLists?.length ?? 0}개)</p>
