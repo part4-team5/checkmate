@@ -13,7 +13,7 @@
 
 #### 서비스 링크
 
-<https://checkmate-645.netlify.app/>
+<checkmate-645.vercel.app/>
 
 <br />
 
